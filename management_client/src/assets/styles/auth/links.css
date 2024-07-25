@@ -1,0 +1,43 @@
+.right-column .confirmation-message .btn.btn-secondary {
+  background: transparent;
+  border: 2px solid var(--neutral-light);
+  color: var(--neutral-light);
+  margin-bottom: 0;
+}
+
+.right-column .confirmation-message .btn.btn-secondary:hover {
+  border: 2px solid var(--neutral-dark);
+  outline: 0;
+}
+
+.right-column .confirmation-message .btn.btn-secondary:active,
+.right-column .confirmation-message .btn.btn-secondary:focus,
+.right-column .confirmation-message .btn.btn-secondary:target,
+.right-column .confirmation-message .btn.btn-secondary:active:focus {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--primary-background-color);
+  outline: none !important;
+}
+
+.right-column .confirmation-message a {
+  text-decoration: none;
+}
+
+.right-column .admin-login {
+  display: block;
+  margin-top: 1rem;
+  text-align: center;
+  text-decoration: none;
+  transition: color 0.2s ease-out;
+}
+
+.right-column .admin-login:hover {
+  color: var(--primary-color-dark);
+}
+
+.right-column .admin-login:active,
+.right-column .admin-login:focus,
+.right-column .admin-login:target,
+.right-column .admin-login:active:focus {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--primary-background-color);
+  outline: none !important;
+}
