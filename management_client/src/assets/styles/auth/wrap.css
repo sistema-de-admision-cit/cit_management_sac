@@ -1,0 +1,13 @@
+.wrap {
+  align-items: stretch;
+  display: flex;
+  flex-flow: row wrap;
+  height: 100vh;
+  position: relative;
+}
+
+@media (max-width: 767px) {
+  .wrap {
+    flex-direction: column-reverse;
+  }
+}
