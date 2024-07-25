@@ -1,0 +1,67 @@
+.left-column,
+.right-column {
+  width: 100%;
+}
+
+.left-column {
+  background: url("../../images/banner1-home-CIT.jpg");
+  background-size: cover;
+  background-position: center;
+  background-color: var(--primary-background-color);
+}
+
+.left-column .hero {
+  position: relative;
+  max-width: 600px;
+  padding: 32px;
+  width: 100%;
+}
+
+.left-column .hero h1 {
+  color: #fff;
+}
+
+.left-column .hero h1 .dot {
+  color: var(--accent-color);
+}
+
+.left-column .hero p {
+  color: #fff;
+  font-size: 1.25rem;
+}
+
+.left-column .hero p.kicker {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+@media (max-width: 767px) {
+  .left-column {
+    width: 100%;
+    background-image: none;
+  }
+
+  .left-column .hero {
+    padding: 2rem;
+    max-width: none;
+    text-align: center;
+  }
+
+  .left-column .hero h1 {
+    font-size: 2rem;
+  }
+
+  .left-column .hero p {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .wrap .left-column {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    width: 50%;
+  }
+}
