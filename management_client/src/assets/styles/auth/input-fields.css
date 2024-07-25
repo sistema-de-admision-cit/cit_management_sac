@@ -1,0 +1,86 @@
+.right-column .form input[type="text"],
+.right-column .form input[type="password"],
+.right-column .form input[type="tel"],
+.right-column .form input[type="email"] {
+  background-color: var(--neutral-light);
+  border: 2px solid var(--neutral-light);
+  padding: 0.75rem 1.5rem 0.75rem 3.5rem;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 0.4rem;
+  transition: all 0.2s ease-out;
+  background-position: 1.25rem center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.right-column .form input[type="text"]:focus,
+.right-column .form input[type="password"]:focus {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--primary-background-color);
+  outline: none !important;
+}
+
+.right-column .form input[type="text"]::-webkit-input-placeholder,
+.right-column .form input[type="password"]::-webkit-input-placeholder {
+  font-family: "Inter", sans-serif;
+}
+
+.right-column .form input[type="text"]::-moz-placeholder,
+.right-column .form input[type="password"]::-moz-placeholder {
+  font-family: "Inter", sans-serif;
+}
+
+.right-column .form input[type="text"]:-ms-input-placeholder,
+.right-column .form input[type="password"]:-ms-input-placeholder {
+  font-family: "Inter", sans-serif;
+}
+
+.right-column .form input[type="text"]:-moz-placeholder,
+.right-column .form input[type="password"]:-moz-placeholder {
+  font-family: "Inter", sans-serif;
+}
+
+.right-column .form input[type="checkbox"]:focus {
+  outline: 2px solid var(--primary-background-color);
+  box-shadow: 0px 0px 10px 0px rgba(29, 28, 59, 0.3);
+}
+
+.right-column .form input[type="text"] {
+  background-image: url("../../icons/user-svgrepo-com.svg");
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+}
+
+/* si es un input de tipo dirección, se le pone otro icono */
+.right-column .form input[type="text"][name="direccion"] {
+  background-image: url("../../icons/map-point-svgrepo-com.svg");
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+}
+
+.right-column .form input[type="text"] {
+  background-image: url("../../icons/user-svgrepo-com.svg");
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+}
+
+.right-column .form input[type="password"] {
+  background-image: url("../../icons/password-svgrepo-com.svg");
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+}
+
+.right-column .form input[type="tel"] {
+  background-image: url("../../icons/phone-svgrepo-com.svg");
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+}
+
+.right-column .form input[type="email"] {
+  background-image: url("../../icons/mailbox-svgrepo-com.svg");
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+}
