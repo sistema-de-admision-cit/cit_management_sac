@@ -7,6 +7,9 @@ import menuConfig from './menuConfig' // Importa la configuración del menú
 import '../../../assets/styles/hub/nav-group.css'
 
 const NavGroup = ({ currentPage }) => {
+  const currentPageString = String(currentPage).slice(1)
+  const currentSubPage = currentPageString.split('/')[1]
+
   return (
     <div className='left-side-nav-container'>
       {menuConfig.map((menu) => (
@@ -20,7 +23,7 @@ const NavGroup = ({ currentPage }) => {
               <NavItem key={item.key} className={item.subItems ? 'has-submenu' : ''}>
                 <NavLink
                   to={item.path}
-                  className={currentPage.startsWith(item.key) ? 'active' : ''}
+                  className={currentPageString.startsWith(item.key) ? 'active' : ''}
                   onClick={item.onClick || null}
                 >
                   {item.label}
@@ -31,7 +34,7 @@ const NavGroup = ({ currentPage }) => {
                       <NavItem key={subItem.key}>
                         <NavLink
                           to={subItem.path}
-                          className={currentPage === subItem.key ? 'active' : ''}
+                          className={currentSubPage === subItem.key ? 'active' : ''}
                         >
                           {subItem.label}
                         </NavLink>
