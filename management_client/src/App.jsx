@@ -1,4 +1,4 @@
-import AuthRouter from './routers/AuthRouter'
+import AuthRouter from './components/auth/routers/AuthRouter'
 
 function App () {
   return (
