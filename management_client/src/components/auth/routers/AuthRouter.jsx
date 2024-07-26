@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import LoginSection from '../views/auth/LoginSection'
-import RegisterSection from '../views/auth/RegisterSection'
+import LoginSection from '../views/LoginSection'
+import RegisterSection from '../views/RegisterSection'
 
 const AuthRouter = () => {
   return (
