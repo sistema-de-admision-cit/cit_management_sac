@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import HubExample from '../../HubExample'
+import HubViewComponent from '../view/HubViewComponent'
 import menuConfig from '../molecules/menuConfig'
 
 const HubRouter = () => {
@@ -14,7 +14,7 @@ const HubRouter = () => {
               path={item.path}
               element={
                 <>
-                  <HubExample />
+                  <HubViewComponent />
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                     {item.label}
                   </div>
@@ -27,7 +27,7 @@ const HubRouter = () => {
                 path={subItem.path}
                 element={
                   <>
-                    <HubExample />
+                    <HubViewComponent />
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                       {subItem.label}
                     </div>
