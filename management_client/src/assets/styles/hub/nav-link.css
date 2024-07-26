@@ -1,0 +1,25 @@
+.nav-link {
+  display: block;
+  color: black;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.nav-link.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.nav-link:hover {
+  background-color: var(--primary-color-hover);
+  color: white;
+}
+
+.nav-link.active:hover {
+  background-color: var(--primary-color-hover);
+  color: white;
+}
+
+a:hover {
+  cursor: pointer;
+}

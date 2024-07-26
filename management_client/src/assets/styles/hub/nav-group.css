@@ -1,0 +1,88 @@
+/* Estilo base para el contenedor de navegación */
+.left-side-nav-container .side-nav-group-header-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding: 16px 12px 8px;
+}
+
+.left-side-nav-container .side-nav-group-header-label p {
+  margin: 0 0 0 8px;
+  font-family: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 20px;
+  letter-spacing: 0.4px;
+  color: inherit;
+}
+
+/* Estilos del menú principal */
+.menu-group-label {
+  padding-left: 0;
+  list-style: none;
+  padding: 0;
+}
+
+/* Estilos del ítem del menú */
+.menu-group-label > .nav-item {
+  position: relative;
+}
+
+/* Estilos del enlace */
+.menu-group-label a {
+  display: block;
+  color: black;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+/* Estado activo del enlace */
+.menu-group-label a.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Estado hover del enlace */
+.menu-group-label a:hover {
+  background-color: var(--primary-color-hover);
+  color: white;
+}
+
+/* Estilo del submenú */
+.menu-group-label .submenu {
+  display: none;
+}
+
+/* Mostrar el submenú cuando el elemento padre o el submenú está en hover */
+.menu-group-label > .nav-item:hover > .submenu,
+.menu-group-label > .nav-item:hover > .submenu:hover {
+  display: block;
+}
+
+/* Estilos del ítem del submenú */
+.menu-group-label .submenu > .nav-item {
+  margin: 0;
+}
+
+/* Estilos del enlace del submenú */
+.menu-group-label .submenu > .nav-item > a {
+  padding: 8px 16px;
+  color: black;
+  text-decoration: none;
+}
+
+/* Estado activo del enlace del submenú */
+.menu-group-label .submenu > .nav-item > a.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Estado hover del enlace del submenú */
+.menu-group-label .submenu > .nav-item > a:hover {
+  background-color: var(--primary-color-hover);
+  color: white;
+}
