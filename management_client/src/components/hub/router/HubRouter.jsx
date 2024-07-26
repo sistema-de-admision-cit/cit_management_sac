@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import HubViewComponent from '../view/HubViewComponent'
-import menuConfig from '../molecules/menuConfig'
+import menuConfig from '../config/menuConfig'
 
 const HubRouter = () => {
   return (
