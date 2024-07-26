@@ -3,7 +3,7 @@ import React from 'react'
 import Icon from '../atoms/Icon'
 import NavItem from '../atoms/NavItem'
 import NavLink from '../atoms/NavLink'
-import menuConfig from './menuConfig' // Importa la configuración del menú
+import menuConfig from '../config/menuConfig' // Importa la configuración del menú
 import '../../../assets/styles/hub/nav-group.css'
 
 const NavGroup = ({ currentPage }) => {
