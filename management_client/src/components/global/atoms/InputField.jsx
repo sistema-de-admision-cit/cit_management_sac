@@ -1,7 +1,7 @@
 import React from 'react'
 import '../../../assets/styles/global/input-fields.css'
 
-const InputField = ({ field, value, handleChange, children, className }) => {
+const InputField = ({ field, value, handleChange, children, className, autoComplete }) => {
   const textInput = () => {
     return (
       <input
@@ -11,6 +11,7 @@ const InputField = ({ field, value, handleChange, children, className }) => {
         value={value}
         onChange={handleChange}
         required
+        autoComplete={autoComplete || 'off'}
       />
     )
   }
