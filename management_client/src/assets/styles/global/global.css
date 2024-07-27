@@ -19,6 +19,8 @@
   --success-color-hover: #157f4f;
   
   --info-color: #0056b3;
+
+  --transparent-button-hover: rgba(0, 0, 0, 0.1);
 }
 
 html {
