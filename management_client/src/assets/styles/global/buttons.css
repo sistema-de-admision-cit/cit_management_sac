@@ -33,6 +33,17 @@
   outline: none !important;
 }
 
+.btn.btn-primary[disabled] {
+  background-color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+/* no se puede hacer hover en un botón deshabilitado */
+.btn.btn-primary[disabled]:hover {
+  background-color: #9e9e9e;
+  cursor: not-allowed;
+}
+
 .btn.btn-secondary {
   background: transparent;
   border: 2px solid var(--primary-color);
