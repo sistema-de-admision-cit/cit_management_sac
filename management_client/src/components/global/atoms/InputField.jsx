@@ -40,10 +40,22 @@ const InputField = ({ field, value, handleChange, children, className }) => {
     )
   }
 
-  const radioInput = () => {
+  const radioGroupInput = () => {
     return (
       <div className='radio-group'>
-        {children}
+        {field.options.map((option) => (
+          <label key={option.value}>
+            <input
+              type='radio'
+              name={field.name}
+              value={option.value}
+              checked={value === option.value}
+              onChange={handleChange}
+              required
+            />
+            {option.label}
+          </label>
+        ))}
       </div>
     )
   }
@@ -56,8 +68,8 @@ const InputField = ({ field, value, handleChange, children, className }) => {
         return selectInput()
       case 'textarea':
         return textAreaInput()
-      case 'radio':
-        return radioInput()
+      case 'radio-group':
+        return radioGroupInput()
       default:
         return textInput()
     }
