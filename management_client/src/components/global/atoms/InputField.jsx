@@ -1,5 +1,5 @@
 import React from 'react'
-import '../../../assets/styles/auth/input-fields.css'
+import '../../../assets/styles/global/input-fields.css'
 
 const InputField = ({ field, value, handleChange, children, className }) => {
   const textInput = () => {
