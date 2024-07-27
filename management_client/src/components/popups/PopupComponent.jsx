@@ -1,5 +1,5 @@
 import React from 'react'
-import '../assets/styles/popup/popup.css'
+import '../../assets/styles/popup/popup.css'
 
 const PopupComponent = ({ message, onClose, type }) => {
   const popupClass = type === 'confirmation' ? 'confirmation' : 'error'
