@@ -1,6 +1,6 @@
 import React from 'react'
 
-import '../../../assets/styles/auth/buttons.css'
+import '../../../assets/styles/global/buttons.css'
 
 const Button = ({ type, className, children, onClick }) => {
   return (
