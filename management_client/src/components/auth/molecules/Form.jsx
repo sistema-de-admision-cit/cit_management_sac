@@ -1,6 +1,6 @@
 import React from 'react'
-import InputField from '../atoms/InputField'
-import Button from '../atoms/Button'
+import InputField from '../../global/atoms/InputField'
+import Button from '../../global/atoms/Button'
 
 const Form = ({ fields, formData, handleChange, onSubmit, sectionName }) => {
   return (
