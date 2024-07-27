@@ -12,6 +12,15 @@
   --neutral-dark: #333;
   --neutral-light: #E7F3ED;
   --neutral-color: #bdc3c7;
+
+  --danger-color: #db3646;
+  --danger-color-hover: #c92f3f;
+  --success-color: #198754;
+  --success-color-hover: #157f4f;
+  
+  --info-color: #0056b3;
+
+  --transparent-button-hover: rgba(0, 0, 0, 0.1);
 }
 
 html {

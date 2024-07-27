@@ -1,5 +1,6 @@
 // src/config/menuConfig.js
 import { logout } from '../../../global_helpers/logoutHandler'
+import AddQuestionView from '../../questions/add_questions/view/AddQuestionView'
 
 const menuConfig = [
   {
@@ -41,7 +42,7 @@ const menuConfig = [
         label: 'Gestión de Exámenes',
         path: '/examenes',
         subItems: [
-          { key: 'ingresar', label: 'Ingresar Preguntas', path: '/examenes/ingresar' },
+          { key: 'ingresar', label: 'Ingresar Preguntas', path: '/examenes/ingresar', component: AddQuestionView },
           { key: 'modificar', label: 'Modificar Preguntas', path: '/examenes/modificar' },
           { key: 'eliminar', label: 'Eliminar Preguntas', path: '/examenes/eliminar' },
           { key: 'generar', label: 'Generar Exámenes', path: '/examenes/generar' },

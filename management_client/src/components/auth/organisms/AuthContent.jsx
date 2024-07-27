@@ -1,6 +1,6 @@
 import React from 'react'
 import Form from '../molecules/Form'
-import Button from '../atoms/Button'
+import Button from '../../global/atoms/Button'
 
 import '../../../assets/styles/auth/right-column.css'
 import '../../../assets/styles/auth/links.css'

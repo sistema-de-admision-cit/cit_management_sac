@@ -1,9 +1,8 @@
 import React from 'react'
-import PopupComponent from '../../../popups/PopupComponent'
+import PopupComponent from '../../popups/PopupComponent'
 import AuthHeader from '../organisms/AuthHeader'
 import AuthContent from '../organisms/AuthContent'
 
-import '../../../assets/styles/global.css'
 import '../../../assets/styles/auth/wrap.css'
 
 const AuthComponent = ({ formData, setFormData, onSubmit, fields, sectionName, isRegisterSuccess, setIsRegisterSuccess, errorMessage, setErrorMessage }) => {
