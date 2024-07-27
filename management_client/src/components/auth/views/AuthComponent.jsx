@@ -1,5 +1,5 @@
 import React from 'react'
-import PopupComponent from '../../../popups/PopupComponent'
+import PopupComponent from '../../popups/PopupComponent'
 import AuthHeader from '../organisms/AuthHeader'
 import AuthContent from '../organisms/AuthContent'
 
