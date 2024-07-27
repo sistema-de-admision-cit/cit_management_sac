@@ -22,7 +22,6 @@
 .btn.btn-primary:hover {
   background-color: var(--primary-color-dark);
   color: #fff;
-  border: 2px solid var(--primary-color-dark);
   outline: 0;
 }
 
