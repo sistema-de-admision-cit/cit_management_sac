@@ -4,64 +4,130 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.popup {
+  background: #fff;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* shadow effect */
+  padding: 20px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 28px;
+  color: #333;
+}
+
+.close-btn:hover {
+  color: var(--danger-color-hover);
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px; 
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danger {
+  background-color: var(--danger-color)
+}
+
+.btn-success {
+  background-color: var(--success-color)
+}
+
+.btn-danger:hover {
+  background-color: var(--danger-color-hover)
+}
+
+.btn-success:hover {
+  background-color: var(--success-color-hover)
+}
+
+.popup-icon {
+  margin-bottom: 20px;
+  width: 100px; 
+  height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000;
+  margin: 0 auto;
 }
 
-.popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px;
-  color: white;
-  border-radius: 5px;
-  opacity: 0;
-  animation: fadeIn 0.3s ease forwards;
+.popup-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
-.error {
-  background-color: var(--accent-color);
+/* Path styling and animations */
+.path {
+  transition: stroke 0.3s ease;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 0;
 }
 
-.confirmation {
-  background-color: var(--success-color);
-}
-
-.close-btn {
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  cursor: pointer;
-}
-
-.message {
-  margin: 0;
-  font-size: 1.5rem;
-  text-align: center;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.8);
+/* Animation for SVG strokes */
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 1000;
   }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+  100% {
+    stroke-dashoffset: 0;
   }
 }
 
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+@keyframes dash-check {
+  0% {
+    stroke-dashoffset: -100;
   }
-  to {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.8);
+  100% {
+    stroke-dashoffset: 900;
   }
+}
+
+/* animaciones de error y confirmación */
+.error .popup-icon .path.circle {
+  animation: dash 0.9s ease-in-out;
+}
+
+.error .popup-icon .path.line {
+  stroke-dashoffset: 1000;
+  animation: dash 0.95s 0.35s ease-in-out forwards;
+}
+
+.error .popup-icon .path.check {
+  stroke-dashoffset: -100;
+  animation: dash-check 0.95s 0.35s ease-in-out forwards;
+}
+
+.confirmation .popup-icon .path.circle {
+  animation: dash 0.9s ease-in-out;
+}
+
+.confirmation .popup-icon .path.line {
+  stroke-dashoffset: 1000;
+  animation: dash 0.95s 0.35s ease-in-out forwards;
+}
+
+.confirmation .popup-icon .path.check {
+  stroke-dashoffset: -100;
+  animation: dash-check 0.95s 0.35s ease-in-out forwards;
 }
