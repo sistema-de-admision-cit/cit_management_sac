@@ -43,6 +43,7 @@
 .btn.btn-secondary:hover {
   border: 2px solid var(--primary-color-dark);
   outline: 0;
+  background-color: var(--transparent-button-hover);
 }
 
 .btn.btn-secondary:active,
