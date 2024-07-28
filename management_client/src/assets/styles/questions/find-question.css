@@ -17,11 +17,7 @@ label {
   font-weight: bold;
 }
 
-<<<<<<< HEAD
 .find-question-container input[type="text"] {
-=======
-input[type="text"] {
->>>>>>> 85a2ca4d78d6ea04061e9812e42b54d984598023
   /* agregar icono de busqueda */
   background-image: url("../../icons/search-alt-2-svgrepo-com.svg");
   background-repeat: no-repeat;
