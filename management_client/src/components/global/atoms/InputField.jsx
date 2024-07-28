@@ -2,10 +2,10 @@ import React from 'react'
 import '../../../assets/styles/global/input-fields.css'
 
 const InputField = ({ field, value, handleChange, children, className, autoComplete }) => {
-  const textInput = () => {
+  const textRelatedInput = (type) => {
     return (
       <input
-        type='text'
+        type={type}
         name={field.name}
         placeholder={field.placeholder}
         value={value}
@@ -29,18 +29,6 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     )
   }
 
-  const textAreaInput = () => {
-    return (
-      <textarea
-        name={field.name}
-        placeholder={field.placeholder}
-        value={value}
-        onChange={handleChange}
-        required
-      />
-    )
-  }
-
   const radioGroupInput = () => {
     return (
       <div className='radio-group'>
@@ -61,19 +49,19 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     )
   }
 
+  // map
+  const inputRenderers = {
+    text: () => textRelatedInput('text'),
+    password: () => textRelatedInput('password'),
+    email: () => textRelatedInput('email'),
+    tel: () => textRelatedInput('tel'),
+    textArea: () => textRelatedInput('textArea'),
+    select: () => selectInput(),
+    'radio-group': () => radioGroupInput()
+  }
+
   const renderInput = () => {
-    switch (field.type) {
-      case 'text':
-        return textInput()
-      case 'select':
-        return selectInput()
-      case 'textarea':
-        return textAreaInput()
-      case 'radio-group':
-        return radioGroupInput()
-      default:
-        return textInput()
-    }
+    return (inputRenderers[field.type] || inputRenderers.text)()
   }
 
   return (
