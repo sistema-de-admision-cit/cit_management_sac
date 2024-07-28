@@ -157,7 +157,7 @@ const mockFetchQuestions = (query) => {
     examType: 'dai',
     questionType: 'short',
     question: 'Cuál es el resultado de 2 + 2?',
-    options: [],
+    options: ['', '', '', ''],
     correctOption: ''
   }]
 
