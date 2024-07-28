@@ -122,3 +122,44 @@ export const getButtonState = (questionData, isLoading) => {
 
   return false
 }
+
+// modif
+export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessMessage, setIsLoading) => {
+  e.preventDefault()
+  setErrorMessage('')
+  setSuccessMessage('')
+
+  // Validar los campos del formulario
+  validateFields(questionData, setErrorMessage)
+
+  setIsLoading(true)
+
+  // Hacer la llamada para modificar los datos en el servidor (TODO: reemplazar por la API)
+  setTimeout(() => {
+    console.log(questionData)
+    setIsLoading(false)
+    setSuccessMessage('Pregunta modificada exitosamente')
+  }, 1000)
+}
+
+const mockFetchQuestion = (code) => {
+  // simular
+  const dummyData = {
+    examType: 'academic',
+    questionType: 'unique',
+    question: '¿Cuál es la capital de Francia?',
+    options: ['Madrid', 'París', 'Berlín', 'Lisboa'],
+    correctOption: '1'
+  }
+  return code === '123' ? dummyData : null
+}
+
+export const handleSearch = (questionCode, setErrorMessage, onQuestionFound) => {
+  // llamada a la api
+  const questionData = mockFetchQuestion(questionCode)
+  if (!questionData) {
+    setErrorMessage('No se encontró ninguna pregunta con ese código.')
+    return
+  }
+  onQuestionFound(questionData)
+}
