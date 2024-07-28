@@ -1,7 +1,7 @@
 // src/config/menuConfig.js
 import { logout } from '../../../global_helpers/logoutHandler'
 import AddQuestionView from '../../questions/add_questions/view/AddQuestionView'
-import ModifyQuestionView from '../../questions/delete_questions/view/ModifyQuestionView'
+import ModifyQuestionView from '../../questions/modify_questions/view/ModifyQuestionView'
 
 const menuConfig = [
   {
