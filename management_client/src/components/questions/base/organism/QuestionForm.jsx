@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import ExamTypeOptions from '../add_questions/molecules/ExamTypeOptions'
-import QuestionTypeOptions from '../add_questions/molecules/QuestionTypeOptions'
-import QuestionOptions from '../add_questions/molecules/QuestionOptions'
-import InputField from '../../global/atoms/InputField'
-import Button from '../../global/atoms/Button'
-import PopupComponent from '../../popups/PopupComponent'
-import '../../../assets/styles/questions/question-form.css'
+import ExamTypeOptions from '../molecules/ExamTypeOptions'
+import QuestionTypeOptions from '../molecules/QuestionTypeOptions'
+import QuestionOptions from '../molecules/QuestionOptions'
+import InputField from '../../../global/atoms/InputField'
+import Button from '../../../global/atoms/Button'
+import PopupComponent from '../../../popups/PopupComponent'
+import '../../../../assets/styles/questions/question-form.css'
 
 import {
   handleChange,
@@ -13,7 +13,7 @@ import {
   handleOptionChange,
   clearForm,
   getButtonState
-} from '../helpers/formHandlers'
+} from '../../helpers/formHandlers'
 
 const QuestionForm = ({
   title,
