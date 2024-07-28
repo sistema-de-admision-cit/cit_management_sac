@@ -20,8 +20,7 @@ const QuestionForm = ({
   initialData,
   onSubmit,
   submitButtonText,
-  isModify = false,
-  searchAgain
+  isModify = false
 }) => {
   const [questionData, setQuestionData] = useState(initialData)
   const [isLoading, setIsLoading] = useState(false)
@@ -105,16 +104,6 @@ const QuestionForm = ({
         >
           Limpiar
         </Button>
-        {isModify && (
-          <Button
-            type='button'
-            className='btn btn-secondary'
-            onClick={() => searchAgain()}
-            disabled={isLoading}
-          >
-            Buscar Otra Pregunta
-          </Button>
-        )}
       </form>
     </section>
   )
