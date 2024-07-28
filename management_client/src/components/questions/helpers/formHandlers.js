@@ -142,24 +142,31 @@ export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessM
   }, 1000)
 }
 
-const mockFetchQuestion = (code) => {
+const mockFetchQuestions = (query) => {
   // simular
-  const dummyData = {
+  const dummyData = [{
+    code: '123',
     examType: 'academic',
     questionType: 'unique',
-    question: '¿Cuál es la capital de Francia?',
+    question: 'Cuál es la capital de Francia?',
     options: ['Madrid', 'París', 'Berlín', 'Lisboa'],
     correctOption: '1'
-  }
-  return code === '123' ? dummyData : null
+  },
+  {
+    code: '124',
+    examType: 'dai',
+    questionType: 'short',
+    question: 'Cuál es el resultado de 2 + 2?',
+    options: [],
+    correctOption: ''
+  }]
+
+  return dummyData.filter(item => item.question.toLowerCase().includes(query.toLowerCase()))
 }
 
-export const handleSearch = (questionCode, setErrorMessage, onQuestionFound) => {
-  // llamada a la api
-  const questionData = mockFetchQuestion(questionCode)
-  if (!questionData) {
-    setErrorMessage('No se encontró ninguna pregunta con ese código.')
-    return
-  }
-  onQuestionFound(questionData)
+export const handleSearch = (query, setErrorMessage, setSuggestions) => {
+  // Simular una llamada a la API
+  const suggestions = mockFetchQuestions(query)
+  setSuggestions(suggestions)
+  console.log(suggestions)
 }
