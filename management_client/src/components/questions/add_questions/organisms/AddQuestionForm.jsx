@@ -14,7 +14,7 @@ import {
   clearForm,
   handleSubmit,
   getButtonState
-} from '../helpers/formHandlers'
+} from '../../helpers/formHandlers'
 
 const AddQuestionForm = () => {
   const [questionData, setQuestionData] = useState({
