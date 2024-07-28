@@ -13,7 +13,7 @@ import {
   handleOptionChange,
   clearForm,
   getButtonState
-} from '../../helpers/formHandlers'
+} from '../helpers/formHandlers'
 
 const QuestionForm = ({
   title,
