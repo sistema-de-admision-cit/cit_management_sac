@@ -20,7 +20,8 @@ const QuestionForm = ({
   initialData,
   onSubmit,
   submitButtonText,
-  isModify = false
+  isModify = false,
+  searchAgain
 }) => {
   const [questionData, setQuestionData] = useState(initialData)
   const [isLoading, setIsLoading] = useState(false)
@@ -108,7 +109,7 @@ const QuestionForm = ({
           <Button
             type='button'
             className='btn btn-secondary'
-            onClick={() => setQuestionData(null)}
+            onClick={() => searchAgain()}
             disabled={isLoading}
           >
             Buscar Otra Pregunta
