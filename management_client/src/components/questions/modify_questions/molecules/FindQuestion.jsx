@@ -20,6 +20,12 @@ const FindQuestion = ({ onQuestionFound }) => {
     }
   }
 
+  const handleSuggestionClick = (item) => {
+    onQuestionFound(item)
+    setQuestionCode('')
+    setSuggestions([])
+  }
+
   return (
     <div className='find-question-container'>
       {errorMessage && (
@@ -34,7 +40,7 @@ const FindQuestion = ({ onQuestionFound }) => {
       {suggestions.length > 0 && (
         <ul className='suggestions-list'>
           {suggestions.map((item) => (
-            <li key={item.code} onClick={() => onQuestionFound(item)}>
+            <li key={item.code} onClick={() => handleSuggestionClick(item)}>
               {item.question}
             </li>
           ))}
