@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import InputField from '../../../global/atoms/InputField'
-import Button from '../../../global/atoms/Button'
 import PopupComponent from '../../../popups/PopupComponent'
 import { handleSearch } from '../../helpers/formHandlers'
 import '../../../../assets/styles/questions/find-question.css'
@@ -8,6 +7,18 @@ import '../../../../assets/styles/questions/find-question.css'
 const FindQuestion = ({ onQuestionFound }) => {
   const [questionCode, setQuestionCode] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [suggestions, setSuggestions] = useState([])
+
+  const handleInputChange = (e) => {
+    const query = e.target.value
+    setQuestionCode(query)
+
+    if (query.length > 2) {
+      handleSearch(query, setErrorMessage, setSuggestions)
+    } else {
+      setSuggestions([])
+    }
+  }
 
   return (
     <div className='find-question-container'>
@@ -15,14 +26,20 @@ const FindQuestion = ({ onQuestionFound }) => {
         <PopupComponent message={errorMessage} onClose={() => setErrorMessage('')} type='error' />
       )}
       <InputField
-        field={{ name: 'questionCode', label: 'Código de la Pregunta', type: 'text', placeholder: 'Ingrese el código de la pregunta' }}
+        field={{ name: 'questionCode', label: 'Buscar Pregunta', type: 'text', placeholder: 'Ingrese el texto de la pregunta' }}
         value={questionCode}
-        handleChange={(e) => setQuestionCode(e.target.value)}
+        handleChange={handleInputChange}
         className='form-group'
       />
-      <Button onClick={() => handleSearch(questionCode, setErrorMessage, onQuestionFound)}>
-        Buscar Pregunta
-      </Button>
+      {suggestions.length > 0 && (
+        <ul className='suggestions-list'>
+          {suggestions.map((item) => (
+            <li key={item.code} onClick={() => onQuestionFound(item)}>
+              {item.question}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }
