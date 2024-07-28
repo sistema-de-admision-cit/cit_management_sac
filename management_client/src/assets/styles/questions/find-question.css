@@ -1,6 +1,6 @@
 .find-question-container {
   max-width: 600px;
-  margin: 0 auto;
+  margin: 1rem auto;
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 8px;
@@ -17,11 +17,24 @@ label {
   font-weight: bold;
 }
 
+.find-question-container input[type="text"] {
+  /* agregar icono de busqueda */
+  background-image: url("../../icons/search-alt-2-svgrepo-com.svg");
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+  background-position: 98% 50%;
+}
+
+input[type="text"]:focus,
+select:focus {
+  border-color: #333;
+}
+/* suggestions list */
 input[type="text"],
 select {
   width: 100%;
   padding: 8px;
-  margin: 4px 0 10px 0;
+  margin: 0;
   display: inline-block;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -33,8 +46,10 @@ select {
   padding: 0;
   margin: 0;
   border: 1px solid #ccc;
+  border-radius: 4px;
   max-height: 200px;
   overflow-y: auto;
+  background-color: #fff;
 }
 
 .suggestions-list li {
