@@ -1,5 +1,5 @@
 import React from 'react'
-import QuestionForm from '../../base/QuestionForm'
+import QuestionForm from '../../base/organism/QuestionForm'
 import { handleSubmit } from '../../helpers/formHandlers'
 
 const AddQuestionForm = () => {
