@@ -1,24 +1,19 @@
 import React from 'react'
 import QuestionForm from '../../base/QuestionForm'
-import { handleSubmit } from '../../helpers/formHandlers'
+import { handleModifySubmit } from '../../helpers/formHandlers'
 
-const AddQuestionForm = () => {
-  const initialData = {
-    examType: '',
-    questionType: '',
-    question: '',
-    options: ['', '', '', ''],
-    correctOption: ''
-  }
-
+const ModifyQuestionForm = ({ questionData, setQuestionData }) => {
   return (
     <QuestionForm
-      title='Ingresar Pregunta'
-      initialData={initialData}
-      onSubmit={handleSubmit}
-      submitButtonText='Guardar Pregunta'
+      title='Modificar Pregunta'
+      initialData={questionData}
+      onSubmit={(e, data, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData) =>
+        handleModifySubmit(e, data, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)}
+      submitButtonText='Guardar Cambios'
+      isModify
+      searchAgain={() => setQuestionData(null)}
     />
   )
 }
 
-export default AddQuestionForm
+export default ModifyQuestionForm
