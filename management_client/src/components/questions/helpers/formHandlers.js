@@ -148,9 +148,14 @@ const mockFetchQuestions = (query, dummyData) => {
   return dummyData.filter(item => item.question.toLowerCase().includes(query.toLowerCase()))
 }
 
-export const handleSearch = (query, setErrorMessage, setSuggestions) => {
+export const handleModifyForSearch = (query, setErrorMessage, setSuggestions) => {
   // Simular una llamada a la API
   const suggestions = mockFetchQuestions(query, dummyData)
   setSuggestions(suggestions)
   console.log(suggestions)
+}
+
+export const handleDeleteForSearch = (query, onResultsUpdate) => {
+  const filteredQuestions = mockFetchQuestions(query, dummyData)
+  onResultsUpdate(filteredQuestions)
 }
