@@ -5,6 +5,13 @@ import PopupComponent from '../../../popups/PopupComponent'
 import SuggestionsList from '../../modify_questions/molecules/SuggestionsList'
 import AdvancedSearch from './AdvancedSearch'
 import { handleSearch } from '../../helpers/formHandlers'
+import {
+  handleInputChange,
+  handleExamTypeChange,
+  setQuestions,
+  handleSuggestionClick,
+  handleAdvancedSearch
+} from '../helpers/findQuestionHandlers'
 import '../../../../assets/styles/questions/find-question.css'
 
 const FindQuestion = ({ onQuestionFound, onResultsUpdate, lookingFor }) => {
@@ -16,32 +23,8 @@ const FindQuestion = ({ onQuestionFound, onResultsUpdate, lookingFor }) => {
   const [searchExamType, setSearchExamType] = useState('both')
 
   useEffect(() => {
-    handleSearch(query, setQuestions, searchExamType, setSearchCode, lookingFor)
+    handleSearch(query, (questions) => setQuestions(questions, lookingFor, onResultsUpdate, setSuggestions), searchExamType, setSearchCode, lookingFor)
   }, [query, onResultsUpdate, lookingFor, searchExamType])
-
-  const handleInputChange = (e) => {
-    const searchTerm = e.target.value
-    setQuery(searchTerm)
-  }
-
-  const handleExamTypeChange = (e) => {
-    const examType = e.target.value
-    setSearchExamType(examType)
-  }
-
-  const setQuestions = (questions) => {
-    lookingFor === 'delete' ? onResultsUpdate(questions) : setSuggestions(questions)
-  }
-
-  const handleSuggestionClick = (item) => {
-    onQuestionFound(item)
-    setQuery('')
-    setSuggestions([])
-  }
-
-  const handleAdvancedSearch = () => {
-    setShowAdvancedSearch(!showAdvancedSearch)
-  }
 
   const examTypeOptions = [
     { value: 'both', label: 'Ambos' },
@@ -57,10 +40,10 @@ const FindQuestion = ({ onQuestionFound, onResultsUpdate, lookingFor }) => {
       <InputField
         field={{ name: 'questionText', label: 'Buscar Pregunta', type: 'text', placeholder: 'Ingrese el texto de la pregunta' }}
         value={query}
-        handleChange={handleInputChange}
+        handleChange={(e) => handleInputChange(e, setQuery)}
         className='form-group'
       />
-      <Button type='button' className='btn btn-secondary' onClick={handleAdvancedSearch}>
+      <Button type='button' className='btn btn-secondary' onClick={() => handleAdvancedSearch(showAdvancedSearch, setShowAdvancedSearch)}>
         {showAdvancedSearch ? 'Ocultar Búsqueda Avanzada' : 'Búsqueda Avanzada'}
       </Button>
 
@@ -70,15 +53,15 @@ const FindQuestion = ({ onQuestionFound, onResultsUpdate, lookingFor }) => {
           setSearchCode={setSearchCode}
           setQuery={setQuery}
           setSearchExamType={setSearchExamType}
-          setQuestions={setQuestions}
+          setQuestions={(questions) => setQuestions(questions, lookingFor, onResultsUpdate, setSuggestions)}
           searchExamType={searchExamType}
-          handleExamTypeChange={handleExamTypeChange}
+          handleExamTypeChange={(e) => handleExamTypeChange(e, setSearchExamType)}
           examTypeOptions={examTypeOptions}
         />
       )}
 
       {suggestions.length > 0 && lookingFor !== 'delete' && (
-        <SuggestionsList suggestions={suggestions} onSuggestionClick={handleSuggestionClick} />
+        <SuggestionsList suggestions={suggestions} onSuggestionClick={(item) => handleSuggestionClick(item, onQuestionFound, setQuery, setSuggestions)} />
       )}
     </div>
   )
