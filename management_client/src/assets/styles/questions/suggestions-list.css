@@ -19,6 +19,7 @@ select {
   max-height: 200px;
   overflow-y: auto;
   background-color: #fff;
+  margin-top: 1rem;
 }
 
 .suggestions-list li {
