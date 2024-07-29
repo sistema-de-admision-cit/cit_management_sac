@@ -3,7 +3,7 @@ import QuestionList from '../organisms/QuestionList'
 import '../../../../assets/styles/questions/view.css'
 import { dummyData } from '../../helpers/dummyData'
 import { handleDeleteFromList } from '../helpers/formHandlers'
-import FindQuestion from '../molecules/FindQuestions'
+import FindQuestion from '../../base/molecules/FindQuestion'
 import PopupComponent from '../../../popups/PopupComponent'
 
 const DeleteQuestionView = () => {
@@ -28,8 +28,8 @@ const DeleteQuestionView = () => {
       {errorMessage && <PopupComponent message={errorMessage} onClose={() => setErrorMessage('')} type='error' />}
       {successMessage && <PopupComponent message={successMessage} onClose={() => setSuccessMessage('')} type='confirmation' />}
       <FindQuestion
-        questions={questions}
         onResultsUpdate={setFilteredQuestions}
+        lookingFor='delete'
       />
       <QuestionList
         questions={filteredQuestions}
