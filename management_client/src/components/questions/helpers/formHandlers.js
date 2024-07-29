@@ -149,16 +149,10 @@ const mockFetchQuestions = (query, dummyData, filterByExamType) => {
   return filterByExamType === 'both' ? dummyData.filter(question => question.question.toLowerCase().includes(query.toLowerCase())) : dummyData.filter(question => question.question.toLowerCase().includes(query.toLowerCase()) && question.examType === filterByExamType)
 }
 
-export const handleModifyForSearch = (query, setErrorMessage, setSuggestions, filterByExamType) => {
-  // Simular una llamada a la API
-  const suggestions = mockFetchQuestions(query, dummyData, filterByExamType)
-  setSuggestions(suggestions)
-  console.log(suggestions)
-}
-
-export const handleDeleteForSearch = (query, onResultsUpdate, filterByExamType) => {
-  const filteredQuestions = mockFetchQuestions(query, dummyData, filterByExamType)
-  onResultsUpdate(filteredQuestions)
+export const handleSearch = (query, setQuestions, searchExamType, setSearchCode, lookingFor) => {
+  setSearchCode('')
+  const questions = mockFetchQuestions(query, dummyData, searchExamType)
+  query ? setQuestions(questions) : lookingFor === 'delete' ? setQuestions(questions) : setQuestions([])
 }
 
 const mockFetchQuestionByCode = (code) => {
