@@ -160,3 +160,20 @@ export const handleDeleteForSearch = (query, onResultsUpdate, filterByExamType) 
   const filteredQuestions = mockFetchQuestions(query, dummyData, filterByExamType)
   onResultsUpdate(filteredQuestions)
 }
+
+const mockFetchQuestionByCode = (code) => {
+  return dummyData.find(question => question.code === code)
+}
+
+export const handleSearchByCode = (e, setQuery, setSearchCode, setSearchExamType, setQuestions) => {
+  e.preventDefault()
+  setQuery('')
+  setSearchExamType('both')
+
+  const code = e.target.value
+
+  setSearchCode(code)
+  const question = mockFetchQuestionByCode(code)
+  const questions = code ? [] : dummyData
+  question ? setQuestions([question]) : setQuestions(questions)
+}
