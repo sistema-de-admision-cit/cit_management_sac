@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import FindQuestion from '../molecules/FindQuestion'
+import FindQuestion from '../../base/molecules/FindQuestion'
 import ModifyQuestionForm from '../organisms/ModifyQuestionForm'
 import '../../../../assets/styles/questions/view.css'
 
@@ -30,7 +30,10 @@ const ModifyQuestionView = () => {
       <title>Modificar Pregunta</title>
       <div className='modify-question-container'>
         <div className='search-section'>
-          <FindQuestion onQuestionFound={handleQuestionFound} />
+          <FindQuestion
+            onQuestionFound={handleQuestionFound}
+            lookingFor='modify'
+          />
         </div>
         <div className='form-section'>
           {questionData && (
