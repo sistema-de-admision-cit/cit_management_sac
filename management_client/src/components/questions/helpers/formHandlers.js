@@ -1,4 +1,6 @@
 // para validar los campos del formulario
+import { dummyData } from './dummyData'
+
 const validateFields = (questionData, setErrorMessage) => {
   if (!questionData.examType) {
     setErrorMessage('Por favor, seleccione el tipo de examen.')
@@ -142,31 +144,13 @@ export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessM
   }, 1000)
 }
 
-const mockFetchQuestions = (query) => {
-  // simular
-  const dummyData = [{
-    code: '123',
-    examType: 'academic',
-    questionType: 'unique',
-    question: 'Cuál es la capital de Francia?',
-    options: ['Madrid', 'París', 'Berlín', 'Lisboa'],
-    correctOption: '1'
-  },
-  {
-    code: '124',
-    examType: 'dai',
-    questionType: 'short',
-    question: 'Cuál es el resultado de 2 + 2?',
-    options: ['', '', '', ''],
-    correctOption: ''
-  }]
-
+const mockFetchQuestions = (query, dummyData) => {
   return dummyData.filter(item => item.question.toLowerCase().includes(query.toLowerCase()))
 }
 
 export const handleSearch = (query, setErrorMessage, setSuggestions) => {
   // Simular una llamada a la API
-  const suggestions = mockFetchQuestions(query)
+  const suggestions = mockFetchQuestions(query, dummyData)
   setSuggestions(suggestions)
   console.log(suggestions)
 }
