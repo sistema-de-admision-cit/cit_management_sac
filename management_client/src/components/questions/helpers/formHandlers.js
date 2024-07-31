@@ -1,4 +1,6 @@
 // para validar los campos del formulario
+import { dummyData } from './dummyData'
+
 const validateFields = (questionData, setErrorMessage) => {
   if (!questionData.examType) {
     setErrorMessage('Por favor, seleccione el tipo de examen.')
@@ -142,31 +144,30 @@ export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessM
   }, 1000)
 }
 
-const mockFetchQuestions = (query) => {
-  // simular
-  const dummyData = [{
-    code: '123',
-    examType: 'academic',
-    questionType: 'unique',
-    question: 'Cuál es la capital de Francia?',
-    options: ['Madrid', 'París', 'Berlín', 'Lisboa'],
-    correctOption: '1'
-  },
-  {
-    code: '124',
-    examType: 'dai',
-    questionType: 'short',
-    question: 'Cuál es el resultado de 2 + 2?',
-    options: ['', '', '', ''],
-    correctOption: ''
-  }]
-
-  return dummyData.filter(item => item.question.toLowerCase().includes(query.toLowerCase()))
+// findQuestion
+const mockFetchQuestions = (query, dummyData, filterByExamType) => {
+  return filterByExamType === 'both' ? dummyData.filter(question => question.question.toLowerCase().includes(query.toLowerCase())) : dummyData.filter(question => question.question.toLowerCase().includes(query.toLowerCase()) && question.examType === filterByExamType)
 }
 
-export const handleSearch = (query, setErrorMessage, setSuggestions) => {
-  // Simular una llamada a la API
-  const suggestions = mockFetchQuestions(query)
-  setSuggestions(suggestions)
-  console.log(suggestions)
+export const handleSearch = (query, setQuestions, searchExamType, setSearchCode, lookingFor) => {
+  setSearchCode('')
+  const questions = mockFetchQuestions(query, dummyData, searchExamType)
+  query ? setQuestions(questions) : lookingFor === 'delete' ? setQuestions(questions) : setQuestions([])
+}
+
+const mockFetchQuestionByCode = (code) => {
+  return dummyData.find(question => question.code === code)
+}
+
+export const handleSearchByCode = (e, setQuery, setSearchCode, setSearchExamType, setQuestions) => {
+  e.preventDefault()
+  setQuery('')
+  setSearchExamType('both')
+
+  const code = e.target.value
+
+  setSearchCode(code)
+  const question = mockFetchQuestionByCode(code)
+  const questions = code ? [] : dummyData
+  question ? setQuestions([question]) : setQuestions(questions)
 }
