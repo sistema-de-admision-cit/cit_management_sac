@@ -105,7 +105,7 @@
   border-radius: 10px;
   color: #fff;
   cursor: pointer;
-  transition: background-color 0.5s ease;
+  transition: background-color 0.3s ease;
 }
 
 .form-group input[type="file"]::file-selector-button:hover {
