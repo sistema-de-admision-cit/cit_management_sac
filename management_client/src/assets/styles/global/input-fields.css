@@ -84,3 +84,30 @@
   background-repeat: no-repeat;
   background-size: 1rem 1rem;
 }
+
+/* estilos para input de imágenes - file */
+.form-group input[type="file"] {
+  max-width: 100%;
+  color: var(--neutral-dark);
+  padding: 5px;
+  background: var(--primary-background-color);
+  border-radius: 10px;
+  border: 1px dotted #555;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+  transition: border .3s;
+}
+
+.form-group input[type="file"]::file-selector-button {
+  margin-right: 20px;
+  border: none;
+  background: var(--primary-color);
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.5s ease;
+}
+
+.form-group input[type="file"]::file-selector-button:hover {
+  background: var(--primary-color-dark);
+}
