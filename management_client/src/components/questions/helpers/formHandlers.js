@@ -60,6 +60,7 @@ export const clearForm = (setQuestionData) => {
     examType: '',
     questionType: '',
     question: '',
+    images: [],
     options: ['', '', '', ''],
     correctOption: ''
   })
@@ -84,6 +85,7 @@ export const handleSubmit = (e, questionData, setErrorMessage, setSuccessMessage
       examType: '',
       questionType: '',
       question: '',
+      images: [],
       options: ['', '', '', ''],
       correctOption: ''
     })
