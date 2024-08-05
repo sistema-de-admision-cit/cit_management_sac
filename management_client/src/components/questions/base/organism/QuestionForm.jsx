@@ -72,6 +72,12 @@ const QuestionForm = ({
           className='form-group'
         />
 
+        <InputField
+          field={{ name: 'images', label: 'Agregar Imágenes', type: 'file', multiple: true }} // Nuevo campo para imágenes
+          handleChange={(e) => handleChange(e, questionData, setQuestionData, true)}
+          className='form-group'
+        />
+
         {questionData.questionType === 'unique' && (
           <QuestionOptions
             options={questionData.options}
