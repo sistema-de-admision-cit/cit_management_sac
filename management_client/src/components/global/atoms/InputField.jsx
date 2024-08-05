@@ -49,6 +49,18 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     )
   }
 
+  const fileInput = () => {
+    return (
+      <input
+        type='file'
+        name={field.name}
+        onChange={handleChange}
+        required
+        multiple={field.multiple}
+      />
+    )
+  }
+
   // map
   const inputRenderers = {
     text: () => textRelatedInput('text'),
@@ -57,7 +69,8 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     tel: () => textRelatedInput('tel'),
     textArea: () => textRelatedInput('textArea'),
     select: () => selectInput(),
-    'radio-group': () => radioGroupInput()
+    'radio-group': () => radioGroupInput(),
+    file: () => fileInput()
   }
 
   const renderInput = () => {
