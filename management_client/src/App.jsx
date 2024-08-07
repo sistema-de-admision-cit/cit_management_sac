@@ -1,11 +1,9 @@
-import AuthRouter from './components/auth/routers/AuthRouter'
-import HubRouter from './components/hub/router/HubRouter'
+import AppRouter from './router/AppRouter'
 
 function App () {
   return (
     <div className='App'>
-      <AuthRouter />
-      <HubRouter />
+      <AppRouter />
     </div>
   )
 }
