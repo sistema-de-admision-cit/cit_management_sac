@@ -2,16 +2,16 @@ import HubViewComponent from '../components/hub/view/HubViewComponent'
 
 // Función para generar rutas dinámicas desde menuConfig
 const generateRoutesFromConfig = (config) => {
-  const routes = []
-
-  config.forEach((menuItem) => {
-    menuItem.items.forEach((item) => {
+  return config.flatMap((menuItem) =>
+    menuItem.items.map((item) => {
       const children = item.subItems?.map((subItem) => ({
         path: subItem.path,
-        element: subItem.component ? <subItem.component /> : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>{subItem.label}</div>
+        element: subItem.component
+          ? <subItem.component />
+          : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>{subItem.label}</div>
       })) || []
 
-      // componente por defecto para las rutas padre
+      // Componente por defecto para las rutas padre
       if (children.length > 0 && item.parentComponent) {
         children.unshift({
           index: true, // index true significa que es el componente principal (padre)
@@ -19,19 +19,13 @@ const generateRoutesFromConfig = (config) => {
         })
       }
 
-      routes.push({
+      return {
         path: item.path,
-        element: (
-          <>
-            <HubViewComponent />
-          </>
-        ),
+        element: <HubViewComponent />,
         children
-      })
+      }
     })
-  })
-
-  return routes
+  )
 }
 
 export default generateRoutesFromConfig
