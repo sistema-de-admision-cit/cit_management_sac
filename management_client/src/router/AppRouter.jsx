@@ -7,12 +7,29 @@ import RegisterSection from '../components/auth/views/RegisterSection'
 import generateRoutesFromConfig from './GenerateRoutesFromConfig'
 
 const authRoutes = [
-  { path: '/', element: <LoginSection sectionName='Iniciar Sesión' /> },
-  { path: '/login', element: <LoginSection sectionName='Iniciar Sesión' /> },
-  { path: '/register', element: <RegisterSection sectionName='Registrarse' /> }
+  {
+    path: '/',
+    element: <LoginSection sectionName='Iniciar Sesión' />,
+    errorElement: <div className='error'>Error 404</div>,
+    children: [
+      {
+        index: true, // ruta por defecto
+        element: <LoginSection sectionName='Iniciar Sesión' />
+      },
+      {
+        path: '/login',
+        element: <LoginSection sectionName='Iniciar Sesión' />
+      },
+      {
+        path: '/register',
+        element: <RegisterSection sectionName='Registrarse' />
+      }
+    ]
+  }
 ]
 
 const routes = [
+  // Rutas estáticas
   ...authRoutes,
   // Rutas dinámicas
   ...generateRoutesFromConfig(menuConfig[0].items)
