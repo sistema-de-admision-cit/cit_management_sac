@@ -7,6 +7,7 @@ const AddQuestionForm = () => {
     examType: '',
     questionType: '',
     question: '',
+    images: [],
     options: ['', '', '', ''],
     correctOption: ''
   }
