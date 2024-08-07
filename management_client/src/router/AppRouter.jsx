@@ -1,54 +1,63 @@
+// src/AppRouter.js
 import React from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
 import HubViewComponent from '../components/hub/view/HubViewComponent'
 import menuConfig from '../components/hub/config/menuConfig'
 import LoginSection from '../components/auth/views/LoginSection'
 import RegisterSection from '../components/auth/views/RegisterSection'
 
-const AppRouter = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        {/* Rutas de autenticación */}
-        <Route path='/' element={<LoginSection sectionName='Iniciar Sesión' />} />
-        <Route path='/login' element={<LoginSection sectionName='Iniciar Sesión' />} />
-        <Route path='/register' element={<RegisterSection sectionName='Registrarse' />} />
+// Función para generar rutas dinámicas desde menuConfig
+const generateRoutesFromConfig = (config) => {
+  const routes = []
 
-        {/* Rutas dinamicas */}
-        {menuConfig[0].items.map((item) => (
-          <React.Fragment key={item.key}>
-            <Route
-              path={item.path}
-              element={
-                <>
-                  <HubViewComponent />
-                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                    {item.label}
-                  </div>
-                </>
+  config.forEach((menuItem) => {
+    menuItem.items.forEach((item) => {
+      routes.push({
+        path: item.path,
+        element: (
+          <>
+            <HubViewComponent />
+            <Outlet />
+          </>
+        ),
+        children: item.subItems?.map((subItem) => ({
+          path: subItem.path,
+          element: (
+            <>
+              {
+                subItem.component
+                  ? <subItem.component />
+                  : (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                      {subItem.label}
+                    </div>
+                    )
               }
-            />
-            {item.subItems && item.subItems.map((subItem) => (
-              <Route
-                key={subItem.key}
-                path={subItem.path}
-                element={
-                  <>
-                    <HubViewComponent />
-                    {
-                      subItem.component
-                        ? <subItem.component />
-                        : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>{subItem.label}</div>
-                    }
-                  </>
-                }
-              />
-            ))}
-          </React.Fragment>
-        ))}
-      </Routes>
-    </BrowserRouter>
-  )
+            </>
+          )
+        })) || []
+      })
+    })
+  })
+
+  return routes
+}
+
+const routes = [
+  // Rutas de autenticación
+  { path: '/', element: <LoginSection sectionName='Iniciar Sesión' /> },
+  { path: '/login', element: <LoginSection sectionName='Iniciar Sesión' /> },
+  { path: '/register', element: <RegisterSection sectionName='Registrarse' /> },
+  // Rutas dinámicas
+  ...generateRoutesFromConfig(menuConfig)
+]
+
+console.log(routes)
+
+const router = createBrowserRouter(routes)
+
+const AppRouter = () => {
+  return <RouterProvider router={router} />
 }
 
 export default AppRouter
