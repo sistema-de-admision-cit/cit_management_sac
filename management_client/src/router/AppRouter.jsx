@@ -1,6 +1,6 @@
 // src/AppRouter.js
 import React from 'react'
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import HubViewComponent from '../components/hub/view/HubViewComponent'
 import menuConfig from '../components/hub/config/menuConfig'
 import LoginSection from '../components/auth/views/LoginSection'
@@ -12,30 +12,19 @@ const generateRoutesFromConfig = (config) => {
 
   config.forEach((menuItem) => {
     menuItem.items.forEach((item) => {
+      const children = item.subItems?.map((subItem) => ({
+        path: subItem.path,
+        element: subItem.component ? <subItem.component /> : <div>{subItem.label}</div>
+      })) || []
+
       routes.push({
         path: item.path,
         element: (
           <>
             <HubViewComponent />
-            <Outlet />
           </>
         ),
-        children: item.subItems?.map((subItem) => ({
-          path: subItem.path,
-          element: (
-            <>
-              {
-                subItem.component
-                  ? <subItem.component />
-                  : (
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                      {subItem.label}
-                    </div>
-                    )
-              }
-            </>
-          )
-        })) || []
+        children
       })
     })
   })
