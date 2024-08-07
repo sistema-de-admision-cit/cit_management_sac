@@ -11,7 +11,7 @@ const generateRoutesFromConfig = (items) => {
     })) || []
 
     // Componente por defecto para las rutas padre
-    if (children.length > 0 && item.parentComponent) {
+    if (item.parentComponent) {
       children.unshift({
         index: true, // index true significa que es el componente principal (padre)
         element: <item.parentComponent label={item.label} />
