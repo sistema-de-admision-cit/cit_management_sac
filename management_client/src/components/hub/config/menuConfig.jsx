@@ -6,6 +6,15 @@ import AddQuestionView from '../../questions/add_questions/view/AddQuestionView'
 import ModifyQuestionView from '../../questions/modify_questions/view/ModifyQuestionView'
 import DeleteQuestionView from '../../questions/delete_questions/view/DeleteQuestionView'
 
+// componente por defecto para las rutas padre
+// feature temporal
+// TODO: implementar un compononente para cada padre
+const DefaultComponent = ({ label }) => (
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    componente por defecto para {label}
+  </div>
+)
+
 const menuConfig = [
   {
     title: 'Sistema de Admisión CIT',
@@ -17,11 +26,12 @@ const menuConfig = [
       </svg>
     ),
     items: [
-      { key: 'dashboard', label: 'Dashboard', path: '/dashboard' },
+      { key: 'dashboard', label: 'Dashboard', path: '/dashboard', parentComponent: DefaultComponent },
       {
         key: 'inscripciones',
         label: 'Gestión de Inscripciones',
         path: '/inscripciones',
+        parentComponent: DefaultComponent,
         subItems: [
           { key: 'formulario', label: 'Llenar Formulario', path: '/inscripciones/formulario' },
           { key: 'consultar', label: 'Consultar Inscripciones', path: '/inscripciones/consultar' },
@@ -33,6 +43,7 @@ const menuConfig = [
         key: 'configuracion',
         label: 'Configuración del Sistema',
         path: '/configuracion',
+        parentComponent: DefaultComponent,
         subItems: [
           { key: 'citas', label: 'Configurar Citas', path: '/configuracion/citas' },
           { key: 'porcentajes', label: 'Configurar Porcentajes', path: '/configuracion/porcentajes' },
@@ -45,6 +56,7 @@ const menuConfig = [
         key: 'examenes',
         label: 'Gestión de Exámenes',
         path: '/examenes',
+        parentComponent: DefaultComponent,
         subItems: [
           { key: 'ingresar', label: 'Ingresar Preguntas', path: '/examenes/ingresar', component: AddQuestionView },
           { key: 'modificar', label: 'Modificar Preguntas', path: '/examenes/modificar', component: ModifyQuestionView },
@@ -57,6 +69,7 @@ const menuConfig = [
         key: 'resultados',
         label: 'Gestión de Resultados',
         path: '/resultados',
+        parentComponent: DefaultComponent,
         subItems: [
           { key: 'almacenar', label: 'Almacenar Respuestas', path: '/resultados/almacenar' },
           { key: 'cargar', label: 'Cargar Notas', path: '/resultados/cargar' },
@@ -68,6 +81,7 @@ const menuConfig = [
         key: 'reportes',
         label: 'Reportes y Análisis',
         path: '/reportes',
+        parentComponent: DefaultComponent,
         subItems: [
           { key: 'graficos', label: 'Reportes Gráficos', path: '/reportes/graficos' },
           { key: 'pdf', label: 'Reportes PDF/CSV', path: '/reportes/pdf' }
