@@ -15,7 +15,7 @@ const authRoutes = [
 const routes = [
   ...authRoutes,
   // Rutas dinámicas
-  ...generateRoutesFromConfig(menuConfig)
+  ...generateRoutesFromConfig(menuConfig[0].items)
 ]
 
 const router = createBrowserRouter(routes)
