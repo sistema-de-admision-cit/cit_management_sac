@@ -6,7 +6,7 @@ import NavLink from '../atoms/NavLink'
 import menuConfig from '../config/menuConfig' // Importa la configuración del menú
 import '../../../assets/styles/hub/nav-group.css'
 
-const NavGroup = ({ currentPage }) => {
+const NavGroup = ({ currentPage, logout }) => {
   const currentPageString = String(currentPage).slice(1)
   const currentSubPage = currentPageString.split('/')[1]
 
@@ -24,7 +24,7 @@ const NavGroup = ({ currentPage }) => {
                 <NavLink
                   to={item.path}
                   className={currentPageString.startsWith(item.key) ? 'active' : ''}
-                  onClick={item.onClick || null}
+                  onClick={item.key === 'logout' ? logout : item.onClick || null}
                 >
                   {item.label}
                 </NavLink>
