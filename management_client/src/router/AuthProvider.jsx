@@ -13,7 +13,7 @@ export default function AuthProvider ({ children }) {
   }
 
   const logout = () => {
-    setUser(null)
+    setUser({ isAuthenticated: false, name: '', role: '' })
   }
 
   return (
