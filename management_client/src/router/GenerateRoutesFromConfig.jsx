@@ -8,9 +8,7 @@ const generateRoutesFromConfig = (items) => {
       path: subItem.path,
       element: (
         <ProtectedRoute>
-          {subItem.component
-            ? <subItem.component />
-            : <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>{subItem.label}</div>}
+          <subItem.component label={subItem.label} />
         </ProtectedRoute>
       )
     })) || []
