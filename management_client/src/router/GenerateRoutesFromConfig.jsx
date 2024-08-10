@@ -1,5 +1,5 @@
 import HubViewComponent from '../components/hub/view/HubViewComponent'
-import { ProtectedRoute } from './ProtectedRoute'
+import ProtectedRoute from './ProtectedRoute'
 
 // Función para generar rutas dinámicas desde menuConfig
 const generateRoutesFromConfig = (items) => {
