@@ -9,7 +9,6 @@ import generateRoutesFromConfig from './GenerateRoutesFromConfig'
 const authRoutes = [
   {
     path: '/',
-    element: <LoginSection sectionName='Iniciar Sesión' />,
     errorElement: <div className='error'>Error 404</div>,
     children: [
       {
