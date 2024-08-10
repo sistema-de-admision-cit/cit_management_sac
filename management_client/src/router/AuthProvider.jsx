@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 export const AuthContext = createContext({ isAuthenticated: false })
 
-export default function AuthProvider({ children }) {
+export default function AuthProvider ({ children }) {
   const [user, setUser] = useState({ isAuthenticated: false })
 
   useEffect(() => {
