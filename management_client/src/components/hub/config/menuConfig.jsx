@@ -1,6 +1,3 @@
-// src/config/menuConfig.js
-import { logout } from '../../../global_helpers/logoutHandler'
-
 // Question views
 import AddQuestionView from '../../questions/add_questions/view/AddQuestionView'
 import ModifyQuestionView from '../../questions/modify_questions/view/ModifyQuestionView'
@@ -87,7 +84,7 @@ const menuConfig = [
           { key: 'pdf', label: 'Reportes PDF/CSV', path: '/reportes/pdf', component: DefaultComponent }
         ]
       },
-      { key: 'logout', label: 'Cerrar Sesión', path: '#', onClick: logout }
+      { key: 'logout', label: 'Cerrar Sesión', path: '#' }
     ]
   }
 ]
