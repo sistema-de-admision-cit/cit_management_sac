@@ -6,6 +6,7 @@ import '../../../assets/styles/errors/error.css'
 const ErrorPage = ({ title, message, buttonText, onButtonClick }) => {
   return (
     <div className='error-container'>
+      <title>{title}</title>
       <h1 className='error-title'>{title}</h1>
       <p className='error-message'>{message}</p>
       <div className='button-container'>
