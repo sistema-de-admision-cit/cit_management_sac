@@ -7,7 +7,7 @@ git clone https://github.com/sistema-de-admision-cit/cit_management_sac.git
 
 2. Install the dependencies
 ```bash
-cd cit_management_sac
+cd cit_management_sac/management_client
 npm install
 ```
 
