@@ -5,11 +5,13 @@ import menuConfig from '../components/hub/config/menuConfig'
 import LoginSection from '../components/auth/views/LoginSection'
 import RegisterSection from '../components/auth/views/RegisterSection'
 import generateRoutesFromConfig from './GenerateRoutesFromConfig'
+import UnauthorizedAccessPage from '../components/errors/pages/UnauthorizedAccessPage'
+import NotFoundPage from '../components/errors/pages/NotFoundPage'
 
 const authRoutes = [
   {
     path: '/',
-    errorElement: <div className='error'>Error 404</div>,
+    errorElement: <NotFoundPage />,
     children: [
       {
         index: true, // ruta por defecto
@@ -27,11 +29,20 @@ const authRoutes = [
   }
 ]
 
+const errorRoutes = [
+  {
+    path: '/unauthorized',
+    element: <UnauthorizedAccessPage />
+  }
+]
+
 const routes = [
   // Rutas estáticas
   ...authRoutes,
   // Rutas dinámicas
-  ...generateRoutesFromConfig(menuConfig[0].items)
+  ...generateRoutesFromConfig(menuConfig[0].items),
+  // Rutas de error
+  ...errorRoutes
 ]
 
 const router = createBrowserRouter(routes)

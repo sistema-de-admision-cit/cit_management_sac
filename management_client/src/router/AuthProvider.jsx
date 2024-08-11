@@ -1,17 +1,23 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useState, useContext } from 'react'
 import PropTypes from 'prop-types'
 
-export const AuthContext = createContext({ isAuthenticated: false })
+// contexto con el estado de autenticación
+export const AuthContext = createContext({})
 
 export default function AuthProvider ({ children }) {
-  const [user, setUser] = useState({ isAuthenticated: false })
+  const [user, setUser] = useState({ isAuthenticated: true, name: 'John Doe', role: 'admin' }) // directamente autenticado para no tener que loguear (temporal)
 
-  useEffect(() => {
-    // window.sessionStorage.setItem('user', JSON.stringify(user))
-  }, [user])
+  const login = () => {
+    // TODO: implementar lógica de login
+    setUser({ isAuthenticated: true, name: 'John Doe', role: 'admin' })
+  }
+
+  const logout = () => {
+    setUser({ isAuthenticated: false, name: '', role: '' })
+  }
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
@@ -19,4 +25,13 @@ export default function AuthProvider ({ children }) {
 
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired
+}
+
+// hook para acceder al contexto de autenticación
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (context === undefined) {
+    throw new Error('useAuth debe ser usado dentro de un AuthProvider')
+  }
+  return context
 }

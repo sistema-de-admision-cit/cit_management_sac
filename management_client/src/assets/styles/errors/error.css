@@ -1,0 +1,35 @@
+/* error.css */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--primary-background-color);
+  color: var(--neutral-dark);
+  text-align: center;
+  padding: 0 20px;
+  gap: 20px; /* Espaciado entre elementos */
+}
+
+.error-title {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  color: var(--danger-color);
+  font-weight: bold;
+}
+
+.error-message {
+  font-size: 1.25rem;
+  margin-bottom: 30px;
+  color: var(--neutral-dark);
+}
+
+.button-container {
+  display: flex;
+  gap: 15px; /* no hay mas botones, pero si los hubiera, separamos 15px */
+}
+
+.button-container .btn:hover {
+  transform: scale(1.05);
+}

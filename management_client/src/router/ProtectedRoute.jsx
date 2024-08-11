@@ -1,28 +1,20 @@
-import { AuthContext } from './AuthProvider.jsx'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useContext, useEffect } from 'react'
-import { PropTypes } from 'prop-types'
+import { Navigate } from 'react-router-dom'
+import { useAuth } from './AuthProvider'
 
-export const ProtectedRoute = ({ children }) => {
-  const { user } = useContext(AuthContext)
-  const location = useLocation()
-  const navigate = useNavigate()
+const ProtectedRoute = ({ children, roles }) => {
+  const { user } = useAuth()
 
-  useEffect(() => {
-    if (user != null) {
-      if (user.isAuthenticated === false) {
-        navigate('/', { replace: true })
-      } else {
-        if (location.pathname === '/') {
-          navigate('/home', { replace: true })
-        }
-      }
-    }
-  }, [user])
+  if (!user?.isAuthenticated) {
+    // mandar a la pagina de login si el usuario no esta autenticado
+    return <Navigate to='/login' />
+  }
+
+  // Si el usuario no tiene acceso a la ruta, se redirige a la página de acceso no autorizado
+  if (!user || !roles.includes(user.role)) {
+    return <Navigate to='/unauthorized' />
+  }
 
   return children
 }
 
-ProtectedRoute.propTypes = {
-  children: PropTypes.node.isRequired
-}
+export default ProtectedRoute
