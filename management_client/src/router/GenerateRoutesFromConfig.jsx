@@ -7,7 +7,7 @@ const generateRoutesFromConfig = (items) => {
     const children = item.subItems?.map((subItem) => ({
       path: subItem.path,
       element: (
-        <ProtectedRoute>
+        <ProtectedRoute roles={item.roleRequired || []}>
           <subItem.component label={subItem.label} />
         </ProtectedRoute>
       )
@@ -17,7 +17,10 @@ const generateRoutesFromConfig = (items) => {
     if (item.parentComponent) {
       children.unshift({
         index: true, // index true significa que es el componente principal (padre)
-        element: <ProtectedRoute><item.parentComponent label={item.label} /></ProtectedRoute>
+        element: (
+          <ProtectedRoute roles={item.roleRequired || []}>
+            <item.parentComponent label={item.label} />
+          </ProtectedRoute>)
       })
     }
 
