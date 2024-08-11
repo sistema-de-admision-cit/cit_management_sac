@@ -5,7 +5,7 @@ import menuConfig from '../components/hub/config/menuConfig'
 import LoginSection from '../components/auth/views/LoginSection'
 import RegisterSection from '../components/auth/views/RegisterSection'
 import generateRoutesFromConfig from './GenerateRoutesFromConfig'
-import UnauthorizedAccessPage from '../components/errors/UnauthorizedAccessPage'
+import UnauthorizedAccessPage from '../components/errors/pages/UnauthorizedAccessPage'
 
 const authRoutes = [
   {
