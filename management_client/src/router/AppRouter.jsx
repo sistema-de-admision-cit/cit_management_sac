@@ -6,11 +6,12 @@ import LoginSection from '../components/auth/views/LoginSection'
 import RegisterSection from '../components/auth/views/RegisterSection'
 import generateRoutesFromConfig from './GenerateRoutesFromConfig'
 import UnauthorizedAccessPage from '../components/errors/pages/UnauthorizedAccessPage'
+import NotFoundPage from '../components/errors/pages/NotFoundPage'
 
 const authRoutes = [
   {
     path: '/',
-    errorElement: <div className='error'>Error 404</div>,
+    errorElement: <NotFoundPage />,
     children: [
       {
         index: true, // ruta por defecto
