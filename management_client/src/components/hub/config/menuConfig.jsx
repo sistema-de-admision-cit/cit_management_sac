@@ -12,6 +12,10 @@ const DefaultComponent = ({ label }) => (
   </div>
 )
 
+const ROLE_ADMIN = 'admin'
+const ROLE_TEACHER = 'teacher'
+const ROLE_PSYCHOLOGIST = 'psychologist'
+
 const menuConfig = [
   {
     title: 'Sistema de Admisión CIT',
@@ -23,7 +27,7 @@ const menuConfig = [
       </svg>
     ),
     items: [
-      { key: 'dashboard', label: 'Dashboard', path: '/dashboard', parentComponent: DefaultComponent },
+      { key: 'dashboard', label: 'Dashboard', path: '/dashboard', parentComponent: DefaultComponent, roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST] },
       {
         key: 'inscripciones',
         label: 'Gestión de Inscripciones',
@@ -34,7 +38,8 @@ const menuConfig = [
           { key: 'consultar', label: 'Consultar Inscripciones', path: '/inscripciones/consultar', component: DefaultComponent },
           { key: 'actualizar-fechas', label: 'Actualizar Fechas de Examen', path: '/inscripciones/actualizar-fechas', component: DefaultComponent },
           { key: 'metodo-notificacion', label: 'Método de Notificación', path: '/inscripciones/metodo-notificacion', component: DefaultComponent }
-        ]
+        ],
+        roleRequired: [ROLE_ADMIN]
       },
       {
         key: 'configuracion',
@@ -47,7 +52,8 @@ const menuConfig = [
           { key: 'notificaciones', label: 'Configurar Notificaciones', path: '/configuracion/notificaciones', component: DefaultComponent },
           { key: 'accesos', label: 'Gestionar Accesos', path: '/configuracion/accesos', component: DefaultComponent },
           { key: 'roles', label: 'Gestionar Roles', path: '/configuracion/roles', component: DefaultComponent }
-        ]
+        ],
+        roleRequired: [ROLE_ADMIN]
       },
       {
         key: 'examenes',
@@ -60,7 +66,8 @@ const menuConfig = [
           { key: 'eliminar', label: 'Eliminar Preguntas', path: '/examenes/eliminar', component: DeleteQuestionView },
           { key: 'generar', label: 'Generar Exámenes', path: '/examenes/generar', component: DefaultComponent },
           { key: 'presentar', label: 'Presentar Exámenes', path: '/examenes/presentar', component: DefaultComponent }
-        ]
+        ],
+        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]
       },
       {
         key: 'resultados',
@@ -72,7 +79,8 @@ const menuConfig = [
           { key: 'cargar', label: 'Cargar Notas', path: '/resultados/cargar', component: DefaultComponent },
           { key: 'analizar', label: 'Analizar Resultados', path: '/resultados/analizar', component: DefaultComponent },
           { key: 'notificar', label: 'Notificar Resultados', path: '/resultados/notificar', component: DefaultComponent }
-        ]
+        ],
+        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]
       },
       {
         key: 'reportes',
@@ -82,9 +90,15 @@ const menuConfig = [
         subItems: [
           { key: 'graficos', label: 'Reportes Gráficos', path: '/reportes/graficos', component: DefaultComponent },
           { key: 'pdf', label: 'Reportes PDF/CSV', path: '/reportes/pdf', component: DefaultComponent }
-        ]
+        ],
+        roleRequired: [ROLE_ADMIN]
       },
-      { key: 'logout', label: 'Cerrar Sesión', path: '#' }
+      {
+        key: 'logout',
+        label: 'Cerrar Sesión',
+        path: '#',
+        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]
+      }
     ]
   }
 ]
