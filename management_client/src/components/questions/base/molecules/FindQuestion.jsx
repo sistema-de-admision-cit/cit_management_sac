@@ -13,14 +13,15 @@ import {
   handleAdvancedSearch
 } from '../helpers/findQuestionHandlers'
 import '../../../../assets/styles/questions/find-question.css'
+import useFormState from '../../../global/hooks/useFormState'
 
 const FindQuestion = ({ onQuestionFound, onResultsUpdate, lookingFor }) => {
-  const [query, setQuery] = useState('')
+  const { formData: query, setFormData: setQuery } = useFormState('')
+  const { formData: searchCode, setFormData: setSearchCode } = useFormState('')
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
+  const [searchExamType, setSearchExamType] = useState('both')
   const [errorMessage, setErrorMessage] = useState('')
   const [suggestions, setSuggestions] = useState([])
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
-  const [searchCode, setSearchCode] = useState('')
-  const [searchExamType, setSearchExamType] = useState('both')
 
   useEffect(() => {
     handleSearch(query, (questions) => setQuestions(questions, lookingFor, onResultsUpdate, setSuggestions), searchExamType, setSearchCode, lookingFor)
