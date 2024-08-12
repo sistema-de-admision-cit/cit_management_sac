@@ -7,13 +7,14 @@ import { generateExam, saveExamHandler, discardExamHandler } from '../helpers/ha
 import '../../../../assets/styles/questions/view.css'
 import '../../../../assets/styles/questions/generate-exam.css'
 import PopupComponent from '../../../popups/PopupComponent'
+import { getNearestAvailableDate } from '../helpers/datesHelper'
 
 const GenerateExamView = () => {
   const [exam, setExam] = useState([])
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
   const [loading, setLoading] = useState(false)
-  const [examDate, setExamDate] = useState(null)
+  const [examDate, setExamDate] = useState(getNearestAvailableDate(new Date()))
 
   return (
     <div className='section-container'>
