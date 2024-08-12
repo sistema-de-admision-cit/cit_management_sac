@@ -40,14 +40,22 @@ export const generateExam = async (setLoading, setErrorMessage, setExam, examDat
   }
 }
 
-export const saveExamHandler = (exam, examDate, setSuccess) => {
+export const saveExamHandler = (exam, examDate, setSuccess, setErrorMessage, setLoading, setExam) => {
   const examToSave = {
     questionIds: exam.map((q) => q.questionId),
     date: examDate
   }
 
-  console.log('Examen guardado:', examToSave)
-  setSuccess('Examen guardado exitosamente.')
+  // simular el guardado del examen
+  setLoading(true)
+  setTimeout(() => {
+    console.log('Examen guardado:', examToSave)
+    setLoading(false)
+    setSuccess('Examen guardado exitosamente.')
+    // limpiar el examen generado
+    setExam([])
+    setErrorMessage('')
+  }, 1000)
 }
 
 export const discardExamHandler = (setExam, setExamDate) => {
