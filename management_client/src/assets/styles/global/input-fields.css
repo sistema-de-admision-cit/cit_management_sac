@@ -111,3 +111,12 @@
 .form-group input[type="file"]::file-selector-button:hover {
   background: var(--primary-color-dark);
 }
+
+/* estilos para input de fecha */
+.date-picker {
+  margin-bottom: 1rem;
+}
+
+.react-datepicker__day--selected {
+  background-color: var(--primary-color) !important;
+}
