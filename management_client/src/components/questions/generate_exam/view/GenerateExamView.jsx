@@ -8,7 +8,7 @@ import '../../../../assets/styles/questions/view.css'
 import '../../../../assets/styles/questions/generate-exam.css'
 import { getNearestAvailableDate } from '../helpers/datesHelper'
 import SectionLayout from '../../../global/molecules/SectionLayout'
-import useMessages from '../../../global/organisms/useMessages'
+import useMessages from '../../../global/hooks/useMessages'
 
 const GenerateExamView = () => {
   const [exam, setExam] = useState([])

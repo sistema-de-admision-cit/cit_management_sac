@@ -5,7 +5,7 @@ import { dummyData } from '../../helpers/dummyData'
 import { handleDeleteFromList } from '../helpers/formHandlers'
 import FindQuestion from '../../base/molecules/FindQuestion'
 import SectionLayout from '../../../global/molecules/SectionLayout'
-import useMessages from '../../../global/organisms/useMessages'
+import useMessages from '../../../global/hooks/useMessages'
 
 const DeleteQuestionView = () => {
   const [questions, setQuestions] = useState([])

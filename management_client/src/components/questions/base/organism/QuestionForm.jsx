@@ -4,7 +4,7 @@ import QuestionTypeOptions from '../molecules/QuestionTypeOptions'
 import QuestionOptions from '../molecules/QuestionOptions'
 import InputField from '../../../global/atoms/InputField'
 import Button from '../../../global/atoms/Button'
-import useMessages from '../../../global/organisms/useMessages'
+import useMessages from '../../../global/hooks/useMessages'
 import '../../../../assets/styles/questions/question-form.css'
 
 import {
