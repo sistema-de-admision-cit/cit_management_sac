@@ -23,7 +23,7 @@ const GeneratedExam = ({
     ))}
 
     <div className='generated-exam-buttons'>
-      <Button className='btn btn-primary' onClick={() => saveExamHandler(exam, examDate, setSuccessMessage, setErrorMessage, setLoading)}>
+      <Button className='btn btn-primary' onClick={() => saveExamHandler(exam, examDate, setSuccessMessage, setErrorMessage, setLoading, setExam)}>
         Guardar Examen
       </Button>
       <Button className='btn btn-secondary' onClick={() => discardExamHandler(setExam, setExamDate)}>
