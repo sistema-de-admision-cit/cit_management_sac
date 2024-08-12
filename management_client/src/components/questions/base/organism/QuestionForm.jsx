@@ -15,67 +15,73 @@ import {
 } from '../../helpers/formHandlers'
 import { EXAM_TYPE_OPTIONS, QUESTION_TYPE_OPTIONS } from '../helpers/questionFormOptions'
 
-const QuestionForm = ({
-  title,
-  initialData,
-  onSubmit,
-  submitButtonText
-}) => {
+const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
   const { formData: questionData, setFormData: setQuestionData, resetForm } = useFormState(initialData)
   const [isLoading, setIsLoading] = useState(false)
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
-  const currentQuestionTypeOptions = QUESTION_TYPE_OPTIONS[questionData.examType] || []
+  const { examType, questionType, question, options, correctOption } = questionData
+  const currentQuestionTypeOptions = QUESTION_TYPE_OPTIONS[examType] || []
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)
+  }
+
+  const handleInputChange = (e, isFile = false) => {
+    handleChange(e, questionData, setQuestionData, isFile)
+  }
+
+  const localHandleOptionChange = (index, value) => {
+    handleOptionChange(index, value, questionData, setQuestionData)
+  }
 
   return (
     <section className='question-form-container'>
       <h1>{title}</h1>
-      <form
-        onSubmit={(e) => onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)}
-        className='question-form'
-      >
+      <form onSubmit={handleSubmit} className='question-form'>
         <ExamTypeOptions
-          value={questionData.examType}
+          value={examType}
           handleChange={(e) => handleTestOptionChange(e, questionData, setQuestionData)}
           options={EXAM_TYPE_OPTIONS}
         />
 
-        {questionData.examType && (
+        {examType && (
           <QuestionTypeOptions
-            value={questionData.questionType}
-            handleChange={(e) => handleChange(e, questionData, setQuestionData)}
+            value={questionType}
+            handleChange={(e) => handleInputChange(e)}
             options={currentQuestionTypeOptions}
           />
         )}
 
         <InputField
           field={{ name: 'question', label: 'Pregunta', type: 'text', placeholder: 'Ingrese la pregunta aquí' }}
-          value={questionData.question}
-          handleChange={(e) => handleChange(e, questionData, setQuestionData)}
+          value={question}
+          handleChange={(e) => handleInputChange(e)}
           className='form-group'
         />
 
         <InputField
-          field={{ name: 'images', label: 'Agregar Imágenes', type: 'file', multiple: true }}
-          handleChange={(e) => handleChange(e, questionData, setQuestionData, true)}
+          field={{ name: 'images', label: 'Agregar Imágenes', type: 'file', multiple: true, required: false }}
+          handleChange={(e) => handleInputChange(e, true)}
           className='form-group'
         />
 
-        {questionData.questionType === 'unique' && (
+        {questionType === 'unique' && (
           <>
             <QuestionOptions
-              options={questionData.options}
-              handleOptionChange={(index, value) => handleOptionChange(index, value, questionData, setQuestionData)}
+              options={options}
+              handleOptionChange={localHandleOptionChange}
             />
 
             <InputField
               field={{ name: 'correctOption', label: 'Respuesta Correcta', type: 'select' }}
-              value={questionData.correctOption}
-              handleChange={(e) => handleChange(e, questionData, setQuestionData)}
+              value={correctOption}
+              handleChange={(e) => handleInputChange(e)}
               className='form-group'
             >
               <option value=''>Seleccionar</option>
-              {questionData.options.map((option, index) => (
+              {options.map((option, index) => (
                 <option key={index} value={index}>{`Opción ${index + 1}`}</option>
               ))}
             </InputField>
