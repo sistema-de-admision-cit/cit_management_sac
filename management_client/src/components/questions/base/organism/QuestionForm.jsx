@@ -4,7 +4,7 @@ import QuestionTypeOptions from '../molecules/QuestionTypeOptions'
 import QuestionOptions from '../molecules/QuestionOptions'
 import InputField from '../../../global/atoms/InputField'
 import Button from '../../../global/atoms/Button'
-import PopupComponent from '../../../popups/PopupComponent'
+import useMessages from '../../../global/organisms/useMessages'
 import '../../../../assets/styles/questions/question-form.css'
 
 import {
@@ -24,8 +24,7 @@ const QuestionForm = ({
 }) => {
   const [questionData, setQuestionData] = useState(initialData)
   const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [successMessage, setSuccessMessage] = useState('')
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
   const examTypeOptions = [
     { value: 'academic', label: 'Académico' },
@@ -41,12 +40,6 @@ const QuestionForm = ({
   return (
     <section className='question-form-container'>
       <h1>{title}</h1>
-      {errorMessage && (
-        <PopupComponent message={errorMessage} onClose={() => setErrorMessage('')} type='error' />
-      )}
-      {successMessage && (
-        <PopupComponent message={successMessage} onClose={() => setSuccessMessage('')} type='confirmation' />
-      )}
       <form
         onSubmit={(e) => onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)}
         className='question-form'
@@ -111,6 +104,7 @@ const QuestionForm = ({
           Limpiar
         </Button>
       </form>
+      {renderMessages()}
     </section>
   )
 }
