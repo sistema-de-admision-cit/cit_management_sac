@@ -1,3 +1,4 @@
+import { getNearestAvailableDate } from './datesHelper'
 import questionsExample from './dummyData'
 
 // simular el fetch de preguntas
@@ -60,5 +61,5 @@ export const saveExamHandler = (exam, examDate, setSuccess, setErrorMessage, set
 
 export const discardExamHandler = (setExam, setExamDate) => {
   setExam([])
-  setExamDate(null)
+  setExamDate(getNearestAvailableDate(new Date()))
 }
