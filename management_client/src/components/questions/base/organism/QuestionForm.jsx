@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import ExamTypeOptions from '../molecules/ExamTypeOptions'
 import QuestionTypeOptions from '../molecules/QuestionTypeOptions'
-import QuestionOptions from '../molecules/QuestionOptions'
 import InputField from '../../../global/atoms/InputField'
 import Button from '../../../global/atoms/Button'
+import UniqueQuestionSection from './UniqueQuestionSection'
 import useMessages from '../../../global/hooks/useMessages'
 import useFormState from '../../../global/hooks/useFormState'
 import '../../../../assets/styles/questions/question-form.css'
@@ -67,25 +67,14 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
           className='form-group'
         />
 
+        {/* cuando el tipo de pregunta es unica, se agrega el componente UniqueQuestionSection */}
         {questionType === 'unique' && (
-          <>
-            <QuestionOptions
-              options={options}
-              handleOptionChange={localHandleOptionChange}
-            />
-
-            <InputField
-              field={{ name: 'correctOption', label: 'Respuesta Correcta', type: 'select' }}
-              value={correctOption}
-              handleChange={(e) => handleInputChange(e)}
-              className='form-group'
-            >
-              <option value=''>Seleccionar</option>
-              {options.map((option, index) => (
-                <option key={index} value={index}>{`Opción ${index + 1}`}</option>
-              ))}
-            </InputField>
-          </>
+          <UniqueQuestionSection
+            options={options}
+            correctOption={correctOption}
+            handleOptionChange={localHandleOptionChange}
+            handleInputChange={(e) => handleInputChange(e)}
+          />
         )}
 
         <Button type='submit' className='btn btn-primary' disabled={getButtonState(questionData, isLoading)}>
