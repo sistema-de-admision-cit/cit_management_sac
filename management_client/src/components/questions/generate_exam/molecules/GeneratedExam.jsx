@@ -1,7 +1,17 @@
 // GeneratedExam.jsx
 import Button from '../../../global/atoms/Button'
 
-const GeneratedExam = ({ exam, examDate, setExam, setExamDate }) => (
+const GeneratedExam = ({
+  exam,
+  examDate,
+  setExam,
+  setExamDate,
+  setSuccessMessage,
+  setErrorMessage,
+  setLoading,
+  saveExamHandler,
+  discardExamHandler
+}) => (
   <div className='generated-exam-container'>
     <h3>Examen Generado:</h3>
     <p><strong>Fecha del Examen:</strong> {`${examDate.toLocaleDateString()}`}</p>
@@ -13,10 +23,10 @@ const GeneratedExam = ({ exam, examDate, setExam, setExamDate }) => (
     ))}
 
     <div className='generated-exam-buttons'>
-      <Button className='btn btn-primary' onClick={() => console.log('Examen guardado', examDate)}>
+      <Button className='btn btn-primary' onClick={() => saveExamHandler(exam, examDate, setSuccessMessage, setErrorMessage, setLoading)}>
         Guardar Examen
       </Button>
-      <Button className='btn btn-secondary' onClick={() => { setExam([]); setExamDate(new Date()); console.log('Examen descartado') }}>
+      <Button className='btn btn-secondary' onClick={() => discardExamHandler(setExam, setExamDate)}>
         Descartar Examen
       </Button>
     </div>
