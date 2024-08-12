@@ -5,37 +5,27 @@ import QuestionOptions from '../molecules/QuestionOptions'
 import InputField from '../../../global/atoms/InputField'
 import Button from '../../../global/atoms/Button'
 import useMessages from '../../../global/hooks/useMessages'
-import useFormState from '../../../global/hooks/useFormState' // Update this path as needed
+import useFormState from '../../../global/hooks/useFormState'
 import '../../../../assets/styles/questions/question-form.css'
-
 import {
   handleChange,
   handleTestOptionChange,
   handleOptionChange,
   getButtonState
 } from '../../helpers/formHandlers'
+import { EXAM_TYPE_OPTIONS, QUESTION_TYPE_OPTIONS } from '../helpers/questionFormOptions'
 
 const QuestionForm = ({
   title,
   initialData,
   onSubmit,
-  submitButtonText,
-  isModify = false
+  submitButtonText
 }) => {
   const { formData: questionData, setFormData: setQuestionData, resetForm } = useFormState(initialData)
   const [isLoading, setIsLoading] = useState(false)
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
-  const examTypeOptions = [
-    { value: 'academic', label: 'Académico' },
-    { value: 'dai', label: 'DAI' }
-  ]
-
-  const questionTypeOptions = [
-    ...(questionData.examType === 'dai'
-      ? [{ value: 'short', label: 'Respuesta Corta' }]
-      : [{ value: 'unique', label: 'Selección Única' }])
-  ]
+  const currentQuestionTypeOptions = QUESTION_TYPE_OPTIONS[questionData.examType] || []
 
   return (
     <section className='question-form-container'>
@@ -47,14 +37,14 @@ const QuestionForm = ({
         <ExamTypeOptions
           value={questionData.examType}
           handleChange={(e) => handleTestOptionChange(e, questionData, setQuestionData)}
-          options={examTypeOptions}
+          options={EXAM_TYPE_OPTIONS}
         />
 
         {questionData.examType && (
           <QuestionTypeOptions
             value={questionData.questionType}
             handleChange={(e) => handleChange(e, questionData, setQuestionData)}
-            options={questionTypeOptions}
+            options={currentQuestionTypeOptions}
           />
         )}
 
@@ -66,30 +56,30 @@ const QuestionForm = ({
         />
 
         <InputField
-          field={{ name: 'images', label: 'Agregar Imágenes', type: 'file', multiple: true }} // Nuevo campo para imágenes
+          field={{ name: 'images', label: 'Agregar Imágenes', type: 'file', multiple: true }}
           handleChange={(e) => handleChange(e, questionData, setQuestionData, true)}
           className='form-group'
         />
 
         {questionData.questionType === 'unique' && (
-          <QuestionOptions
-            options={questionData.options}
-            handleOptionChange={(index, value) => handleOptionChange(index, value, questionData, setQuestionData)}
-          />
-        )}
+          <>
+            <QuestionOptions
+              options={questionData.options}
+              handleOptionChange={(index, value) => handleOptionChange(index, value, questionData, setQuestionData)}
+            />
 
-        {questionData.questionType === 'unique' && (
-          <InputField
-            field={{ name: 'correctOption', label: 'Respuesta Correcta', type: 'select' }}
-            value={questionData.correctOption}
-            handleChange={(e) => handleChange(e, questionData, setQuestionData)}
-            className='form-group'
-          >
-            <option value=''>Seleccionar</option>
-            {questionData.options.map((option, index) => (
-              <option key={index} value={index}>{`Opción ${index + 1}`}</option>
-            ))}
-          </InputField>
+            <InputField
+              field={{ name: 'correctOption', label: 'Respuesta Correcta', type: 'select' }}
+              value={questionData.correctOption}
+              handleChange={(e) => handleChange(e, questionData, setQuestionData)}
+              className='form-group'
+            >
+              <option value=''>Seleccionar</option>
+              {questionData.options.map((option, index) => (
+                <option key={index} value={index}>{`Opción ${index + 1}`}</option>
+              ))}
+            </InputField>
+          </>
         )}
 
         <Button type='submit' className='btn btn-primary' disabled={getButtonState(questionData, isLoading)}>
