@@ -6,31 +6,29 @@ import GeneratedExam from '../molecules/GeneratedExam'
 import { generateExam, saveExamHandler, discardExamHandler } from '../helpers/handlers'
 import '../../../../assets/styles/questions/view.css'
 import '../../../../assets/styles/questions/generate-exam.css'
-import PopupComponent from '../../../popups/PopupComponent'
 import { getNearestAvailableDate } from '../helpers/datesHelper'
 import SectionLayout from '../../../global/molecules/SectionLayout'
+import useMessages from '../../../global/organisms/useMessages'
 
 const GenerateExamView = () => {
   const [exam, setExam] = useState([])
-  const [errorMessage, setErrorMessage] = useState('')
-  const [successMessage, setSuccessMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [examDate, setExamDate] = useState(getNearestAvailableDate(new Date()))
 
+  // Usa el hook useMessages
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
+
+  const handleGenerateExam = () => {
+    generateExam(setLoading, setErrorMessage, setExam, examDate)
+  }
+
   return (
-    <SectionLayout title='Generar examen'>
+    <SectionLayout title='Generar Examen'>
       <div className='generate-exam-container'>
         <h1>Generar Examen</h1>
         <ExamDatePicker examDate={examDate} setExamDate={setExamDate} />
 
-        {errorMessage && (
-          <PopupComponent message={errorMessage} onClose={() => setErrorMessage('')} type='error' />
-        )}
-        {successMessage && (
-          <PopupComponent message={successMessage} onClose={() => setSuccessMessage('')} type='confirmation' />
-        )}
-
-        <Button onClick={() => generateExam(setLoading, setErrorMessage, setExam, examDate)} className='btn btn-primary'>
+        <Button onClick={handleGenerateExam} className='btn btn-primary'>
           Generar Examen
         </Button>
 
@@ -49,6 +47,8 @@ const GenerateExamView = () => {
             discardExamHandler={discardExamHandler}
           />
         )}
+
+        {renderMessages()} {/* Renderiza los mensajes */}
       </div>
     </SectionLayout>
   )
