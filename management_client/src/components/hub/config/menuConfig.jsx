@@ -2,6 +2,7 @@
 import AddQuestionView from '../../questions/add_questions/view/AddQuestionView'
 import ModifyQuestionView from '../../questions/modify_questions/view/ModifyQuestionView'
 import DeleteQuestionView from '../../questions/delete_questions/view/DeleteQuestionView'
+import GenerateExamView from '../../questions/generate_exam/view/GenerateExamView'
 
 // componente por defecto para las rutas padre
 // feature temporal
@@ -64,7 +65,7 @@ const menuConfig = [
           { key: 'ingresar', label: 'Ingresar Preguntas', path: '/examenes/ingresar', component: AddQuestionView },
           { key: 'modificar', label: 'Modificar Preguntas', path: '/examenes/modificar', component: ModifyQuestionView },
           { key: 'eliminar', label: 'Eliminar Preguntas', path: '/examenes/eliminar', component: DeleteQuestionView },
-          { key: 'generar', label: 'Generar Exámenes', path: '/examenes/generar', component: DefaultComponent },
+          { key: 'generar', label: 'Generar Exámenes', path: '/examenes/generar', component: GenerateExamView },
           { key: 'presentar', label: 'Presentar Exámenes', path: '/examenes/presentar', component: DefaultComponent }
         ],
         roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]

@@ -1,7 +1,9 @@
 import React from 'react'
 import '../../../assets/styles/global/input-fields.css'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 
-const InputField = ({ field, value, handleChange, children, className, autoComplete }) => {
+const InputField = ({ field, value, handleChange, children, className, autoComplete, availableDates }) => {
   const textRelatedInput = (type) => {
     return (
       <input
@@ -61,6 +63,20 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     )
   }
 
+  const datePicker = () => {
+    return (
+      <DatePicker
+        selected={value}
+        onChange={(date) => handleChange(date)}
+        filterDate={availableDates}
+        dateFormat='dd/MM/yyyy'
+        placeholderText={field.placeholder}
+        className={className}
+        onInputError={(err) => console.log(err)}
+      />
+    )
+  }
+
   // map
   const inputRenderers = {
     text: () => textRelatedInput('text'),
@@ -70,7 +86,8 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     textArea: () => textRelatedInput('textArea'),
     select: () => selectInput(),
     'radio-group': () => radioGroupInput(),
-    file: () => fileInput()
+    file: () => fileInput(),
+    date: () => datePicker()
   }
 
   const renderInput = () => {
