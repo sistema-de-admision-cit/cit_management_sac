@@ -4,14 +4,13 @@ import '../../../../assets/styles/questions/view.css'
 import { dummyData } from '../../helpers/dummyData'
 import { handleDeleteFromList } from '../helpers/formHandlers'
 import FindQuestion from '../../base/molecules/FindQuestion'
-import PopupComponent from '../../../popups/PopupComponent'
 import SectionLayout from '../../../global/molecules/SectionLayout'
+import useMessages from '../../../global/organisms/useMessages'
 
 const DeleteQuestionView = () => {
   const [questions, setQuestions] = useState([])
   const [filteredQuestions, setFilteredQuestions] = useState([])
-  const [errorMessage, setErrorMessage] = useState('')
-  const [successMessage, setSuccessMessage] = useState('')
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
   useEffect(() => {
     setQuestions(dummyData)
@@ -26,8 +25,6 @@ const DeleteQuestionView = () => {
   return (
     <SectionLayout title='Eliminar pregunta'>
       <title>Eliminar Pregunta</title>
-      {errorMessage && <PopupComponent message={errorMessage} onClose={() => setErrorMessage('')} type='error' />}
-      {successMessage && <PopupComponent message={successMessage} onClose={() => setSuccessMessage('')} type='confirmation' />}
       <FindQuestion
         onResultsUpdate={setFilteredQuestions}
         lookingFor='delete'
@@ -36,6 +33,7 @@ const DeleteQuestionView = () => {
         questions={filteredQuestions}
         onDelete={handleDelete}
       />
+      {renderMessages()}
     </SectionLayout>
   )
 }
