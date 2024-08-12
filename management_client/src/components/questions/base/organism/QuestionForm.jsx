@@ -5,13 +5,13 @@ import QuestionOptions from '../molecules/QuestionOptions'
 import InputField from '../../../global/atoms/InputField'
 import Button from '../../../global/atoms/Button'
 import useMessages from '../../../global/hooks/useMessages'
+import useFormState from '../../../global/hooks/useFormState' // Update this path as needed
 import '../../../../assets/styles/questions/question-form.css'
 
 import {
   handleChange,
   handleTestOptionChange,
   handleOptionChange,
-  clearForm,
   getButtonState
 } from '../../helpers/formHandlers'
 
@@ -22,7 +22,7 @@ const QuestionForm = ({
   submitButtonText,
   isModify = false
 }) => {
-  const [questionData, setQuestionData] = useState(initialData)
+  const { formData: questionData, setFormData: setQuestionData, resetForm } = useFormState(initialData)
   const [isLoading, setIsLoading] = useState(false)
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
@@ -98,7 +98,10 @@ const QuestionForm = ({
         <Button
           type='button'
           className='btn btn-secondary'
-          onClick={() => clearForm(setQuestionData)}
+          onClick={() => {
+            resetForm()
+            setIsLoading(false)
+          }}
           disabled={isLoading}
         >
           Limpiar
