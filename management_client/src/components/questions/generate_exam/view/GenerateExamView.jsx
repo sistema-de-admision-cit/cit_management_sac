@@ -3,15 +3,17 @@ import { useState } from 'react'
 import Button from '../../../global/atoms/Button'
 import ExamDatePicker from '../molecules/ExamDatePicker'
 import GeneratedExam from '../molecules/GeneratedExam'
-import { generateExam } from '../helpers/examHelper'
+import { generateExam, saveExamHandler, discardExamHandler } from '../helpers/handlers'
 import '../../../../assets/styles/questions/view.css'
 import '../../../../assets/styles/questions/generate-exam.css'
+import PopupComponent from '../../../popups/PopupComponent'
 
 const GenerateExamView = () => {
   const [exam, setExam] = useState([])
-  const [error, setError] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
   const [loading, setLoading] = useState(false)
-  const [examDate, setExamDate] = useState(new Date())
+  const [examDate, setExamDate] = useState(null)
 
   return (
     <div className='section-container'>
@@ -20,15 +22,31 @@ const GenerateExamView = () => {
         <h1>Generar Examen</h1>
         <ExamDatePicker examDate={examDate} setExamDate={setExamDate} />
 
-        <Button onClick={() => generateExam(setLoading, setError, setExam)} className='btn btn-primary'>
+        {errorMessage && (
+          <PopupComponent message={errorMessage} onClose={() => setErrorMessage('')} type='error' />
+        )}
+        {successMessage && (
+          <PopupComponent message={successMessage} onClose={() => setSuccessMessage('')} type='confirmation' />
+        )}
+
+        <Button onClick={() => generateExam(setLoading, setErrorMessage, setExam, examDate)} className='btn btn-primary'>
           Generar Examen
         </Button>
 
-        {error && <p>{error}</p>}
         {loading && <p>Cargando...</p>}
 
         {exam.length > 0 && (
-          <GeneratedExam exam={exam} examDate={examDate} setExam={setExam} setExamDate={setExamDate} />
+          <GeneratedExam
+            exam={exam}
+            examDate={examDate}
+            setExam={setExam}
+            setExamDate={setExamDate}
+            setSuccessMessage={setSuccessMessage}
+            setErrorMessage={setErrorMessage}
+            setLoading={setLoading}
+            saveExamHandler={saveExamHandler}
+            discardExamHandler={discardExamHandler}
+          />
         )}
       </div>
     </div>
