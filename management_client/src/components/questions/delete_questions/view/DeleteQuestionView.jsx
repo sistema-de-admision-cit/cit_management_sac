@@ -24,7 +24,6 @@ const DeleteQuestionView = () => {
 
   return (
     <SectionLayout title='Eliminar pregunta'>
-      <title>Eliminar Pregunta</title>
       <FindQuestion
         onResultsUpdate={setFilteredQuestions}
         lookingFor='delete'
