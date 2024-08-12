@@ -8,6 +8,7 @@ import '../../../../assets/styles/questions/view.css'
 import '../../../../assets/styles/questions/generate-exam.css'
 import PopupComponent from '../../../popups/PopupComponent'
 import { getNearestAvailableDate } from '../helpers/datesHelper'
+import SectionLayout from '../../../global/molecules/SectionLayout'
 
 const GenerateExamView = () => {
   const [exam, setExam] = useState([])
@@ -17,8 +18,7 @@ const GenerateExamView = () => {
   const [examDate, setExamDate] = useState(getNearestAvailableDate(new Date()))
 
   return (
-    <div className='section-container'>
-      <title>Generar Examen</title>
+    <SectionLayout title='Generar examen'>
       <div className='generate-exam-container'>
         <h1>Generar Examen</h1>
         <ExamDatePicker examDate={examDate} setExamDate={setExamDate} />
@@ -50,7 +50,7 @@ const GenerateExamView = () => {
           />
         )}
       </div>
-    </div>
+    </SectionLayout>
   )
 }
 

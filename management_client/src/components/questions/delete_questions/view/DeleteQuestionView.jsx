@@ -5,6 +5,7 @@ import { dummyData } from '../../helpers/dummyData'
 import { handleDeleteFromList } from '../helpers/formHandlers'
 import FindQuestion from '../../base/molecules/FindQuestion'
 import PopupComponent from '../../../popups/PopupComponent'
+import SectionLayout from '../../../global/molecules/SectionLayout'
 
 const DeleteQuestionView = () => {
   const [questions, setQuestions] = useState([])
@@ -23,7 +24,7 @@ const DeleteQuestionView = () => {
   }
 
   return (
-    <div className='section-container'>
+    <SectionLayout title='Eliminar pregunta'>
       <title>Eliminar Pregunta</title>
       {errorMessage && <PopupComponent message={errorMessage} onClose={() => setErrorMessage('')} type='error' />}
       {successMessage && <PopupComponent message={successMessage} onClose={() => setSuccessMessage('')} type='confirmation' />}
@@ -35,7 +36,7 @@ const DeleteQuestionView = () => {
         questions={filteredQuestions}
         onDelete={handleDelete}
       />
-    </div>
+    </SectionLayout>
   )
 }
 
