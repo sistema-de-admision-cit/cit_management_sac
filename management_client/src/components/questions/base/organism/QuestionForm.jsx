@@ -23,23 +23,10 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
   const { examType, questionType, question, options, correctOption } = questionData
   const currentQuestionTypeOptions = QUESTION_TYPE_OPTIONS[examType] || []
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)
-  }
-
-  const handleInputChange = (e, isFile = false) => {
-    handleChange(e, questionData, setQuestionData, isFile)
-  }
-
-  const localHandleOptionChange = (index, value) => {
-    handleOptionChange(index, value, questionData, setQuestionData)
-  }
-
   return (
     <section className='question-form-container'>
       <h1>{title}</h1>
-      <form onSubmit={handleSubmit} className='question-form'>
+      <form onSubmit={(e) => onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)} className='question-form'>
         <ExamTypeOptions
           value={examType}
           handleChange={(e) => handleTestOptionChange(e, questionData, setQuestionData)}
@@ -49,7 +36,7 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
         {examType && (
           <QuestionTypeOptions
             value={questionType}
-            handleChange={(e) => handleInputChange(e)}
+            handleChange={(e, isFile = false) => handleChange(e, questionData, setQuestionData, isFile)}
             options={currentQuestionTypeOptions}
           />
         )}
@@ -57,13 +44,13 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
         <InputField
           field={{ name: 'question', label: 'Pregunta', type: 'text', placeholder: 'Ingrese la pregunta aquí' }}
           value={question}
-          handleChange={(e) => handleInputChange(e)}
+          handleChange={(e, isFile = false) => handleChange(e, questionData, setQuestionData, isFile)}
           className='form-group'
         />
 
         <InputField
           field={{ name: 'images', label: 'Agregar Imágenes', type: 'file', multiple: true, required: false }}
-          handleChange={(e) => handleInputChange(e, true)}
+          handleChange={(e, isFile = true) => handleChange(e, questionData, setQuestionData, isFile)}
           className='form-group'
         />
 
@@ -72,8 +59,8 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
           <UniqueQuestionSection
             options={options}
             correctOption={correctOption}
-            handleOptionChange={localHandleOptionChange}
-            handleInputChange={(e) => handleInputChange(e)}
+            handleOptionChange={(index, value) => handleOptionChange(index, value, questionData, setQuestionData)}
+            handleInputChange={(e, isFile = false) => handleChange(e, questionData, setQuestionData, isFile)}
           />
         )}
 
