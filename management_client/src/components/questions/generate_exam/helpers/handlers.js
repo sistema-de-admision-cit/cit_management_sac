@@ -9,23 +9,48 @@ const fetchQuestions = () => {
   })
 }
 
-export const generateExam = async (setLoading, setError, setExam) => {
+export const generateExam = async (setLoading, setErrorMessage, setExam, examDate) => {
+  if (!setLoading || !setErrorMessage || !setExam) {
+    return
+  }
+
+  if (!examDate) {
+    setErrorMessage('Por favor selecciona una fecha para el examen')
+    return
+  }
+
   try {
     setLoading(true)
     const allQuestions = await fetchQuestions()
     setLoading(false)
 
     if (allQuestions.length < 10) {
-      setError('Preguntas insuficientes en el banco de preguntas.')
+      setErrorMessage('Preguntas insuficientes en el banco de preguntas.')
       return
     }
 
-    setError('')
+    setErrorMessage('')
     const shuffledQuestions = allQuestions.sort(() => Math.random() - 0.5)
     const selectedQuestions = shuffledQuestions.slice(0, 10)
 
     setExam(selectedQuestions)
+    console.log('Examen generado:', selectedQuestions)
   } catch (err) {
-    setError('Error al generar el examen.')
+    setErrorMessage('Error al generar el examen.')
   }
+}
+
+export const saveExamHandler = (exam, examDate, setSuccess) => {
+  const examToSave = {
+    questionIds: exam.map((q) => q.questionId),
+    date: examDate
+  }
+
+  console.log('Examen guardado:', examToSave)
+  setSuccess('Examen guardado exitosamente.')
+}
+
+export const discardExamHandler = (setExam, setExamDate) => {
+  setExam([])
+  setExamDate(null)
 }
