@@ -1,33 +1,24 @@
 import '../../assets/styles/popup/popup.css'
+import Icon from './Icon'
 
 const PopupComponent = ({ message, onClose, type, messageTitle }) => {
   const popupClass = type === 'confirmation' ? 'confirmation' : 'error'
+  const buttonClass = type === 'error' ? 'btn-danger' : 'btn-success'
+  const textClass = type === 'error' ? 'text-danger' : 'text-success'
+  const title = type === 'error' ? 'Error' : 'Éxito'
 
   return (
     <div className='overlay'>
       <div className={`popup ${popupClass}`}>
-        <span className='close-btn' onClick={onClose}>&times;</span>
+        <span className='close-btn' onClick={onClose} aria-label='Close'>&times;</span>
         <div className='popup-icon'>
-          {type === 'error'
-            ? (
-              <svg version='1.1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130.2 130.2'>
-                <circle className='path circle' fill='none' stroke='#db3646' strokeWidth='6' strokeMiterlimit='10' cx='65.1' cy='65.1' r='62.1' />
-                <line className='path line' fill='none' stroke='#db3646' strokeWidth='6' strokeLinecap='round' strokeMiterlimit='10' x1='34.4' y1='37.9' x2='95.8' y2='92.3' />
-                <line className='path line' fill='none' stroke='#db3646' strokeWidth='6' strokeLinecap='round' strokeMiterlimit='10' x1='95.8' y1='38' x2='34.4' y2='92.2' />
-              </svg>
-              )
-            : (
-              <svg version='1.1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130.2 130.2'>
-                <circle className='path circle' fill='none' stroke='#198754' strokeWidth='6' strokeMiterlimit='10' cx='65.1' cy='65.1' r='62.1' />
-                <polyline className='path check' fill='none' stroke='#198754' strokeWidth='6' strokeLinecap='round' strokeMiterlimit='10' points='100.2,40.2 51.5,88.8 29.8,67.5 ' />
-              </svg>
-              )}
+          <Icon type={type} />
         </div>
-        <h4 className={`message-title ${type === 'error' ? 'text-danger' : 'text-success'}`}>
-          {type === 'error' ? 'Error' : 'Éxito'}
+        <h4 className={`message-title ${textClass}`}>
+          {messageTitle || title}
         </h4>
         <p className='message'>{message}</p>
-        <button className={`btn ${type === 'error' ? 'btn-danger' : 'btn-success'}`} onClick={onClose}>
+        <button className={`btn ${buttonClass}`} onClick={onClose}>
           Ok
         </button>
       </div>
