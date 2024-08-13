@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import AuthComponent from './AuthComponent'
-import { onLoginSubmit } from './formsHandler'
+import { handleSubmit } from './formsHandler'
+import LoginHeader from '../organisms/LoginHeader'
+import LoginContent from '../organisms/LoginContent'
+import PopupComponent from '../../popups/PopupComponent'
 
-const LoginSection = ({ sectionName }) => {
+const LoginSection = () => {
   const [formData, setFormData] = useState({})
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -11,19 +13,23 @@ const LoginSection = ({ sectionName }) => {
     { name: 'contrasena', label: 'Contraseña', type: 'password', placeholder: 'Ej. ********' }
   ]
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
   return (
     <>
-      <title>{sectionName}</title>
-      <AuthComponent
-        formData={formData}
-        setFormData={setFormData}
-        onSubmit={onLoginSubmit}
-        fields={fields}
-        sectionName={sectionName}
-        isRegisterSuccess={false}
-        errorMessage={errorMessage}
-        setErrorMessage={setErrorMessage}
-      />
+      <title>Iniciar Sesión</title>
+      <div className='wrap'>
+        <LoginHeader />
+        <LoginContent
+          fields={fields}
+          formData={formData}
+          handleChange={handleChange}
+          onSubmit={(e) => handleSubmit(e, formData, setErrorMessage, setFormData)}
+        />
+        {errorMessage && <PopupComponent message={errorMessage} onClose={() => setErrorMessage('')} type='error' />}
+      </div>
     </>
   )
 }
