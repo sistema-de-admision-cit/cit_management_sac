@@ -3,6 +3,7 @@ import { handleSubmit } from './formsHandler'
 import LoginHeader from '../organisms/LoginHeader'
 import LoginContent from '../organisms/LoginContent'
 import PopupComponent from '../../popups/PopupComponent'
+import '../../../assets/styles/auth/wrap.css'
 
 const LoginSection = () => {
   const [formData, setFormData] = useState({})
