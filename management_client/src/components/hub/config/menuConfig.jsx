@@ -65,8 +65,7 @@ const menuConfig = [
           { key: 'ingresar', label: 'Ingresar Preguntas', path: '/examenes/ingresar', component: AddQuestionView },
           { key: 'modificar', label: 'Modificar Preguntas', path: '/examenes/modificar', component: ModifyQuestionView },
           { key: 'eliminar', label: 'Eliminar Preguntas', path: '/examenes/eliminar', component: DeleteQuestionView },
-          { key: 'generar', label: 'Generar Exámenes', path: '/examenes/generar', component: GenerateExamView },
-          { key: 'presentar', label: 'Presentar Exámenes', path: '/examenes/presentar', component: DefaultComponent }
+          { key: 'generar', label: 'Generar Exámenes', path: '/examenes/generar', component: GenerateExamView }
         ],
         roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]
       },
