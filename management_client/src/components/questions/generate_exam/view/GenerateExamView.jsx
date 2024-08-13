@@ -11,14 +11,15 @@ import useMessages from '../../../global/hooks/useMessages'
 
 const GenerateExamView = () => {
   const [exam, setExam] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const [examDate, setExamDate] = useState(getNearestAvailableDate(new Date()))
 
   // Usa el hook useMessages
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
   const handleGenerateExam = () => {
-    generateExam(setIsLoading, setErrorMessage, setExam, examDate)
+    generateExam(setIsGenerating, setErrorMessage, setExam, examDate)
   }
 
   return (
@@ -27,8 +28,8 @@ const GenerateExamView = () => {
         <h1>Generar Examen</h1>
         <ExamDatePicker examDate={examDate} setExamDate={setExamDate} />
 
-        <Button onClick={handleGenerateExam} className='btn btn-primary' disabled={isLoading}>
-          {isLoading ? 'Generando...' : 'Generar Examen'}
+        <Button onClick={handleGenerateExam} className='btn btn-primary' disabled={isGenerating}>
+          {isGenerating ? 'Generando...' : 'Generar Examen'}
         </Button>
 
         {exam.length > 0 && (
@@ -39,7 +40,8 @@ const GenerateExamView = () => {
             setExamDate={setExamDate}
             setSuccessMessage={setSuccessMessage}
             setErrorMessage={setErrorMessage}
-            setIsLoading={setIsLoading}
+            setIsSaving={setIsSaving}
+            isSaving={isSaving}
             saveExamHandler={saveExamHandler}
             discardExamHandler={discardExamHandler}
           />
