@@ -5,7 +5,6 @@ import ExamDatePicker from '../molecules/ExamDatePicker'
 import GeneratedExam from '../molecules/GeneratedExam'
 import { generateExam, saveExamHandler, discardExamHandler } from '../helpers/handlers'
 import '../../../../assets/styles/questions/view.css'
-import '../../../../assets/styles/questions/generate-exam.css'
 import { getNearestAvailableDate } from '../helpers/datesHelper'
 import SectionLayout from '../../../global/molecules/SectionLayout'
 import useMessages from '../../../global/hooks/useMessages'
@@ -24,7 +23,7 @@ const GenerateExamView = () => {
 
   return (
     <SectionLayout title='Generar Examen'>
-      <div className='generate-exam-container'>
+      <div className='container generate-exam-container'>
         <h1>Generar Examen</h1>
         <ExamDatePicker examDate={examDate} setExamDate={setExamDate} />
 

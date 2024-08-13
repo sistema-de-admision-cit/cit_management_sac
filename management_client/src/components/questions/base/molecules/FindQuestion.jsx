@@ -32,7 +32,7 @@ const FindQuestion = ({ onQuestionFound, onResultsUpdate, lookingFor }) => {
   ]
 
   return (
-    <div className='find-question-container'>
+    <div className='container find-question-container'>
       <InputField
         field={{ name: 'questionText', label: 'Buscar Pregunta', type: 'text', placeholder: 'Ingrese el texto de la pregunta' }}
         value={query}

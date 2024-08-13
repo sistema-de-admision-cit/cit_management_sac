@@ -24,7 +24,7 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
   const currentQuestionTypeOptions = QUESTION_TYPE_OPTIONS[examType] || []
 
   return (
-    <section className='question-form-container'>
+    <div className='container question-form-container'>
       <h1>{title}</h1>
       <form onSubmit={(e) => onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)} className='question-form'>
         <ExamTypeOptions
@@ -80,7 +80,7 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
         </Button>
       </form>
       {renderMessages()}
-    </section>
+    </div>
   )
 }
 
