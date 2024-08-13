@@ -1,4 +1,3 @@
-import React from 'react'
 import InputField from '../../global/atoms/InputField'
 import Button from '../../global/atoms/Button'
 

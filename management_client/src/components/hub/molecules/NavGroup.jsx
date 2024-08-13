@@ -1,5 +1,3 @@
-// src/components/NavGroup.js
-import React from 'react'
 import Icon from '../atoms/Icon'
 import NavItem from '../atoms/NavItem'
 import NavLink from '../atoms/NavLink'

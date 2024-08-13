@@ -1,4 +1,3 @@
-import React from 'react'
 import '../../assets/styles/popup/popup.css'
 
 const PopupComponent = ({ message, onClose, type, messageTitle }) => {

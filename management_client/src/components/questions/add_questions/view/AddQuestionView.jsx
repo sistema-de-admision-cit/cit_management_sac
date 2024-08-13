@@ -1,4 +1,3 @@
-import React from 'react'
 import AddQuestionForm from '../organisms/AddQuestionForm'
 import '../../../../assets/styles/questions/view.css'
 import SectionLayout from '../../../global/molecules/SectionLayout'

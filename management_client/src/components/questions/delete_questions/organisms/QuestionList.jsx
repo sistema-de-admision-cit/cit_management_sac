@@ -1,4 +1,3 @@
-import React from 'react'
 import Button from '../../../global/atoms/Button'
 import '../../../../assets/styles/questions/question-list.css'
 

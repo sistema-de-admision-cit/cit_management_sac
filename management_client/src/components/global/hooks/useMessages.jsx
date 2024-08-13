@@ -1,4 +1,3 @@
-// useMessages.js
 import { useState } from 'react'
 import PopupComponent from '../../popups/PopupComponent'
 

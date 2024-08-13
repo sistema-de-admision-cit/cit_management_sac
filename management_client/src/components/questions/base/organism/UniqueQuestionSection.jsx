@@ -1,4 +1,3 @@
-import React from 'react'
 import QuestionOptions from '../molecules/QuestionOptions'
 import InputField from '../../../global/atoms/InputField'
 

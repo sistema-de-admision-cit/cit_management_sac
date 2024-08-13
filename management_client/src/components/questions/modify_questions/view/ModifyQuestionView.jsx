@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import FindQuestion from '../../base/molecules/FindQuestion'
 import ModifyQuestionForm from '../organisms/ModifyQuestionForm'
 import '../../../../assets/styles/questions/view.css'

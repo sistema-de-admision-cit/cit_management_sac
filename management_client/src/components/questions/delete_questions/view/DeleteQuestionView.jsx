@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import QuestionList from '../organisms/QuestionList'
 import '../../../../assets/styles/questions/view.css'
 import { dummyData } from '../../helpers/dummyData'

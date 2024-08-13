@@ -1,5 +1,3 @@
-import React from 'react'
-
 import '../../../assets/styles/global/buttons.css'
 
 const Button = ({ type, className, children, onClick, disabled }) => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import ExamTypeOptions from '../molecules/ExamTypeOptions'
 import QuestionTypeOptions from '../molecules/QuestionTypeOptions'
 import InputField from '../../../global/atoms/InputField'

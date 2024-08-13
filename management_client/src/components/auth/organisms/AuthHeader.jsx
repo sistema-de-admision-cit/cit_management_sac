@@ -1,4 +1,3 @@
-import React from 'react'
 import '../../../assets/styles/auth/left-column.css'
 
 const AuthHeader = ({ sectionName }) => {

@@ -1,4 +1,3 @@
-import React from 'react'
 import QuestionForm from '../../base/organism/QuestionForm'
 import { handleModifySubmit } from '../../helpers/formHandlers'
 

@@ -1,4 +1,3 @@
-import React from 'react'
 import InputField from '../../../global/atoms/InputField'
 import ExamTypeOptions from '../../base/molecules/ExamTypeOptions'
 import { handleSearchByCode } from '../../helpers/formHandlers'

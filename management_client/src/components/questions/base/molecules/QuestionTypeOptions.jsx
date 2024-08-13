@@ -1,4 +1,3 @@
-import React from 'react'
 import InputField from '../../../global/atoms/InputField'
 
 const QuestionTypeOptions = ({ value, handleChange, options }) => (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import InputField from '../../../global/atoms/InputField'
 import Button from '../../../global/atoms/Button'
 import SuggestionsList from '../../modify_questions/molecules/SuggestionsList'
