@@ -387,11 +387,11 @@ DROP TABLE IF EXISTS `db_cit_test`.`VW_grades`;
 SHOW WARNINGS;
 USE `db_cit_test`;
 CREATE  OR REPLACE VIEW `VW_grades` AS
-SELECT enrollment_id, `academic` AS exam_type, grade FROM tbl_academicexams
+SELECT enrollment_id, 'academic' AS exam_type, grade FROM tbl_academicexams
 UNION ALL 
-SELECT enrollment_id, `dai` AS exam_type, grade FROM tbl_daiexams
+SELECT enrollment_id, 'dai' AS exam_type, grade FROM tbl_daiexams
 UNION ALL
-SELECT enrollment_id, `english` AS exam_type, grade FROM tbl_englishexams;
+SELECT enrollment_id, 'english' AS exam_type, grade FROM tbl_englishexams;
 SHOW WARNINGS;
 
 SET SQL_MODE=@OLD_SQL_MODE;
