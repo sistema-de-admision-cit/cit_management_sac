@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicquestions` (
   `option_c` VARCHAR(255) NOT NULL,
   `option_d` VARCHAR(255) NOT NULL,
   `correct_option` CHAR(1) NOT NULL,
-  PRIMARY KEY (`question_id`),
+  CONSTRAINT PK_AcademicQuestions PRIMARY KEY (`question_id`),
   UNIQUE INDEX `UQ_AcademicQuestions_Question` (`question_text` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_parentsguardians` (
   `email` VARCHAR(100) NOT NULL,
   `home_address` VARCHAR(100) NOT NULL,
   `relationship` ENUM('mother', 'father', 'guardian') NOT NULL,
-  PRIMARY KEY (`parent_guardian_id`),
+  CONSTRAINT PK_ParentsGuardians PRIMARY KEY (`parent_guardian_id`),
   UNIQUE INDEX `UQ_ParentsGuardians_IdNumber` (`id_number` ASC) VISIBLE,
   UNIQUE INDEX `UQ_ParentsGuardians_PhoneNumber` (`phone_number` ASC) VISIBLE,
   UNIQUE INDEX `UQ_ParentsGuardians_Email` (`email` ASC) VISIBLE)
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_students` (
   `id_number` VARCHAR(20) NOT NULL,
   `previous_school` VARCHAR(100) NULL DEFAULT NULL,
   `has_accommodations` TINYINT(1) NOT NULL,
-  PRIMARY KEY (`student_id`, `parent_guardian_id`),
+  CONSTRAINT PK_Students PRIMARY KEY (`student_id`, `parent_guardian_id`),
   UNIQUE INDEX `UQ_Students_IdNumber` (`id_number` ASC) VISIBLE,
   INDEX `FK_Students_ParentsGuardians` (`parent_guardian_id` ASC) VISIBLE,
   CONSTRAINT `FK_Students_ParentsGuardians`
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_enrollments` (
   `exam_date` DATE NOT NULL,
   `consent_given` TINYINT(1) NOT NULL,
   `whatsapp_notification` TINYINT(1) NOT NULL,
-  PRIMARY KEY (`enrollment_id`, `student_id`),
+  CONSTRAINT PK_Enrollments PRIMARY KEY (`enrollment_id`, `student_id`),
   INDEX `FK_Enrollments_Students` (`student_id` ASC) VISIBLE,
   CONSTRAINT `FK_Enrollments_Students`
     FOREIGN KEY (`student_id`)
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicexams` (
   `enrollment_id` INT NOT NULL,
   `exam_date` DATE NOT NULL,
   `grade` DECIMAL(5,2) NOT NULL,
-  PRIMARY KEY (`exam_id`, `enrollment_id`),
+  CONSTRAINT PK_AcademicExams PRIMARY KEY (`exam_id`, `enrollment_id`),
   INDEX `FK_AcademicExams_Enrollments` (`enrollment_id` ASC) VISIBLE,
   CONSTRAINT `FK_AcademicExams_Enrollments`
     FOREIGN KEY (`enrollment_id`)
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicanswers` (
   `question_id` INT NOT NULL,
   `exam_id` INT NOT NULL,
   `student_answer` CHAR(1) NOT NULL,
-  PRIMARY KEY (`answer_id`, `question_id`, `exam_id`),
+  CONSTRAINT PK_AcademicAnswers PRIMARY KEY (`answer_id`, `question_id`, `exam_id`),
   INDEX `FK_AcademicAnswers_Questions` (`question_id` ASC) VISIBLE,
   INDEX `fk_tbl_academicanswers_tbl_academicexams1_idx` (`exam_id` ASC) VISIBLE,
   CONSTRAINT `FK_AcademicAnswers_Questions`
@@ -161,7 +161,7 @@ SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicexamquestions` (
   `exam_id` INT NOT NULL,
   `question_id` INT NOT NULL,
-  PRIMARY KEY (`exam_id`, `question_id`),
+  CONSTRAINT PK_AcademicExamQuestions PRIMARY KEY (`exam_id`, `question_id`),
   INDEX `FK_AcademicExamQuestions_AcademicQuestions` (`question_id` ASC) VISIBLE,
   CONSTRAINT `FK_AcademicExamQuestions_AcademicExams`
     FOREIGN KEY (`exam_id`)
@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiquestions` (
   `question_id` INT NOT NULL AUTO_INCREMENT,
   `question_text` VARCHAR(255) NULL DEFAULT NULL,
   `image_url` VARCHAR(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`question_id`))
+  CONSTRAINT PK_DAIQuestions PRIMARY KEY (`question_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiexams` (
   `enrollment_id` INT NOT NULL,
   `exam_date` DATE NOT NULL,
   `grade` DECIMAL(5,2) NOT NULL,
-  PRIMARY KEY (`exam_id`, `enrollment_id`),
+  CONSTRAINT PK_DAIExams PRIMARY KEY (`exam_id`, `enrollment_id`),
   INDEX `FK_DAIExams_Enrollments` (`enrollment_id` ASC) VISIBLE,
   CONSTRAINT `FK_DAIExams_Enrollments`
     FOREIGN KEY (`enrollment_id`)
@@ -216,7 +216,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daianswers` (
   `question_id` INT NOT NULL,
   `exam_id` INT NOT NULL,
   `student_answer` TEXT NOT NULL,
-  PRIMARY KEY (`answer_id`, `question_id`, `exam_id`),
+  CONSTRAINT PK_DAIAnswers PRIMARY KEY (`answer_id`, `question_id`, `exam_id`),
   INDEX `FK_DAIAnswers_Questions` (`question_id` ASC) VISIBLE,
   INDEX `fk_tbl_daianswers_tbl_daiexamens1_idx` (`exam_id` ASC) VISIBLE,
   CONSTRAINT `FK_DAIAnswers_Questions`
@@ -239,7 +239,7 @@ SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiexamquestions` (
   `exam_id` INT NOT NULL,
   `question_id` INT NOT NULL,
-  PRIMARY KEY (`exam_id`, `question_id`),
+  CONSTRAINT PK_DAIExamQuestions PRIMARY KEY (`exam_id`, `question_id`),
   INDEX `FK_DAIExamQuestions_DAIQuestions` (`question_id` ASC) VISIBLE,
   CONSTRAINT `FK_DAIExamQuestions_DAIExamens`
     FOREIGN KEY (`exam_id`)
@@ -261,7 +261,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_documents` (
   `enrollment_id` INT NOT NULL,
   `document_type` ENUM('cc', 'di', 'pa', 'health_certificate', 'other') NOT NULL,
   `document_url` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`document_id`, `enrollment_id`),
+  CONSTRAINT PK_Documents PRIMARY KEY (`document_id`, `enrollment_id`),
   UNIQUE INDEX `UQ_Documents_Enrollment_DocumentType` (`enrollment_id` ASC, `document_type` ASC) VISIBLE,
   CONSTRAINT `FK_Documents_Enrollments`
     FOREIGN KEY (`enrollment_id`)
@@ -279,7 +279,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_examperiods` (
   `exam_period_id` INT NOT NULL AUTO_INCREMENT,
   `start_date` DATE NOT NULL,
   `end_date` DATE NOT NULL,
-  PRIMARY KEY (`exam_period_id`))
+  CONSTRAINT PK_ExamPeriods PRIMARY KEY (`exam_period_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -294,7 +294,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_examdays` (
   `exam_period_id` INT NOT NULL,
   `exam_day` ENUM('monday', 'tuesday', 'wednesday', 'thursday', 'friday') NOT NULL,
   `start_time` TIME NOT NULL,
-  PRIMARY KEY (`exam_day_id`, `exam_period_id`),
+  CONSTRAINT PK_ExamDays PRIMARY KEY (`exam_day_id`, `exam_period_id`),
   INDEX `FK_ExamDays_ExamPeriods` (`exam_period_id` ASC) VISIBLE,
   CONSTRAINT `FK_ExamDays_ExamPeriods`
     FOREIGN KEY (`exam_period_id`)
@@ -313,7 +313,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_englishexams` (
   `enrollment_id` INT NOT NULL,
   `exam_date` DATE NOT NULL,
   `grade` DECIMAL(5,2) NOT NULL,
-  PRIMARY KEY (`exam_id`, `enrollment_id`),
+  CONSTRAINT PK_EnglishExams PRIMARY KEY (`exam_id`, `enrollment_id`),
   INDEX `FK_EnglishExams_Enrollments` (`enrollment_id` ASC) VISIBLE,
   CONSTRAINT `FK_EnglishExams_Enrollments`
     FOREIGN KEY (`enrollment_id`)
@@ -336,7 +336,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_log` (
   `changed_by` INT NOT NULL,
   `changed_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `query` TEXT NULL,
-  PRIMARY KEY (`log_id`))
+  CONSTRAINT PK_Log PRIMARY KEY (`log_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -350,7 +350,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_systemconfig` (
   `config_id` INT NOT NULL AUTO_INCREMENT,
   `config_name` VARCHAR(100) NOT NULL,
   `config_value` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`config_id`))
+  CONSTRAINT PK_SystemConfig PRIMARY KEY (`config_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -365,7 +365,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_users` (
   `email` VARCHAR(25) NOT NULL,
   `user_password` VARCHAR(100) NOT NULL,
   `role` ENUM('admin', 'teacher', 'psychologist') NOT NULL,
-  PRIMARY KEY (`user_id`),
+  CONSTRAINT PK_Users PRIMARY KEY (`user_id`),
   UNIQUE INDEX `UQ_Users_Email` (`email` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -387,11 +387,11 @@ DROP TABLE IF EXISTS `db_cit_test`.`VW_grades`;
 SHOW WARNINGS;
 USE `db_cit_test`;
 CREATE  OR REPLACE VIEW `VW_grades` AS
-SELECT enrollment_id, `academic` AS exam_type, grade FROM tbl_academicexams
+SELECT enrollment_id, 'academic' AS exam_type, grade FROM tbl_academicexams
 UNION ALL 
-SELECT enrollment_id, `dai` AS exam_type, grade FROM tbl_daiexams
+SELECT enrollment_id, 'dai' AS exam_type, grade FROM tbl_daiexams
 UNION ALL
-SELECT enrollment_id, `english` AS exam_type, grade FROM tbl_englishexams;
+SELECT enrollment_id, 'english' AS exam_type, grade FROM tbl_englishexams;
 SHOW WARNINGS;
 
 SET SQL_MODE=@OLD_SQL_MODE;
