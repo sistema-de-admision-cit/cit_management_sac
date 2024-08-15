@@ -1,0 +1,17 @@
+.layout-container {
+  display: flex;
+  min-height: 100vh;
+  margin-left: 15rem; /* igual al ancho del nav  side-navbar.css */
+  padding: 0;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: var(--primary-background-color);
+}
+
+/* centrar el popup */
+.popup {
+  margin-left: 15rem;
+}
