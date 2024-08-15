@@ -1,4 +1,3 @@
-import Icon from '../atoms/Icon'
 import NavItem from '../atoms/NavItem'
 import NavLink from '../atoms/NavLink'
 import menuConfig from '../config/menuConfig' // Importa la configuración del menú
@@ -13,7 +12,7 @@ const NavGroup = ({ currentPage, logout, userRole }) => {
       {menuConfig.map((menu) => (
         <NavItem key={menu.title}>
           <div className='side-nav-group-header-label'>
-            <Icon>{menu.icon}</Icon>
+            {menu.icon}
             <p>{menu.title}</p>
           </div>
           <ul className='menu-group-label'>
