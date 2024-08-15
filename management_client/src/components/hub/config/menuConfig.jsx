@@ -23,7 +23,13 @@ const menuConfig = [
     title: 'Sistema de Admisión CIT',
     icon: <HubIcon />,
     items: [
-      { key: 'dashboard', label: 'Dashboard', path: '/dashboard', parentComponent: DefaultComponent, roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST] },
+      {
+        key: 'dashboard',
+        label: 'Dashboard',
+        path: '/dashboard',
+        parentComponent: DefaultComponent,
+        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]
+      },
       {
         key: 'inscripciones',
         label: 'Gestión de Inscripciones',
