@@ -1,14 +1,17 @@
 import SideNavbar from '../organisms/SideNavbar'
 import { Outlet, useLocation } from 'react-router-dom'
+import '../../../assets/styles/hub/hub-view.css'
 
 const HubViewComponent = () => {
   const location = useLocation()
   const currentPage = location.pathname
   return (
-    <>
+    <div className='layout-container'>
       <SideNavbar currentPage={currentPage} />
-      <Outlet />
-    </>
+      <main className='content'>
+        <Outlet />
+      </main>
+    </div>
   )
 }
 
