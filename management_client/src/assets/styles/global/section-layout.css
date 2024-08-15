@@ -1,13 +1,13 @@
 /* como a la izquierda hay un sidebar de 235px, el ancho de la sección principal es de 100% - 235px */
 /* es solo para que este centrado el formulario */
 .section-container {
-  width: calc(100% - 235px);
-  margin-left: 235px;
+  width: calc(100% - 15rem);
+  margin-left: 15rem;
   margin-bottom: 30px;
   padding: 20px 0;
 }
 
 /* centrar el popup */
 .popup {
-  margin-left: 235px;
+  margin-left: 15rem;
 }
