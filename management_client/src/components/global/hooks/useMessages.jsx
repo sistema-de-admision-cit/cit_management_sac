@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import PopupComponent from '../../popups/PopupComponent'
+import PopupComponent from '../../popups/view/PopupComponent'
 
 const useMessages = () => {
   const [errorMessage, setErrorMessage] = useState('')
