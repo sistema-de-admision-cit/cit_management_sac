@@ -1,4 +1,4 @@
-const Icon = ({ type }) => {
+const PopupIcon = ({ type }) => {
   if (type === 'error') {
     return (
       <svg version='1.1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130.2 130.2'>
@@ -15,4 +15,4 @@ const Icon = ({ type }) => {
     </svg>
   )
 }
-export default Icon
+export default PopupIcon
