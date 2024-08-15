@@ -1,5 +1,5 @@
-import '../../assets/styles/popup/popup.css'
-import Icon from './Icon'
+import '../../../assets/styles/popup/popup.css'
+import PopupIcon from '../atoms/PopupIcon'
 
 const PopupComponent = ({ message, onClose, type, messageTitle }) => {
   const popupClass = type === 'confirmation' ? 'confirmation' : 'error'
@@ -12,7 +12,7 @@ const PopupComponent = ({ message, onClose, type, messageTitle }) => {
       <div className={`popup ${popupClass}`}>
         <span className='close-btn' onClick={onClose} aria-label='Close'>&times;</span>
         <div className='popup-icon'>
-          <Icon type={type} />
+          <PopupIcon type={type} />
         </div>
         <h4 className={`message-title ${textClass}`}>
           {messageTitle || title}
