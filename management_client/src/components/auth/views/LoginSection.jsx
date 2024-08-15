@@ -7,7 +7,7 @@ import useMessages from '../../global/hooks/useMessages'
 
 const LoginSection = () => {
   const [formData, setFormData] = useState({})
-  const { setErrorMessage, renderMessages } = useMessages
+  const { setErrorMessage, renderMessages } = useMessages()
 
   const fields = [
     { name: 'correo', label: 'Correo Electrónico', type: 'email', placeholder: 'Ej. name@example.com' },
