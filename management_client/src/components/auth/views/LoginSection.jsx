@@ -2,12 +2,12 @@ import { useState } from 'react'
 import { handleSubmit } from './formsHandler'
 import LoginHeader from '../organisms/LoginHeader'
 import LoginContent from '../organisms/LoginContent'
-import PopupComponent from '../../popups/PopupComponent'
 import '../../../assets/styles/auth/wrap.css'
+import useMessages from '../../global/hooks/useMessages'
 
 const LoginSection = () => {
   const [formData, setFormData] = useState({})
-  const [errorMessage, setErrorMessage] = useState('')
+  const { setErrorMessage, renderMessages } = useMessages
 
   const fields = [
     { name: 'correo', label: 'Correo Electrónico', type: 'email', placeholder: 'Ej. name@example.com' },
@@ -29,7 +29,7 @@ const LoginSection = () => {
           handleChange={handleChange}
           onSubmit={(e) => handleSubmit(e, formData, setErrorMessage, setFormData)}
         />
-        {errorMessage && <PopupComponent message={errorMessage} onClose={() => setErrorMessage('')} type='error' />}
+        {renderMessages()}
       </div>
     </>
   )
