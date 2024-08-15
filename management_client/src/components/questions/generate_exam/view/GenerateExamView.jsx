@@ -5,36 +5,32 @@ import ExamDatePicker from '../molecules/ExamDatePicker'
 import GeneratedExam from '../molecules/GeneratedExam'
 import { generateExam, saveExamHandler, discardExamHandler } from '../helpers/handlers'
 import '../../../../assets/styles/questions/view.css'
-import '../../../../assets/styles/questions/generate-exam.css'
-import PopupComponent from '../../../popups/PopupComponent'
 import { getNearestAvailableDate } from '../helpers/datesHelper'
+import SectionLayout from '../../../global/molecules/SectionLayout'
+import useMessages from '../../../global/hooks/useMessages'
 
 const GenerateExamView = () => {
   const [exam, setExam] = useState([])
-  const [errorMessage, setErrorMessage] = useState('')
-  const [successMessage, setSuccessMessage] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const [examDate, setExamDate] = useState(getNearestAvailableDate(new Date()))
 
+  // Usa el hook useMessages
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
+
+  const handleGenerateExam = () => {
+    generateExam(setIsGenerating, setErrorMessage, setExam, examDate)
+  }
+
   return (
-    <div className='section-container'>
-      <title>Generar Examen</title>
-      <div className='generate-exam-container'>
+    <SectionLayout title='Generar Examen'>
+      <div className='container generate-exam-container'>
         <h1>Generar Examen</h1>
         <ExamDatePicker examDate={examDate} setExamDate={setExamDate} />
 
-        {errorMessage && (
-          <PopupComponent message={errorMessage} onClose={() => setErrorMessage('')} type='error' />
-        )}
-        {successMessage && (
-          <PopupComponent message={successMessage} onClose={() => setSuccessMessage('')} type='confirmation' />
-        )}
-
-        <Button onClick={() => generateExam(setLoading, setErrorMessage, setExam, examDate)} className='btn btn-primary'>
-          Generar Examen
+        <Button onClick={handleGenerateExam} className='btn btn-primary' disabled={isGenerating}>
+          {isGenerating ? 'Generando...' : 'Generar Examen'}
         </Button>
-
-        {loading && <p>Cargando...</p>}
 
         {exam.length > 0 && (
           <GeneratedExam
@@ -44,13 +40,16 @@ const GenerateExamView = () => {
             setExamDate={setExamDate}
             setSuccessMessage={setSuccessMessage}
             setErrorMessage={setErrorMessage}
-            setLoading={setLoading}
+            setIsSaving={setIsSaving}
+            isSaving={isSaving}
             saveExamHandler={saveExamHandler}
             discardExamHandler={discardExamHandler}
           />
         )}
+
+        {renderMessages()} {/* Renderiza los mensajes */}
       </div>
-    </div>
+    </SectionLayout>
   )
 }
 

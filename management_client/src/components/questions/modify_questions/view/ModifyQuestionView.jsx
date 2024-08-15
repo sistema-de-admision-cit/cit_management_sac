@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import FindQuestion from '../../base/molecules/FindQuestion'
 import ModifyQuestionForm from '../organisms/ModifyQuestionForm'
 import '../../../../assets/styles/questions/view.css'
+import SectionLayout from '../../../global/molecules/SectionLayout'
 
 const ModifyQuestionView = () => {
   const [questionData, setQuestionData] = useState(null)
@@ -26,8 +27,7 @@ const ModifyQuestionView = () => {
   }
 
   return (
-    <div className='section-container'>
-      <title>Modificar Pregunta</title>
+    <SectionLayout title='Modificar pregunta'>
       <div className='modify-question-container'>
         <div className='search-section'>
           <FindQuestion
@@ -41,7 +41,7 @@ const ModifyQuestionView = () => {
           )}
         </div>
       </div>
-    </div>
+    </SectionLayout>
   )
 }
 

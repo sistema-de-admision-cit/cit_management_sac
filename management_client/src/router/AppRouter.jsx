@@ -3,7 +3,6 @@ import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import menuConfig from '../components/hub/config/menuConfig'
 import LoginSection from '../components/auth/views/LoginSection'
-import RegisterSection from '../components/auth/views/RegisterSection'
 import generateRoutesFromConfig from './GenerateRoutesFromConfig'
 import UnauthorizedAccessPage from '../components/errors/pages/UnauthorizedAccessPage'
 import NotFoundPage from '../components/errors/pages/NotFoundPage'
@@ -15,15 +14,11 @@ const authRoutes = [
     children: [
       {
         index: true, // ruta por defecto
-        element: <LoginSection sectionName='Iniciar Sesión' />
+        element: <LoginSection />
       },
       {
         path: '/login',
-        element: <LoginSection sectionName='Iniciar Sesión' />
-      },
-      {
-        path: '/register',
-        element: <RegisterSection sectionName='Registrarse' />
+        element: <LoginSection />
       }
     ]
   }

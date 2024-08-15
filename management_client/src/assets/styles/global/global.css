@@ -88,3 +88,16 @@ a {
     outline: none;
   }
 }
+
+/* para evitar que se cambie la fuente */
+body {
+  font-family: "Montserrat", sans-serif !important;
+}
+
+html {
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+* {
+  font-family: 'Montserrat', sans-serif !important;
+}

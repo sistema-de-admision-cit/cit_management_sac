@@ -1,29 +1,36 @@
 import { useState } from 'react'
-import AuthComponent from './AuthComponent'
-import { onLoginSubmit } from './formsHandler'
+import { handleSubmit } from './formsHandler'
+import LoginHeader from '../organisms/LoginHeader'
+import LoginContent from '../organisms/LoginContent'
+import '../../../assets/styles/auth/wrap.css'
+import useMessages from '../../global/hooks/useMessages'
 
-const LoginSection = ({ sectionName }) => {
+const LoginSection = () => {
   const [formData, setFormData] = useState({})
-  const [errorMessage, setErrorMessage] = useState('')
+  const { setErrorMessage, renderMessages } = useMessages()
 
   const fields = [
     { name: 'correo', label: 'Correo Electrónico', type: 'email', placeholder: 'Ej. name@example.com' },
     { name: 'contrasena', label: 'Contraseña', type: 'password', placeholder: 'Ej. ********' }
   ]
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
   return (
     <>
-      <title>{sectionName}</title>
-      <AuthComponent
-        formData={formData}
-        setFormData={setFormData}
-        onSubmit={onLoginSubmit}
-        fields={fields}
-        sectionName={sectionName}
-        isRegisterSuccess={false}
-        errorMessage={errorMessage}
-        setErrorMessage={setErrorMessage}
-      />
+      <title>Iniciar Sesión</title>
+      <div className='wrap'>
+        <LoginHeader />
+        <LoginContent
+          fields={fields}
+          formData={formData}
+          handleChange={handleChange}
+          onSubmit={(e) => handleSubmit(e, formData, setErrorMessage, setFormData)}
+        />
+        {renderMessages()}
+      </div>
     </>
   )
 }

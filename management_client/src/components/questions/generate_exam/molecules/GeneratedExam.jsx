@@ -8,7 +8,8 @@ const GeneratedExam = ({
   setExamDate,
   setSuccessMessage,
   setErrorMessage,
-  setLoading,
+  setIsSaving,
+  isSaving,
   saveExamHandler,
   discardExamHandler
 }) => (
@@ -23,8 +24,8 @@ const GeneratedExam = ({
     ))}
 
     <div className='generated-exam-buttons'>
-      <Button className='btn btn-primary' onClick={() => saveExamHandler(exam, examDate, setSuccessMessage, setErrorMessage, setLoading, setExam)}>
-        Guardar Examen
+      <Button className='btn btn-primary' onClick={() => saveExamHandler(exam, examDate, setSuccessMessage, setErrorMessage, setIsSaving, setExam)} disabled={isSaving}>
+        {isSaving ? 'Guardando...' : 'Guardar Examen'}
       </Button>
       <Button className='btn btn-secondary' onClick={() => discardExamHandler(setExam, setExamDate)}>
         Descartar Examen

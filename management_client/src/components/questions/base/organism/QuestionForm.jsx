@@ -1,102 +1,67 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import ExamTypeOptions from '../molecules/ExamTypeOptions'
 import QuestionTypeOptions from '../molecules/QuestionTypeOptions'
-import QuestionOptions from '../molecules/QuestionOptions'
 import InputField from '../../../global/atoms/InputField'
 import Button from '../../../global/atoms/Button'
-import PopupComponent from '../../../popups/PopupComponent'
+import UniqueQuestionSection from './UniqueQuestionSection'
+import useMessages from '../../../global/hooks/useMessages'
+import useFormState from '../../../global/hooks/useFormState'
 import '../../../../assets/styles/questions/question-form.css'
-
 import {
   handleChange,
   handleTestOptionChange,
   handleOptionChange,
-  clearForm,
   getButtonState
 } from '../../helpers/formHandlers'
+import { EXAM_TYPE_OPTIONS, QUESTION_TYPE_OPTIONS } from '../helpers/questionFormOptions'
 
-const QuestionForm = ({
-  title,
-  initialData,
-  onSubmit,
-  submitButtonText,
-  isModify = false
-}) => {
-  const [questionData, setQuestionData] = useState(initialData)
+const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
+  const { formData: questionData, setFormData: setQuestionData, resetForm } = useFormState(initialData)
   const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
-  const [successMessage, setSuccessMessage] = useState('')
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
-  const examTypeOptions = [
-    { value: 'academic', label: 'Académico' },
-    { value: 'dai', label: 'DAI' }
-  ]
-
-  const questionTypeOptions = [
-    ...(questionData.examType === 'dai'
-      ? [{ value: 'short', label: 'Respuesta Corta' }]
-      : [{ value: 'unique', label: 'Selección Única' }])
-  ]
+  const { examType, questionType, question, options, correctOption } = questionData
+  const currentQuestionTypeOptions = QUESTION_TYPE_OPTIONS[examType] || []
 
   return (
-    <section className='question-form-container'>
+    <div className='container question-form-container'>
       <h1>{title}</h1>
-      {errorMessage && (
-        <PopupComponent message={errorMessage} onClose={() => setErrorMessage('')} type='error' />
-      )}
-      {successMessage && (
-        <PopupComponent message={successMessage} onClose={() => setSuccessMessage('')} type='confirmation' />
-      )}
-      <form
-        onSubmit={(e) => onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)}
-        className='question-form'
-      >
+      <form onSubmit={(e) => onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)} className='question-form'>
         <ExamTypeOptions
-          value={questionData.examType}
+          value={examType}
           handleChange={(e) => handleTestOptionChange(e, questionData, setQuestionData)}
-          options={examTypeOptions}
+          options={EXAM_TYPE_OPTIONS}
         />
 
-        {questionData.examType && (
+        {examType && (
           <QuestionTypeOptions
-            value={questionData.questionType}
-            handleChange={(e) => handleChange(e, questionData, setQuestionData)}
-            options={questionTypeOptions}
+            value={questionType}
+            handleChange={(e, isFile = false) => handleChange(e, questionData, setQuestionData, isFile)}
+            options={currentQuestionTypeOptions}
           />
         )}
 
         <InputField
           field={{ name: 'question', label: 'Pregunta', type: 'text', placeholder: 'Ingrese la pregunta aquí' }}
-          value={questionData.question}
-          handleChange={(e) => handleChange(e, questionData, setQuestionData)}
+          value={question}
+          handleChange={(e, isFile = false) => handleChange(e, questionData, setQuestionData, isFile)}
           className='form-group'
         />
 
         <InputField
-          field={{ name: 'images', label: 'Agregar Imágenes', type: 'file', multiple: true }} // Nuevo campo para imágenes
-          handleChange={(e) => handleChange(e, questionData, setQuestionData, true)}
+          field={{ name: 'images', label: 'Agregar Imágenes', type: 'file', multiple: true, required: false }}
+          handleChange={(e, isFile = true) => handleChange(e, questionData, setQuestionData, isFile)}
           className='form-group'
         />
 
-        {questionData.questionType === 'unique' && (
-          <QuestionOptions
-            options={questionData.options}
+        {/* cuando el tipo de pregunta es unica, se agrega el componente UniqueQuestionSection */}
+        {questionType === 'unique' && (
+          <UniqueQuestionSection
+            options={options}
+            correctOption={correctOption}
             handleOptionChange={(index, value) => handleOptionChange(index, value, questionData, setQuestionData)}
+            handleInputChange={(e, isFile = false) => handleChange(e, questionData, setQuestionData, isFile)}
           />
-        )}
-
-        {questionData.questionType === 'unique' && (
-          <InputField
-            field={{ name: 'correctOption', label: 'Respuesta Correcta', type: 'select' }}
-            value={questionData.correctOption}
-            handleChange={(e) => handleChange(e, questionData, setQuestionData)}
-            className='form-group'
-          >
-            <option value=''>Seleccionar</option>
-            {questionData.options.map((option, index) => (
-              <option key={index} value={index}>{`Opción ${index + 1}`}</option>
-            ))}
-          </InputField>
         )}
 
         <Button type='submit' className='btn btn-primary' disabled={getButtonState(questionData, isLoading)}>
@@ -105,13 +70,17 @@ const QuestionForm = ({
         <Button
           type='button'
           className='btn btn-secondary'
-          onClick={() => clearForm(setQuestionData)}
+          onClick={() => {
+            resetForm()
+            setIsLoading(false)
+          }}
           disabled={isLoading}
         >
           Limpiar
         </Button>
       </form>
-    </section>
+      {renderMessages()}
+    </div>
   )
 }
 

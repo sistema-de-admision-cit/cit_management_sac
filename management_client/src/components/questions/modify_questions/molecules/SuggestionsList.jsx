@@ -1,4 +1,3 @@
-import React from 'react'
 import '../../../../assets/styles/questions/suggestions-list.css'
 
 const SuggestionsList = ({ suggestions, onSuggestionClick }) => {

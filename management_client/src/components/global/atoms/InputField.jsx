@@ -57,7 +57,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
         type='file'
         name={field.name}
         onChange={handleChange}
-        required
+        required={field.required}
         multiple={field.multiple}
       />
     )

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import InputField from '../../../global/atoms/InputField'
 import Button from '../../../global/atoms/Button'
-import PopupComponent from '../../../popups/PopupComponent'
 import SuggestionsList from '../../modify_questions/molecules/SuggestionsList'
 import AdvancedSearch from './AdvancedSearch'
 import { handleSearch } from '../../helpers/formHandlers'
@@ -13,14 +12,14 @@ import {
   handleAdvancedSearch
 } from '../helpers/findQuestionHandlers'
 import '../../../../assets/styles/questions/find-question.css'
+import useFormState from '../../../global/hooks/useFormState'
 
 const FindQuestion = ({ onQuestionFound, onResultsUpdate, lookingFor }) => {
-  const [query, setQuery] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
-  const [suggestions, setSuggestions] = useState([])
+  const { formData: query, setFormData: setQuery } = useFormState('')
+  const { formData: searchCode, setFormData: setSearchCode } = useFormState('')
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
-  const [searchCode, setSearchCode] = useState('')
   const [searchExamType, setSearchExamType] = useState('both')
+  const [suggestions, setSuggestions] = useState([])
 
   useEffect(() => {
     handleSearch(query, (questions) => setQuestions(questions, lookingFor, onResultsUpdate, setSuggestions), searchExamType, setSearchCode, lookingFor)
@@ -33,10 +32,7 @@ const FindQuestion = ({ onQuestionFound, onResultsUpdate, lookingFor }) => {
   ]
 
   return (
-    <div className='find-question-container'>
-      {errorMessage && (
-        <PopupComponent message={errorMessage} onClose={() => setErrorMessage('')} type='error' />
-      )}
+    <div className='container find-question-container'>
       <InputField
         field={{ name: 'questionText', label: 'Buscar Pregunta', type: 'text', placeholder: 'Ingrese el texto de la pregunta' }}
         value={query}

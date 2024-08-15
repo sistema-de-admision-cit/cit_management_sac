@@ -3,6 +3,7 @@ import AddQuestionView from '../../questions/add_questions/view/AddQuestionView'
 import ModifyQuestionView from '../../questions/modify_questions/view/ModifyQuestionView'
 import DeleteQuestionView from '../../questions/delete_questions/view/DeleteQuestionView'
 import GenerateExamView from '../../questions/generate_exam/view/GenerateExamView'
+import HubIcon from './HubIcon'
 
 // componente por defecto para las rutas padre
 // feature temporal
@@ -20,15 +21,15 @@ const ROLE_PSYCHOLOGIST = 'psychologist'
 const menuConfig = [
   {
     title: 'Sistema de Admisión CIT',
-    icon: (
-      <svg width='16px' height='16px' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
-        <path d='M4 7L7 7M20 7L11 7' stroke='#1C274C' strokeWidth='1.5' strokeLinecap='round' />
-        <path d='M20 17H17M4 17L13 17' stroke='#1C274C' strokeWidth='1.5' strokeLinecap='round' />
-        <path d='M4 12H7L20 12' stroke='#1C274C' strokeWidth='1.5' strokeLinecap='round' />
-      </svg>
-    ),
+    icon: <HubIcon />,
     items: [
-      { key: 'dashboard', label: 'Dashboard', path: '/dashboard', parentComponent: DefaultComponent, roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST] },
+      {
+        key: 'dashboard',
+        label: 'Dashboard',
+        path: '/dashboard',
+        parentComponent: DefaultComponent,
+        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]
+      },
       {
         key: 'inscripciones',
         label: 'Gestión de Inscripciones',
@@ -65,8 +66,7 @@ const menuConfig = [
           { key: 'ingresar', label: 'Ingresar Preguntas', path: '/examenes/ingresar', component: AddQuestionView },
           { key: 'modificar', label: 'Modificar Preguntas', path: '/examenes/modificar', component: ModifyQuestionView },
           { key: 'eliminar', label: 'Eliminar Preguntas', path: '/examenes/eliminar', component: DeleteQuestionView },
-          { key: 'generar', label: 'Generar Exámenes', path: '/examenes/generar', component: GenerateExamView },
-          { key: 'presentar', label: 'Presentar Exámenes', path: '/examenes/presentar', component: DefaultComponent }
+          { key: 'generar', label: 'Generar Exámenes', path: '/examenes/generar', component: GenerateExamView }
         ],
         roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]
       },

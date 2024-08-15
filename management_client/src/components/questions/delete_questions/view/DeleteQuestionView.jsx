@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import QuestionList from '../organisms/QuestionList'
 import '../../../../assets/styles/questions/view.css'
 import { dummyData } from '../../helpers/dummyData'
 import { handleDeleteFromList } from '../helpers/formHandlers'
 import FindQuestion from '../../base/molecules/FindQuestion'
-import PopupComponent from '../../../popups/PopupComponent'
+import SectionLayout from '../../../global/molecules/SectionLayout'
+import useMessages from '../../../global/hooks/useMessages'
 
 const DeleteQuestionView = () => {
   const [questions, setQuestions] = useState([])
   const [filteredQuestions, setFilteredQuestions] = useState([])
-  const [errorMessage, setErrorMessage] = useState('')
-  const [successMessage, setSuccessMessage] = useState('')
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
   useEffect(() => {
     setQuestions(dummyData)
@@ -23,10 +23,7 @@ const DeleteQuestionView = () => {
   }
 
   return (
-    <div className='section-container'>
-      <title>Eliminar Pregunta</title>
-      {errorMessage && <PopupComponent message={errorMessage} onClose={() => setErrorMessage('')} type='error' />}
-      {successMessage && <PopupComponent message={successMessage} onClose={() => setSuccessMessage('')} type='confirmation' />}
+    <SectionLayout title='Eliminar pregunta'>
       <FindQuestion
         onResultsUpdate={setFilteredQuestions}
         lookingFor='delete'
@@ -35,7 +32,8 @@ const DeleteQuestionView = () => {
         questions={filteredQuestions}
         onDelete={handleDelete}
       />
-    </div>
+      {renderMessages()}
+    </SectionLayout>
   )
 }
 

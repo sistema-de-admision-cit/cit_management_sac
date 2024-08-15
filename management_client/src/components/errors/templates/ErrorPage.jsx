@@ -1,5 +1,3 @@
-// src/components/global/templates/ErrorPage.js
-import React from 'react'
 import Button from '../../global/atoms/Button'
 import '../../../assets/styles/errors/error.css'
 
