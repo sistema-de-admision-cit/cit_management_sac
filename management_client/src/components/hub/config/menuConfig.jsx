@@ -7,10 +7,10 @@ import HubIcon from './HubIcon'
 
 // componente por defecto para las rutas padre
 // feature temporal
-// TODO: implementar un compononente para cada padre
+// TODO: implementar un componente para cada padre
 const DefaultComponent = ({ label }) => (
   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-    componente por defecto para {label}
+    Componente por defecto para {label}
   </div>
 )
 
@@ -28,77 +28,198 @@ const menuConfig = [
         label: 'Dashboard',
         path: '/dashboard',
         parentComponent: DefaultComponent,
-        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]
+        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
+        description: 'Vista general del sistema con estadísticas y accesos rápidos.'
       },
       {
         key: 'inscripciones',
         label: 'Gestión de Inscripciones',
         path: '/inscripciones',
         parentComponent: DefaultComponent,
+        roleRequired: [ROLE_ADMIN],
+        description: 'Módulo para gestionar el proceso de inscripción de estudiantes.',
         subItems: [
-          { key: 'formulario', label: 'Llenar Formulario', path: '/inscripciones/formulario', component: DefaultComponent },
-          { key: 'consultar', label: 'Consultar Inscripciones', path: '/inscripciones/consultar', component: DefaultComponent },
-          { key: 'actualizar-fechas', label: 'Actualizar Fechas de Examen', path: '/inscripciones/actualizar-fechas', component: DefaultComponent },
-          { key: 'metodo-notificacion', label: 'Método de Notificación', path: '/inscripciones/metodo-notificacion', component: DefaultComponent }
-        ],
-        roleRequired: [ROLE_ADMIN]
+          {
+            key: 'formulario',
+            label: 'Llenar Formulario',
+            path: '/inscripciones/formulario',
+            component: DefaultComponent,
+            description: 'Formulario para registrar nuevas inscripciones.'
+          },
+          {
+            key: 'consultar',
+            label: 'Consultar Inscripciones',
+            path: '/inscripciones/consultar',
+            component: DefaultComponent,
+            description: 'Consultar y revisar las inscripciones existentes.'
+          },
+          {
+            key: 'actualizar-fechas',
+            label: 'Actualizar Fechas de Examen',
+            path: '/inscripciones/actualizar-fechas',
+            component: DefaultComponent,
+            description: 'Actualizar las fechas de los exámenes en el sistema.'
+          },
+          {
+            key: 'metodo-notificacion',
+            label: 'Método de Notificación',
+            path: '/inscripciones/metodo-notificacion',
+            component: DefaultComponent,
+            description: 'Configurar métodos de notificación para inscripciones.'
+          }
+        ]
       },
       {
         key: 'configuracion',
         label: 'Configuración del Sistema',
         path: '/configuracion',
         parentComponent: DefaultComponent,
+        roleRequired: [ROLE_ADMIN],
+        description: 'Configuraciones generales del sistema.',
         subItems: [
-          { key: 'citas', label: 'Configurar Citas', path: '/configuracion/citas', component: DefaultComponent },
-          { key: 'porcentajes', label: 'Configurar Porcentajes', path: '/configuracion/porcentajes', component: DefaultComponent },
-          { key: 'notificaciones', label: 'Configurar Notificaciones', path: '/configuracion/notificaciones', component: DefaultComponent },
-          { key: 'accesos', label: 'Gestionar Accesos', path: '/configuracion/accesos', component: DefaultComponent },
-          { key: 'roles', label: 'Gestionar Roles', path: '/configuracion/roles', component: DefaultComponent }
-        ],
-        roleRequired: [ROLE_ADMIN]
+          {
+            key: 'citas',
+            label: 'Configurar Citas',
+            path: '/configuracion/citas',
+            component: DefaultComponent,
+            description: 'Configurar horarios y citas para exámenes y reuniones.'
+          },
+          {
+            key: 'porcentajes',
+            label: 'Configurar Porcentajes',
+            path: '/configuracion/porcentajes',
+            component: DefaultComponent,
+            description: 'Definir porcentajes de evaluación y criterios.'
+          },
+          {
+            key: 'notificaciones',
+            label: 'Configurar Notificaciones',
+            path: '/configuracion/notificaciones',
+            component: DefaultComponent,
+            description: 'Configurar las notificaciones automáticas del sistema.'
+          },
+          {
+            key: 'accesos',
+            label: 'Gestionar Accesos',
+            path: '/configuracion/accesos',
+            component: DefaultComponent,
+            description: 'Gestionar accesos y permisos de los usuarios en el sistema.'
+          },
+          {
+            key: 'roles',
+            label: 'Gestionar Roles',
+            path: '/configuracion/roles',
+            component: DefaultComponent,
+            description: 'Gestionar los roles y permisos de los usuarios.'
+          }
+        ]
       },
       {
         key: 'examenes',
         label: 'Gestión de Exámenes',
         path: '/examenes',
         parentComponent: DefaultComponent,
+        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
+        description: 'Gestión y configuración de exámenes y preguntas.',
         subItems: [
-          { key: 'ingresar', label: 'Ingresar Preguntas', path: '/examenes/ingresar', component: AddQuestionView },
-          { key: 'modificar', label: 'Modificar Preguntas', path: '/examenes/modificar', component: ModifyQuestionView },
-          { key: 'eliminar', label: 'Eliminar Preguntas', path: '/examenes/eliminar', component: DeleteQuestionView },
-          { key: 'generar', label: 'Generar Exámenes', path: '/examenes/generar', component: GenerateExamView }
-        ],
-        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]
+          {
+            key: 'ingresar',
+            label: 'Ingresar Preguntas',
+            path: '/examenes/ingresar',
+            component: AddQuestionView,
+            description: 'Agregar nuevas preguntas a los exámenes.'
+          },
+          {
+            key: 'modificar',
+            label: 'Modificar Preguntas',
+            path: '/examenes/modificar',
+            component: ModifyQuestionView,
+            description: 'Modificar preguntas existentes en los exámenes.'
+          },
+          {
+            key: 'eliminar',
+            label: 'Eliminar Preguntas',
+            path: '/examenes/eliminar',
+            component: DeleteQuestionView,
+            description: 'Eliminar preguntas de los exámenes.'
+          },
+          {
+            key: 'generar',
+            label: 'Generar Exámenes',
+            path: '/examenes/generar',
+            component: GenerateExamView,
+            description: 'Generar exámenes a partir de las preguntas configuradas.'
+          }
+        ]
       },
       {
         key: 'resultados',
         label: 'Gestión de Resultados',
         path: '/resultados',
         parentComponent: DefaultComponent,
+        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
+        description: 'Gestión y análisis de los resultados de los exámenes.',
         subItems: [
-          { key: 'almacenar', label: 'Almacenar Respuestas', path: '/resultados/almacenar', component: DefaultComponent },
-          { key: 'cargar', label: 'Cargar Notas', path: '/resultados/cargar', component: DefaultComponent },
-          { key: 'analizar', label: 'Analizar Resultados', path: '/resultados/analizar', component: DefaultComponent },
-          { key: 'notificar', label: 'Notificar Resultados', path: '/resultados/notificar', component: DefaultComponent }
-        ],
-        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]
+          {
+            key: 'almacenar',
+            label: 'Almacenar Respuestas',
+            path: '/resultados/almacenar',
+            component: DefaultComponent,
+            description: 'Almacenar las respuestas obtenidas en los exámenes.'
+          },
+          {
+            key: 'cargar',
+            label: 'Cargar Notas',
+            path: '/resultados/cargar',
+            component: DefaultComponent,
+            description: 'Cargar y registrar las notas obtenidas.'
+          },
+          {
+            key: 'analizar',
+            label: 'Analizar Resultados',
+            path: '/resultados/analizar',
+            component: DefaultComponent,
+            description: 'Analizar los resultados y generar informes.'
+          },
+          {
+            key: 'notificar',
+            label: 'Notificar Resultados',
+            path: '/resultados/notificar',
+            component: DefaultComponent,
+            description: 'Notificar a los usuarios sobre los resultados obtenidos.'
+          }
+        ]
       },
       {
         key: 'reportes',
         label: 'Reportes y Análisis',
         path: '/reportes',
         parentComponent: DefaultComponent,
+        roleRequired: [ROLE_ADMIN],
+        description: 'Generar y visualizar reportes del sistema.',
         subItems: [
-          { key: 'graficos', label: 'Reportes Gráficos', path: '/reportes/graficos', component: DefaultComponent },
-          { key: 'pdf', label: 'Reportes PDF/CSV', path: '/reportes/pdf', component: DefaultComponent }
-        ],
-        roleRequired: [ROLE_ADMIN]
+          {
+            key: 'graficos',
+            label: 'Reportes Gráficos',
+            path: '/reportes/graficos',
+            component: DefaultComponent,
+            description: 'Visualizar reportes en formato gráfico.'
+          },
+          {
+            key: 'pdf',
+            label: 'Reportes PDF/CSV',
+            path: '/reportes/pdf',
+            component: DefaultComponent,
+            description: 'Generar reportes en formatos PDF y CSV.'
+          }
+        ]
       },
       {
         key: 'logout',
         label: 'Cerrar Sesión',
         path: '#',
-        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]
+        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
+        description: 'Cerrar sesión del sistema.'
       }
     ]
   }
