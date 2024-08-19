@@ -29,7 +29,7 @@ const GenerateExamView = () => {
         <ExamDatePicker examDate={examDate} setExamDate={setExamDate} />
 
         <Button onClick={handleGenerateExam} className='btn btn-primary' disabled={isGenerating}>
-          {isGenerating ? 'Generando...' : 'Generar Examen'}
+          {isGenerating ? 'Generando...' : exam.length > 0 ? 'Generar Otro Examen' : 'Generar'}
         </Button>
 
         {exam.length > 0 && (
