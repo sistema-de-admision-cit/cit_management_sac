@@ -4,6 +4,7 @@ import ModifyQuestionView from '../../questions/modify_questions/view/ModifyQues
 import DeleteQuestionView from '../../questions/delete_questions/view/DeleteQuestionView'
 import GenerateExamView from '../../questions/generate_exam/view/GenerateExamView'
 import HubIcon from './HubIcon'
+import ExamMenuPageView from '../../questions/menu/view/ExamMenuPageView'
 
 // componente por defecto para las rutas padre
 // feature temporal
@@ -27,7 +28,6 @@ const menuConfig = [
         key: 'dashboard',
         label: 'Dashboard',
         path: '/dashboard',
-        parentComponent: DefaultComponent,
         roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Vista general del sistema con estadísticas y accesos rápidos.'
       },
@@ -118,37 +118,42 @@ const menuConfig = [
         key: 'examenes',
         label: 'Gestión de Exámenes',
         path: '/examenes',
-        parentComponent: DefaultComponent,
+        parentComponent: ExamMenuPageView,
         roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Gestión y configuración de exámenes y preguntas.',
+        imagePath: 'public/images/temp-card-image.avif',
         subItems: [
           {
             key: 'ingresar',
             label: 'Ingresar Preguntas',
             path: '/examenes/ingresar',
             component: AddQuestionView,
-            description: 'Agregar nuevas preguntas a los exámenes.'
+            description: 'Agregar nuevas preguntas a los exámenes.',
+            imagePath: 'public/images/temp-card-image.avif'
           },
           {
             key: 'modificar',
             label: 'Modificar Preguntas',
             path: '/examenes/modificar',
             component: ModifyQuestionView,
-            description: 'Modificar preguntas existentes en los exámenes.'
+            description: 'Modificar preguntas existentes en los exámenes.',
+            imagePath: 'public/images/temp-card-image.avif'
           },
           {
             key: 'eliminar',
             label: 'Eliminar Preguntas',
             path: '/examenes/eliminar',
             component: DeleteQuestionView,
-            description: 'Eliminar preguntas de los exámenes.'
+            description: 'Eliminar preguntas de los exámenes.',
+            imagePath: 'public/images/temp-card-image.avif'
           },
           {
             key: 'generar',
             label: 'Generar Exámenes',
             path: '/examenes/generar',
             component: GenerateExamView,
-            description: 'Generar exámenes a partir de las preguntas configuradas.'
+            description: 'Generar exámenes a partir de las preguntas configuradas.',
+            imagePath: 'public/images/temp-card-image-2.avif'
           }
         ]
       },
