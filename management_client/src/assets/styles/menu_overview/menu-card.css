@@ -1,0 +1,57 @@
+.menu-card {
+  border-radius: 10px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  height: 14vw;
+  max-height: 240px;
+  position: relative;
+  transition: transform 250ms;
+  width: 30%;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.menu-card:hover {
+  transform: translateY(-5px);
+}
+
+.background-image {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.menu-card-content {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  border-radius: 10px;
+  height: 100%;
+  width: 100%;
+}
+
+.menu-card .menu-card-content .menu-card-content-items {
+  bottom: 0px;
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  position: absolute;
+  right: 0px;
+  text-align: right;
+  transition: margin 250ms;
+}
+
+.menu-card:hover .menu-card-content .menu-card-content-items {
+  margin-bottom: 1rem;
+}
+
+.menu-card .menu-card-content .menu-card-content-items .menu-card-title {
+  color: whitesmoke;
+  font-size: 1.6em;
+  min-height: 2rem;
+}
+
+.menu-card .menu-card-content .menu-card-content-items .menu-card-description {
+  color: #42a5f5;
+  font-size: 1em;
+  font-style: italic;
+  min-height: 3rem;
+}
