@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
-import '../../../assets/styles/menu_overview/menu-card.css'
-import { goTo } from '../helpers/goTo'
+import '../../../../assets/styles/menu_overview/menu-card.css'
+import { goTo } from '../helpers/goTo.js'
 
 const MenuCard = ({ item }) => {
   const navigate = useNavigate()

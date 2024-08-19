@@ -1,4 +1,4 @@
-import MenuPage from '../../../../menu_overview/templates/MenuPage'
+import MenuPage from '../../../../ui/menu_overview/templates/MenuPage'
 import menuConfig from '../../../../core/hub/config/menuConfig'
 
 const ReportsMenuPageView = () => {

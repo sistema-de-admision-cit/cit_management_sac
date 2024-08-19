@@ -1,5 +1,5 @@
-import MenuCard from '../molecules/MenuCard'
-import '../../../assets/styles/menu_overview/menu-page.css'
+import MenuCard from '../molecules/MenuCard.jsx'
+import '../../../../assets/styles/menu_overview/menu-page.css'
 
 const MenuPage = ({ menuTitle, menuItems, menuDescription }) => {
   return (
