@@ -1,4 +1,4 @@
-import HubViewComponent from '../components/hub/view/HubViewComponent'
+import HubViewComponent from '../components/core/hub/view/HubViewComponent'
 import ProtectedRoute from './ProtectedRoute'
 
 // Función para generar rutas dinámicas a partir de un objeto de configuración (menuConfig)
