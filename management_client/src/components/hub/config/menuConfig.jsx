@@ -35,7 +35,8 @@ const menuConfig = [
         label: 'Dashboard',
         path: '/dashboard',
         roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
-        description: 'Vista general del sistema con estadísticas y accesos rápidos.'
+        description: 'Vista general del sistema con estadísticas y accesos rápidos.',
+        parentComponent: DefaultComponent
       },
       {
         key: 'enrollments',
