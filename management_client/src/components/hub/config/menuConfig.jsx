@@ -9,6 +9,9 @@ import ExamMenuPageView from '../../questions/menu/view/ExamMenuPageView'
 // enrollments views
 import EnrollmentsMenuPageView from '../../enrollments/menu/views/EnrollmentsMenuPageView'
 
+// configurations views
+import ConfigurationMenuPageView from '../../system_configuration/menu/views/ConfigurationMenuPageView'
+
 // componente por defecto para las rutas padre
 // feature temporal
 // TODO: implementar un componente para cada padre
@@ -72,7 +75,7 @@ const menuConfig = [
         key: 'configurations',
         label: 'Configuración del Sistema',
         path: '/configuracion',
-        parentComponent: DefaultComponent,
+        parentComponent: ConfigurationMenuPageView,
         roleRequired: [ROLE_ADMIN],
         description: 'Configuraciones generales del sistema.',
         subItems: [
