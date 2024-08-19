@@ -1,4 +1,4 @@
-import Button from '../../global/atoms/Button'
+import Button from '../../core/global/atoms/Button'
 import '../../../assets/styles/errors/error.css'
 
 const ErrorPage = ({ title, message, buttonText, onButtonClick }) => {

@@ -3,7 +3,7 @@ import { handleSubmit } from './formsHandler'
 import LoginHeader from '../organisms/LoginHeader'
 import LoginContent from '../organisms/LoginContent'
 import '../../../assets/styles/auth/wrap.css'
-import useMessages from '../../global/hooks/useMessages'
+import useMessages from '../../core/global/hooks/useMessages'
 
 const LoginSection = () => {
   const [formData, setFormData] = useState({})

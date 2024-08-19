@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import InputField from '../../../../global/atoms/InputField'
-import Button from '../../../../global/atoms/Button'
+import InputField from '../../../../core/global/atoms/InputField'
+import Button from '../../../../core/global/atoms/Button'
 import SuggestionsList from '../../modify_questions/molecules/SuggestionsList'
 import AdvancedSearch from './AdvancedSearch'
 import { handleSearch } from '../../helpers/formHandlers'
@@ -12,7 +12,7 @@ import {
   handleAdvancedSearch
 } from '../helpers/findQuestionHandlers'
 import '../../../../../assets/styles/questions/find-question.css'
-import useFormState from '../../../../global/hooks/useFormState'
+import useFormState from '../../../../core/global/hooks/useFormState'
 
 const FindQuestion = ({ onQuestionFound, onResultsUpdate, lookingFor }) => {
   const { formData: query, setFormData: setQuery } = useFormState('')

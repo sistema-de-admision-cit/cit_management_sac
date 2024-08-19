@@ -1,13 +1,13 @@
 // GenerateExamView.jsx
 import { useState } from 'react'
-import Button from '../../../../global/atoms/Button'
+import Button from '../../../../core/global/atoms/Button'
 import ExamDatePicker from '../molecules/ExamDatePicker'
 import GeneratedExam from '../molecules/GeneratedExam'
 import { generateExam, saveExamHandler, discardExamHandler } from '../helpers/handlers'
 import '../../../../../assets/styles/questions/view.css'
 import { getNearestAvailableDate } from '../helpers/datesHelper'
-import SectionLayout from '../../../../global/molecules/SectionLayout'
-import useMessages from '../../../../global/hooks/useMessages'
+import SectionLayout from '../../../../core/global/molecules/SectionLayout'
+import useMessages from '../../../../core/global/hooks/useMessages'
 
 const GenerateExamView = () => {
   const [exam, setExam] = useState([])

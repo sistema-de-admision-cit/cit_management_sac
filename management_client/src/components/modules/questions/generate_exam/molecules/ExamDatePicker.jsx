@@ -1,5 +1,5 @@
 // ExamDatePicker.jsx
-import InputField from '../../../../global/atoms/InputField'
+import InputField from '../../../../core/global/atoms/InputField'
 import { availableDates } from '../helpers/datesHelper'
 
 const ExamDatePicker = ({ examDate, setExamDate }) => (

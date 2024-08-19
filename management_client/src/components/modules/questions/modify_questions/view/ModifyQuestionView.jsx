@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import FindQuestion from '../../base/molecules/FindQuestion'
 import ModifyQuestionForm from '../organisms/ModifyQuestionForm'
 import '../../../../../assets/styles/questions/view.css'
-import SectionLayout from '../../../../global/molecules/SectionLayout'
+import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 
 const ModifyQuestionView = () => {
   const [questionData, setQuestionData] = useState(null)

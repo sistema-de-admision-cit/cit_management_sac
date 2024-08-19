@@ -1,5 +1,5 @@
 import QuestionOptions from '../molecules/QuestionOptions'
-import InputField from '../../../../global/atoms/InputField'
+import InputField from '../../../../core/global/atoms/InputField'
 
 const UniqueQuestionSection = ({ options, correctOption, handleOptionChange, handleInputChange }) => {
   return (

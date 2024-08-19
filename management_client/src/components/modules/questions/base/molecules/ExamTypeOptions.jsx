@@ -1,4 +1,4 @@
-import InputField from '../../../../global/atoms/InputField'
+import InputField from '../../../../core/global/atoms/InputField'
 
 const ExamTypeOptions = ({ value, handleChange, options }) => (
   <InputField

@@ -1,4 +1,4 @@
-import Button from '../../../../global/atoms/Button'
+import Button from '../../../../core/global/atoms/Button'
 import '../../../../../assets/styles/questions/question-list.css'
 
 const QuestionList = ({ questions, onDelete }) => {

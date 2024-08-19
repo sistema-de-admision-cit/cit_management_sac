@@ -1,4 +1,4 @@
-import InputField from '../../../../global/atoms/InputField'
+import InputField from '../../../../core/global/atoms/InputField'
 import ExamTypeOptions from '../../base/molecules/ExamTypeOptions'
 import { handleSearchByCode } from '../../helpers/formHandlers'
 

@@ -1,4 +1,4 @@
-import '../../../assets/styles/global/buttons.css'
+import '../../../../assets/styles/global/buttons.css'
 
 const Button = ({ type, className, children, onClick, disabled }) => {
   return (

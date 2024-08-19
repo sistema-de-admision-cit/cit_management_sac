@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import ExamTypeOptions from '../molecules/ExamTypeOptions'
 import QuestionTypeOptions from '../molecules/QuestionTypeOptions'
-import InputField from '../../../../global/atoms/InputField'
-import Button from '../../../../global/atoms/Button'
+import InputField from '../../../../core/global/atoms/InputField'
+import Button from '../../../../core/global/atoms/Button'
 import UniqueQuestionSection from './UniqueQuestionSection'
-import useMessages from '../../../../global/hooks/useMessages'
-import useFormState from '../../../../global/hooks/useFormState'
+import useMessages from '../../../../core/global/hooks/useMessages'
+import useFormState from '../../../../core/global/hooks/useFormState'
 import '../../../../../assets/styles/questions/question-form.css'
 import {
   handleChange,
