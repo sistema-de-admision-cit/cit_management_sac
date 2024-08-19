@@ -5,7 +5,8 @@ import '../../../assets/styles/hub/nav-group.css'
 
 const NavGroup = ({ currentPage, logout, userRole }) => {
   const currentPageString = String(currentPage).slice(1)
-  const currentSubPage = currentPageString.split('/')[1]
+  const currentSubPage = `/${currentPageString}`
+  const currentMainPage = `/${currentPageString.split('/')[0]}`
 
   return (
     <div className='left-side-nav-container'>
@@ -21,7 +22,7 @@ const NavGroup = ({ currentPage, logout, userRole }) => {
                 <NavItem key={item.key} className={item.subItems ? 'has-submenu' : ''}>
                   <NavLink
                     to={item.path}
-                    className={currentPageString.startsWith(item.key) ? 'active' : ''}
+                    className={currentMainPage === item.path ? 'active' : ''}
                     onClick={item.key === 'logout' ? logout : item.onClick || null}
                   >
                     {item.label}
@@ -32,7 +33,7 @@ const NavGroup = ({ currentPage, logout, userRole }) => {
                         <NavItem key={subItem.key}>
                           <NavLink
                             to={subItem.path}
-                            className={currentSubPage === subItem.key ? 'active' : ''}
+                            className={currentSubPage === subItem.path ? 'active' : ''}
                           >
                             {subItem.label}
                           </NavLink>
