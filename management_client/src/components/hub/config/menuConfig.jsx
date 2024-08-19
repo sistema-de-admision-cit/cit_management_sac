@@ -160,7 +160,7 @@ const menuConfig = [
         ]
       },
       {
-        key: 'resultados',
+        key: 'results',
         label: 'Gestión de Resultados',
         path: '/resultados',
         parentComponent: DefaultComponent,
@@ -168,28 +168,28 @@ const menuConfig = [
         description: 'Gestión y análisis de los resultados de los exámenes.',
         subItems: [
           {
-            key: 'almacenar',
+            key: 'store-results',
             label: 'Almacenar Respuestas',
             path: '/resultados/almacenar',
             component: DefaultComponent,
             description: 'Almacenar las respuestas obtenidas en los exámenes.'
           },
           {
-            key: 'cargar',
+            key: 'load-results',
             label: 'Cargar Notas',
             path: '/resultados/cargar',
             component: DefaultComponent,
             description: 'Cargar y registrar las notas obtenidas.'
           },
           {
-            key: 'analizar',
+            key: 'analyze-results',
             label: 'Analizar Resultados',
             path: '/resultados/analizar',
             component: DefaultComponent,
             description: 'Analizar los resultados y generar informes.'
           },
           {
-            key: 'notificar',
+            key: 'notify-results',
             label: 'Notificar Resultados',
             path: '/resultados/notificar',
             component: DefaultComponent,
