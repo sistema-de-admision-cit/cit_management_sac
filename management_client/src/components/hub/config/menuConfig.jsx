@@ -58,7 +58,7 @@ const menuConfig = [
             path: '/inscripciones/consultar',
             component: DefaultComponent,
             description: 'Consultar y revisar las inscripciones existentes.',
-            imagePath: 'public/images/temp-card-image.avif'
+            imagePath: '/images/temp-card-image.avif'
           },
           {
             key: 'update-dates',
@@ -66,7 +66,7 @@ const menuConfig = [
             path: '/inscripciones/actualizar-fechas',
             component: DefaultComponent,
             description: 'Actualizar las fechas de los exámenes en el sistema.',
-            imagePath: 'public/images/temp-card-image.avif'
+            imagePath: '/images/temp-card-image.avif'
           },
           {
             key: 'notification-method',
@@ -74,7 +74,7 @@ const menuConfig = [
             path: '/inscripciones/metodo-notificacion',
             component: DefaultComponent,
             description: 'Configurar métodos de notificación para inscripciones.',
-            imagePath: 'public/images/temp-card-image.avif'
+            imagePath: '/images/temp-card-image.avif'
           }
         ]
       },
@@ -137,7 +137,7 @@ const menuConfig = [
             path: '/examenes/ingresar',
             component: AddQuestionView,
             description: 'Agregar nuevas preguntas a los exámenes.',
-            imagePath: 'public/images/temp-card-image.avif'
+            imagePath: '/images/temp-card-image.avif'
           },
           {
             key: 'modify-question',
@@ -145,7 +145,7 @@ const menuConfig = [
             path: '/examenes/modificar',
             component: ModifyQuestionView,
             description: 'Modificar preguntas existentes en los exámenes.',
-            imagePath: 'public/images/temp-card-image.avif'
+            imagePath: '/images/temp-card-image.avif'
           },
           {
             key: 'delete-question',
@@ -153,7 +153,7 @@ const menuConfig = [
             path: '/examenes/eliminar',
             component: DeleteQuestionView,
             description: 'Eliminar preguntas de los exámenes.',
-            imagePath: 'public/images/temp-card-image.avif'
+            imagePath: '/images/temp-card-image.avif'
           },
           {
             key: 'generate-exam',
@@ -161,7 +161,7 @@ const menuConfig = [
             path: '/examenes/generar',
             component: GenerateExamView,
             description: 'Generar exámenes a partir de las preguntas configuradas.',
-            imagePath: 'public/images/temp-card-image-2.avif'
+            imagePath: '/images/temp-card-image-2.avif'
           }
         ]
       },
