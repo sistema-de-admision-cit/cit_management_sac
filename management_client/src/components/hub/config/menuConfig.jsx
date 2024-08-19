@@ -12,6 +12,9 @@ import EnrollmentsMenuPageView from '../../enrollments/menu/views/EnrollmentsMen
 // configurations views
 import ConfigurationMenuPageView from '../../system_configuration/menu/views/ConfigurationMenuPageView'
 
+// results views
+import ResultsMenuPageView from '../../results/menu/views/ResultsMenuPageView'
+
 // componente por defecto para las rutas padre
 // feature temporal
 // TODO: implementar un componente para cada padre
@@ -163,7 +166,7 @@ const menuConfig = [
         key: 'results',
         label: 'Gestión de Resultados',
         path: '/resultados',
-        parentComponent: DefaultComponent,
+        parentComponent: ResultsMenuPageView,
         roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Gestión y análisis de los resultados de los exámenes.',
         subItems: [
