@@ -114,7 +114,6 @@ const menuConfig = [
         parentComponent: ExamMenuPageView,
         roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Gestión y configuración de exámenes y preguntas.',
-        imagePath: 'public/images/temp-card-image.avif',
         subItems: [
           {
             key: 'ingresar',
