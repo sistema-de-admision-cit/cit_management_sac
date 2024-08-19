@@ -7,7 +7,7 @@ import HubIcon from './HubIcon'
 import ExamMenuPageView from '../../questions/menu/view/ExamMenuPageView'
 
 // enrollments views
-import EnrollmentsMenuPageView from '../../enrollments/menu/views/EnrollmentsMenuPageView'
+import EnrollmentsMenuPageView from '../../modules/enrollments/menu/views/EnrollmentsMenuPageView'
 
 // configurations views
 import ConfigurationMenuPageView from '../../system_configuration/menu/views/ConfigurationMenuPageView'
