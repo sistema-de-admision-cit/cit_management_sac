@@ -114,7 +114,7 @@ const menuConfig = [
         ]
       },
       {
-        key: 'examenes',
+        key: 'exams',
         label: 'Gestión de Exámenes',
         path: '/examenes',
         parentComponent: ExamMenuPageView,
@@ -122,7 +122,7 @@ const menuConfig = [
         description: 'Gestión y configuración de exámenes y preguntas.',
         subItems: [
           {
-            key: 'ingresar',
+            key: 'add-question',
             label: 'Ingresar Preguntas',
             path: '/examenes/ingresar',
             component: AddQuestionView,
@@ -130,7 +130,7 @@ const menuConfig = [
             imagePath: 'public/images/temp-card-image.avif'
           },
           {
-            key: 'modificar',
+            key: 'modify-question',
             label: 'Modificar Preguntas',
             path: '/examenes/modificar',
             component: ModifyQuestionView,
@@ -138,7 +138,7 @@ const menuConfig = [
             imagePath: 'public/images/temp-card-image.avif'
           },
           {
-            key: 'eliminar',
+            key: 'delete-question',
             label: 'Eliminar Preguntas',
             path: '/examenes/eliminar',
             component: DeleteQuestionView,
@@ -146,7 +146,7 @@ const menuConfig = [
             imagePath: 'public/images/temp-card-image.avif'
           },
           {
-            key: 'generar',
+            key: 'generate-exam',
             label: 'Generar Exámenes',
             path: '/examenes/generar',
             component: GenerateExamView,
