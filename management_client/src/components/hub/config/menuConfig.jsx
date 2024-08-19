@@ -6,6 +6,9 @@ import GenerateExamView from '../../questions/generate_exam/view/GenerateExamVie
 import HubIcon from './HubIcon'
 import ExamMenuPageView from '../../questions/menu/view/ExamMenuPageView'
 
+// enrollments views
+import EnrollmentsMenuPageView from '../../enrollments/menu/views/EnrollmentsMenuPageView'
+
 // componente por defecto para las rutas padre
 // feature temporal
 // TODO: implementar un componente para cada padre
@@ -35,7 +38,7 @@ const menuConfig = [
         key: 'enrollments',
         label: 'Gestión de Inscripciones',
         path: '/inscripciones',
-        parentComponent: DefaultComponent,
+        parentComponent: EnrollmentsMenuPageView,
         roleRequired: [ROLE_ADMIN],
         description: 'Módulo para gestionar el proceso de inscripción de estudiantes.',
         subItems: [
@@ -44,21 +47,24 @@ const menuConfig = [
             label: 'Consultar Inscripciones',
             path: '/inscripciones/consultar',
             component: DefaultComponent,
-            description: 'Consultar y revisar las inscripciones existentes.'
+            description: 'Consultar y revisar las inscripciones existentes.',
+            imagePath: 'public/images/temp-card-image.avif'
           },
           {
             key: 'update-dates',
             label: 'Actualizar Fechas de Examen',
             path: '/inscripciones/actualizar-fechas',
             component: DefaultComponent,
-            description: 'Actualizar las fechas de los exámenes en el sistema.'
+            description: 'Actualizar las fechas de los exámenes en el sistema.',
+            imagePath: 'public/images/temp-card-image.avif'
           },
           {
             key: 'notification-method',
             label: 'Método de Notificación',
             path: '/inscripciones/metodo-notificacion',
             component: DefaultComponent,
-            description: 'Configurar métodos de notificación para inscripciones.'
+            description: 'Configurar métodos de notificación para inscripciones.',
+            imagePath: 'public/images/temp-card-image.avif'
           }
         ]
       },
