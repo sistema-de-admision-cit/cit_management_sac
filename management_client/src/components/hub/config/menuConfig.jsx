@@ -32,7 +32,7 @@ const menuConfig = [
         description: 'Vista general del sistema con estadísticas y accesos rápidos.'
       },
       {
-        key: 'inscripciones',
+        key: 'enrollments',
         label: 'Gestión de Inscripciones',
         path: '/inscripciones',
         parentComponent: DefaultComponent,
@@ -40,28 +40,21 @@ const menuConfig = [
         description: 'Módulo para gestionar el proceso de inscripción de estudiantes.',
         subItems: [
           {
-            key: 'formulario',
-            label: 'Llenar Formulario',
-            path: '/inscripciones/formulario',
-            component: DefaultComponent,
-            description: 'Formulario para registrar nuevas inscripciones.'
-          },
-          {
-            key: 'consultar',
+            key: 'visit-requests',
             label: 'Consultar Inscripciones',
             path: '/inscripciones/consultar',
             component: DefaultComponent,
             description: 'Consultar y revisar las inscripciones existentes.'
           },
           {
-            key: 'actualizar-fechas',
+            key: 'update-dates',
             label: 'Actualizar Fechas de Examen',
             path: '/inscripciones/actualizar-fechas',
             component: DefaultComponent,
             description: 'Actualizar las fechas de los exámenes en el sistema.'
           },
           {
-            key: 'metodo-notificacion',
+            key: 'notification-method',
             label: 'Método de Notificación',
             path: '/inscripciones/metodo-notificacion',
             component: DefaultComponent,
