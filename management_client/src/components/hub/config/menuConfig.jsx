@@ -201,7 +201,7 @@ const menuConfig = [
         ]
       },
       {
-        key: 'reportes',
+        key: 'reports',
         label: 'Reportes y Análisis',
         path: '/reportes',
         parentComponent: DefaultComponent,
@@ -209,14 +209,14 @@ const menuConfig = [
         description: 'Generar y visualizar reportes del sistema.',
         subItems: [
           {
-            key: 'graficos',
+            key: 'graphical-reports',
             label: 'Reportes Gráficos',
             path: '/reportes/graficos',
             component: DefaultComponent,
             description: 'Visualizar reportes en formato gráfico.'
           },
           {
-            key: 'pdf',
+            key: 'pdf-reports',
             label: 'Reportes PDF/CSV',
             path: '/reportes/pdf',
             component: DefaultComponent,
