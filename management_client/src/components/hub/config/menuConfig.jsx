@@ -1,10 +1,10 @@
 // Question views
-import AddQuestionView from '../../questions/add_questions/view/AddQuestionView'
-import ModifyQuestionView from '../../questions/modify_questions/view/ModifyQuestionView'
-import DeleteQuestionView from '../../questions/delete_questions/view/DeleteQuestionView'
-import GenerateExamView from '../../questions/generate_exam/view/GenerateExamView'
+import AddQuestionView from '../../modules/questions/add_questions/view/AddQuestionView'
+import ModifyQuestionView from '../../modules/questions/modify_questions/view/ModifyQuestionView'
+import DeleteQuestionView from '../../modules/questions/delete_questions/view/DeleteQuestionView'
+import GenerateExamView from '../../modules/questions/generate_exam/view/GenerateExamView'
 import HubIcon from './HubIcon'
-import ExamMenuPageView from '../../questions/menu/view/ExamMenuPageView'
+import ExamMenuPageView from '../../modules/questions/menu/view/ExamMenuPageView'
 
 // enrollments views
 import EnrollmentsMenuPageView from '../../modules/enrollments/menu/views/EnrollmentsMenuPageView'
