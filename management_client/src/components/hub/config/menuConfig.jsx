@@ -13,7 +13,7 @@ import EnrollmentsMenuPageView from '../../enrollments/menu/views/EnrollmentsMen
 import ConfigurationMenuPageView from '../../system_configuration/menu/views/ConfigurationMenuPageView'
 
 // results views
-import ResultsMenuPageView from '../../results/menu/views/ResultsMenuPageView'
+import ResultsMenuPageView from '../../modules/results/menu/views/ResultsMenuPageView'
 
 // reports views
 import ReportsMenuPageView from '../../modules/reports/menu/views/ReportsMenuPageView'
