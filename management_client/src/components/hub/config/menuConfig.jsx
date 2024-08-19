@@ -10,7 +10,7 @@ import ExamMenuPageView from '../../questions/menu/view/ExamMenuPageView'
 import EnrollmentsMenuPageView from '../../modules/enrollments/menu/views/EnrollmentsMenuPageView'
 
 // configurations views
-import ConfigurationMenuPageView from '../../system_configuration/menu/views/ConfigurationMenuPageView'
+import ConfigurationMenuPageView from '../../modules/system_configuration/menu/views/ConfigurationMenuPageView'
 
 // results views
 import ResultsMenuPageView from '../../modules/results/menu/views/ResultsMenuPageView'
