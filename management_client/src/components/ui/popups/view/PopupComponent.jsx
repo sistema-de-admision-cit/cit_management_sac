@@ -1,5 +1,5 @@
-import '../../../assets/styles/popup/popup.css'
-import PopupIcon from '../atoms/PopupIcon'
+import '../../../../assets/styles/popup/popup.css'
+import PopupIcon from '../atoms/PopupIcon.jsx'
 
 const PopupComponent = ({ message, onClose, type, messageTitle }) => {
   const popupClass = type === 'confirmation' ? 'confirmation' : 'error'
