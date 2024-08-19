@@ -15,6 +15,9 @@ import ConfigurationMenuPageView from '../../system_configuration/menu/views/Con
 // results views
 import ResultsMenuPageView from '../../results/menu/views/ResultsMenuPageView'
 
+// reports views
+import ReportsMenuPageView from '../../reports/menu/views/ReportsMenuPageView'
+
 // componente por defecto para las rutas padre
 // feature temporal
 // TODO: implementar un componente para cada padre
@@ -204,7 +207,7 @@ const menuConfig = [
         key: 'reports',
         label: 'Reportes y Análisis',
         path: '/reportes',
-        parentComponent: DefaultComponent,
+        parentComponent: ReportsMenuPageView,
         roleRequired: [ROLE_ADMIN],
         description: 'Generar y visualizar reportes del sistema.',
         subItems: [
