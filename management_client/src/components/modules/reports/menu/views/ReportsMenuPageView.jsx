@@ -1,5 +1,5 @@
-import MenuPage from '../../../menu_overview/templates/MenuPage'
-import menuConfig from '../../../hub/config/menuConfig'
+import MenuPage from '../../../../menu_overview/templates/MenuPage'
+import menuConfig from '../../../../hub/config/menuConfig'
 
 const ReportsMenuPageView = () => {
   const menuExamsSection = menuConfig[0].items.find(item => item.key === 'reports')

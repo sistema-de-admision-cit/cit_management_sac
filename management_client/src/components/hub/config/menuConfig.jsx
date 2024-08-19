@@ -16,7 +16,7 @@ import ConfigurationMenuPageView from '../../system_configuration/menu/views/Con
 import ResultsMenuPageView from '../../results/menu/views/ResultsMenuPageView'
 
 // reports views
-import ReportsMenuPageView from '../../reports/menu/views/ReportsMenuPageView'
+import ReportsMenuPageView from '../../modules/reports/menu/views/ReportsMenuPageView'
 
 // componente por defecto para las rutas padre
 // feature temporal
