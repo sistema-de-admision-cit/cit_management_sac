@@ -1,7 +1,7 @@
-import NavItem from '../atoms/NavItem'
-import NavLink from '../atoms/NavLink'
-import menuConfig from '../config/menuConfig' // Importa la configuración del menú
-import '../../../assets/styles/hub/nav-group.css'
+import NavItem from '../atoms/NavItem.jsx'
+import NavLink from '../atoms/NavLink.jsx'
+import menuConfig from '../config/menuConfig.jsx' // Importa la configuración del menú
+import '../../../../assets/styles/hub/nav-group.css'
 
 const NavGroup = ({ currentPage, logout, userRole }) => {
   const currentPageString = String(currentPage).slice(1)

@@ -1,7 +1,7 @@
 // src/AppRouter.js
 import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import menuConfig from '../components/hub/config/menuConfig'
+import menuConfig from '../components/core/hub/config/menuConfig'
 import LoginSection from '../components/auth/views/LoginSection'
 import generateRoutesFromConfig from './GenerateRoutesFromConfig'
 import UnauthorizedAccessPage from '../components/errors/pages/UnauthorizedAccessPage'

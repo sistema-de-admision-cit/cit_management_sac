@@ -1,4 +1,4 @@
-import '../../../assets/styles/hub/nav-item.css'
+import '../../../../assets/styles/hub/nav-item.css'
 
 const NavItem = ({ children }) => {
   return (

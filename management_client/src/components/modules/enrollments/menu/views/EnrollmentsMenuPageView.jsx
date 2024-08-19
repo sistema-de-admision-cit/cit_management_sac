@@ -1,5 +1,5 @@
 import MenuPage from '../../../../menu_overview/templates/MenuPage'
-import menuConfig from '../../../../hub/config/menuConfig'
+import menuConfig from '../../../../core/hub/config/menuConfig'
 
 const EnrollmentsMenuPageView = () => {
   const menuExamsSection = menuConfig[0].items.find(item => item.key === 'enrollments')

@@ -1,6 +1,6 @@
-import SideNavbar from '../organisms/SideNavbar'
+import SideNavbar from '../organisms/SideNavbar.jsx'
 import { Outlet, useLocation } from 'react-router-dom'
-import '../../../assets/styles/hub/hub-view.css'
+import '../../../../assets/styles/hub/hub-view.css'
 
 const HubViewComponent = () => {
   const location = useLocation()

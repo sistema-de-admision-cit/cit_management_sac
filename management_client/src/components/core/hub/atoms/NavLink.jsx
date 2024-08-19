@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-import '../../../assets/styles/hub/nav-link.css'
+import '../../../../assets/styles/hub/nav-link.css'
 
 const NavLink = ({ to, className, children, onClick }) => {
   return (

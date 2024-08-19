@@ -1,22 +1,22 @@
 // Question views
-import AddQuestionView from '../../modules/questions/add_questions/view/AddQuestionView'
-import ModifyQuestionView from '../../modules/questions/modify_questions/view/ModifyQuestionView'
-import DeleteQuestionView from '../../modules/questions/delete_questions/view/DeleteQuestionView'
-import GenerateExamView from '../../modules/questions/generate_exam/view/GenerateExamView'
-import HubIcon from './HubIcon'
-import ExamMenuPageView from '../../modules/questions/menu/view/ExamMenuPageView'
+import AddQuestionView from '../../../modules/questions/add_questions/view/AddQuestionView.jsx'
+import ModifyQuestionView from '../../../modules/questions/modify_questions/view/ModifyQuestionView.jsx'
+import DeleteQuestionView from '../../../modules/questions/delete_questions/view/DeleteQuestionView.jsx'
+import GenerateExamView from '../../../modules/questions/generate_exam/view/GenerateExamView.jsx'
+import HubIcon from './HubIcon.jsx'
+import ExamMenuPageView from '../../../modules/questions/menu/view/ExamMenuPageView.jsx'
 
 // enrollments views
-import EnrollmentsMenuPageView from '../../modules/enrollments/menu/views/EnrollmentsMenuPageView'
+import EnrollmentsMenuPageView from '../../../modules/enrollments/menu/views/EnrollmentsMenuPageView.jsx'
 
 // configurations views
-import ConfigurationMenuPageView from '../../modules/system_configuration/menu/views/ConfigurationMenuPageView'
+import ConfigurationMenuPageView from '../../../modules/system_configuration/menu/views/ConfigurationMenuPageView.jsx'
 
 // results views
-import ResultsMenuPageView from '../../modules/results/menu/views/ResultsMenuPageView'
+import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenuPageView.jsx'
 
 // reports views
-import ReportsMenuPageView from '../../modules/reports/menu/views/ReportsMenuPageView'
+import ReportsMenuPageView from '../../../modules/reports/menu/views/ReportsMenuPageView.jsx'
 
 // componente por defecto para las rutas padre
 // feature temporal
