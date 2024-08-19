@@ -69,7 +69,7 @@ const menuConfig = [
         ]
       },
       {
-        key: 'configuracion',
+        key: 'configurations',
         label: 'Configuración del Sistema',
         path: '/configuracion',
         parentComponent: DefaultComponent,
@@ -77,35 +77,35 @@ const menuConfig = [
         description: 'Configuraciones generales del sistema.',
         subItems: [
           {
-            key: 'citas',
+            key: 'appointment-settings',
             label: 'Configurar Citas',
             path: '/configuracion/citas',
             component: DefaultComponent,
             description: 'Configurar horarios y citas para exámenes y reuniones.'
           },
           {
-            key: 'porcentajes',
+            key: 'percentages-settings',
             label: 'Configurar Porcentajes',
             path: '/configuracion/porcentajes',
             component: DefaultComponent,
             description: 'Definir porcentajes de evaluación y criterios.'
           },
           {
-            key: 'notificaciones',
+            key: 'notifications-settings',
             label: 'Configurar Notificaciones',
             path: '/configuracion/notificaciones',
             component: DefaultComponent,
             description: 'Configurar las notificaciones automáticas del sistema.'
           },
           {
-            key: 'accesos',
+            key: 'manage-access',
             label: 'Gestionar Accesos',
             path: '/configuracion/accesos',
             component: DefaultComponent,
             description: 'Gestionar accesos y permisos de los usuarios en el sistema.'
           },
           {
-            key: 'roles',
+            key: 'manage-roles',
             label: 'Gestionar Roles',
             path: '/configuracion/roles',
             component: DefaultComponent,
