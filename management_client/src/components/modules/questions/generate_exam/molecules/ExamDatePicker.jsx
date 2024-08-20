@@ -4,9 +4,8 @@ import { availableDates } from '../helpers/datesHelper'
 
 const ExamDatePicker = ({ examDate, setExamDate }) => (
   <div className='exam-date-container'>
-    <h3>Fecha del Examen:</h3>
     <InputField
-      field={{ name: 'examDate', placeholder: 'Fecha del Examen', type: 'date' }}
+      field={{ name: 'examDate', label: 'Fecha del Examen', placeholder: 'Fecha del Examen', type: 'date', required: true }}
       value={examDate}
       handleChange={setExamDate}
       className='date-picker'

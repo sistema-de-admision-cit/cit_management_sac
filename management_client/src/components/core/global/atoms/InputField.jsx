@@ -12,7 +12,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
         placeholder={field.placeholder}
         value={value}
         onChange={handleChange}
-        required
+        required={field.required || false}
         autoComplete={autoComplete || 'off'}
       />
     )
@@ -24,7 +24,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
         name={field.name}
         value={value}
         onChange={handleChange}
-        required
+        required={field.required || false}
       >
         {children}
       </select>
@@ -42,7 +42,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
               value={option.value}
               checked={value === option.value}
               onChange={handleChange}
-              required
+              required={field.required || false}
             />
             {option.label}
           </label>
@@ -57,7 +57,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
         type='file'
         name={field.name}
         onChange={handleChange}
-        required={field.required}
+        required={field.required || false}
         multiple={field.multiple}
       />
     )
@@ -73,6 +73,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
         placeholderText={field.placeholder}
         className={className}
         onInputError={(err) => console.log(err)}
+        required={field.required || false}
       />
     )
   }
@@ -96,7 +97,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
 
   return (
     <div className={className}>
-      <label htmlFor={field.name}>{field.label}</label>
+      <label htmlFor={field.name}>{field.label} {(field.required || false) && <span className='required'>*</span>}</label>
       {renderInput()}
     </div>
   )

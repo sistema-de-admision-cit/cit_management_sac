@@ -120,3 +120,7 @@
 .react-datepicker__day--selected {
   background-color: var(--primary-color) !important;
 }
+
+.required {
+  color: var(--danger-color);
+}

@@ -15,6 +15,7 @@ const AdvancedSearch = ({ searchCode, setSearchCode, setQuery, setSearchExamType
         value={searchExamType}
         handleChange={handleExamTypeChange}
         options={examTypeOptions}
+        isRequired={false}
       />
     </div>
   )
