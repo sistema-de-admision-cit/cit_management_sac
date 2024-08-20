@@ -42,7 +42,7 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
         )}
 
         <InputField
-          field={{ name: 'question', label: 'Pregunta', type: 'text', placeholder: 'Ingrese la pregunta aquí' }}
+          field={{ name: 'question', label: 'Pregunta', type: 'text', placeholder: 'Ingrese la pregunta aquí', required: true }}
           value={question}
           handleChange={(e, isFile = false) => handleChange(e, questionData, setQuestionData, isFile)}
           className='form-group'

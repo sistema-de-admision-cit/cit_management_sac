@@ -10,7 +10,7 @@ const UniqueQuestionSection = ({ options, correctOption, handleOptionChange, han
       />
 
       <InputField
-        field={{ name: 'correctOption', label: 'Respuesta Correcta', type: 'select' }}
+        field={{ name: 'correctOption', label: 'Respuesta Correcta', type: 'select', required: true }}
         value={correctOption}
         handleChange={handleInputChange}
         className='form-group'
