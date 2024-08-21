@@ -5,39 +5,10 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
-SHOW WARNINGS;
--- -----------------------------------------------------
--- Schema db_cit_test
--- -----------------------------------------------------
-
--- -----------------------------------------------------
 -- Schema db_cit_test
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `db_cit_test` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
-SHOW WARNINGS;
 USE `db_cit_test` ;
-
--- -----------------------------------------------------
--- Table `db_cit_test`.`tbl_academicquestions`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicquestions` (
-  `question_id` INT NOT NULL AUTO_INCREMENT,
-  `question_text` VARCHAR(255) NULL DEFAULT NULL,
-  `image_url` VARCHAR(255) NULL DEFAULT NULL,
-  `option_a` VARCHAR(255) NOT NULL,
-  `option_b` VARCHAR(255) NOT NULL,
-  `option_c` VARCHAR(255) NOT NULL,
-  `option_d` VARCHAR(255) NOT NULL,
-  `correct_option` CHAR(1) NOT NULL,
-  PRIMARY KEY (`question_id`),
-  UNIQUE INDEX `UQ_AcademicQuestions_Question` (`question_text` ASC) VISIBLE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_parentsguardians`
@@ -61,7 +32,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_students`
@@ -86,7 +56,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_enrollments`
@@ -95,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_enrollments` (
   `enrollment_id` INT NOT NULL AUTO_INCREMENT,
   `student_id` INT NOT NULL,
   `status` ENUM('pending', 'approved', 'rejected', 'passed', 'failed') NOT NULL,
-  `enrollment_date` DATE NOT NULL,
+  `enrollment_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `grade_to_enroll` ENUM('2', '3', '4', '5', '6', '7', '8', '9') NOT NULL,
   `known_through` ENUM('facebook', 'instagram', 'whatsapp', 'friend', 'family', 'other') NOT NULL,
   `exam_date` DATE NOT NULL,
@@ -109,7 +78,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_academicexams`
@@ -117,7 +85,7 @@ SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicexams` (
   `exam_id` INT NOT NULL AUTO_INCREMENT,
   `enrollment_id` INT NOT NULL,
-  `exam_date` DATE NOT NULL,
+  `exam_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `grade` DECIMAL(5,2) NOT NULL,
   PRIMARY KEY (`exam_id`, `enrollment_id`),
   CONSTRAINT `FK_AcademicExams_Enrollments`
@@ -127,7 +95,25 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `db_cit_test`.`tbl_academicquestions`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicquestions` (
+  `question_id` INT NOT NULL AUTO_INCREMENT,
+  `question_text` VARCHAR(255) NULL DEFAULT NULL,
+  `image_url` VARCHAR(255) NULL DEFAULT NULL,
+  `option_a` VARCHAR(255) NOT NULL,
+  `option_b` VARCHAR(255) NOT NULL,
+  `option_c` VARCHAR(255) NOT NULL,
+  `option_d` VARCHAR(255) NOT NULL,
+  `correct_option` CHAR(1) NOT NULL,
+  PRIMARY KEY (`question_id`),
+  UNIQUE INDEX `UQ_AcademicQuestions_Question` (`question_text` ASC) VISIBLE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_academicanswers`
@@ -138,19 +124,16 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicanswers` (
   `exam_id` INT NOT NULL,
   `student_answer` CHAR(1) NOT NULL,
   PRIMARY KEY (`answer_id`, `question_id`, `exam_id`),
-  CONSTRAINT `FK_AcademicAnswers_Questions`
-    FOREIGN KEY (`question_id`)
-    REFERENCES `db_cit_test`.`tbl_academicquestions` (`question_id`),
   CONSTRAINT `FK_AcademicAnswers_AcademicExams`
     FOREIGN KEY (`exam_id`)
-    REFERENCES `db_cit_test`.`tbl_academicexams` (`exam_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `db_cit_test`.`tbl_academicexams` (`exam_id`),
+  CONSTRAINT `FK_AcademicAnswers_Questions`
+    FOREIGN KEY (`question_id`)
+    REFERENCES `db_cit_test`.`tbl_academicquestions` (`question_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_academicexamquestions`
@@ -169,21 +152,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
-
--- -----------------------------------------------------
--- Table `db_cit_test`.`tbl_daiquestions`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiquestions` (
-  `question_id` INT NOT NULL AUTO_INCREMENT,
-  `question_text` VARCHAR(255) NULL DEFAULT NULL,
-  `image_url` VARCHAR(255) NULL DEFAULT NULL,
- PRIMARY KEY (`question_id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_daiexams`
@@ -191,7 +159,7 @@ SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiexams` (
   `exam_id` INT NOT NULL AUTO_INCREMENT,
   `enrollment_id` INT NOT NULL,
-  `exam_date` DATE NOT NULL,
+  `exam_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `grade` DECIMAL(5,2) NOT NULL,
   PRIMARY KEY (`exam_id`, `enrollment_id`),
   CONSTRAINT `FK_DAIExams_Enrollments`
@@ -201,7 +169,19 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `db_cit_test`.`tbl_daiquestions`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiquestions` (
+  `question_id` INT NOT NULL AUTO_INCREMENT,
+  `question_text` VARCHAR(255) NULL DEFAULT NULL,
+  `image_url` VARCHAR(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`question_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_daianswers`
@@ -212,19 +192,16 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daianswers` (
   `exam_id` INT NOT NULL,
   `student_answer` TEXT NOT NULL,
   PRIMARY KEY (`answer_id`, `question_id`, `exam_id`),
-  CONSTRAINT `FK_DAIAnswers_Questions`
-    FOREIGN KEY (`question_id`)
-    REFERENCES `db_cit_test`.`tbl_daiquestions` (`question_id`),
   CONSTRAINT `FK_DAIAnswers_DAIExams`
     FOREIGN KEY (`exam_id`)
-    REFERENCES `db_cit_test`.`tbl_daiexams` (`exam_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    REFERENCES `db_cit_test`.`tbl_daiexams` (`exam_id`),
+  CONSTRAINT `FK_DAIAnswers_Questions`
+    FOREIGN KEY (`question_id`)
+    REFERENCES `db_cit_test`.`tbl_daiquestions` (`question_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_daiexamquestions`
@@ -243,7 +220,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_documents`
@@ -262,7 +238,23 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `db_cit_test`.`tbl_englishexams`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_englishexams` (
+  `exam_id` INT NOT NULL AUTO_INCREMENT,
+  `enrollment_id` INT NOT NULL,
+  `exam_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `grade` DECIMAL(5,2) NOT NULL,
+  PRIMARY KEY (`exam_id`, `enrollment_id`),
+  CONSTRAINT `FK_EnglishExams_Enrollments`
+    FOREIGN KEY (`enrollment_id`)
+    REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_examperiods`
@@ -276,7 +268,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_examdays`
@@ -294,25 +285,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
-
--- -----------------------------------------------------
--- Table `db_cit_test`.`tbl_englishexams`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_englishexams` (
-  `exam_id` INT NOT NULL AUTO_INCREMENT,
-  `enrollment_id` INT NOT NULL,
-  `exam_date` DATE NOT NULL,
-  `grade` DECIMAL(5,2) NOT NULL,
-  PRIMARY KEY (`exam_id`, `enrollment_id`),
-  CONSTRAINT `FK_EnglishExams_Enrollments`
-    FOREIGN KEY (`enrollment_id`)
-    REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_log`
@@ -325,13 +297,12 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_log` (
   `new_value` TEXT NULL DEFAULT NULL,
   `changed_by` INT NOT NULL,
   `changed_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `query` TEXT NULL,
+  `query` TEXT NULL DEFAULT NULL,
   PRIMARY KEY (`log_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_systemconfig`
@@ -345,7 +316,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_users`
@@ -361,28 +331,19 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 USE `db_cit_test` ;
 
 -- -----------------------------------------------------
--- Placeholder table for view `db_cit_test`.`VW_grades`
+-- Placeholder table for view `db_cit_test`.`vw_grades`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `db_cit_test`.`VW_grades` (`enrollment_id` INT, `exam_type` INT, `grade` INT);
-SHOW WARNINGS;
+CREATE TABLE IF NOT EXISTS `db_cit_test`.`vw_grades` (`enrollment_id` INT, `exam_type` INT, `grade` INT);
 
 -- -----------------------------------------------------
--- View `db_cit_test`.`VW_grades`
+-- View `db_cit_test`.`vw_grades`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `db_cit_test`.`VW_grades`;
-SHOW WARNINGS;
+DROP TABLE IF EXISTS `db_cit_test`.`vw_grades`;
 USE `db_cit_test`;
-CREATE  OR REPLACE VIEW `VW_grades` AS
-SELECT enrollment_id, 'academic' AS exam_type, grade FROM tbl_academicexams
-UNION ALL 
-SELECT enrollment_id, 'dai' AS exam_type, grade FROM tbl_daiexams
-UNION ALL
-SELECT enrollment_id, 'english' AS exam_type, grade FROM tbl_englishexams;
-SHOW WARNINGS;
+CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_cit_test`.`vw_grades` AS select `db_cit_test`.`tbl_academicexams`.`enrollment_id` AS `enrollment_id`,'academic' AS `exam_type`,`db_cit_test`.`tbl_academicexams`.`grade` AS `grade` from `db_cit_test`.`tbl_academicexams` union all select `db_cit_test`.`tbl_daiexams`.`enrollment_id` AS `enrollment_id`,'dai' AS `exam_type`,`db_cit_test`.`tbl_daiexams`.`grade` AS `grade` from `db_cit_test`.`tbl_daiexams` union all select `db_cit_test`.`tbl_englishexams`.`enrollment_id` AS `enrollment_id`,'english' AS `exam_type`,`db_cit_test`.`tbl_englishexams`.`grade` AS `grade` from `db_cit_test`.`tbl_englishexams`;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
