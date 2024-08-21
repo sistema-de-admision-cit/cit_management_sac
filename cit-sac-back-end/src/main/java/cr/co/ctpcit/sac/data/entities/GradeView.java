@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 @Entity
 @Immutable
 @Table(name = "vw_grades")
-public class VwGrade {
+public class GradeView {
     @Column(name = "enrollment_id", nullable = false)
     private Integer enrollmentId;
 

@@ -14,26 +14,26 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
-public class TblEnglishExamId implements Serializable {
-    private static final long serialVersionUID = 991130779159880819L;
-    @Column(name = "exam_id", nullable = false)
-    private Integer examId;
+public class ExamDayId implements Serializable {
+    private static final long serialVersionUID = 7612432024794177774L;
+    @Column(name = "exam_day_id", nullable = false)
+    private Integer examDayId;
 
-    @Column(name = "enrollment_id", nullable = false)
-    private Integer enrollmentId;
+    @Column(name = "exam_period_id", nullable = false)
+    private Integer examPeriodId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        TblEnglishExamId entity = (TblEnglishExamId) o;
-        return Objects.equals(this.enrollmentId, entity.enrollmentId) &&
-                Objects.equals(this.examId, entity.examId);
+        ExamDayId entity = (ExamDayId) o;
+        return Objects.equals(this.examPeriodId, entity.examPeriodId) &&
+                Objects.equals(this.examDayId, entity.examDayId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(enrollmentId, examId);
+        return Objects.hash(examPeriodId, examDayId);
     }
 
 }

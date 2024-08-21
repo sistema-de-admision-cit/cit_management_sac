@@ -10,14 +10,14 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "tbl_documents")
-public class TblDocument {
+public class Document {
     @EmbeddedId
-    private TblDocumentId id;
+    private DocumentId id;
 
     @MapsId("enrollmentId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "enrollment_id", nullable = false, referencedColumnName = "enrollment_id")
-    private TblEnrollment enrollment;
+    private Enrollment enrollment;
 
     @Lob
     @Column(name = "document_type", nullable = false)

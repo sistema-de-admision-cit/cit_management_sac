@@ -10,19 +10,19 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "tbl_academicanswers")
-public class TblAcademicAnswer {
+public class AcademicAnswer {
     @EmbeddedId
-    private TblAcademicAnswerId id;
+    private AcademicAnswerId id;
 
     @MapsId("questionId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "question_id", nullable = false)
-    private TblAcademicQuestion question;
+    private AcademicQuestion question;
 
     @MapsId("examId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "exam_id", nullable = false, referencedColumnName = "exam_id")
-    private TblAcademicExam exam;
+    private AcademicExam exam;
 
     @Column(name = "student_answer", nullable = false)
     private Character studentAnswer;

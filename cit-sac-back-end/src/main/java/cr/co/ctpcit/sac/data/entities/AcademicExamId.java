@@ -14,10 +14,10 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
-public class TblDocumentId implements Serializable {
-    private static final long serialVersionUID = 4216733081600729659L;
-    @Column(name = "document_id", nullable = false)
-    private Integer documentId;
+public class AcademicExamId implements Serializable {
+    private static final long serialVersionUID = -130270537082491176L;
+    @Column(name = "exam_id", nullable = false)
+    private Integer examId;
 
     @Column(name = "enrollment_id", nullable = false)
     private Integer enrollmentId;
@@ -26,14 +26,14 @@ public class TblDocumentId implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        TblDocumentId entity = (TblDocumentId) o;
+        AcademicExamId entity = (AcademicExamId) o;
         return Objects.equals(this.enrollmentId, entity.enrollmentId) &&
-                Objects.equals(this.documentId, entity.documentId);
+                Objects.equals(this.examId, entity.examId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(enrollmentId, documentId);
+        return Objects.hash(enrollmentId, examId);
     }
 
 }

@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "tbl_parentsguardians")
-public class TblParentsGuardian {
+public class ParentsGuardian {
     @Id
     @Column(name = "parent_guardian_id", nullable = false)
     private Integer id;

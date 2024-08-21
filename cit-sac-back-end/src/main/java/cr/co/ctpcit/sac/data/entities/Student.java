@@ -12,14 +12,14 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @Table(name = "tbl_students")
-public class TblStudent {
+public class Student {
     @EmbeddedId
-    private TblStudentId id;
+    private StudentId id;
 
     @MapsId("parentGuardianId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "parent_guardian_id", nullable = false)
-    private TblParentsGuardian parentGuardian;
+    private ParentsGuardian parentGuardian;
 
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;

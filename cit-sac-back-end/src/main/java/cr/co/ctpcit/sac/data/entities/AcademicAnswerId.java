@@ -14,7 +14,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
-public class TblAcademicAnswerId implements Serializable {
+public class AcademicAnswerId implements Serializable {
     private static final long serialVersionUID = 8766151006607708941L;
     @Column(name = "answer_id", nullable = false)
     private Integer answerId;
@@ -29,7 +29,7 @@ public class TblAcademicAnswerId implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        TblAcademicAnswerId entity = (TblAcademicAnswerId) o;
+        AcademicAnswerId entity = (AcademicAnswerId) o;
         return Objects.equals(this.answerId, entity.answerId) &&
                 Objects.equals(this.questionId, entity.questionId) &&
                 Objects.equals(this.examId, entity.examId);

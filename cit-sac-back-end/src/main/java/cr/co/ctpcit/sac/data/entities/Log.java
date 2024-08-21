@@ -3,6 +3,7 @@ package cr.co.ctpcit.sac.data.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
@@ -13,7 +14,7 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "tbl_log")
-public class TblLog {
+public class Log {
     @Id
     @Column(name = "log_id", nullable = false)
     private Integer id;
@@ -35,8 +36,9 @@ public class TblLog {
     @Column(name = "changed_by", nullable = false)
     private Integer changedBy;
 
+    @Column(name = "changed_at", nullable = false, updatable = false, insertable = false)
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "changed_at")
+    @CreationTimestamp
     private Instant changedAt;
 
     @Lob

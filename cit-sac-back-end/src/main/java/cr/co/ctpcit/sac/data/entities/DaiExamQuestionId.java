@@ -14,26 +14,26 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
-public class TblDaiExamId implements Serializable {
-    private static final long serialVersionUID = -6418349660711189876L;
+public class DaiExamQuestionId implements Serializable {
+    private static final long serialVersionUID = -1746996996034957188L;
     @Column(name = "exam_id", nullable = false)
     private Integer examId;
 
-    @Column(name = "enrollment_id", nullable = false)
-    private Integer enrollmentId;
+    @Column(name = "question_id", nullable = false)
+    private Integer questionId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        TblDaiExamId entity = (TblDaiExamId) o;
-        return Objects.equals(this.enrollmentId, entity.enrollmentId) &&
+        DaiExamQuestionId entity = (DaiExamQuestionId) o;
+        return Objects.equals(this.questionId, entity.questionId) &&
                 Objects.equals(this.examId, entity.examId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(enrollmentId, examId);
+        return Objects.hash(questionId, examId);
     }
 
 }

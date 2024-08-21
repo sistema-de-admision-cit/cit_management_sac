@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Setter
 @Entity
 @Table(name = "tbl_examperiods")
-public class TblExamPeriod {
+public class ExamPeriod {
     @Id
     @Column(name = "exam_period_id", nullable = false)
     private Integer id;

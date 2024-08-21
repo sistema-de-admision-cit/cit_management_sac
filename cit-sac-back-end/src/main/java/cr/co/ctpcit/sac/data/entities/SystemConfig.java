@@ -12,16 +12,16 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "tbl_daiquestions")
-public class TblDaiQuestion {
+@Table(name = "tbl_systemconfig")
+public class SystemConfig {
     @Id
-    @Column(name = "question_id", nullable = false)
+    @Column(name = "config_id", nullable = false)
     private Integer id;
 
-    @Column(name = "question_text")
-    private String questionText;
+    @Column(name = "config_name", nullable = false, length = 100)
+    private String configName;
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(name = "config_value", nullable = false)
+    private String configValue;
 
 }

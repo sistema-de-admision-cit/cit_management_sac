@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "tbl_users")
-public class TblUser {
+public class User {
     @Id
     @Column(name = "user_id", nullable = false)
     private Integer id;
