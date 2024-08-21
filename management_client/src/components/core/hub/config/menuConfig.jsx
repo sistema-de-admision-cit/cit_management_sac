@@ -11,6 +11,7 @@ import EnrollmentsMenuPageView from '../../../modules/enrollments/menu/views/Enr
 
 // configurations views
 import ConfigurationMenuPageView from '../../../modules/system_configuration/menu/views/ConfigurationMenuPageView.jsx'
+import ExamScheduleConfiguratorView from '../../../modules/system_configuration/exam_schedule/view/ExamScheduleConfiguratorView.jsx'
 
 // results views
 import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenuPageView.jsx'
@@ -90,7 +91,7 @@ const menuConfig = [
             key: 'appointment-settings',
             label: 'Configurar Citas',
             path: '/configuracion/citas',
-            component: DefaultComponent,
+            component: ExamScheduleConfiguratorView,
             description: 'Configurar horarios y citas para exámenes y reuniones.'
           },
           {
