@@ -31,6 +31,18 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     )
   }
 
+  const checkboxInput = () => {
+    return (
+      <input
+        type='checkbox'
+        name={field.name}
+        checked={value}
+        onChange={handleChange}
+        required={field.required || false}
+      />
+    )
+  }
+
   const radioGroupInput = () => {
     return (
       <div className='radio-group'>
@@ -88,7 +100,8 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     select: () => selectInput(),
     'radio-group': () => radioGroupInput(),
     file: () => fileInput(),
-    date: () => datePicker()
+    date: () => datePicker(),
+    checkbox: () => checkboxInput()
   }
 
   const renderInput = () => {
