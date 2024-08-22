@@ -6,6 +6,7 @@ import '../../../../../assets/styles/sytem_config/exam_schedule_configurator.css
 import Button from '../../../../core/global/atoms/Button'
 import DateRangePicker from '../molecules/DateRangePicker'
 import ApplicationDaysSelector from '../molecules/ApplicationDaysSelector'
+import HoursSection from '../molecules/HoursSection'
 
 const ExamScheduleConfiguratorView = () => {
   const [formValues, setFormValues] = useState({
@@ -76,32 +77,7 @@ const ExamScheduleConfiguratorView = () => {
         {/* Horas de Aplicacion */}
         <div className='application-hours'>
           <h2>Horas de Aplicación</h2>
-          <div className='hours-range'>
-            <InputField
-              field={{
-                type: 'time',
-                name: 'startTime',
-                label: 'Hora Inicial',
-                required: true
-              }}
-              className='start-time'
-              value={formValues.startTime}
-              handleChange={(e) => handleChange('startTime', e.target.value)}
-            />
-            <InputField
-              field={{
-                type: 'time',
-                name: 'endTime',
-                label: 'Hora Final',
-                required: true
-              }}
-              className='end-time'
-              value={formValues.endTime}
-              handleChange={(e) => handleChange('endTime', e.target.value)}
-            />
-
-          </div>
-
+          <HoursSection startTime={formValues.startTime} endTime={formValues.endTime} onStartTimeChange={(e) => handleChange('startTime', e.target.value)} onEndTimeChange={(e) => handleChange('endTime', e.target.value)} />
         </div>
 
         <div className='buttons'>
