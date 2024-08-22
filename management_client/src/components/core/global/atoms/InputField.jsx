@@ -94,7 +94,10 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     return (
       <input
         type='time'
+        className={className}
         value={value}
+        min={field.min || '00:00'}
+        max={field.max || '23:59'}
         onChange={handleChange}
       />
     )
