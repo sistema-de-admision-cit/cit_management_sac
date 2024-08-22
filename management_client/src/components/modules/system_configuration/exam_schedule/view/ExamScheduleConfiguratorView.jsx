@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
-import InputField from '../../../../core/global/atoms/InputField'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import '../../../../../assets/styles/questions/view.css'
 import '../../../../../assets/styles/sytem_config/exam_schedule_configurator.css'
 import Button from '../../../../core/global/atoms/Button'
-import DateRangePicker from '../molecules/DateRangePicker'
 import ApplicationDaysSelector from '../molecules/ApplicationDaysSelector'
-import HoursSection from '../molecules/HoursSection'
+import HoursSection from '../organisms/HoursSection'
 import DateApplicationSection from '../organisms/DateApplicationSection'
 
 const ExamScheduleConfiguratorView = () => {
