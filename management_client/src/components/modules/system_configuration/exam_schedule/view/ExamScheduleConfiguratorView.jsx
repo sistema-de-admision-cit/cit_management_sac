@@ -7,6 +7,7 @@ import Button from '../../../../core/global/atoms/Button'
 import DateRangePicker from '../molecules/DateRangePicker'
 import ApplicationDaysSelector from '../molecules/ApplicationDaysSelector'
 import HoursSection from '../molecules/HoursSection'
+import DateApplicationSection from '../organisms/DateApplicationSection'
 
 const ExamScheduleConfiguratorView = () => {
   const [formValues, setFormValues] = useState({
@@ -51,22 +52,14 @@ const ExamScheduleConfiguratorView = () => {
         <h1>Configuración de citas</h1>
 
         {/* Fechas de Aplicación */}
-        <div className='application-dates'>
-          <h2>Fechas de Aplicación <span className='required'>*</span></h2>
-          <InputField
-            field={{ type: 'checkbox', name: 'allYear', label: 'Todo el año' }}
-            value={formValues.allYear}
-            handleChange={(e) => handleChange('allYear', e.target.checked)}
-          />
-          {!formValues.allYear && (
-            <DateRangePicker
-              startDate={formValues.startDate}
-              endDate={formValues.endDate}
-              onStartDateChange={onStartDateChange}
-              onEndDateChange={onEndDateChange}
-            />
-          )}
-        </div>
+        <DateApplicationSection
+          allYear={formValues.allYear}
+          startDate={formValues.startDate}
+          endDate={formValues.endDate}
+          onAllYearChange={(e) => handleChange('allYear', e.target.checked)}
+          onStartDateChange={onStartDateChange}
+          onEndDateChange={onEndDateChange}
+        />
 
         {/* Días de Aplicacion */}
         <div className='application-days'>
