@@ -5,6 +5,7 @@ import '../../../../../assets/styles/questions/view.css'
 import '../../../../../assets/styles/sytem_config/exam_schedule_configurator.css'
 import Button from '../../../../core/global/atoms/Button'
 import DatePicker from '../../../../core/global/atoms/DatePicker'
+import DateRangePicker from '../molecules/DateRangePicker'
 
 const ExamScheduleConfiguratorView = () => {
   const [formValues, setFormValues] = useState({
@@ -35,6 +36,14 @@ const ExamScheduleConfiguratorView = () => {
     })
   }
 
+  const onStartDateChange = (date) => {
+    handleChange('startDate', date)
+  }
+
+  const onEndDateChange = (date) => {
+    handleChange('endDate', date)
+  }
+
   return (
     <SectionLayout title='Configurar Citas'>
       <div className='container exam-schedule-configurator'>
@@ -49,25 +58,12 @@ const ExamScheduleConfiguratorView = () => {
             handleChange={(e) => handleChange('allYear', e.target.checked)}
           />
           {!formValues.allYear && (
-            <div className='date-range'>
-              {/* name, label, placeholder, value, onChange, availableDates, required = false */}
-
-              <DatePicker
-                name='startDate'
-                label='Fecha Inicial'
-                value={formValues.startDate}
-                onChange={(date) => handleChange('startDate', date)}
-                required
-              />
-
-              <DatePicker
-                name='endDate'
-                label='Fecha Final'
-                value={formValues.endDate}
-                onChange={(date) => handleChange('endDate', date)}
-                required
-              />
-            </div>
+            <DateRangePicker
+              startDate={formValues.startDate}
+              endDate={formValues.endDate}
+              onStartDateChange={onStartDateChange}
+              onEndDateChange={onEndDateChange}
+            />
           )}
         </div>
 
