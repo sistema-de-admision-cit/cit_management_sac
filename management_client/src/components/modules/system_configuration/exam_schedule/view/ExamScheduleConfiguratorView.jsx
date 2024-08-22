@@ -4,8 +4,8 @@ import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import '../../../../../assets/styles/questions/view.css'
 import '../../../../../assets/styles/sytem_config/exam_schedule_configurator.css'
 import Button from '../../../../core/global/atoms/Button'
-import DatePicker from '../../../../core/global/atoms/DatePicker'
 import DateRangePicker from '../molecules/DateRangePicker'
+import ApplicationDaysSelector from '../molecules/ApplicationDaysSelector'
 
 const ExamScheduleConfiguratorView = () => {
   const [formValues, setFormValues] = useState({
@@ -70,17 +70,7 @@ const ExamScheduleConfiguratorView = () => {
         {/* Días de Aplicacion */}
         <div className='application-days'>
           <h2>Días de Aplicación <span className='required'>*</span></h2>
-          <div className='days'>
-            {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'].map((day) => (
-              <div key={day}>
-                <InputField
-                  field={{ type: 'checkbox', name: day, label: day }}
-                  value={formValues.applicationDays.includes(day)}
-                  handleChange={() => handleCheckboxChange(day)}
-                />
-              </div>
-            ))}
-          </div>
+          <ApplicationDaysSelector selectedDays={formValues.applicationDays} onDayChange={handleCheckboxChange} />
         </div>
 
         {/* Horas de Aplicacion */}
