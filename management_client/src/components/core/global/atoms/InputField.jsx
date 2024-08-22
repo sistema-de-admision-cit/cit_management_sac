@@ -90,6 +90,16 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     )
   }
 
+  const timePicker = () => {
+    return (
+      <input
+        type='time'
+        value={value}
+        onChange={handleChange}
+      />
+    )
+  }
+
   // map
   const inputRenderers = {
     text: () => textRelatedInput('text'),
@@ -101,7 +111,8 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     'radio-group': () => radioGroupInput(),
     file: () => fileInput(),
     date: () => datePicker(),
-    checkbox: () => checkboxInput()
+    checkbox: () => checkboxInput(),
+    time: () => timePicker()
   }
 
   const renderInput = () => {
