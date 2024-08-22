@@ -1,0 +1,82 @@
+.exam-schedule-configurator {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* date ranges */
+.date-range {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/* Estilo para los días de aplicación */
+.application-days {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.application-days div {
+  display: flex;
+  align-items: center;
+}
+
+.days {
+  display: flex;
+  gap: 10px;
+}
+
+.days label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+  margin-right: 10px;
+}
+
+.days input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* Estilo para los horarios de aplicación */
+.application-hours {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hours-range {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/* time picker */
+input[type="time"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--neutral-dark);
+  border: none;
+  border-bottom: 4px solid var(--neutral-color);
+  background: #F9F9F9;
+}
+
+input[type="time"]:focus {
+  outline: none;
+  background: #E6F8FF;
+  border-bottom: 4px solid var(--primary-color) !important;
+}
+
+input[type="time"]:hover {
+  border-bottom: 4px solid var(--primary-color-hover);
+}
+
+/* estilo para el cuadro de seleccion de la hora */
+.end-time input:valid + span::after {
+  position: absolute;
+  content: "✓";
+  padding-left: 5px;
+}
