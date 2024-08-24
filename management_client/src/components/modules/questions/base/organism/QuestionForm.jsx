@@ -27,6 +27,7 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
     <div className='container question-form-container'>
       <h1>{title}</h1>
       <form onSubmit={(e) => onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)} className='question-form'>
+        <h2>Información de la pregunta</h2>
         <ExamTypeOptions
           value={examType}
           handleChange={(e) => handleTestOptionChange(e, questionData, setQuestionData)}
@@ -41,6 +42,7 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
           />
         )}
 
+        <h2>Contenido de la pregunta</h2>
         <InputField
           field={{ name: 'question', label: 'Pregunta', type: 'text', placeholder: 'Ingrese la pregunta aquí', required: true }}
           value={question}
@@ -56,12 +58,15 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
 
         {/* cuando el tipo de pregunta es unica, se agrega el componente UniqueQuestionSection */}
         {questionType === 'unique' && (
-          <UniqueQuestionSection
-            options={options}
-            correctOption={correctOption}
-            handleOptionChange={(index, value) => handleOptionChange(index, value, questionData, setQuestionData)}
-            handleInputChange={(e, isFile = false) => handleChange(e, questionData, setQuestionData, isFile)}
-          />
+          <>
+            <h2>Opciones de respuesta</h2>
+            <UniqueQuestionSection
+              options={options}
+              correctOption={correctOption}
+              handleOptionChange={(index, value) => handleOptionChange(index, value, questionData, setQuestionData)}
+              handleInputChange={(e, isFile = false) => handleChange(e, questionData, setQuestionData, isFile)}
+            />
+          </>
         )}
 
         <Button type='submit' className='btn btn-primary' disabled={getButtonState(questionData, isLoading)}>
