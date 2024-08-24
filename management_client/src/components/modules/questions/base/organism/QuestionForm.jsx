@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import ExamTypeOptions from '../molecules/ExamTypeOptions'
-import QuestionTypeOptions from '../molecules/QuestionTypeOptions'
 import InputField from '../../../../core/global/atoms/InputField'
 import Button from '../../../../core/global/atoms/Button'
 import UniqueQuestionSection from './UniqueQuestionSection'
@@ -13,15 +12,14 @@ import {
   handleOptionChange,
   getButtonState
 } from '../../helpers/formHandlers'
-import { EXAM_TYPE_OPTIONS, QUESTION_TYPE_OPTIONS } from '../helpers/questionFormOptions'
+import { EXAM_TYPE_OPTIONS } from '../helpers/questionFormOptions'
 
 const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
   const { formData: questionData, setFormData: setQuestionData, resetForm } = useFormState(initialData)
   const [isLoading, setIsLoading] = useState(false)
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
-  const { examType, questionType, question, options, correctOption } = questionData
-  const currentQuestionTypeOptions = QUESTION_TYPE_OPTIONS[examType] || []
+  const { examType, question, options, correctOption } = questionData
 
   return (
     <div className='container question-form-container'>
@@ -33,14 +31,6 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
           handleChange={(e) => handleTestOptionChange(e, questionData, setQuestionData)}
           options={EXAM_TYPE_OPTIONS}
         />
-
-        {examType && (
-          <QuestionTypeOptions
-            value={questionType}
-            handleChange={(e, isFile = false) => handleChange(e, questionData, setQuestionData, isFile)}
-            options={currentQuestionTypeOptions}
-          />
-        )}
 
         <h2>Contenido de la pregunta</h2>
         <InputField
@@ -57,7 +47,7 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
         />
 
         {/* cuando el tipo de pregunta es unica, se agrega el componente UniqueQuestionSection */}
-        {questionType === 'unique' && (
+        {examType === 'academic' && (
           <>
             <h2>Opciones de respuesta</h2>
             <UniqueQuestionSection
