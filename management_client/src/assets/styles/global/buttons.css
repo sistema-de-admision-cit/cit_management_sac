@@ -73,3 +73,24 @@
 .btn.btn-danger[disabled]:hover {
   background-color: var(--danger-color);
 }
+
+.btn.btn-cancel {
+  background-color: var(--cancel-background-color);
+  border: 2px solid var(--cancel-border-color);
+  color: var(--cancel-text-color);
+}
+
+.btn.btn-cancel:hover {
+  background-color: var(--cancel-hover-background-color);
+  border: 2px solid var(--cancel-hover-border-color);
+  color: var(--cancel-text-color);
+}
+
+.btn.btn-cancel[disabled] {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn.btn-cancel[disabled]:hover {
+  background-color: var(--cancel-background-color);
+}
