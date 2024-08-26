@@ -53,3 +53,23 @@
   outline: 0;
   background-color: var(--transparent-button-hover);
 }
+
+.btn.btn-danger {
+  background-color: var(--danger-color);
+  color: #fff;
+}
+
+.btn.btn-danger:hover {
+  background-color: var(--danger-color-hover);
+  color: #fff;
+}
+
+
+.btn.btn-danger[disabled] {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn.btn-danger[disabled]:hover {
+  background-color: var(--danger-color);
+}
