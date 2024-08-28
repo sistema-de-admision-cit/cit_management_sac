@@ -18,6 +18,11 @@
   transform: scale(0.95);
 }
 
+.btn[disabled]:active,
+.btn[disabled]:target {
+  transform: scale(1);
+}
+
 .btn.btn-primary {
   background-color: var(--primary-color);
   color: #fff;
