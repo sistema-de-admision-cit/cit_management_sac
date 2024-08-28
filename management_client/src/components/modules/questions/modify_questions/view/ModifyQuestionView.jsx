@@ -26,18 +26,27 @@ const ModifyQuestionView = () => {
     setIncomingData(data) // Establece los datos para que useEffect los maneje
   }
 
+  // si el usuario decide buscar otra pregunta, limpiar los datos actuales (esto arregla el error de que no se podia eliminar una pregunta y volve a buscar la misma)
+  useEffect(() => {
+    setIncomingData(null)
+  }, [questionData])
+
   return (
     <SectionLayout title='Modificar pregunta'>
       <div className='modify-question-container'>
         <div className='search-section'>
-          <FindQuestion
-            onQuestionFound={handleQuestionFound}
-            lookingFor='modify'
-          />
+          {!questionData &&
+            <FindQuestion
+              onQuestionFound={handleQuestionFound}
+              lookingFor='modify'
+            />}
         </div>
         <div className='form-section'>
           {questionData && (
-            <ModifyQuestionForm questionData={questionData} setQuestionData={setQuestionData} />
+            <ModifyQuestionForm
+              questionData={questionData}
+              setQuestionData={setQuestionData}
+            />
           )}
         </div>
       </div>
