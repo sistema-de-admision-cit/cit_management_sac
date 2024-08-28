@@ -12,6 +12,6 @@
 }
 
 /* centrar el popup */
-.popup {
+.popup, .modal-content {
   margin-left: 15rem;
 }

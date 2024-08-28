@@ -33,3 +33,45 @@
   border-radius: 4px;
   cursor: pointer;
 }
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+}
+
+.search-again-button {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 16px;
+  color: black;
+}
+
+.search-again-button.disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+.search-again-icon {
+  font-size: 20px;
+}
+
+.search-again-text {
+  margin-left: 8px;
+}
+
+.search-again-button:disabled .search-again-icon,
+.search-again-button:disabled .search-again-text {
+  color: gray;
+}
+
+.arrow-left {
+  background: url(../../..//assets/icons/arrow-left-svgrepo-com.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 20px;
+  height: 20px;
+}

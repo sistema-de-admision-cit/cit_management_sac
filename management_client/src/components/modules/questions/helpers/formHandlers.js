@@ -6,15 +6,11 @@ const validateFields = (questionData, setErrorMessage) => {
     setErrorMessage('Por favor, seleccione el tipo de examen.')
     return
   }
-  if (!questionData.questionType) {
-    setErrorMessage('Por favor, seleccione el tipo de pregunta.')
-    return
-  }
   if (!questionData.question) {
     setErrorMessage('Por favor, ingrese la pregunta.')
     return
   }
-  if (questionData.questionType === 'unique') {
+  if (questionData.examType === 'academic') {
     for (let i = 0; i < 4; i++) {
       if (!questionData.options[i]) {
         setErrorMessage(`Por favor, ingrese la opción ${i + 1}.`)
@@ -39,7 +35,6 @@ export const handleTestOptionChange = (e, questionData, setQuestionData) => {
   setQuestionData({
     ...questionData,
     examType: e.target.value,
-    questionType: '',
     question: questionData.question,
     options: questionData.options,
     correctOption: ''
@@ -58,7 +53,6 @@ export const handleOptionChange = (index, value, questionData, setQuestionData) 
 export const clearForm = (setQuestionData) => {
   setQuestionData({
     examType: '',
-    questionType: '',
     question: '',
     images: [],
     options: ['', '', '', ''],
@@ -83,7 +77,6 @@ export const handleSubmit = (e, questionData, setErrorMessage, setSuccessMessage
     setSuccessMessage('Pregunta guardada exitosamente')
     setQuestionData({
       examType: '',
-      questionType: '',
       question: '',
       images: [],
       options: ['', '', '', ''],
@@ -99,12 +92,12 @@ export const getButtonState = (questionData, isLoading) => {
   }
 
   // si alguno de los campos está vacío, deshabilitar el botón
-  if (!questionData.examType || !questionData.questionType || !questionData.question) {
+  if (!questionData.examType || !questionData.question) {
     return true
   }
 
   // si es seleccion unica
-  if (questionData.questionType === 'unique') {
+  if (questionData.examType === 'academic') {
     // crear un set para verificar que no haya opciones repetidas
     const set = new Set(questionData.options)
     if (set.size !== 4) {

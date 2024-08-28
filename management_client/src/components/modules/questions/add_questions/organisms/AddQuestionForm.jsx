@@ -4,7 +4,6 @@ import { handleSubmit } from '../../helpers/formHandlers'
 const AddQuestionForm = () => {
   const initialData = {
     examType: '',
-    questionType: '',
     question: '',
     images: [],
     options: ['', '', '', ''],

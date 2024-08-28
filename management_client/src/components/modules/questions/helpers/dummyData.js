@@ -1,7 +1,6 @@
 export const dummyData = [{
   code: '123',
   examType: 'academic',
-  questionType: 'unique',
   question: 'Cuál es la capital de Francia?',
   options: ['Madrid', 'París', 'Berlín', 'Lisboa'],
   correctOption: '1'
@@ -9,7 +8,6 @@ export const dummyData = [{
 {
   code: '124',
   examType: 'dai',
-  questionType: 'short',
   question: 'Cuál es el resultado de 2 + 2?',
   options: ['', '', '', ''],
   correctOption: ''
@@ -17,7 +15,6 @@ export const dummyData = [{
 {
   code: '125',
   examType: 'academic',
-  questionType: 'unique',
   question: 'Cuál es el elemento químico con el símbolo O?',
   options: ['Oro', 'Oxígeno', 'Osmio', 'Ogano'],
   correctOption: '1'
@@ -25,7 +22,6 @@ export const dummyData = [{
 {
   code: '126',
   examType: 'dai',
-  questionType: 'short',
   question: 'Define el término "algoritmo".',
   options: ['', '', '', ''],
   correctOption: ''
@@ -33,7 +29,6 @@ export const dummyData = [{
 {
   code: '127',
   examType: 'academic',
-  questionType: 'unique',
   question: 'Quién escribió "Cien años de soledad"?',
   options: ['Gabriel García Márquez', 'Mario Vargas Llosa', 'Pablo Neruda', 'Julio Cortázar'],
   correctOption: '0'
@@ -41,7 +36,6 @@ export const dummyData = [{
 {
   code: '128',
   examType: 'dai',
-  questionType: 'short',
   question: 'Qué es una función en matemáticas?',
   options: ['', '', '', ''],
   correctOption: ''
@@ -49,7 +43,6 @@ export const dummyData = [{
 {
   code: '129',
   examType: 'academic',
-  questionType: 'unique',
   question: 'Cuál es el planeta más cercano al sol?',
   options: ['Venus', 'Marte', 'Mercurio', 'Tierra'],
   correctOption: '2'
@@ -57,7 +50,6 @@ export const dummyData = [{
 {
   code: '130',
   examType: 'dai',
-  questionType: 'short',
   question: 'Cuál es la fórmula química del agua?',
   options: ['', '', '', ''],
   correctOption: ''
@@ -65,7 +57,6 @@ export const dummyData = [{
 {
   code: '131',
   examType: 'academic',
-  questionType: 'unique',
   question: 'Quién pintó "La última cena"?',
   options: ['Vincent van Gogh', 'Pablo Picasso', 'Leonardo da Vinci', 'Claude Monet'],
   correctOption: '2'
@@ -73,7 +64,6 @@ export const dummyData = [{
 {
   code: '132',
   examType: 'dai',
-  questionType: 'short',
   question: 'Qué es una variable en programación?',
   options: ['', '', '', ''],
   correctOption: ''
