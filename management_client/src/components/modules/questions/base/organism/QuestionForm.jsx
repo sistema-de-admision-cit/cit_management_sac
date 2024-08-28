@@ -14,15 +14,36 @@ import {
 } from '../../helpers/formHandlers'
 import { EXAM_TYPE_OPTIONS } from '../helpers/questionFormOptions'
 
-const QuestionForm = ({ title, initialData, onSubmit, submitButtonText }) => {
+const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAgain }) => {
   const { formData: questionData, setFormData: setQuestionData, resetForm } = useFormState(initialData)
   const [isLoading, setIsLoading] = useState(false)
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
   const { examType, question, options, correctOption } = questionData
 
+  // clean ALL the form data so it will look like a new form
+  const handleSearchAgain = () => {
+    searchAgain()
+    resetForm()
+  }
+
   return (
     <div className='container question-form-container'>
+      <div className='back-button'>
+        {/* Mostrar el ícono de "Buscar Otra Pregunta" solo si el título es "Modificar Pregunta" */}
+        {title === 'Modificar Pregunta' && (
+          <button
+            className={`search-again-button ${isLoading ? 'disabled' : ''}`}
+            onClick={handleSearchAgain}
+            disabled={isLoading}
+            aria-label='Buscar Otra Pregunta'
+            title='Buscar Otra Pregunta'
+          >
+            <i className='arrow-left search-again-icon' />
+            <span className='search-again-text'>Buscar Otra Pregunta</span>
+          </button>
+        )}
+      </div>
       <h1>{title}</h1>
       <form onSubmit={(e) => onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)} className='question-form'>
         <h2>Información de la pregunta</h2>
