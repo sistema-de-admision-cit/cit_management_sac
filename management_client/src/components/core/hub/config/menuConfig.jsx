@@ -18,6 +18,7 @@ import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenu
 
 // reports views
 import ReportsMenuPageView from '../../../modules/reports/menu/views/ReportsMenuPageView.jsx'
+import PercentagesConfiguratorView from '../../../modules/system_configuration/percentages/view/PercentagesConfiguratorView.jsx'
 
 // componente por defecto para las rutas padre
 // feature temporal
@@ -98,7 +99,7 @@ const menuConfig = [
             key: 'percentages-settings',
             label: 'Configurar Porcentajes',
             path: '/configuracion/porcentajes',
-            component: DefaultComponent,
+            component: PercentagesConfiguratorView,
             description: 'Definir porcentajes de evaluación y criterios.'
           },
           {
