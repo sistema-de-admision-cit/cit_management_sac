@@ -13,9 +13,9 @@ USE `db_cit_test` ;
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_students`
 -- id_type
-	-- cc: cedula
-	-- di: dimex
-	-- pa: passport
+	-- CC: cedula
+	-- DI: dimex
+	-- PA: passport
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_students` (
   `student_id` INT NOT NULL AUTO_INCREMENT,
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_students` (
   `first_surname` VARCHAR(32) NOT NULL,
   `second_surname` VARCHAR(32) NULL DEFAULT NULL,
   `birth_date` DATE NOT NULL,
-  `id_type` ENUM('cc', 'di', 'pa') NOT NULL,
+  `id_type` ENUM('CC', 'DI', 'PA') NOT NULL,
   `id_number` VARCHAR(20) NOT NULL,
   `previous_school` VARCHAR(100) NULL DEFAULT NULL,
   `has_accommodations` BOOLEAN NOT NULL,
@@ -37,25 +37,29 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_enrollments`
 -- status:
-	-- pending: initial state when student is enrolled
-	-- eligible: state when the student is accepted to do the exam
-	-- ineligible: state when the student is rejected to do the exam
-	-- approved: state when the student passed successfully the entire process
-	-- rejected: state when the student fail the admision process.
+	-- P: initial state when student is enrolled
+	-- E: state when the student is accepted to do the exam
+	-- I: state when the student is rejected to do the exam
+	-- A: state when the student passed successfully the entire process
+	-- R: state when the student fail the admision process.
 -- -----------------------------------------------------
 -- grade_to_entoll
 -- level in which the student is supposed to enter when approved.
 -- -----------------------------------------------------
 -- known_through
--- the method by which the student got to know us
+	-- SM: social media
+	-- OH: open house
+	-- FD: friend
+	-- FM: family
+	-- OT: other
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_enrollments` (
   `enrollment_id` INT NOT NULL AUTO_INCREMENT,
   `student_id` INT NOT NULL,
-  `status` ENUM('pending', 'eligible', 'ineligible', 'approved', 'rejected') GENERATED ALWAYS AS ('pending') VIRTUAL,
+  `status` ENUM('P', 'E', 'I', 'A', 'R') NOT NULL,
   `enrollment_date` TIMESTAMP NOT NULL,
   `grade_to_enroll` ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '10') NOT NULL,
-  `known_through` ENUM('socialmedia', 'openhouse', 'friend', 'family', 'other') NOT NULL,
+  `known_through` ENUM('SM', 'OH', 'FD', 'FM', 'OT') NOT NULL,
   `exam_date` DATE NOT NULL,
   `consent_given` BOOLEAN NOT NULL,
   `whatsapp_notification` BOOLEAN NOT NULL,
@@ -219,13 +223,14 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_documents`
 -- document_type
-	-- health_certificate: when a student requires any acommodation, 
+	-- HC: when a student requires any acommodation, 
 	-- has to provide a psicological letter to certificate the condition.
+    -- OT: other type
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_documents` (
   `document_id` INT NOT NULL AUTO_INCREMENT,
   `enrollment_id` INT NOT NULL,
-  `document_type` ENUM('health_certificate', 'other') NOT NULL,
+  `document_type` ENUM('HC', 'OT') NOT NULL,
   `document_url` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`document_id`, `enrollment_id`),
   UNIQUE INDEX `UQ_Documents_Enrollment_DocumentType` (`enrollment_id` ASC, `document_type` ASC) INVISIBLE,
@@ -273,18 +278,18 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_examdays`
 -- exam_day:
-	-- m: monday
-	-- k: tuesday
-	-- w: wednesday
-	-- t: thursday
-	-- f: friday
-	-- s: saturday
-	-- ss: sunday
+	-- M: monday
+	-- K: tuesday
+	-- W: wednesday
+	-- T: thursday
+	-- F: friday
+	-- S: saturday
+	-- SS: sunday
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_examdays` (
   `exam_day_id` INT NOT NULL AUTO_INCREMENT,
   `exam_period_id` INT NOT NULL,
-  `exam_day` ENUM('m', 'k', 'w', 't', 'f', 's', 'ss') NOT NULL,
+  `exam_day` ENUM('M', 'K', 'W', 'T', 'F', 'S', 'SS') NOT NULL,
   `start_time` TIME NOT NULL,
   PRIMARY KEY (`exam_day_id`, `exam_period_id`),
   INDEX `FK_ExamDays_ExamPeriods` (`exam_period_id` ASC) VISIBLE,
@@ -317,6 +322,10 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_parentsguardians`
+-- relationship
+	-- M: mother
+	-- F: father
+    -- G: guardian
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_parentsguardians` (
   `parent_guardian_id` INT NOT NULL AUTO_INCREMENT,
@@ -328,7 +337,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_parentsguardians` (
   `phone_number` VARCHAR(20) NOT NULL,
   `email` VARCHAR(100) NOT NULL,
   `home_address` VARCHAR(100) NOT NULL,
-  `relationship` ENUM('mother', 'father', 'guardian') NOT NULL,
+  `relationship` ENUM('M', 'F', 'G') NOT NULL,
   PRIMARY KEY (`parent_guardian_id`),
   UNIQUE INDEX `UQ_ParentsGuardians_IdNumber` (`id_number` ASC) VISIBLE,
   UNIQUE INDEX `UQ_ParentsGuardians_PhoneNumber` (`phone_number` ASC) VISIBLE,
@@ -353,12 +362,17 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_users`
+-- role
+	-- S: superuser
+    -- A: admin
+    -- T: teacher
+    -- P: psychologist
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_users` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(25) NOT NULL,
   `user_password` VARCHAR(100) NOT NULL,
-  `role` ENUM('super', 'admin', 'teacher', 'psychologist') NOT NULL,
+  `role` ENUM('S', 'A', 'T', 'P') NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE INDEX `UQ_Users_Email` (`email` ASC) VISIBLE)
 ENGINE = InnoDB
