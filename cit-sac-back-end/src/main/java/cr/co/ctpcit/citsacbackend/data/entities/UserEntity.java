@@ -34,4 +34,5 @@ public class UserEntity {
     @Column(name = "role", nullable = false)
     private String role;
 
+    //TODO: Create role as enum and map it correctly if needed and allowed by SpringSecurity
 }
