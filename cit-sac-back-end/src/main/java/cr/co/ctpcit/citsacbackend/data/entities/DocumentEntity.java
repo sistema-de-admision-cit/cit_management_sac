@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.entities;
 
+import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -22,9 +23,9 @@ public class DocumentEntity {
     private EnrollmentEntity enrollment;
 
     @NotNull
-    @Lob
-    @Column(name = "document_type", nullable = false)
-    private String documentType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "document_type", nullable = false, columnDefinition = "ENUM('HC','OT')")
+    private DocType documentType;
 
     @Size(max = 255)
     @NotNull

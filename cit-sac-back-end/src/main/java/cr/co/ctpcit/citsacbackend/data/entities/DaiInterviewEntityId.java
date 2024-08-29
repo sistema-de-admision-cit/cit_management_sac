@@ -24,7 +24,7 @@ public class DaiInterviewEntityId implements Serializable {
 
     @NotNull
     @Column(name = "daigrades_id", nullable = false)
-    private Integer daigradesId;
+    private Integer daiGradesId;
 
     @Override
     public boolean equals(Object o) {
@@ -32,12 +32,12 @@ public class DaiInterviewEntityId implements Serializable {
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         DaiInterviewEntityId entity = (DaiInterviewEntityId) o;
         return Objects.equals(this.interviewId, entity.interviewId) &&
-                Objects.equals(this.daigradesId, entity.daigradesId);
+                Objects.equals(this.daiGradesId, entity.daiGradesId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(interviewId, daigradesId);
+        return Objects.hash(interviewId, daiGradesId);
     }
 
 }

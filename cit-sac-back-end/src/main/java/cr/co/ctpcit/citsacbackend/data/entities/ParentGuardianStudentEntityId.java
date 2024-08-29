@@ -24,7 +24,7 @@ public class ParentGuardianStudentEntityId implements Serializable {
 
     @NotNull
     @Column(name = "parentguardian_id", nullable = false)
-    private Integer parentguardianId;
+    private Integer parentGuardianId;
 
     @Override
     public boolean equals(Object o) {
@@ -32,7 +32,7 @@ public class ParentGuardianStudentEntityId implements Serializable {
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         ParentGuardianStudentEntityId entity = (ParentGuardianStudentEntityId) o;
         return Objects.equals(this.studentId, entity.studentId) &&
-                Objects.equals(this.parentguardianId, entity.parentguardianId);
+                Objects.equals(this.parentGuardianId, entity.parentGuardianId);
     }
 
     @Override

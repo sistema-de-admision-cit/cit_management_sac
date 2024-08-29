@@ -19,10 +19,10 @@ public class DaiInterviewEntity {
     @EmbeddedId
     private DaiInterviewEntityId id;
 
-    @MapsId("daigradesId")
+    @MapsId("daiGradesId")
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "daigrades_id", nullable = false, referencedColumnName = "daigrades_id")
-    private DaiGradeEntity daigrades;
+    private DaiGradeEntity daiGrades;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "interview_date")

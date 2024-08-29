@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.entities;
 
+import cr.co.ctpcit.citsacbackend.data.enums.WeekDays;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -21,12 +22,12 @@ public class ExamDayEntity {
     @MapsId("examPeriodId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "exam_period_id", nullable = false)
-    private cr.co.ctpcit.citsacbackend.ExamPeriodEntity examPeriod;
+    private ExamPeriodEntity examPeriod;
 
     @NotNull
-    @Lob
-    @Column(name = "exam_day", nullable = false)
-    private String examDay;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "exam_day", nullable = false, columnDefinition = "ENUM('M','K','W','T','F','S','SS')")
+    private WeekDays examDay;
 
     @NotNull
     @Column(name = "start_time", nullable = false)

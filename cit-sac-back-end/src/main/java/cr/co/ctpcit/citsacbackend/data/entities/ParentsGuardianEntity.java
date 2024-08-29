@@ -1,5 +1,7 @@
 package cr.co.ctpcit.citsacbackend.data.entities;
 
+import cr.co.ctpcit.citsacbackend.data.enums.IdType;
+import cr.co.ctpcit.citsacbackend.data.enums.Relationship;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -34,9 +36,9 @@ public class ParentsGuardianEntity {
     private String secondSurname;
 
     @NotNull
-    @Lob
-    @Column(name = "id_type", nullable = false)
-    private String idType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "id_type", nullable = false, columnDefinition = "ENUM('CC','DI','PA')")
+    private IdType idType;
 
     @Size(max = 20)
     @NotNull
@@ -59,8 +61,9 @@ public class ParentsGuardianEntity {
     private String homeAddress;
 
     @NotNull
-    @Lob
-    @Column(name = "relationship", nullable = false)
-    private String relationship;
+    @Column(name = "relationship", nullable = false,
+            columnDefinition = "ENUM('M','F','G')")
+    @Enumerated(EnumType.STRING)
+    private Relationship relationship;
 
 }

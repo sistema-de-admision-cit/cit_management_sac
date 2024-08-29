@@ -18,11 +18,11 @@ public class ParentGuardianStudentEntity {
     @MapsId("studentId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id", nullable = false)
-    private cr.co.ctpcit.citsacbackend.StudentEntity student;
+    private StudentEntity student;
 
-    @MapsId("parentguardianId")
+    @MapsId("parentGuardianId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "parentguardian_id", nullable = false)
-    private cr.co.ctpcit.citsacbackend.ParentsGuardianEntity parentGuardian;
+    private ParentsGuardianEntity parentGuardian;
 
 }

@@ -24,20 +24,20 @@ public class DaiExamEntityId implements Serializable {
 
     @NotNull
     @Column(name = "daigrades_id", nullable = false)
-    private Integer daigradesId;
+    private Integer daiGradesId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         DaiExamEntityId entity = (DaiExamEntityId) o;
-        return Objects.equals(this.daigradesId, entity.daigradesId) &&
+        return Objects.equals(this.daiGradesId, entity.daiGradesId) &&
                 Objects.equals(this.examId, entity.examId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(daigradesId, examId);
+        return Objects.hash(daiGradesId, examId);
     }
 
 }

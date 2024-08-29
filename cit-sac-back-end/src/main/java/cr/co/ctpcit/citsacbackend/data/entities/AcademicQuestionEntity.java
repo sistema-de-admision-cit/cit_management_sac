@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.entities;
 
+import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,6 +19,10 @@ public class AcademicQuestionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id", nullable = false)
     private Integer id;
+
+    @NotNull
+    @Column(name = "question_grade", nullable = false, columnDefinition = "ENUM('1','2','3','4','5','6','7','8','9','10')")
+    private Grades questionGrade;
 
     @Size(max = 255)
     @NotNull

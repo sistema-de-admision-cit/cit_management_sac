@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.entities;
 
+import cr.co.ctpcit.citsacbackend.data.enums.IdType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -40,9 +41,10 @@ public class StudentEntity {
     private LocalDate birthDate;
 
     @NotNull
-    @Lob
-    @Column(name = "id_type", nullable = false)
-    private String idType;
+    @Column(name = "id_type", nullable = false,
+            columnDefinition = "ENUM('CC','DI','PA')")
+    @Enumerated(EnumType.STRING)
+    private IdType idType;
 
     @Size(max = 20)
     @NotNull

@@ -1,9 +1,11 @@
 package cr.co.ctpcit.citsacbackend.data.entities;
 
+import cr.co.ctpcit.citsacbackend.data.enums.Grades;
+import cr.co.ctpcit.citsacbackend.data.enums.KnownThrough;
+import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -24,9 +26,10 @@ public class EnrollmentEntity {
     @JoinColumn(name = "student_id", nullable = false)
     private StudentEntity student;
 
-    @ColumnDefault("_utf8mb4'pending'")
-    @Column(name = "status")
-    private String status;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, columnDefinition = "ENUM('P','E','I','A','R')")
+    private ProcessStatus status;
 
     @NotNull
     @Column(name = "enrollment_date", nullable = false)
@@ -34,11 +37,12 @@ public class EnrollmentEntity {
 
     @NotNull
     @Column(name = "grade_to_enroll", nullable = false)
-    private String gradeToEnroll;
+    private Grades gradeToEnroll;
 
     @NotNull
-    @Column(name = "known_through", nullable = false)
-    private String knownThrough;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "known_through", nullable = false, columnDefinition = "ENUM('SM','OH','FD','FM','OT')")
+    private KnownThrough knownThrough;
 
     @NotNull
     @Column(name = "exam_date", nullable = false)
