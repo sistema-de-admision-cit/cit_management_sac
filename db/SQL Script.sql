@@ -5,102 +5,61 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
-SHOW WARNINGS;
--- -----------------------------------------------------
--- Schema db_cit_test
--- -----------------------------------------------------
-
--- -----------------------------------------------------
 -- Schema db_cit_test
 -- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `db_cit_test` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
-SHOW WARNINGS;
 USE `db_cit_test` ;
 
 -- -----------------------------------------------------
--- Table `db_cit_test`.`tbl_academicquestions`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicquestions` (
-  `question_id` INT NOT NULL AUTO_INCREMENT,
-  `question_text` VARCHAR(255) NULL DEFAULT NULL,
-  `image_url` VARCHAR(255) NULL DEFAULT NULL,
-  `option_a` VARCHAR(255) NOT NULL,
-  `option_b` VARCHAR(255) NOT NULL,
-  `option_c` VARCHAR(255) NOT NULL,
-  `option_d` VARCHAR(255) NOT NULL,
-  `correct_option` CHAR(1) NOT NULL,
-  CONSTRAINT PK_AcademicQuestions PRIMARY KEY (`question_id`),
-  UNIQUE INDEX `UQ_AcademicQuestions_Question` (`question_text` ASC) VISIBLE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-SHOW WARNINGS;
-
--- -----------------------------------------------------
--- Table `db_cit_test`.`tbl_parentsguardians`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_parentsguardians` (
-  `parent_guardian_id` INT NOT NULL AUTO_INCREMENT,
-  `first_name` VARCHAR(50) NOT NULL,
-  `last_name` VARCHAR(50) NOT NULL,
-  `id_type` ENUM('cc', 'di', 'pa') NOT NULL,
-  `id_number` VARCHAR(20) NOT NULL,
-  `phone_number` VARCHAR(20) NOT NULL,
-  `email` VARCHAR(100) NOT NULL,
-  `home_address` VARCHAR(100) NOT NULL,
-  `relationship` ENUM('mother', 'father', 'guardian') NOT NULL,
-  CONSTRAINT PK_ParentsGuardians PRIMARY KEY (`parent_guardian_id`),
-  UNIQUE INDEX `UQ_ParentsGuardians_IdNumber` (`id_number` ASC) VISIBLE,
-  UNIQUE INDEX `UQ_ParentsGuardians_PhoneNumber` (`phone_number` ASC) VISIBLE,
-  UNIQUE INDEX `UQ_ParentsGuardians_Email` (`email` ASC) VISIBLE)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-SHOW WARNINGS;
-
--- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_students`
+-- id_type
+	-- cc: cedula
+	-- di: dimex
+	-- pa: passport
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_students` (
   `student_id` INT NOT NULL AUTO_INCREMENT,
-  `parent_guardian_id` INT NOT NULL,
-  `first_name` VARCHAR(50) NOT NULL,
-  `last_name` VARCHAR(50) NOT NULL,
+  `first_name` VARCHAR(32) NOT NULL,
+  `first_surname` VARCHAR(32) NOT NULL,
+  `second_surname` VARCHAR(32) NULL DEFAULT NULL,
   `birth_date` DATE NOT NULL,
   `id_type` ENUM('cc', 'di', 'pa') NOT NULL,
   `id_number` VARCHAR(20) NOT NULL,
   `previous_school` VARCHAR(100) NULL DEFAULT NULL,
-  `has_accommodations` TINYINT(1) NOT NULL,
-  CONSTRAINT PK_Students PRIMARY KEY (`student_id`, `parent_guardian_id`),
-  UNIQUE INDEX `UQ_Students_IdNumber` (`id_number` ASC) VISIBLE,
-  INDEX `FK_Students_ParentsGuardians` (`parent_guardian_id` ASC) VISIBLE,
-  CONSTRAINT `FK_Students_ParentsGuardians`
-    FOREIGN KEY (`parent_guardian_id`)
-    REFERENCES `db_cit_test`.`tbl_parentsguardians` (`parent_guardian_id`))
+  `has_accommodations` BOOLEAN NOT NULL,
+  PRIMARY KEY (`student_id`),
+  UNIQUE INDEX `UQ_Students_IdNumber` (`id_number` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_enrollments`
+-- status:
+	-- pending: initial state when student is enrolled
+	-- eligible: state when the student is accepted to do the exam
+	-- ineligible: state when the student is rejected to do the exam
+	-- approved: state when the student passed successfully the entire process
+	-- rejected: state when the student fail the admision process.
+-- -----------------------------------------------------
+-- grade_to_entoll
+-- level in which the student is supposed to enter when approved.
+-- -----------------------------------------------------
+-- known_through
+-- the method by which the student got to know us
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_enrollments` (
   `enrollment_id` INT NOT NULL AUTO_INCREMENT,
   `student_id` INT NOT NULL,
-  `status` ENUM('pending', 'approved', 'rejected', 'passed', 'failed') NOT NULL,
-  `enrollment_date` DATE NOT NULL,
-  `grade_to_enroll` ENUM('2', '3', '4', '5', '6', '7', '8', '9') NOT NULL,
-  `known_through` ENUM('facebook', 'instagram', 'whatsapp', 'friend', 'family', 'other') NOT NULL,
+  `status` ENUM('pending', 'eligible', 'ineligible', 'approved', 'rejected') GENERATED ALWAYS AS ('pending') VIRTUAL,
+  `enrollment_date` TIMESTAMP NOT NULL,
+  `grade_to_enroll` ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '10') NOT NULL,
+  `known_through` ENUM('socialmedia', 'openhouse', 'friend', 'family', 'other') NOT NULL,
   `exam_date` DATE NOT NULL,
-  `consent_given` TINYINT(1) NOT NULL,
-  `whatsapp_notification` TINYINT(1) NOT NULL,
-  CONSTRAINT PK_Enrollments PRIMARY KEY (`enrollment_id`, `student_id`),
+  `consent_given` BOOLEAN NOT NULL,
+  `whatsapp_notification` BOOLEAN NOT NULL,
+  PRIMARY KEY (`enrollment_id`, `student_id`),
   INDEX `FK_Enrollments_Students` (`student_id` ASC) VISIBLE,
   CONSTRAINT `FK_Enrollments_Students`
     FOREIGN KEY (`student_id`)
@@ -109,7 +68,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_academicexams`
@@ -117,10 +75,11 @@ SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicexams` (
   `exam_id` INT NOT NULL AUTO_INCREMENT,
   `enrollment_id` INT NOT NULL,
-  `exam_date` DATE NOT NULL,
+  `exam_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `grade` DECIMAL(5,2) NOT NULL,
-  CONSTRAINT PK_AcademicExams PRIMARY KEY (`exam_id`, `enrollment_id`),
+  PRIMARY KEY (`exam_id`, `enrollment_id`),
   INDEX `FK_AcademicExams_Enrollments` (`enrollment_id` ASC) VISIBLE,
+  UNIQUE INDEX `UQ_AcademicExams_enrollmentId` (`enrollment_id` ASC) VISIBLE,
   CONSTRAINT `FK_AcademicExams_Enrollments`
     FOREIGN KEY (`enrollment_id`)
     REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`))
@@ -128,32 +87,24 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
--- Table `db_cit_test`.`tbl_academicanswers`
+-- Table `db_cit_test`.`tbl_academicquestions`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicanswers` (
-  `answer_id` INT NOT NULL AUTO_INCREMENT,
-  `question_id` INT NOT NULL,
-  `exam_id` INT NOT NULL,
-  `student_answer` CHAR(1) NOT NULL,
-  CONSTRAINT PK_AcademicAnswers PRIMARY KEY (`answer_id`, `question_id`, `exam_id`),
-  INDEX `FK_AcademicAnswers_Questions` (`question_id` ASC) VISIBLE,
-  INDEX `fk_tbl_academicanswers_tbl_academicexams1_idx` (`exam_id` ASC) VISIBLE,
-  CONSTRAINT `FK_AcademicAnswers_Questions`
-    FOREIGN KEY (`question_id`)
-    REFERENCES `db_cit_test`.`tbl_academicquestions` (`question_id`),
-  CONSTRAINT `fk_tbl_academicanswers_tbl_academicexams1`
-    FOREIGN KEY (`exam_id`)
-    REFERENCES `db_cit_test`.`tbl_academicexams` (`exam_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicquestions` (
+  `question_id` INT NOT NULL AUTO_INCREMENT,
+  `question_text` VARCHAR(255) NOT NULL,
+  `image_url` VARCHAR(255) NULL DEFAULT NULL,
+  `option_a` VARCHAR(255) NOT NULL,
+  `option_b` VARCHAR(255) NOT NULL,
+  `option_c` VARCHAR(255) NOT NULL,
+  `option_d` VARCHAR(255) NOT NULL,
+  `correct_option` CHAR(1) NOT NULL,
+  PRIMARY KEY (`question_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_academicexamquestions`
@@ -161,77 +112,69 @@ SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicexamquestions` (
   `exam_id` INT NOT NULL,
   `question_id` INT NOT NULL,
-  CONSTRAINT PK_AcademicExamQuestions PRIMARY KEY (`exam_id`, `question_id`),
+  `student_answer` CHAR(1) NULL DEFAULT NULL,
+  PRIMARY KEY (`exam_id`, `question_id`),
   INDEX `FK_AcademicExamQuestions_AcademicQuestions` (`question_id` ASC) VISIBLE,
-  CONSTRAINT `FK_AcademicExamQuestions_AcademicExams`
+  INDEX `FK_AcademicExamQuestions_AcademicExams` (`exam_id` ASC) VISIBLE,
+  CONSTRAINT `FK_AcademiExamQuestions_AcademicExams`
     FOREIGN KEY (`exam_id`)
     REFERENCES `db_cit_test`.`tbl_academicexams` (`exam_id`),
-  CONSTRAINT `FK_AcademicExamQuestions_AcademicQuestions`
+  CONSTRAINT `FK_AcademiExamQuestions_AcademicQuestions`
     FOREIGN KEY (`question_id`)
     REFERENCES `db_cit_test`.`tbl_academicquestions` (`question_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
--- Table `db_cit_test`.`tbl_daiquestions`
+-- Table `db_cit_test`.`tbl_daigrades`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiquestions` (
-  `question_id` INT NOT NULL AUTO_INCREMENT,
-  `question_text` VARCHAR(255) NULL DEFAULT NULL,
-  `image_url` VARCHAR(255) NULL DEFAULT NULL,
-  CONSTRAINT PK_DAIQuestions PRIMARY KEY (`question_id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-SHOW WARNINGS;
-
--- -----------------------------------------------------
--- Table `db_cit_test`.`tbl_daiexams`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiexams` (
-  `exam_id` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daigrades` (
+  `daigrades_id` INT NOT NULL AUTO_INCREMENT,
   `enrollment_id` INT NOT NULL,
-  `exam_date` DATE NOT NULL,
-  `grade` DECIMAL(5,2) NOT NULL,
-  CONSTRAINT PK_DAIExams PRIMARY KEY (`exam_id`, `enrollment_id`),
-  INDEX `FK_DAIExams_Enrollments` (`enrollment_id` ASC) VISIBLE,
-  CONSTRAINT `FK_DAIExams_Enrollments`
+  PRIMARY KEY (`daigrades_id`, `enrollment_id`),
+  INDEX `FK_DAIGrades_Enrollments` (`enrollment_id` ASC) INVISIBLE,
+  UNIQUE INDEX `UQ_Enrollments_Id` (`enrollment_id` ASC) VISIBLE,
+  CONSTRAINT `FK_DAIGrades_Enrollments`
     FOREIGN KEY (`enrollment_id`)
     REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
--- Table `db_cit_test`.`tbl_daianswers`
+-- Table `db_cit_test`.`tbl_daiexams`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daianswers` (
-  `answer_id` INT NOT NULL AUTO_INCREMENT,
-  `question_id` INT NOT NULL,
-  `exam_id` INT NOT NULL,
-  `student_answer` TEXT NOT NULL,
-  CONSTRAINT PK_DAIAnswers PRIMARY KEY (`answer_id`, `question_id`, `exam_id`),
-  INDEX `FK_DAIAnswers_Questions` (`question_id` ASC) VISIBLE,
-  INDEX `fk_tbl_daianswers_tbl_daiexamens1_idx` (`exam_id` ASC) VISIBLE,
-  CONSTRAINT `FK_DAIAnswers_Questions`
-    FOREIGN KEY (`question_id`)
-    REFERENCES `db_cit_test`.`tbl_daiquestions` (`question_id`),
-  CONSTRAINT `fk_tbl_daianswers_tbl_daiexamens1`
-    FOREIGN KEY (`exam_id`)
-    REFERENCES `db_cit_test`.`tbl_daiexams` (`exam_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiexams` (
+  `exam_id` INT NOT NULL AUTO_INCREMENT,
+  `daigrades_id` INT NOT NULL,
+  `exam_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `grade` DECIMAL(5,2) NOT NULL,
+  PRIMARY KEY (`exam_id`, `daigrades_id`),
+  INDEX `FK_DAIExams_DAIGrades` (`daigrades_id` ASC) VISIBLE,
+  UNIQUE INDEX `UQ_DAIGrades_Id` (`daigrades_id` ASC) VISIBLE,
+  CONSTRAINT `FK_DAIExams_DAIGrades`
+    FOREIGN KEY (`daigrades_id`)
+    REFERENCES `db_cit_test`.`tbl_daigrades` (`daigrades_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `db_cit_test`.`tbl_daiquestions`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiquestions` (
+  `question_id` INT NOT NULL AUTO_INCREMENT,
+  `question_text` VARCHAR(255) NOT NULL,
+  `image_url` VARCHAR(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`question_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_daiexamquestions`
@@ -239,9 +182,11 @@ SHOW WARNINGS;
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiexamquestions` (
   `exam_id` INT NOT NULL,
   `question_id` INT NOT NULL,
-  CONSTRAINT PK_DAIExamQuestions PRIMARY KEY (`exam_id`, `question_id`),
-  INDEX `FK_DAIExamQuestions_DAIQuestions` (`question_id` ASC) VISIBLE,
-  CONSTRAINT `FK_DAIExamQuestions_DAIExamens`
+  `student_answer` TEXT NULL DEFAULT NULL,
+  PRIMARY KEY (`exam_id`, `question_id`),
+  INDEX `FK_DAIExamQuestions_DAIQuestions` (`question_id` ASC) INVISIBLE,
+  INDEX `FK_DAIExamQuestions_DAIExams` (`exam_id` ASC) VISIBLE,
+  CONSTRAINT `FK_DAIExamQuestions_DAIExams`
     FOREIGN KEY (`exam_id`)
     REFERENCES `db_cit_test`.`tbl_daiexams` (`exam_id`),
   CONSTRAINT `FK_DAIExamQuestions_DAIQuestions`
@@ -251,18 +196,40 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `db_cit_test`.`tbl_daiinterview`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiinterview` (
+  `interview_id` INT NOT NULL AUTO_INCREMENT,
+  `daigrades_id` INT NOT NULL,
+  `interview_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `grade` DECIMAL(5,2) NOT NULL,
+  PRIMARY KEY (`interview_id`, `daigrades_id`),
+  INDEX `FK_DAIInterview_DAIGrades` (`daigrades_id` ASC) VISIBLE,
+  UNIQUE INDEX `UQ_DAIGrades_Id` (`daigrades_id` ASC) VISIBLE,
+  CONSTRAINT `FK_DAIInterview_DAIGrades`
+    FOREIGN KEY (`daigrades_id`)
+    REFERENCES `db_cit_test`.`tbl_daigrades` (`daigrades_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_documents`
+-- document_type
+	-- health_certificate: when a student requires any acommodation, 
+	-- has to provide a psicological letter to certificate the condition.
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_documents` (
   `document_id` INT NOT NULL AUTO_INCREMENT,
   `enrollment_id` INT NOT NULL,
-  `document_type` ENUM('cc', 'di', 'pa', 'health_certificate', 'other') NOT NULL,
+  `document_type` ENUM('health_certificate', 'other') NOT NULL,
   `document_url` VARCHAR(255) NOT NULL,
-  CONSTRAINT PK_Documents PRIMARY KEY (`document_id`, `enrollment_id`),
-  UNIQUE INDEX `UQ_Documents_Enrollment_DocumentType` (`enrollment_id` ASC, `document_type` ASC) VISIBLE,
+  PRIMARY KEY (`document_id`, `enrollment_id`),
+  UNIQUE INDEX `UQ_Documents_Enrollment_DocumentType` (`enrollment_id` ASC, `document_type` ASC) INVISIBLE,
+  INDEX `FK_Documents_Enrollments` (`enrollment_id` ASC) VISIBLE,
   CONSTRAINT `FK_Documents_Enrollments`
     FOREIGN KEY (`enrollment_id`)
     REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`))
@@ -270,7 +237,25 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `db_cit_test`.`tbl_englishexams`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_englishexams` (
+  `exam_id` INT NOT NULL AUTO_INCREMENT,
+  `enrollment_id` INT NOT NULL,
+  `exam_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `grade` DECIMAL(5,2) NOT NULL,
+  PRIMARY KEY (`exam_id`, `enrollment_id`),
+  INDEX `FK_EnglishExams_Enrollments` (`enrollment_id` ASC) VISIBLE,
+  UNIQUE INDEX `UQ_EnglishExams_enrollmentId` (`enrollment_id` ASC) INVISIBLE,
+  CONSTRAINT `FK_EnglishExams_Enrollments`
+    FOREIGN KEY (`enrollment_id`)
+    REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_examperiods`
@@ -279,22 +264,29 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_examperiods` (
   `exam_period_id` INT NOT NULL AUTO_INCREMENT,
   `start_date` DATE NOT NULL,
   `end_date` DATE NOT NULL,
-  CONSTRAINT PK_ExamPeriods PRIMARY KEY (`exam_period_id`))
+  PRIMARY KEY (`exam_period_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_examdays`
+-- exam_day:
+	-- m: monday
+	-- k: tuesday
+	-- w: wednesday
+	-- t: thursday
+	-- f: friday
+	-- s: saturday
+	-- ss: sunday
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_examdays` (
   `exam_day_id` INT NOT NULL AUTO_INCREMENT,
   `exam_period_id` INT NOT NULL,
-  `exam_day` ENUM('monday', 'tuesday', 'wednesday', 'thursday', 'friday') NOT NULL,
+  `exam_day` ENUM('m', 'k', 'w', 't', 'f', 's', 'ss') NOT NULL,
   `start_time` TIME NOT NULL,
-  CONSTRAINT PK_ExamDays PRIMARY KEY (`exam_day_id`, `exam_period_id`),
+  PRIMARY KEY (`exam_day_id`, `exam_period_id`),
   INDEX `FK_ExamDays_ExamPeriods` (`exam_period_id` ASC) VISIBLE,
   CONSTRAINT `FK_ExamDays_ExamPeriods`
     FOREIGN KEY (`exam_period_id`)
@@ -303,26 +295,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
-
--- -----------------------------------------------------
--- Table `db_cit_test`.`tbl_englishexams`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_englishexams` (
-  `exam_id` INT NOT NULL AUTO_INCREMENT,
-  `enrollment_id` INT NOT NULL,
-  `exam_date` DATE NOT NULL,
-  `grade` DECIMAL(5,2) NOT NULL,
-  CONSTRAINT PK_EnglishExams PRIMARY KEY (`exam_id`, `enrollment_id`),
-  INDEX `FK_EnglishExams_Enrollments` (`enrollment_id` ASC) VISIBLE,
-  CONSTRAINT `FK_EnglishExams_Enrollments`
-    FOREIGN KEY (`enrollment_id`)
-    REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_log`
@@ -331,17 +303,40 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_log` (
   `log_id` INT NOT NULL AUTO_INCREMENT,
   `table_name` VARCHAR(50) NOT NULL,
   `column_name` VARCHAR(50) NOT NULL,
-  `old_value` TEXT NULL DEFAULT NULL,
-  `new_value` TEXT NULL DEFAULT NULL,
+  `old_value` TEXT NOT NULL,
+  `new_value` TEXT NOT NULL,
   `changed_by` INT NOT NULL,
   `changed_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `query` TEXT NULL,
-  CONSTRAINT PK_Log PRIMARY KEY (`log_id`))
+  `query` TEXT NULL DEFAULT NULL,
+  `comment` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`log_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `db_cit_test`.`tbl_parentsguardians`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_parentsguardians` (
+  `parent_guardian_id` INT NOT NULL AUTO_INCREMENT,
+  `first_name` VARCHAR(32) NOT NULL,
+  `first_surname` VARCHAR(32) NOT NULL,
+  `second_surname` VARCHAR(32) NULL DEFAULT NULL,
+  `id_type` ENUM('cc', 'di', 'pa') NOT NULL,
+  `id_number` VARCHAR(20) NOT NULL,
+  `phone_number` VARCHAR(20) NOT NULL,
+  `email` VARCHAR(100) NOT NULL,
+  `home_address` VARCHAR(100) NOT NULL,
+  `relationship` ENUM('mother', 'father', 'guardian') NOT NULL,
+  PRIMARY KEY (`parent_guardian_id`),
+  UNIQUE INDEX `UQ_ParentsGuardians_IdNumber` (`id_number` ASC) VISIBLE,
+  UNIQUE INDEX `UQ_ParentsGuardians_PhoneNumber` (`phone_number` ASC) VISIBLE,
+  UNIQUE INDEX `UQ_ParentsGuardians_Email` (`email` ASC) VISIBLE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_systemconfig`
@@ -350,12 +345,11 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_systemconfig` (
   `config_id` INT NOT NULL AUTO_INCREMENT,
   `config_name` VARCHAR(100) NOT NULL,
   `config_value` VARCHAR(255) NOT NULL,
-  CONSTRAINT PK_SystemConfig PRIMARY KEY (`config_id`))
+  PRIMARY KEY (`config_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_users`
@@ -364,35 +358,37 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_users` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(25) NOT NULL,
   `user_password` VARCHAR(100) NOT NULL,
-  `role` ENUM('admin', 'teacher', 'psychologist') NOT NULL,
-  CONSTRAINT PK_Users PRIMARY KEY (`user_id`),
+  `role` ENUM('super', 'admin', 'teacher', 'psychologist') NOT NULL,
+  PRIMARY KEY (`user_id`),
   UNIQUE INDEX `UQ_Users_Email` (`email` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-SHOW WARNINGS;
-USE `db_cit_test` ;
 
 -- -----------------------------------------------------
--- Placeholder table for view `db_cit_test`.`VW_grades`
+-- Table `db_cit_test`.`tbl_parentguardianstudents`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `db_cit_test`.`VW_grades` (`enrollment_id` INT, `exam_type` INT, `grade` INT);
-SHOW WARNINGS;
+CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_parentguardianstudents` (
+  `student_id` INT NOT NULL,
+  `parentguardian_id` INT NOT NULL,
+  PRIMARY KEY (`student_id`, `parentguardian_id`),
+  INDEX `FK_ParentGuardianStudents_ParentGuardian` (`parentguardian_id` ASC) INVISIBLE,
+  INDEX `FK_ParentGuardianStudents_Student` (`student_id` ASC) INVISIBLE,
+  CONSTRAINT `FK_ParentGuardianStudents_Student`
+    FOREIGN KEY (`student_id`)
+    REFERENCES `db_cit_test`.`tbl_students` (`student_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `FK_ParentGuardianStudents_ParentGuardian`
+    FOREIGN KEY (`parentguardian_id`)
+    REFERENCES `db_cit_test`.`tbl_parentsguardians` (`parent_guardian_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
 
--- -----------------------------------------------------
--- View `db_cit_test`.`VW_grades`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `db_cit_test`.`VW_grades`;
-SHOW WARNINGS;
-USE `db_cit_test`;
-CREATE  OR REPLACE VIEW `VW_grades` AS
-SELECT enrollment_id, 'academic' AS exam_type, grade FROM tbl_academicexams
-UNION ALL 
-SELECT enrollment_id, 'dai' AS exam_type, grade FROM tbl_daiexams
-UNION ALL
-SELECT enrollment_id, 'english' AS exam_type, grade FROM tbl_englishexams;
-SHOW WARNINGS;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
