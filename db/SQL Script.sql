@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_enrollments` (
   `enrollment_id` INT NOT NULL AUTO_INCREMENT,
   `student_id` INT NOT NULL,
   `status` ENUM('P', 'E', 'I', 'A', 'R') NOT NULL,
-  `enrollment_date` TIMESTAMP NOT NULL,
+  `enrollment_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `grade_to_enroll` ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '10') NOT NULL,
   `known_through` ENUM('SM', 'OH', 'FD', 'FM', 'OT') NOT NULL,
   `exam_date` DATE NOT NULL,
@@ -97,6 +97,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicquestions` (
   `question_id` INT NOT NULL AUTO_INCREMENT,
+  `question_grade` ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '10') NOT NULL,
   `question_text` VARCHAR(255) NOT NULL,
   `image_url` VARCHAR(255) NULL DEFAULT NULL,
   `option_a` VARCHAR(255) NOT NULL,
@@ -172,6 +173,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiquestions` (
   `question_id` INT NOT NULL AUTO_INCREMENT,
+  `question_grade` ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '10') NOT NULL,
   `question_text` VARCHAR(255) NOT NULL,
   `image_url` VARCHAR(255) NULL DEFAULT NULL,
   PRIMARY KEY (`question_id`))
