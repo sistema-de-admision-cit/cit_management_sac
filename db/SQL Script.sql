@@ -322,6 +322,10 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_parentsguardians`
+-- id_type
+	-- CC: cedula
+	-- DI: dimex
+	-- PA: passport
 -- relationship
 	-- M: mother
 	-- F: father
@@ -332,7 +336,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_parentsguardians` (
   `first_name` VARCHAR(32) NOT NULL,
   `first_surname` VARCHAR(32) NOT NULL,
   `second_surname` VARCHAR(32) NULL DEFAULT NULL,
-  `id_type` ENUM('cc', 'di', 'pa') NOT NULL,
+  `id_type` ENUM('CC', 'DI', 'PA') NOT NULL,
   `id_number` VARCHAR(20) NOT NULL,
   `phone_number` VARCHAR(20) NOT NULL,
   `email` VARCHAR(100) NOT NULL,
