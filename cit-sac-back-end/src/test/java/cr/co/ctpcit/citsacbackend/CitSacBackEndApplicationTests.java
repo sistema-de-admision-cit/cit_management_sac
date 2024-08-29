@@ -1,4 +1,4 @@
-package cr.co.ctpcit.sac;
+package cr.co.ctpcit.citsacbackend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

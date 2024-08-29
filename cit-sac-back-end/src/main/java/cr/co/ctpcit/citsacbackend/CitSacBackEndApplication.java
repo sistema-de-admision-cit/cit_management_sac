@@ -1,4 +1,4 @@
-package cr.co.ctpcit.sac;
+package cr.co.ctpcit.citsacbackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
