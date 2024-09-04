@@ -61,7 +61,13 @@ const ExamScheduleConfiguratorView = () => {
           </div>
 
           <div className='buttons'>
-            <Button className='btn btn-primary' onClick={() => handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage)} disabled={!isFormValid(formValues)}>Guardar</Button>
+            <Button
+              className='btn btn-primary'
+              onClick={() => handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage)}
+              disabled={!isFormValid(formValues)}
+            >
+              {loading ? 'Guardando...' : 'Guardar'}
+            </Button>
             <Button className='btn btn-secondary'>Cancelar</Button>
           </div>
         </div>
