@@ -43,3 +43,7 @@ export const onEndDateChange = (date, formValues, setErrorMessage, handleChange)
 
   handleChange('endDate', date)
 }
+
+export const isFormValid = (formValues) => {
+  return ((formValues.startDate && formValues.endDate) || formValues.allYear) && formValues.applicationDays.length > 0 && formValues.startTime
+}
