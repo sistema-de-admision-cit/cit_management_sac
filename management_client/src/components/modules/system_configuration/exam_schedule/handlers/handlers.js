@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 const mapDays = (days) => {
   const daysMap = {
     Lunes: 'M',
@@ -9,6 +11,8 @@ const mapDays = (days) => {
 
   return days.map(day => daysMap[day])
 }
+
+const saveExamScheduleUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SAVE_EXAM_SCHEDULE_ENDPOINT}`
 
 export const handleSubmit = (formValues) => {
   const startDate = formValues.startDate.toISOString().split('T')[0]
@@ -23,7 +27,18 @@ export const handleSubmit = (formValues) => {
   }
 
   console.log(sendingData)
-  // TODO: Send data to the server (when the endpoint is ready)
+  console.log('Sending data to the server...')
+  console.log('Endpoint:', saveExamScheduleUrl)
+  // TODO: add jwt token to the request (when implemented)
+  // TODO: add user feedback (setSuccessMessage, setErrorMessage)
+  axios.post(
+    saveExamScheduleUrl,
+    sendingData
+  ).then(response => {
+    console.log('Response:', response)
+  }).catch(error => {
+    console.error('Error:', error)
+  })
 }
 
 export const onStartDateChange = (date, formValues, setErrorMessage, handleChange) => {
