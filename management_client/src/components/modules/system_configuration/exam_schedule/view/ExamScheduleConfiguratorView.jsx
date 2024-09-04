@@ -6,9 +6,13 @@ import Button from '../../../../core/global/atoms/Button'
 import ApplicationDaysSelector from '../molecules/ApplicationDaysSelector'
 import HoursSection from '../organisms/HoursSection'
 import DateApplicationSection from '../organisms/DateApplicationSection'
-import { handleSubmit } from '../handlers/handlers'
+import useMessages from '../../../../core/global/hooks/useMessages'
+import { handleSubmit, onStartDateChange, onEndDateChange } from '../handlers/handlers'
 
 const ExamScheduleConfiguratorView = () => {
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
+  const [loading, setLoading] = useState(false)
+
   const [formValues, setFormValues] = useState({
     allYear: false,
     startDate: new Date(),
@@ -37,14 +41,6 @@ const ExamScheduleConfiguratorView = () => {
     })
   }
 
-  const onStartDateChange = (date) => {
-    handleChange('startDate', date)
-  }
-
-  const onEndDateChange = (date) => {
-    handleChange('endDate', date)
-  }
-
   return (
     <SectionLayout title='Configurar Citas'>
       <div className='container exam-schedule-configurator'>
@@ -56,8 +52,8 @@ const ExamScheduleConfiguratorView = () => {
           startDate={formValues.startDate}
           endDate={formValues.endDate}
           onAllYearChange={(e) => handleChange('allYear', e.target.checked)}
-          onStartDateChange={onStartDateChange}
-          onEndDateChange={onEndDateChange}
+          onStartDateChange={(date) => onStartDateChange(date, formValues, setErrorMessage, (field, value) => handleChange(field, value))}
+          onEndDateChange={(date) => onEndDateChange(date, formValues, setErrorMessage, (field, value) => handleChange(field, value))}
         />
 
         {/* Días de Aplicacion */}
@@ -73,11 +69,12 @@ const ExamScheduleConfiguratorView = () => {
         </div>
 
         <div className='buttons'>
-          <Button className='btn btn-primary' onClick={handleSubmit}>Guardar</Button>
+          <Button className='btn btn-primary' onClick={() => handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage)}>Guardar</Button>
           <Button className='btn btn-secondary'>Cancelar</Button>
         </div>
 
       </div>
+      {renderMessages()}
     </SectionLayout>
   )
 }
