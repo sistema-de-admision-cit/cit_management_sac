@@ -7,13 +7,14 @@ import ApplicationDaysSelector from '../molecules/ApplicationDaysSelector'
 import HoursSection from '../organisms/HoursSection'
 import DateApplicationSection from '../organisms/DateApplicationSection'
 import useMessages from '../../../../core/global/hooks/useMessages'
+import useFormState from '../../../../core/global/hooks/useFormState'
 import { handleSubmit, onStartDateChange, onEndDateChange, isFormValid, handleCheckboxChange } from '../handlers/handlers'
 
 const ExamScheduleConfiguratorView = () => {
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
   const [loading, setLoading] = useState(false)
 
-  const [formValues, setFormValues] = useState({
+  const { formData: formValues, setFormData: setFormValues } = useFormState({
     allYear: false,
     startDate: new Date(),
     endDate: new Date(),
