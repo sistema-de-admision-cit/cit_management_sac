@@ -42,37 +42,39 @@ const ExamScheduleConfiguratorView = () => {
 
   return (
     <SectionLayout title='Configurar Citas'>
-      <div className='container exam-schedule-configurator'>
+      <div className='container'>
         <h1>Configuración de citas</h1>
-
-        {/* Fechas de Aplicación */}
-        <DateApplicationSection
-          allYear={formValues.allYear}
-          startDate={formValues.startDate}
-          endDate={formValues.endDate}
-          onAllYearChange={(e) => handleChange('allYear', e.target.checked)}
-          onStartDateChange={(date) => onStartDateChange(date, formValues, setErrorMessage, (field, value) => handleChange(field, value))}
-          onEndDateChange={(date) => onEndDateChange(date, formValues, setErrorMessage, (field, value) => handleChange(field, value))}
-        />
-
-        {/* Días de Aplicacion */}
-        <div className='application-days'>
-          <h2>Días de Aplicación <span className='required'>*</span></h2>
-          <ApplicationDaysSelector selectedDays={formValues.applicationDays} onDayChange={handleCheckboxChange} />
-        </div>
-
-        {/* Horas de Aplicacion */}
-        <div className='application-hours'>
-          <h2>Horas de Aplicación</h2>
-          <HoursSection
-            startTime={formValues.startTime}
-            onStartTimeChange={(e) => handleChange('startTime', e.target.value)}
+        <p className='description'>Configura las fechas y horarios de aplicación de los exámenes.</p>
+        <div className='exam-schedule-configurator'>
+          {/* Fechas de Aplicación */}
+          <DateApplicationSection
+            allYear={formValues.allYear}
+            startDate={formValues.startDate}
+            endDate={formValues.endDate}
+            onAllYearChange={(e) => handleChange('allYear', e.target.checked)}
+            onStartDateChange={(date) => onStartDateChange(date, formValues, setErrorMessage, (field, value) => handleChange(field, value))}
+            onEndDateChange={(date) => onEndDateChange(date, formValues, setErrorMessage, (field, value) => handleChange(field, value))}
           />
-        </div>
 
-        <div className='buttons'>
-          <Button className='btn btn-primary' onClick={() => handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage)}>Guardar</Button>
-          <Button className='btn btn-secondary'>Cancelar</Button>
+          {/* Días de Aplicacion */}
+          <div className='application-days'>
+            <h2>Días de Aplicación <span className='required'>*</span></h2>
+            <ApplicationDaysSelector selectedDays={formValues.applicationDays} onDayChange={handleCheckboxChange} />
+          </div>
+
+          {/* Horas de Aplicacion */}
+          <div className='application-hours'>
+            <h2>Horas de Aplicación</h2>
+            <HoursSection
+              startTime={formValues.startTime}
+              onStartTimeChange={(e) => handleChange('startTime', e.target.value)}
+            />
+          </div>
+
+          <div className='buttons'>
+            <Button className='btn btn-primary' onClick={() => handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage)}>Guardar</Button>
+            <Button className='btn btn-secondary'>Cancelar</Button>
+          </div>
         </div>
 
       </div>
