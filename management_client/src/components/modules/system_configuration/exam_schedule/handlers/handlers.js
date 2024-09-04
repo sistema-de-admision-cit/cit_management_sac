@@ -1,3 +1,15 @@
+const mapDays = (days) => {
+  const daysMap = {
+    Lunes: 'M',
+    Martes: 'K',
+    Miércoles: 'W',
+    Jueves: 'T',
+    Viernes: 'F'
+  }
+
+  return days.map(day => daysMap[day])
+}
+
 export const handleSubmit = (formValues) => {
   const startDate = formValues.startDate.toISOString().split('T')[0]
   const endDate = formValues.endDate.toISOString().split('T')[0]
@@ -6,7 +18,7 @@ export const handleSubmit = (formValues) => {
     allYear: formValues.allYear,
     startDate,
     endDate,
-    applicationDays: formValues.applicationDays,
+    applicationDays: mapDays(formValues.applicationDays),
     startTime: formValues.startTime,
     endTime: formValues.endTime
   }
