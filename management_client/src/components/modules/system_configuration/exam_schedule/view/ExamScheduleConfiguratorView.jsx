@@ -6,6 +6,7 @@ import Button from '../../../../core/global/atoms/Button'
 import ApplicationDaysSelector from '../molecules/ApplicationDaysSelector'
 import HoursSection from '../organisms/HoursSection'
 import DateApplicationSection from '../organisms/DateApplicationSection'
+import { handleSubmit } from '../handlers/handlers'
 
 const ExamScheduleConfiguratorView = () => {
   const [formValues, setFormValues] = useState({
@@ -72,7 +73,7 @@ const ExamScheduleConfiguratorView = () => {
         </div>
 
         <div className='buttons'>
-          <Button className='btn btn-primary'>Guardar</Button>
+          <Button className='btn btn-primary' onClick={handleSubmit}>Guardar</Button>
           <Button className='btn btn-secondary'>Cancelar</Button>
         </div>
 
