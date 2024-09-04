@@ -64,7 +64,7 @@ const ExamScheduleConfiguratorView = () => {
 
           {/* Horas de Aplicacion */}
           <div className='application-hours'>
-            <h2>Horas de Aplicación</h2>
+            <h2>Hora de Aplicación <span className='required'>*</span></h2>
             <HoursSection
               startTime={formValues.startTime}
               onStartTimeChange={(e) => handleChange('startTime', e.target.value)}
