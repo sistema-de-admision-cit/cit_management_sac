@@ -47,3 +47,15 @@ export const onEndDateChange = (date, formValues, setErrorMessage, handleChange)
 export const isFormValid = (formValues) => {
   return ((formValues.startDate && formValues.endDate) || formValues.allYear) && formValues.applicationDays.length > 0 && formValues.startTime
 }
+
+export const handleCheckboxChange = (day, setFormValues) => {
+  setFormValues((prevValues) => {
+    const newDays = prevValues.applicationDays.includes(day)
+      ? prevValues.applicationDays.filter(d => d !== day)
+      : [...prevValues.applicationDays, day]
+    return {
+      ...prevValues,
+      applicationDays: newDays
+    }
+  })
+}
