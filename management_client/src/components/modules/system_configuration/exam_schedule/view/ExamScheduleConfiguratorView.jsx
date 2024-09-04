@@ -18,8 +18,7 @@ const ExamScheduleConfiguratorView = () => {
     startDate: new Date(),
     endDate: new Date(),
     applicationDays: [],
-    startTime: '',
-    endTime: ''
+    startTime: ''
   })
 
   const handleChange = (field, value) => {
@@ -65,7 +64,10 @@ const ExamScheduleConfiguratorView = () => {
         {/* Horas de Aplicacion */}
         <div className='application-hours'>
           <h2>Horas de Aplicación</h2>
-          <HoursSection startTime={formValues.startTime} endTime={formValues.endTime} onStartTimeChange={(e) => handleChange('startTime', e.target.value)} onEndTimeChange={(e) => handleChange('endTime', e.target.value)} />
+          <HoursSection
+            startTime={formValues.startTime}
+            onStartTimeChange={(e) => handleChange('startTime', e.target.value)}
+          />
         </div>
 
         <div className='buttons'>
