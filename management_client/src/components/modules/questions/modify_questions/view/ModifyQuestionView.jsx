@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import FindQuestion from '../../base/molecules/FindQuestion'
 import ModifyQuestionForm from '../organisms/ModifyQuestionForm'
-import '../../../../../assets/styles/questions/view.css'
+import '../../../../../assets/styles/global/view.css'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 
 const ModifyQuestionView = () => {

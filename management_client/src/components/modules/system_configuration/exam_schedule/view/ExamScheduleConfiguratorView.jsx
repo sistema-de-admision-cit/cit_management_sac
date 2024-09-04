@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
-import '../../../../../assets/styles/questions/view.css'
+import '../../../../../assets/styles/global/view.css'
 import '../../../../../assets/styles/sytem_config/exam_schedule_configurator.css'
 import Button from '../../../../core/global/atoms/Button'
 import ApplicationDaysSelector from '../molecules/ApplicationDaysSelector'
