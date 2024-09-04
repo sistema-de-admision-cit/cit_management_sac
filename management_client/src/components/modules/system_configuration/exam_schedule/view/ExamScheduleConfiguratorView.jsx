@@ -7,7 +7,7 @@ import ApplicationDaysSelector from '../molecules/ApplicationDaysSelector'
 import HoursSection from '../organisms/HoursSection'
 import DateApplicationSection from '../organisms/DateApplicationSection'
 import useMessages from '../../../../core/global/hooks/useMessages'
-import { handleSubmit, onStartDateChange, onEndDateChange, isFormValid } from '../handlers/handlers'
+import { handleSubmit, onStartDateChange, onEndDateChange, isFormValid, handleCheckboxChange } from '../handlers/handlers'
 
 const ExamScheduleConfiguratorView = () => {
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
@@ -25,18 +25,6 @@ const ExamScheduleConfiguratorView = () => {
     setFormValues({
       ...formValues,
       [field]: value
-    })
-  }
-
-  const handleCheckboxChange = (day) => {
-    setFormValues((prevValues) => {
-      const newDays = prevValues.applicationDays.includes(day)
-        ? prevValues.applicationDays.filter(d => d !== day)
-        : [...prevValues.applicationDays, day]
-      return {
-        ...prevValues,
-        applicationDays: newDays
-      }
     })
   }
 
@@ -59,7 +47,7 @@ const ExamScheduleConfiguratorView = () => {
           {/* Días de Aplicacion */}
           <div className='application-days'>
             <h2>Días de Aplicación <span className='required'>*</span></h2>
-            <ApplicationDaysSelector selectedDays={formValues.applicationDays} onDayChange={handleCheckboxChange} />
+            <ApplicationDaysSelector selectedDays={formValues.applicationDays} onDayChange={(day) => handleCheckboxChange(day, setFormValues)} />
           </div>
 
           {/* Horas de Aplicacion */}
