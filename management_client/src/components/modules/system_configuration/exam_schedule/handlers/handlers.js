@@ -14,7 +14,15 @@ const mapDays = (days) => {
 
 const saveExamScheduleUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SAVE_EXAM_SCHEDULE_ENDPOINT}`
 
-export const handleSubmit = (formValues) => {
+const possibleErrors = {
+  startDate: 'La fecha inicial no puede ser mayor a la fecha final',
+  endDate: 'La fecha final no puede ser menor a la fecha inicial',
+  applicationDays: 'Debes seleccionar al menos un día de aplicación',
+  startTime: 'Debes seleccionar una hora de aplicación',
+  default: 'Ocurrió un error al guardar la configuración'
+}
+
+export const handleSubmit = (formValues, setLoading, setErrorMessage, setSuccessMessage) => {
   const startDate = formValues.startDate.toISOString().split('T')[0]
   const endDate = formValues.endDate.toISOString().split('T')[0]
 
@@ -30,14 +38,20 @@ export const handleSubmit = (formValues) => {
   console.log('Sending data to the server...')
   console.log('Endpoint:', saveExamScheduleUrl)
   // TODO: add jwt token to the request (when implemented)
-  // TODO: add user feedback (setSuccessMessage, setErrorMessage)
+  setLoading(true)
   axios.post(
     saveExamScheduleUrl,
     sendingData
   ).then(response => {
-    console.log('Response:', response)
+    console.log(response)
+    setSuccessMessage('Configuración guardada correctamente')
   }).catch(error => {
-    console.error('Error:', error)
+    console.error(error)
+    // TODO: define the error message based on the error response
+    const errorMessage = possibleErrors.default
+    setErrorMessage(errorMessage)
+  }).finally(() => {
+    setLoading(false)
   })
 }
 
