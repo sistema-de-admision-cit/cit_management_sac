@@ -1,6 +1,6 @@
 import InputField from '../../../../core/global/atoms/InputField'
 
-const HoursSection = ({ startTime, endTime, onStartTimeChange, onEndTimeChange }) => (
+const HoursSection = ({ startTime, onStartTimeChange }) => (
   <div className='hours-range'>
     <InputField
       field={{
@@ -12,17 +12,6 @@ const HoursSection = ({ startTime, endTime, onStartTimeChange, onEndTimeChange }
       className='start-time'
       value={startTime}
       handleChange={onStartTimeChange}
-    />
-    <InputField
-      field={{
-        type: 'time',
-        name: 'endTime',
-        label: 'Hora Final',
-        required: true
-      }}
-      className='end-time'
-      value={endTime}
-      handleChange={onEndTimeChange}
     />
   </div>
 )
