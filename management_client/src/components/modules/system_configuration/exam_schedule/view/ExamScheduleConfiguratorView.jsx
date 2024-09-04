@@ -7,7 +7,7 @@ import ApplicationDaysSelector from '../molecules/ApplicationDaysSelector'
 import HoursSection from '../organisms/HoursSection'
 import DateApplicationSection from '../organisms/DateApplicationSection'
 import useMessages from '../../../../core/global/hooks/useMessages'
-import { handleSubmit, onStartDateChange, onEndDateChange } from '../handlers/handlers'
+import { handleSubmit, onStartDateChange, onEndDateChange, isFormValid } from '../handlers/handlers'
 
 const ExamScheduleConfiguratorView = () => {
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
@@ -72,7 +72,7 @@ const ExamScheduleConfiguratorView = () => {
           </div>
 
           <div className='buttons'>
-            <Button className='btn btn-primary' onClick={() => handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage)}>Guardar</Button>
+            <Button className='btn btn-primary' onClick={() => handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage)} disabled={!isFormValid(formValues)}>Guardar</Button>
             <Button className='btn btn-secondary'>Cancelar</Button>
           </div>
         </div>
