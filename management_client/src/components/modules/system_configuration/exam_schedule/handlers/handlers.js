@@ -19,8 +19,7 @@ export const handleSubmit = (formValues) => {
     startDate,
     endDate,
     applicationDays: mapDays(formValues.applicationDays),
-    startTime: formValues.startTime,
-    endTime: formValues.endTime
+    startTime: formValues.startTime
   }
 
   console.log(sendingData)
