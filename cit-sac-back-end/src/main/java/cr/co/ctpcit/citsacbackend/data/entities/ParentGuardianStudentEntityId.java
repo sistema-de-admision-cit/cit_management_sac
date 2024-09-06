@@ -17,7 +17,7 @@ import java.util.Objects;
 @ToString
 @Embeddable
 public class ParentGuardianStudentEntityId implements Serializable {
-    private static final long serialVersionUID = -4107909645072191447L;
+    private static final long serialVersionUID = -3727431787214240435L;
     @NotNull
     @Column(name = "student_id", nullable = false)
     private Integer studentId;
@@ -37,7 +37,7 @@ public class ParentGuardianStudentEntityId implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(studentId, parentguardianId);
+        return Objects.hash(studentId, parentGuardianId);
     }
 
 }

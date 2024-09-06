@@ -41,9 +41,9 @@ public class StudentEntity {
     private LocalDate birthDate;
 
     @NotNull
-    @Column(name = "id_type", nullable = false,
-            columnDefinition = "ENUM('CC','DI','PA')")
+    @Lob
     @Enumerated(EnumType.STRING)
+    @Column(name = "id_type", nullable = false)
     private IdType idType;
 
     @Size(max = 20)

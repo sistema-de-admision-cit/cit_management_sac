@@ -6,6 +6,7 @@ import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -15,33 +16,37 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "tbl_enrollments")
 public class EnrollmentEntity {
-    @EmbeddedId
-    private EnrollmentEntityId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "enrollment_id", nullable = false)
+    private Integer id;
 
-    @MapsId("studentId")
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id", nullable = false)
     private StudentEntity student;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, columnDefinition = "ENUM('P','E','I','A','R')")
+    @Column(name = "status", nullable = false)
     private ProcessStatus status;
 
-    @NotNull
-    @Column(name = "enrollment_date", nullable = false)
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "enrollment_date")
     private Instant enrollmentDate;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "grade_to_enroll", nullable = false)
     private Grades gradeToEnroll;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "known_through", nullable = false, columnDefinition = "ENUM('SM','OH','FD','FM','OT')")
+    @Column(name = "known_through", nullable = false)
     private KnownThrough knownThrough;
 
     @NotNull

@@ -11,20 +11,23 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "tbl_documents")
 public class DocumentEntity {
-    @EmbeddedId
-    private DocumentEntityId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "document_id", nullable = false)
+    private Integer id;
 
-    @MapsId("enrollmentId")
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "enrollment_id", nullable = false, referencedColumnName = "enrollment_id")
+    @JoinColumn(name = "enrollment_id", nullable = false)
     private EnrollmentEntity enrollment;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "document_type", nullable = false, columnDefinition = "ENUM('HC','OT')")
+    @Column(name = "document_type", nullable = false)
     private DocType documentType;
 
     @Size(max = 255)

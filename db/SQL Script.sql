@@ -63,11 +63,13 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_enrollments` (
   `exam_date` DATE NOT NULL,
   `consent_given` BOOLEAN NOT NULL,
   `whatsapp_notification` BOOLEAN NOT NULL,
-  PRIMARY KEY (`enrollment_id`, `student_id`),
+  PRIMARY KEY (`enrollment_id`),
   INDEX `FK_Enrollments_Students` (`student_id` ASC) VISIBLE,
   CONSTRAINT `FK_Enrollments_Students`
     FOREIGN KEY (`student_id`)
-    REFERENCES `db_cit_test`.`tbl_students` (`student_id`))
+    REFERENCES `db_cit_test`.`tbl_students` (`student_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -81,12 +83,13 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicexams` (
   `enrollment_id` INT NOT NULL,
   `exam_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `grade` DECIMAL(5,2) NOT NULL,
-  PRIMARY KEY (`exam_id`, `enrollment_id`),
+  PRIMARY KEY (`exam_id`),
   INDEX `FK_AcademicExams_Enrollments` (`enrollment_id` ASC) VISIBLE,
-  UNIQUE INDEX `UQ_AcademicExams_enrollmentId` (`enrollment_id` ASC) VISIBLE,
   CONSTRAINT `FK_AcademicExams_Enrollments`
     FOREIGN KEY (`enrollment_id`)
-    REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`))
+    REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -138,12 +141,13 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daigrades` (
   `daigrades_id` INT NOT NULL AUTO_INCREMENT,
   `enrollment_id` INT NOT NULL,
-  PRIMARY KEY (`daigrades_id`, `enrollment_id`),
-  INDEX `FK_DAIGrades_Enrollments` (`enrollment_id` ASC) INVISIBLE,
-  UNIQUE INDEX `UQ_Enrollments_Id` (`enrollment_id` ASC) VISIBLE,
+  PRIMARY KEY (`daigrades_id`),
+  INDEX `FK_DAIGrades_Enrollments` (`enrollment_id` ASC) VISIBLE,
   CONSTRAINT `FK_DAIGrades_Enrollments`
     FOREIGN KEY (`enrollment_id`)
-    REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`))
+    REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -157,12 +161,13 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiexams` (
   `daigrades_id` INT NOT NULL,
   `exam_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `grade` DECIMAL(5,2) NOT NULL,
-  PRIMARY KEY (`exam_id`, `daigrades_id`),
+  PRIMARY KEY (`exam_id`),
   INDEX `FK_DAIExams_DAIGrades` (`daigrades_id` ASC) VISIBLE,
-  UNIQUE INDEX `UQ_DAIGrades_Id` (`daigrades_id` ASC) VISIBLE,
   CONSTRAINT `FK_DAIExams_DAIGrades`
     FOREIGN KEY (`daigrades_id`)
-    REFERENCES `db_cit_test`.`tbl_daigrades` (`daigrades_id`))
+    REFERENCES `db_cit_test`.`tbl_daigrades` (`daigrades_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -211,12 +216,13 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiinterview` (
   `daigrades_id` INT NOT NULL,
   `interview_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `grade` DECIMAL(5,2) NOT NULL,
-  PRIMARY KEY (`interview_id`, `daigrades_id`),
+  PRIMARY KEY (`interview_id`),
   INDEX `FK_DAIInterview_DAIGrades` (`daigrades_id` ASC) VISIBLE,
-  UNIQUE INDEX `UQ_DAIGrades_Id` (`daigrades_id` ASC) VISIBLE,
   CONSTRAINT `FK_DAIInterview_DAIGrades`
     FOREIGN KEY (`daigrades_id`)
-    REFERENCES `db_cit_test`.`tbl_daigrades` (`daigrades_id`))
+    REFERENCES `db_cit_test`.`tbl_daigrades` (`daigrades_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -234,12 +240,13 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_documents` (
   `enrollment_id` INT NOT NULL,
   `document_type` ENUM('HC', 'OT') NOT NULL,
   `document_url` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`document_id`, `enrollment_id`),
-  UNIQUE INDEX `UQ_Documents_Enrollment_DocumentType` (`enrollment_id` ASC, `document_type` ASC) INVISIBLE,
+  PRIMARY KEY (`document_id`),
   INDEX `FK_Documents_Enrollments` (`enrollment_id` ASC) VISIBLE,
   CONSTRAINT `FK_Documents_Enrollments`
     FOREIGN KEY (`enrollment_id`)
-    REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`))
+    REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -253,12 +260,13 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_englishexams` (
   `enrollment_id` INT NOT NULL,
   `exam_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `grade` DECIMAL(5,2) NOT NULL,
-  PRIMARY KEY (`exam_id`, `enrollment_id`),
+  PRIMARY KEY (`exam_id`),
   INDEX `FK_EnglishExams_Enrollments` (`enrollment_id` ASC) VISIBLE,
-  UNIQUE INDEX `UQ_EnglishExams_enrollmentId` (`enrollment_id` ASC) INVISIBLE,
   CONSTRAINT `FK_EnglishExams_Enrollments`
     FOREIGN KEY (`enrollment_id`)
-    REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`))
+    REFERENCES `db_cit_test`.`tbl_enrollments` (`enrollment_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -293,11 +301,13 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_examdays` (
   `exam_period_id` INT NOT NULL,
   `exam_day` ENUM('M', 'K', 'W', 'T', 'F', 'S', 'SS') NOT NULL,
   `start_time` TIME NOT NULL,
-  PRIMARY KEY (`exam_day_id`, `exam_period_id`),
+  PRIMARY KEY (`exam_day_id`),
   INDEX `FK_ExamDays_ExamPeriods` (`exam_period_id` ASC) VISIBLE,
   CONSTRAINT `FK_ExamDays_ExamPeriods`
     FOREIGN KEY (`exam_period_id`)
-    REFERENCES `db_cit_test`.`tbl_examperiods` (`exam_period_id`))
+    REFERENCES `db_cit_test`.`tbl_examperiods` (`exam_period_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -384,6 +394,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_users` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
+
 
 
 -- -----------------------------------------------------

@@ -37,7 +37,7 @@ public class ParentsGuardianEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "id_type", nullable = false, columnDefinition = "ENUM('CC','DI','PA')")
+    @Column(name = "id_type", nullable = false)
     private IdType idType;
 
     @Size(max = 20)
@@ -61,9 +61,8 @@ public class ParentsGuardianEntity {
     private String homeAddress;
 
     @NotNull
-    @Column(name = "relationship", nullable = false,
-            columnDefinition = "ENUM('M','F','G')")
     @Enumerated(EnumType.STRING)
+    @Column(name = "relationship", nullable = false)
     private Relationship relationship;
 
 }
