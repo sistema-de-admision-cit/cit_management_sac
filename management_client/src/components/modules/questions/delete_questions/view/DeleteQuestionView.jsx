@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import QuestionList from '../organisms/QuestionList'
-import '../../../../../assets/styles/questions/view.css'
+import '../../../../../assets/styles/global/view.css'
 import { dummyData } from '../../helpers/dummyData'
 import { handleDeleteFromList } from '../helpers/formHandlers'
 import FindQuestion from '../../base/molecules/FindQuestion'
