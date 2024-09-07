@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.entities;
+package cr.co.ctpcit.citsacbackend.data.entities.inscription;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,11 +18,13 @@ public class ParentGuardianStudentEntity {
     @MapsId("studentId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id", nullable = false)
+    @ToString.Exclude
     private StudentEntity student;
 
     @MapsId("parentGuardianId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "parentguardian_id", nullable = false)
+    @ToString.Exclude
     private ParentsGuardianEntity parentGuardian;
 
 }

@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.entities;
+package cr.co.ctpcit.citsacbackend.data.entities.inscription;
 
 import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import jakarta.persistence.*;
@@ -23,6 +23,7 @@ public class DocumentEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "enrollment_id", nullable = false)
+    @ToString.Exclude
     private EnrollmentEntity enrollment;
 
     @NotNull

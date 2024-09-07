@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.entities;
+package cr.co.ctpcit.citsacbackend.data.entities.inscription;
 
 import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import cr.co.ctpcit.citsacbackend.data.enums.KnownThrough;
@@ -28,6 +28,7 @@ public class EnrollmentEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id", nullable = false)
+    @ToString.Exclude
     private StudentEntity student;
 
     @NotNull

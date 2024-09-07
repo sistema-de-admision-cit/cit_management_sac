@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.entities;
+package cr.co.ctpcit.citsacbackend.data.entities.inscription;
 
 import cr.co.ctpcit.citsacbackend.data.enums.IdType;
 import jakarta.persistence.*;

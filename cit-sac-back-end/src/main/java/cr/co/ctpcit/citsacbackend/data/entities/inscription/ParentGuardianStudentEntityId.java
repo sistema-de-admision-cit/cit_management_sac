@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.entities;
+package cr.co.ctpcit.citsacbackend.data.entities.inscription;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
