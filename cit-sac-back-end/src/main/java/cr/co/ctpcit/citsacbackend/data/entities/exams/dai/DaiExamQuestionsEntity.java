@@ -1,8 +1,5 @@
 package cr.co.ctpcit.citsacbackend.data.entities.exams.dai;
-import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Builder
@@ -14,10 +11,22 @@ import lombok.*;
 @Entity
 @Table(name = "tbl_daiexamquestions")
 public class DaiExamQuestionsEntity {
+    @EmbeddedId
+    private DaiExamQuestionsEntityId id;
+
+    @MapsId("examId")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "exam_id", nullable = false)
+    @ToString.Exclude
+    private DaiExamsEntity examId;
+
+    @MapsId("questionId")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "question_id", nullable = false)
+    @ToString.Exclude
+    private DaiQuestionsEntity daiQuestions;
 
     @Column(name = "student_answer", columnDefinition = "TEXT")
     private String studentAnswer;
-
-
 
 }
