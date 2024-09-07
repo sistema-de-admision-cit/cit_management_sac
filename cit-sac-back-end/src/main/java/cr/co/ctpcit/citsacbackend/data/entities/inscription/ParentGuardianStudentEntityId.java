@@ -20,11 +20,11 @@ public class ParentGuardianStudentEntityId implements Serializable {
     private static final long serialVersionUID = -3727431787214240435L;
     @NotNull
     @Column(name = "student_id", nullable = false)
-    private Long studentId;
+    private Integer studentId;
 
     @NotNull
     @Column(name = "parentguardian_id", nullable = false)
-    private Long parentGuardianId;
+    private Integer parentGuardianId;
 
     @Override
     public boolean equals(Object o) {

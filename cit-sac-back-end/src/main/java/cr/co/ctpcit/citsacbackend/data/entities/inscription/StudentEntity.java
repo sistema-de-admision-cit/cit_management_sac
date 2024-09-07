@@ -20,7 +20,7 @@ public class StudentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "student_id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Size(max = 32)
     @NotNull

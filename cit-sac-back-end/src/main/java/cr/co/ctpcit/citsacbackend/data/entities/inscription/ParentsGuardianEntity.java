@@ -19,7 +19,7 @@ public class ParentsGuardianEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "parent_guardian_id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Size(max = 32)
     @NotNull
