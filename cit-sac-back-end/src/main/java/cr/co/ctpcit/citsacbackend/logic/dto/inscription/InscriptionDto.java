@@ -1,6 +1,6 @@
-package cr.co.ctpcit.citsacbackend.logic.dto;
+package cr.co.ctpcit.citsacbackend.logic.dto.inscription;
 
-import cr.co.ctpcit.citsacbackend.data.entities.ParentGuardianStudentEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.inscription.ParentGuardianStudentEntity;
 
 import java.io.Serializable;
 
