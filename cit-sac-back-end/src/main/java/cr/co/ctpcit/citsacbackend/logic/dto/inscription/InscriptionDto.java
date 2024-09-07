@@ -1,12 +1,11 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.inscription;
 
-import cr.co.ctpcit.citsacbackend.data.entities.inscription.ParentGuardianStudentEntity;
+import lombok.Builder;
 
 import java.io.Serializable;
 
-/**
- * DTO for {@link ParentGuardianStudentEntity}
- */
-public record ParentGuardianStudentDto(StudentDto student,
-                                       ParentsGuardianDto parentGuardian) implements Serializable {
+@Builder
+public record InscriptionDto(StudentDto student,
+                             ParentsGuardianDto parentGuardian,
+                             EnrollmentDto enrollment) implements Serializable {
 }
