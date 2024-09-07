@@ -15,8 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * Integration tests for the {@link InscriptionsController} class.
  */
@@ -30,6 +28,25 @@ class InscriptionsControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Test
+    void getInscriptionById_shouldReturnOneInscriptionById() throws Exception {
+        // Act
+        MvcResult mvcResult = mockMvc.perform(get("/api/inscriptions/1"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+
+        // Deserialize JSON response to InscriptionDto
+        InscriptionDto responseDto = objectMapper.readValue(jsonResponse, InscriptionDto.class);
+
+        // Assert
+        assertThat(responseDto).isNotNull();
+        assertThat(responseDto.student().firstName()).isEqualTo("Michael");
+        assertThat(responseDto.parents().getFirst().firstName()).isEqualTo("John");
+        assertThat(responseDto.enrollments().getFirst().status()).isEqualTo(ProcessStatus.P);
+    }
 
     @Test
     void getInscriptions_shouldReturnAllInscriptions() throws Exception {
@@ -46,33 +63,11 @@ class InscriptionsControllerTest {
         // Assertions to verify the response is not empty and correct
         assertThat(inscriptions).isNotEmpty();
         assertThat(inscriptions[0].student().firstName()).isNotBlank();
-        assertThat(inscriptions[0].parentGuardian().firstName()).isNotBlank();
-        assertThat(inscriptions[0].enrollment().status()).isNotNull();
+        assertThat(inscriptions[0].parents().getFirst().firstName()).isNotBlank();
+        assertThat(inscriptions[0].enrollments().getFirst().status()).isEqualTo(ProcessStatus.P);
     }
 
     @Test
     void createInscription_shouldCreateOneInscription() {
-    }
-
-    @Test
-    void getInscriptionById_shouldReturnOneInscriptionById() throws Exception {
-        // Act
-        MvcResult mvcResult = mockMvc.perform(get("/api/inscriptions/1"))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String jsonResponse = mvcResult.getResponse().getContentAsString();
-
-        // Deserialize JSON response to InscriptionDto
-        InscriptionDto responseDto = objectMapper.readValue(jsonResponse, InscriptionDto.class);
-
-        // Assert
-        assertThat(responseDto).isNotNull();
-        assertThat(responseDto.student()).isNotNull();
-        assertThat(responseDto.student().firstName()).isEqualTo("Michael");
-        assertThat(responseDto.student().firstSurname()).isEqualTo("Doe");
-        assertThat(responseDto.parentGuardian()).isNotNull();
-        assertThat(responseDto.enrollment()).isNotNull();
-        assertThat(responseDto.enrollment().status()).isEqualTo(ProcessStatus.P);
     }
 }
