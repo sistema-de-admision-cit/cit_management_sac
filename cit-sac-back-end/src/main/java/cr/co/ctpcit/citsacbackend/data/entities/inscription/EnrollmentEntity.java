@@ -37,12 +37,12 @@ public class EnrollmentEntity {
     private ProcessStatus status;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "enrollment_date")
+    @Column(name = "enrollment_date", insertable = false, updatable = false)
     private Instant enrollmentDate;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "grade_to_enroll", nullable = false)
+    @Column(name = "grade_to_enroll", nullable = false, columnDefinition = "ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '10')")
     private Grades gradeToEnroll;
 
     @NotNull

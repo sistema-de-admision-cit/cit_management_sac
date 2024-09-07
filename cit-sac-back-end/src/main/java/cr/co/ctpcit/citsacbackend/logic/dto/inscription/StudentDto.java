@@ -4,6 +4,7 @@ import cr.co.ctpcit.citsacbackend.data.entities.inscription.StudentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.IdType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 /**
  * DTO for {@link StudentEntity}
  */
+@Builder
 public record StudentDto(@NotNull @Size(max = 32) String firstName, @NotNull @Size(max = 32) String firstSurname,
                          @Size(max = 32) String secondSurname, @NotNull LocalDate birthDate, @NotNull IdType idType,
                          @NotNull @Size(max = 20) String idNumber, @Size(max = 100) String previousSchool,
