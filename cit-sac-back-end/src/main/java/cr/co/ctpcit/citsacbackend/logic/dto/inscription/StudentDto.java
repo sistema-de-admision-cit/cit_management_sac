@@ -16,3 +16,4 @@ public record StudentDto(@NotNull @Size(max = 32) String firstName, @NotNull @Si
                          @NotNull @Size(max = 20) String idNumber, @Size(max = 100) String previousSchool,
                          @NotNull Boolean hasAccommodations) implements Serializable {
 }
+
