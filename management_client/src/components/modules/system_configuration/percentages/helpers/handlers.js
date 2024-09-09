@@ -1,5 +1,6 @@
 export const getSaveButtonState = (formValues) => {
-  const total = formValues.academicExam + formValues.daiExam + formValues.englishExam
+  // sum all values in formValues object
+  const total = Object.values(formValues).reduce((acc, value) => acc + Number(value), 0)
   return total === 100
 }
 
