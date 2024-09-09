@@ -1,17 +1,33 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import PercentagesForm from '../molecules/PercentagesForm'
 import useMessages from '../../../../core/global/hooks/useMessages'
+import { getCurrentPercentages } from '../helpers/handlers'
 
 const PercentagesConfiguratorView = () => {
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
   const [loading, setLoading] = useState(false)
-  // TODO: Fetch data from API
   const [formValues, setFormValues] = useState({
     academicExam: 0,
     daiExam: 0,
     englishExam: 0
   })
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      setLoading(true)
+      try {
+        const data = await getCurrentPercentages()
+        setFormValues(data)
+      } catch (error) {
+        setErrorMessage(error.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchInitialData()
+  }, [])
 
   const handleChange = (field, value) => {
     setFormValues({
