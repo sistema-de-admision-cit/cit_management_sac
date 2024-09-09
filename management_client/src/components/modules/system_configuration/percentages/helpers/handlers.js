@@ -15,3 +15,16 @@ export const getCurrentPercentages = async () => {
     throw new Error('Error al cargar los porcentajes.')
   }
 }
+
+const saveExamPercentagesUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SAVE_EXAM_PERCENTAGES_ENDPOINT}`
+export const handleSave = async (formValues, setLoading, setSuccessMessage, setErrorMessage) => {
+  setLoading(true)
+  try {
+    await axios.post(saveExamPercentagesUrl, formValues)
+    setSuccessMessage('Porcentajes guardados correctamente.')
+  } catch (error) {
+    setErrorMessage(error.response ? error.response.data.error : 'Error al guardar los porcentajes.')
+  } finally {
+    setLoading(false)
+  }
+}
