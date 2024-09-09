@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import PercentagesForm from '../molecules/PercentagesForm'
 import useMessages from '../../../../core/global/hooks/useMessages'
-import { getCurrentPercentages } from '../helpers/handlers'
+import { getCurrentPercentages, handleSave } from '../helpers/handlers'
 
 const PercentagesConfiguratorView = () => {
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
@@ -36,18 +36,6 @@ const PercentagesConfiguratorView = () => {
     })
   }
 
-  const handleSave = async () => {
-    setLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    try {
-      setSuccessMessage('Porcentajes guardados correctamente.')
-    } catch (error) {
-      setErrorMessage('Error al guardar los porcentajes.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   return (
     <SectionLayout title='Configurar Porcentajes'>
       <div className='container percentages-configurator'>
@@ -58,7 +46,7 @@ const PercentagesConfiguratorView = () => {
           <PercentagesForm
             formValues={formValues}
             handleChange={handleChange}
-            onSave={handleSave}
+            onSave={() => handleSave(formValues, setLoading, setSuccessMessage, setErrorMessage)}
             loading={loading}
           />
         </div>
