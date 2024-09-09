@@ -12,12 +12,16 @@ vi.mock('../../../../../src/components/modules/system_configuration/percentages/
   handleSave: vi.fn()
 }))
 
+const mockSetErrorMessage = vi.fn()
+const mockSetSuccessMessage = vi.fn()
+const mockRenderMessages = vi.fn()
+
 vi.mock('../../../../../src/components/core/global/hooks/useMessages', () => ({
   __esModule: true,
   default: () => ({
-    setErrorMessage: vi.fn(),
-    setSuccessMessage: vi.fn(),
-    renderMessages: vi.fn().mockReturnValue(<div>Messages</div>)
+    setErrorMessage: mockSetErrorMessage,
+    setSuccessMessage: mockSetSuccessMessage,
+    renderMessages: mockRenderMessages
   })
 }))
 
@@ -110,6 +114,16 @@ describe('PercentagesConfiguratorView', () => {
     // Wait for initial data
     await waitFor(() => {
       expect(screen.getByText(/Guardar/i)).toBeEnabled()
+    })
+  })
+
+  it('does not show messages when there are none', async () => {
+    mockRenderMessages.mockReturnValue(null)
+
+    render(<PercentagesConfiguratorView />)
+
+    await waitFor(() => {
+      expect(screen.queryByText('Messages')).toBeNull()
     })
   })
 })
