@@ -21,7 +21,7 @@ public class DocumentEntity {
     private Integer id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "enrollment_id", nullable = false)
     @ToString.Exclude
     private EnrollmentEntity enrollment;

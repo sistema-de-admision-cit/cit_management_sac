@@ -26,7 +26,7 @@ public class EnrollmentEntity {
     private Integer id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "student_id", nullable = false)
     @ToString.Exclude
     private StudentEntity student;
@@ -41,8 +41,7 @@ public class EnrollmentEntity {
     private Instant enrollmentDate;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "grade_to_enroll", nullable = false, columnDefinition = "ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '10')")
+    @Column(name = "grade_to_enroll", nullable = false)
     private Grades gradeToEnroll;
 
     @NotNull
@@ -56,10 +55,12 @@ public class EnrollmentEntity {
 
     @NotNull
     @Column(name = "consent_given", nullable = false)
+    @Builder.Default
     private Boolean consentGiven = false;
 
     @NotNull
     @Column(name = "whatsapp_notification", nullable = false)
+    @Builder.Default
     private Boolean whatsappNotification = false;
 
 }

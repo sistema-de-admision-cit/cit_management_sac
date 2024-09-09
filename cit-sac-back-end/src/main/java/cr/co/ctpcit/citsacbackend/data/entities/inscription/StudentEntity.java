@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -21,6 +22,12 @@ public class StudentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "student_id", nullable = false)
     private Integer id;
+
+    @OneToMany(mappedBy = "student")
+    private List<EnrollmentEntity> enrollments;
+
+    @OneToMany(mappedBy = "student")
+    private List<ParentGuardianStudentEntity> parents;
 
     @Size(max = 32)
     @NotNull
@@ -58,4 +65,21 @@ public class StudentEntity {
     @Column(name = "has_accommodations", nullable = false)
     private Boolean hasAccommodations = false;
 
+    public void addEnrollment(EnrollmentEntity enrollmentEntity) {
+        if (enrollments == null) enrollments = List.of();
+        if (enrollmentEntity == null) return;
+        if (enrollments.contains(enrollmentEntity)) return;
+
+        enrollments.add(enrollmentEntity);
+        enrollmentEntity.setStudent(this);
+    }
+
+    public void addParentGuardian(ParentGuardianStudentEntity parentGuardianStudentEntity) {
+        if (parents == null) parents = List.of();
+        if (parentGuardianStudentEntity == null) return;
+        if (parents.contains(parentGuardianStudentEntity)) return;
+
+        parents.add(parentGuardianStudentEntity);
+        parentGuardianStudentEntity.setStudent(this);
+    }
 }

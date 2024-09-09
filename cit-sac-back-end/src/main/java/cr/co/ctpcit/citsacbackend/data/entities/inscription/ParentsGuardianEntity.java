@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -65,4 +67,23 @@ public class ParentsGuardianEntity {
     @Column(name = "relationship", nullable = false)
     private Relationship relationship;
 
+    @OneToMany(mappedBy = "parentGuardian")
+    private List<ParentGuardianStudentEntity> students;
+
+    public void addStudent(ParentGuardianStudentEntity parentGuardianStudentEntity) {
+        if (students == null) students = List.of();
+        if (parentGuardianStudentEntity == null) return;
+        if (students.contains(parentGuardianStudentEntity)) return;
+
+        students.add(parentGuardianStudentEntity);
+        parentGuardianStudentEntity.setParentGuardian(this);
+    }
+
+    public void removeStudent(ParentGuardianStudentEntity parentGuardianStudentEntity) {
+        if (students == null) students = List.of();
+        if (parentGuardianStudentEntity == null) return;
+
+        students.remove(parentGuardianStudentEntity);
+        parentGuardianStudentEntity.setParentGuardian(null);
+    }
 }
