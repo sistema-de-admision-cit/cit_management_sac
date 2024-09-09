@@ -61,4 +61,39 @@ describe('PercentagesConfiguratorView', () => {
       expect(screen.getByText(/Guardando.../i)).toBeInTheDocument()
     })
   })
+
+  it('handles form value changes', async () => {
+    getCurrentPercentages.mockResolvedValue({
+      academicExam: 30,
+      daiExam: 30,
+      englishExam: 40
+    })
+
+    render(<PercentagesConfiguratorView />)
+
+    // Wait for initial data
+    await waitFor(() => {
+      expect(screen.getByText(/Académico/i).nextElementSibling.value).toBe('30')
+      expect(screen.getByText(/Psicológico/i).nextElementSibling.value).toBe('30')
+      expect(screen.getByText(/Inglés/i).nextElementSibling.value).toBe('40')
+    })
+
+    // Change the values
+    const academicExamPercentage = screen.getByText(/Académico/i).nextElementSibling
+    fireEvent.change(academicExamPercentage, { target: { value: 40 } })
+
+    const daiExamPercentage = screen.getByText(/Psicológico/i).nextElementSibling
+    fireEvent.change(daiExamPercentage, { target: { value: 30 } })
+
+    const englishExamPercentage = screen.getByText(/Inglés/i).nextElementSibling
+    console.log(englishExamPercentage)
+    fireEvent.change(englishExamPercentage, { target: { value: 30 } })
+
+    // Check if the values have been updated
+    await waitFor(() => {
+      expect(screen.getByText(/Académico/i).nextElementSibling.value).toBe('40')
+      expect(screen.getByText(/Psicológico/i).nextElementSibling.value).toBe('30')
+      expect(screen.getByText(/Inglés/i).nextElementSibling.value).toBe('30')
+    })
+  })
 })
