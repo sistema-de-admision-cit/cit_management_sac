@@ -1,7 +1,7 @@
 import { it, expect, describe, afterEach, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react'
-import PercentagesConfiguratorView from '../../../../../src/components/modules/system_configuration/percentages/view/PercentagesConfiguratorView'
 import '@testing-library/jest-dom/vitest'
+import PercentagesConfiguratorView from '../../../../../src/components/modules/system_configuration/percentages/view/PercentagesConfiguratorView'
 import { getSaveButtonState, getCurrentPercentages, handleSave } from '../../../../../src/components/modules/system_configuration/percentages/helpers/handlers'
 import useMessages from '../../../../../src/components/core/global/hooks/useMessages'
 
@@ -86,7 +86,6 @@ describe('PercentagesConfiguratorView', () => {
     fireEvent.change(daiExamPercentage, { target: { value: 30 } })
 
     const englishExamPercentage = screen.getByText(/Inglés/i).nextElementSibling
-    console.log(englishExamPercentage)
     fireEvent.change(englishExamPercentage, { target: { value: 30 } })
 
     // Check if the values have been updated
@@ -94,6 +93,23 @@ describe('PercentagesConfiguratorView', () => {
       expect(screen.getByText(/Académico/i).nextElementSibling.value).toBe('40')
       expect(screen.getByText(/Psicológico/i).nextElementSibling.value).toBe('30')
       expect(screen.getByText(/Inglés/i).nextElementSibling.value).toBe('30')
+    })
+  })
+
+  it('enabled save button when form values are valid', async () => {
+    getCurrentPercentages.mockResolvedValue({
+      academicExam: 30,
+      daiExam: 30,
+      englishExam: 40
+    })
+
+    getSaveButtonState.mockReturnValue(true)
+
+    render(<PercentagesConfiguratorView />)
+
+    // Wait for initial data
+    await waitFor(() => {
+      expect(screen.getByText(/Guardar/i)).toBeEnabled()
     })
   })
 })
