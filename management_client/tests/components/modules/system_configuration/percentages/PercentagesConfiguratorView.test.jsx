@@ -47,4 +47,18 @@ describe('PercentagesConfiguratorView', () => {
       expect(screen.getByText(/Inglés/i).nextElementSibling.value).toBe('40')
     })
   })
+
+  it('displays loading state while fetching data', async () => {
+    getCurrentPercentages.mockImplementation(() => new Promise(resolve => setTimeout(() => resolve({
+      academicExam: 30,
+      daiExam: 30,
+      englishExam: 40
+    }), 1000)))
+
+    render(<PercentagesConfiguratorView />)
+
+    await waitFor(() => {
+      expect(screen.getByText(/Guardando.../i)).toBeInTheDocument()
+    })
+  })
 })
