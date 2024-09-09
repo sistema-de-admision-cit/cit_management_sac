@@ -1,9 +1,8 @@
-// components/questions/molecules/PercentagesForm.jsx
 import InputField from '../../../../core/global/atoms/InputField'
 import Button from '../../../../core/global/atoms/Button'
-import { handleSave, getSaveButtonState } from '../helpers/handlers'
+import { getSaveButtonState } from '../helpers/handlers'
 
-const PercentagesForm = ({ formValues, handleChange }) => (
+const PercentagesForm = ({ formValues, handleChange, onSave, loading }) => (
   <form onSubmit={(e) => e.preventDefault()}>
     <InputField
       field={{ name: 'academicExam', label: 'Académico', type: 'text', placeholder: '20', required: true }}
@@ -25,10 +24,10 @@ const PercentagesForm = ({ formValues, handleChange }) => (
     />
     <Button
       className='btn btn-primary'
-      onClick={handleSave(formValues)}
-      disabled={!getSaveButtonState(formValues)}
+      onClick={onSave}
+      disabled={loading || !getSaveButtonState(formValues)}
     >
-      Guardar
+      {loading ? 'Guardando...' : 'Guardar'}
     </Button>
   </form>
 )
