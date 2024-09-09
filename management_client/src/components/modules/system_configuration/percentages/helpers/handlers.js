@@ -1,9 +1,17 @@
+import axios from 'axios'
+
 export const getSaveButtonState = (formValues) => {
   // sum all values in formValues object
   const total = Object.values(formValues).reduce((acc, value) => acc + Number(value), 0)
   return total === 100
 }
 
-export const handleSave = (formValues) => {
-  getSaveButtonState(formValues) ? console.log('Guardado') : console.log('Los porcentajes deben sumar 100')
+const getExamPercentagesUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_EXAM_PERCENTAGES_ENDPOINT}`
+export const getCurrentPercentages = async () => {
+  try {
+    const response = await axios.get(getExamPercentagesUrl)
+    return response.data
+  } catch (error) {
+    throw new Error('Error al cargar los porcentajes.')
+  }
 }
