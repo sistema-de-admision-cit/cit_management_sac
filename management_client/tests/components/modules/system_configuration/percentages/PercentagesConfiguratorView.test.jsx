@@ -2,8 +2,7 @@ import { it, expect, describe, afterEach, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
 import PercentagesConfiguratorView from '../../../../../src/components/modules/system_configuration/percentages/view/PercentagesConfiguratorView'
-import { getSaveButtonState, getCurrentPercentages, handleSave } from '../../../../../src/components/modules/system_configuration/percentages/helpers/handlers'
-import useMessages from '../../../../../src/components/core/global/hooks/useMessages'
+import { getSaveButtonState, getCurrentPercentages } from '../../../../../src/components/modules/system_configuration/percentages/helpers/handlers'
 
 // Mock the external functions and hooks
 vi.mock('../../../../../src/components/modules/system_configuration/percentages/helpers/handlers', () => ({
@@ -114,6 +113,23 @@ describe('PercentagesConfiguratorView', () => {
     // Wait for initial data
     await waitFor(() => {
       expect(screen.getByText(/Guardar/i)).toBeEnabled()
+    })
+  })
+
+  it('disabled save button when form values are invalid', async () => {
+    getCurrentPercentages.mockResolvedValue({
+      academicExam: 20,
+      daiExam: 30,
+      englishExam: 40
+    })
+
+    getSaveButtonState.mockReturnValue(false)
+
+    render(<PercentagesConfiguratorView />)
+
+    // Wait for initial data
+    await waitFor(() => {
+      expect(screen.getByText(/Guardar/i)).toBeDisabled()
     })
   })
 
