@@ -2,6 +2,10 @@ package cr.co.ctpcit.citsacbackend.rest;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import cr.co.ctpcit.citsacbackend.data.enums.*;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscription.EnrollmentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscription.ParentsGuardianDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +13,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,13 +47,13 @@ class InscriptionsControllerUnitTest {
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).contains("El tamaño del id debe ser entre 9 y 20 caracteres");
+        assertThat(response.getBody()).contains("getInscriptionById.id: el tamaño del id debe ser entre 9 y 20 caracteres");
     }
 
     @Test
     public void testGetAllInscriptions_shouldReturnAllInscriptions() {
         // Arrange
-        String url = "/api/inscriptions";
+        String url = "/api/inscriptions?page=0&size=10";
 
         // Act
         ResponseEntity<String> response = testRestTemplate.getForEntity(url, String.class);
@@ -60,5 +67,63 @@ class InscriptionsControllerUnitTest {
         assertThat(size).isEqualTo(5);
         String firstName = documentContext.read("$[0].firstName");
         assertThat(firstName).isEqualTo("Michael");
+    }
+
+    @Test
+    public void testCreateInscription_shouldCreateANewInscription() {
+        // Arrange
+        // Create sample enrollment
+        StudentDto body = getStudentDto();
+
+        // Act
+        ResponseEntity<Void> response = testRestTemplate.postForEntity("/api/inscriptions/add", body, Void.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        //Assert URI Location header
+        URI location = response.getHeaders().getLocation();
+        ResponseEntity<String> responseGet = testRestTemplate.getForEntity(location, String.class);
+        assertThat(responseGet.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    }
+
+    private static StudentDto getStudentDto() {
+        EnrollmentDto enrollmentDto = new EnrollmentDto(
+                1,
+                ProcessStatus.P,
+                LocalDateTime.of(2024, 9, 6, 12, 0),
+                Grades.FORTH,
+                KnownThrough.FM,
+                LocalDate.of(2024, 10, 1),
+                true,
+                true
+        );
+
+        ParentsGuardianDto parentGuardianDto = new ParentsGuardianDto(
+                1,
+                "Alice",
+                "Williams",
+                "Davis",
+                IdType.CC,  // Sample enum for idType
+                "159753486",
+                "3129876543",
+                "alice.williams@example.com",
+                "789 Birch Lane",
+                Relationship.M  // Sample enum for relationship
+        );
+        return new StudentDto(
+                1,
+                List.of(enrollmentDto),
+                List.of(parentGuardianDto),
+                "Lucas",
+                "Johnson",
+                "Taylor",
+                LocalDate.of(2011, 5, 12),
+                IdType.DI,
+                "951357852",
+                "Springfield Academy",
+                false
+        );
     }
 }
