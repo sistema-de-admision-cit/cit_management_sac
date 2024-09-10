@@ -61,15 +61,15 @@ public class InscriptionsController {
 
     /**
      * Handle validation exceptions
-     * @param ex
+     * @param e the exception
      * @return a map with the errors
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+            MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
+        e.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
@@ -77,6 +77,11 @@ public class InscriptionsController {
         return errors;
     }
 
+    /**
+     * Handle constraint violation exceptions
+     * @param e the exception
+     * @return a response entity with the error message
+     */
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {

@@ -8,6 +8,7 @@ import java.util.List;
 public class StudentMapper {
     public static StudentDto convertToDto(StudentEntity studentEntity) {
         return StudentDto.builder()
+                .id(studentEntity.getId())
                 .enrollments(EnrollmentMapper.convertToDtoList(studentEntity.getEnrollments()))
                 .parents(ParentGuardianMapper.convertToDtoList(studentEntity.getParents()))
                 .firstName(studentEntity.getFirstName())

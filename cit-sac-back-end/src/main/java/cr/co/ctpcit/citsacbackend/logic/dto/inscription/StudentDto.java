@@ -13,7 +13,8 @@ import java.util.List;
  * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.inscription.StudentEntity}
  */
 @Builder
-public record StudentDto(List<EnrollmentDto> enrollments,
+public record StudentDto(@NotNull Integer id,
+                         List<EnrollmentDto> enrollments,
                          List<ParentsGuardianDto> parents,
                          @NotNull @Size(max = 32) String firstName,
                          @NotNull @Size(max = 32) String firstSurname,

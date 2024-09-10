@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
  * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.inscription.EnrollmentEntity}
  */
 @Builder
-public record EnrollmentDto(@NotNull ProcessStatus status,
+public record EnrollmentDto(@NotNull Integer id,
+                            @NotNull ProcessStatus status,
                             LocalDateTime enrollmentDate,
                             @NotNull Grades gradeToEnroll,
                             @NotNull KnownThrough knownThrough,

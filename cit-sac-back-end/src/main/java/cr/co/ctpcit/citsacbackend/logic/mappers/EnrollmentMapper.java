@@ -10,6 +10,7 @@ import java.util.List;
 public class EnrollmentMapper {
     public static EnrollmentDto convertToDto(EnrollmentEntity enrollmentEntity) {
         return EnrollmentDto.builder()
+                .id(enrollmentEntity.getId())
                 .status(enrollmentEntity.getStatus())
                 .enrollmentDate(LocalDateTime.ofInstant(enrollmentEntity.getEnrollmentDate(), ZoneId.systemDefault()))
                 .gradeToEnroll(enrollmentEntity.getGradeToEnroll())

@@ -9,6 +9,7 @@ import java.util.List;
 public class ParentGuardianMapper {
     public static ParentsGuardianDto convertToDto(ParentGuardianStudentEntity parentGuardianEntity) {
         return ParentsGuardianDto.builder()
+                .id(parentGuardianEntity.getParentGuardian().getId())
                 .firstName(parentGuardianEntity.getParentGuardian().getFirstName())
                 .firstSurname(parentGuardianEntity.getParentGuardian().getFirstSurname())
                 .secondSurname(parentGuardianEntity.getParentGuardian().getSecondSurname())

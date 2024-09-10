@@ -12,7 +12,8 @@ import java.io.Serializable;
  * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.inscription.ParentsGuardianEntity}
  */
 @Builder
-public record ParentsGuardianDto(@NotNull @Size(max = 32) String firstName,
+public record ParentsGuardianDto(@NotNull Integer id,
+                                 @NotNull @Size(max = 32) String firstName,
                                  @NotNull @Size(max = 32) String firstSurname,
                                  @Size(max = 32) String secondSurname,
                                  @NotNull IdType idType,
