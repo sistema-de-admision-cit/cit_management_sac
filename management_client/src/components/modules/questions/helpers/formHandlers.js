@@ -2,7 +2,7 @@ import { dummyData } from './dummyData'
 import axios from 'axios'
 import { validateFields } from './helpers'
 
-export const handleChange = (e, questionData, setQuestionData, isFile = false) => {
+export const handleChange = (e, setQuestionData, isFile = false) => {
   const { name, value, files } = e.target
 
   if (isFile && files) {
