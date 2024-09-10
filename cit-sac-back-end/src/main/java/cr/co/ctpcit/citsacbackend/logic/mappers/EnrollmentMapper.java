@@ -7,6 +7,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
+/**
+ * Mapper for {@link EnrollmentEntity}
+ * This class is used to convert an {@link EnrollmentEntity} to an {@link EnrollmentDto}
+ */
 public class EnrollmentMapper {
     public static EnrollmentDto convertToDto(EnrollmentEntity enrollmentEntity) {
         return EnrollmentDto.builder()

@@ -5,6 +5,10 @@ import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 
 import java.util.List;
 
+/**
+ * Mapper for {@link StudentEntity} and {@link StudentDto}
+ * This class is used to convert {@link StudentEntity} to {@link StudentDto}
+ */
 public class StudentMapper {
     public static StudentDto convertToDto(StudentEntity studentEntity) {
         return StudentDto.builder()

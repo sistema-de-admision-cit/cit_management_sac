@@ -6,6 +6,10 @@ import cr.co.ctpcit.citsacbackend.logic.dto.inscription.ParentsGuardianDto;
 
 import java.util.List;
 
+/**
+ * Mapper for {@link ParentsGuardianDto}
+ * This class is used to convert from {@link ParentsGuardianDto} to {@link ParentsGuardianEntity} and vice versa
+ */
 public class ParentGuardianMapper {
     public static ParentsGuardianDto convertToDto(ParentGuardianStudentEntity parentGuardianEntity) {
         return ParentsGuardianDto.builder()
