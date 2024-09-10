@@ -2,8 +2,9 @@ import Button from '../../../../core/global/atoms/Button'
 import '../../../../../assets/styles/questions/question-list.css'
 import { useState } from 'react'
 import ConfirmationModal from '../../../../ui/confirmation_modal/view/ConfirmationModal'
+import Spinner from '../../../../core/global/atoms/Spinner'
 
-const QuestionList = ({ questions, onDelete }) => {
+const QuestionList = ({ questions, onDelete, loading }) => {
   const [selectedQuestionCode, setSelectedQuestionCode] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -21,14 +22,24 @@ const QuestionList = ({ questions, onDelete }) => {
     <div className='container question-list'>
       <h1>Lista de Preguntas</h1>
       <ul>
-        {questions.map((question) => (
-          <li key={question.code}>
-            <span>{question.question}</span>
-            <Button className='btn btn-danger' onClick={() => handleDelete(question.code)}>
-              Eliminar
-            </Button>
-          </li>
-        ))}
+        {loading
+          ? (
+            <Spinner />
+            )
+          : questions.length
+            ? (
+                questions.map((question) => (
+                  <li key={question.code}>
+                    <span>{question.question}</span>
+                    <Button className='btn btn-danger' onClick={() => handleDelete(question.code)}>
+                      Eliminar
+                    </Button>
+                  </li>
+                ))
+              )
+            : (
+              <p>No se encontraron preguntas</p>
+              )}
       </ul>
       {isModalOpen && (
         <ConfirmationModal
