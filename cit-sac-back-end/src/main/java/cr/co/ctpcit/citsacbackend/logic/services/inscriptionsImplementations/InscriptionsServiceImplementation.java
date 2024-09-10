@@ -8,8 +8,8 @@ import cr.co.ctpcit.citsacbackend.logic.services.InscriptionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InscriptionsServiceImplementation implements InscriptionsService {
@@ -22,11 +22,6 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
     }
 
     @Override
-    public StudentDto findByStudentIdNumber(String id) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    @Override
     public List<StudentDto> getAllInscriptions() {
         //Find all students
         List<StudentEntity> students = studentRepository.findAll();
@@ -34,6 +29,17 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
         //Convert students to DTOs
         return StudentMapper.convertToDtoList(students);
     }
+
+    @Override
+    public StudentDto findStudentByIdNumber(String id) {
+        //Find student by id
+        Optional<StudentEntity> student = studentRepository.findStudentByIdNumber(id);
+
+        //Convert student to DTO or null if not present
+        return student.map(StudentMapper::convertToDto).orElse(null);
+    }
+
+
 
     @Override
     public StudentDto addInscription(StudentDto inscriptionDto) {

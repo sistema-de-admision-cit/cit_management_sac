@@ -21,9 +21,26 @@ class InscriptionsControllerUnitTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    //@Test
+    @Test
     public void testGetInscriptionById_shouldReturnOneInscriptionById() {
+        // Arrange
+        ResponseEntity<String> response = testRestTemplate.getForEntity("/api/inscriptions/321654987", String.class);
 
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+        String id = documentContext.read("$.idNumber");
+        assertThat(id).isNotNull();
+        assertThat(id).isEqualTo("321654987");
+    }
+
+    @Test
+    public void testGetInscriptionById_shouldFailDueToInvalidId() {
+        // Arrange
+        ResponseEntity<String> response = testRestTemplate.getForEntity("/api/inscriptions/1234", String.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(response.getBody()).contains("El tamaño del id debe ser entre 9 y 20 caracteres");
     }
 
     @Test
@@ -41,7 +58,6 @@ class InscriptionsControllerUnitTest {
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         int size = documentContext.read("$.length()");
         assertThat(size).isEqualTo(5);
-        System.out.println(documentContext.jsonString());
         String firstName = documentContext.read("$[0].firstName");
         assertThat(firstName).isEqualTo("Michael");
     }
