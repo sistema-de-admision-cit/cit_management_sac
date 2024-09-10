@@ -1,4 +1,3 @@
-import { dummyData } from './dummyData'
 import axios from 'axios'
 import { validateFields } from './helpers'
 
@@ -112,30 +111,28 @@ export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessM
   }, 1000)
 }
 
-// findQuestion
-const mockFetchQuestions = (query, dummyData, filterByExamType) => {
-  return filterByExamType === 'both' ? dummyData.filter(question => question.question.toLowerCase().includes(query.toLowerCase())) : dummyData.filter(question => question.question.toLowerCase().includes(query.toLowerCase()) && question.examType === filterByExamType)
-}
-
+/**
+ *
+ * @param {string} query
+ * @param {function} setQuestions
+ * @param {string} searchExamType
+ * @param {string} setSearchCode
+ * @param {string} lookingFor - 'delete' or 'modify'
+*/
+const searchQuestionByTitleUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_QUESTIONS_ENDPOINT}`
 export const handleSearch = (query, setQuestions, searchExamType, setSearchCode, lookingFor) => {
   setSearchCode('')
-  const questions = mockFetchQuestions(query, dummyData, searchExamType)
-  query ? setQuestions(questions) : lookingFor === 'delete' ? setQuestions(questions) : setQuestions([])
-}
-
-const mockFetchQuestionByCode = (code) => {
-  return dummyData.find(question => question.code === code)
-}
-
-export const handleSearchByCode = (e, setQuery, setSearchCode, setSearchExamType, setQuestions) => {
-  e.preventDefault()
-  setQuery('')
-  setSearchExamType('both')
-
-  const code = e.target.value
-
-  setSearchCode(code)
-  const question = mockFetchQuestionByCode(code)
-  const questions = code ? [] : dummyData
-  question ? setQuestions([question]) : setQuestions(questions)
+  const searchParams = new URLSearchParams()
+  searchParams.append('query', query)
+  searchParams.append('examType', searchExamType)
+  const url = `${searchQuestionByTitleUrl}?${searchParams.toString()}`
+  axios.get(url)
+    .then(response => {
+      const questions = response.data
+      console.log(questions)
+      lookingFor === 'delete' ? setQuestions(questions) : setQuestions([])
+    })
+    .catch(error => {
+      console.error(error)
+    })
 }
