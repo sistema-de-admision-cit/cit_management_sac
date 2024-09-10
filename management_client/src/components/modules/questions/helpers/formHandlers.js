@@ -1,5 +1,5 @@
-// para validar los campos del formulario
 import { dummyData } from './dummyData'
+import axios from 'axios'
 
 const validateFields = (questionData, setErrorMessage) => {
   if (!questionData.examType) {
@@ -23,12 +23,22 @@ const validateFields = (questionData, setErrorMessage) => {
   }
 }
 
-export const handleChange = (e, questionData, setQuestionData) => {
-  const { name, value } = e.target
-  setQuestionData({
-    ...questionData,
-    [name]: value
-  })
+export const handleChange = (e, questionData, setQuestionData, isFile = false) => {
+  const { name, value, files } = e.target
+
+  if (isFile && files) {
+    const fileArray = Array.from(files) // Convierte los archivos a un array
+    setQuestionData(prevState => ({
+      ...prevState,
+      [name]: fileArray
+    }))
+  } else {
+    // Manejar campos de texto
+    setQuestionData(prevState => ({
+      ...prevState,
+      [name]: value
+    }))
+  }
 }
 
 export const handleTestOptionChange = (e, questionData, setQuestionData) => {
