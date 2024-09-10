@@ -6,6 +6,7 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,7 @@ public class InscriptionsController {
      */
     @GetMapping("/inscriptions/{id}")
     public ResponseEntity<StudentDto> getInscriptionById(@NotBlank
+                                                             @Pattern(regexp = "^[0-9]*$", message = "el id debe ser numérico")
                                                              @Size(min = 9, max = 20, message = "el tamaño del id debe ser entre 9 y 20 caracteres")
                                                              @PathVariable("id") String id) {
         return ResponseEntity.ok(inscriptionsService.findStudentByIdNumber(id));
