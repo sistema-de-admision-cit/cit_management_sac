@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -21,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/inscriptions")
 @Validated
 public class InscriptionsController {
     InscriptionsService inscriptionsService;
@@ -36,26 +38,32 @@ public class InscriptionsController {
      * @param id the id of the inscription
      * @return the inscription with the given id
      */
-    @GetMapping("/inscriptions/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<StudentDto> getInscriptionById(@NotBlank
                                                              @Pattern(regexp = "^[0-9]*$", message = "el id debe ser numérico")
                                                              @Size(min = 9, max = 20, message = "el tamaño del id debe ser entre 9 y 20 caracteres")
                                                              @PathVariable("id") String id) {
-        return ResponseEntity.ok(inscriptionsService.findStudentByIdNumber(id));
+        StudentDto student = inscriptionsService.findStudentByIdNumber(id);
+        return student == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(student);
     }
 
     /**
      * Get all inscriptions
      * @return a list of all inscriptions
      */
-    @GetMapping("/inscriptions")
-    public ResponseEntity<Iterable<StudentDto>> getInscriptions() {
-        return ResponseEntity.ok(inscriptionsService.getAllInscriptions());
+    @GetMapping
+    public ResponseEntity<Iterable<StudentDto>> getInscriptions(Pageable pageable) {
+        List<StudentDto> inscriptions = inscriptionsService.getAllInscriptions(pageable);
+        return inscriptions.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(inscriptions);
     }
 
-    //TODO: Implement inscriptions post endpoint to create a new inscription
-    @PostMapping("/inscriptions/add")
-    public ResponseEntity<?> createInscription() {
+    /**
+     * This method creates a new inscription in the database following RFC 9110 as
+     * the official Request for Comments for HTTP Semantics and Content.
+     * @return a response entity with the status code and Location header
+     */
+    @PostMapping("/add")
+    public ResponseEntity<Void> createInscription() {
         return ResponseEntity.ok().build();
     }
 

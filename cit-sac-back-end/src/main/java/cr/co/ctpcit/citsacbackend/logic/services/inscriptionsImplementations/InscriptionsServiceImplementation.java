@@ -6,6 +6,9 @@ import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.StudentMapper;
 import cr.co.ctpcit.citsacbackend.logic.services.InscriptionsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,12 +25,14 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
     }
 
     @Override
-    public List<StudentDto> getAllInscriptions() {
+    public List<StudentDto> getAllInscriptions(Pageable pageable) {
         //Find all students
-        List<StudentEntity> students = studentRepository.findAll();
+        Page<StudentEntity> students = studentRepository.findAll(
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
+        );
 
         //Convert students to DTOs
-        return StudentMapper.convertToDtoList(students);
+        return StudentMapper.convertToDtoList(students.getContent());
     }
 
     @Override
