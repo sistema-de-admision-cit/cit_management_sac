@@ -9,9 +9,9 @@ import '../../../../../assets/styles/questions/question-form.css'
 import {
   handleChange,
   handleTestOptionChange,
-  handleOptionChange,
-  getButtonState
+  handleOptionChange
 } from '../../helpers/formHandlers'
+import { getButtonState } from '../../helpers/helpers'
 import { EXAM_TYPE_OPTIONS } from '../helpers/questionFormOptions'
 
 const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAgain }) => {
