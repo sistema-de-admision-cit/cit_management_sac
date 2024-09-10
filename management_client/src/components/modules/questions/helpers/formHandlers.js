@@ -70,29 +70,48 @@ export const clearForm = (setQuestionData) => {
   })
 }
 
-export const handleSubmit = (e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData) => {
+const createQuestionUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_CREATE_QUESTION_ENDPOINT}`
+export const handleCreateQuestionSubmit = (e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData) => {
   e.preventDefault()
   setErrorMessage('')
   setSuccessMessage('')
-
-  // Validar los campos del formulario
   validateFields(questionData, setErrorMessage)
+
+  // Crea un nuevo objeto FormData
+  const formData = new FormData()
+
+  // Agregar los campos de texto
+  formData.append('examType', questionData.examType)
+  formData.append('question', questionData.question)
+  formData.append('options', JSON.stringify(questionData.options))
+  formData.append('correctOption', questionData.correctOption)
+
+  // Agregar los archivos (imágenes)
+  if (questionData.images && questionData.images.length) {
+    for (const image of questionData.images) {
+      formData.append('images', image)
+    }
+  }
 
   setIsLoading(true)
 
-  // hacer el papel de enviar los datos al servidor (TODO: reemplazar por la API)
-  setTimeout(() => {
-    console.log(questionData)
+  axios.post(
+    createQuestionUrl,
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 10000
+    }
+  ).then(response => {
+    console.log(response)
     setIsLoading(false)
     setSuccessMessage('Pregunta guardada exitosamente')
-    setQuestionData({
-      examType: '',
-      question: '',
-      images: [],
-      options: ['', '', '', ''],
-      correctOption: ''
-    })
-  }, 1000)
+    clearForm(setQuestionData) // Limpia el formulario si es necesario
+  }).catch(error => {
+    console.error(error)
+    setErrorMessage('Ocurrió un error al guardar la pregunta')
+    setIsLoading(false)
+  })
 }
 
 export const getButtonState = (questionData, isLoading) => {
