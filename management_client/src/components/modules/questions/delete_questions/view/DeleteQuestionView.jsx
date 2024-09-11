@@ -8,7 +8,6 @@ import useMessages from '../../../../core/global/hooks/useMessages'
 
 const DeleteQuestionView = () => {
   const [questions, setQuestions] = useState([])
-  const [filteredQuestions, setFilteredQuestions] = useState([])
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
   const [loading, setLoading] = useState(false)
 
@@ -17,18 +16,17 @@ const DeleteQuestionView = () => {
   , [])
 
   const handleDelete = (code) => {
-    handleDeleteFromList(code, filteredQuestions, setFilteredQuestions, setErrorMessage, setSuccessMessage)
-    setQuestions(questions.filter(question => question.code !== code))
+    handleDeleteFromList(code, questions, setQuestions, setErrorMessage, setSuccessMessage)
   }
 
   return (
     <SectionLayout title='Eliminar pregunta'>
       <FindQuestion
-        onResultsUpdate={setFilteredQuestions}
+        onResultsUpdate={setQuestions}
         lookingFor='delete'
       />
       <QuestionList
-        questions={filteredQuestions}
+        questions={questions}
         onDelete={handleDelete}
         loading={loading}
       />
