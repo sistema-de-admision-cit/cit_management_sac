@@ -1,8 +1,8 @@
-import Button from '../../../../core/global/atoms/Button'
+import Button from '../../../../core/global/atoms/Button.jsx'
 import '../../../../../assets/styles/questions/question-list.css'
 import { useState } from 'react'
-import ConfirmationModal from '../../../../ui/confirmation_modal/view/ConfirmationModal'
-import Spinner from '../../../../core/global/atoms/Spinner'
+import ConfirmationModal from '../../../../ui/confirmation_modal/view/ConfirmationModal.jsx'
+import Spinner from '../../../../core/global/atoms/Spinner.jsx'
 
 const QuestionList = ({ questions, onDelete, onModify, loading, actionType }) => {
   const [selectedQuestionCode, setSelectedQuestionCode] = useState('')

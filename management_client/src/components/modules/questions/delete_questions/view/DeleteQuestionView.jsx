@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import QuestionList from '../organisms/QuestionList'
+import QuestionList from '../../base/organism/QuestionList.jsx'
 import '../../../../../assets/styles/global/view.css'
 import { handleDeleteFromList, handleGetAllQuestions } from '../helpers/formHandlers'
 import FindQuestion from '../../base/molecules/FindQuestion'
