@@ -113,24 +113,25 @@ export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessM
 
 /**
  *
- * @param {string} query
- * @param {function} setQuestions
- * @param {string} searchExamType
- * @param {string} setSearchCode
- * @param {string} lookingFor - 'delete' or 'modify'
+ * @param {string} query - looking for
+ * @param {function} setQuestions - setter function for the questions
+ * @param {string} searchExamType - exam type to search (both, dai or academic)
+ * @param {string} setSearchCode - setter function for the search code
 */
 const searchQuestionByTitleUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_QUESTIONS_ENDPOINT}`
-export const handleSearch = (query, setQuestions, searchExamType, setSearchCode, lookingFor) => {
+export const handleSearch = (query, setQuestions, searchExamType, setSearchCode) => {
   setSearchCode('')
   const searchParams = new URLSearchParams()
   searchParams.append('query', query)
   searchParams.append('examType', searchExamType)
+
   const url = `${searchQuestionByTitleUrl}?${searchParams.toString()}`
+
   axios.get(url)
     .then(response => {
       const questions = response.data
       console.log(questions)
-      lookingFor === 'delete' ? setQuestions(questions) : setQuestions([])
+      setQuestions(questions)
     })
     .catch(error => {
       console.error(error)
