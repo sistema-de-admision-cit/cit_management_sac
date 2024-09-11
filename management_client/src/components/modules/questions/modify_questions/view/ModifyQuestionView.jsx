@@ -49,7 +49,6 @@ const ModifyQuestionView = () => {
           {!questionData &&
             <FindQuestion
               onResultsUpdate={setQuestions}
-              lookingFor='modify'
             />}
         </div>
         {!questionData && (

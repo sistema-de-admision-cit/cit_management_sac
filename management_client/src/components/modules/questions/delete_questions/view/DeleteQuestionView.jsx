@@ -23,7 +23,6 @@ const DeleteQuestionView = () => {
     <SectionLayout title='Eliminar pregunta'>
       <FindQuestion
         onResultsUpdate={setQuestions}
-        lookingFor='delete'
       />
       <QuestionList
         questions={questions}
