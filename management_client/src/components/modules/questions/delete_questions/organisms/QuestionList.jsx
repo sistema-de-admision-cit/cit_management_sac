@@ -4,7 +4,7 @@ import { useState } from 'react'
 import ConfirmationModal from '../../../../ui/confirmation_modal/view/ConfirmationModal'
 import Spinner from '../../../../core/global/atoms/Spinner'
 
-const QuestionList = ({ questions, onDelete, loading }) => {
+const QuestionList = ({ questions, onDelete, onModify, loading, actionType }) => {
   const [selectedQuestionCode, setSelectedQuestionCode] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -13,7 +13,11 @@ const QuestionList = ({ questions, onDelete, loading }) => {
     setIsModalOpen(true)
   }
 
-  const onConfirm = () => {
+  const handleOnModify = (item) => {
+    onModify(item)
+  }
+
+  const onConfirmDelete = () => {
     onDelete(selectedQuestionCode)
     setIsModalOpen(false)
   }
@@ -31,9 +35,17 @@ const QuestionList = ({ questions, onDelete, loading }) => {
                 questions.map((question) => (
                   <li key={question.code}>
                     <span>{question.question}</span>
-                    <Button className='btn btn-danger' onClick={() => handleDelete(question.code)}>
-                      Eliminar
-                    </Button>
+                    {actionType === 'delete'
+                      ? (
+                        <Button className='btn btn-danger' onClick={() => handleDelete(question.code)}>
+                          Eliminar
+                        </Button>
+                        )
+                      : (
+                        <Button className='btn btn-primary' onClick={() => handleOnModify(question)}>
+                          Modificar
+                        </Button>
+                        )}
                   </li>
                 ))
               )
@@ -41,12 +53,12 @@ const QuestionList = ({ questions, onDelete, loading }) => {
               <p>No se encontraron preguntas</p>
               )}
       </ul>
-      {isModalOpen && (
+      {isModalOpen && actionType === 'delete' && (
         <ConfirmationModal
           title='Eliminar Pregunta'
           message='¿Estás seguro de que deseas eliminar esta pregunta?'
           onClose={() => setIsModalOpen(false)}
-          onConfirm={onConfirm}
+          onConfirm={onConfirmDelete}
           extraMessage='Una vez eliminada, no podrás recuperarla.'
           cancelLabel='Conservar'
           confirmLabel='Eliminar'
