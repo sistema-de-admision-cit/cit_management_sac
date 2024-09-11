@@ -5,6 +5,7 @@ import '../../../../../assets/styles/global/view.css'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import QuestionList from '../../delete_questions/organisms/QuestionList'
 import { handleGetAllQuestions } from '../../delete_questions/helpers/formHandlers'
+import { getQuestionByCode } from '../helpers/helpers'
 import useMessages from '../../../../core/global/hooks/useMessages'
 
 const ModifyQuestionView = () => {
@@ -34,7 +35,8 @@ const ModifyQuestionView = () => {
 
   // Maneja la pregunta encontrada
   const handleQuestionFound = (data) => {
-    setIncomingData(data) // Establece los datos para que useEffect los maneje
+    // getQuestionByCode is async
+    getQuestionByCode(data.code, setIncomingData, setErrorMessage, setLoading)
   }
 
   // si el usuario decide buscar otra pregunta, limpiar los datos actuales (esto arregla el error de que no se podia eliminar una pregunta y volve a buscar la misma)
