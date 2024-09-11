@@ -6,21 +6,20 @@ import { handleSearch } from '../../helpers/formHandlers'
 import {
   handleInputChange,
   handleExamTypeChange,
-  setQuestions,
   handleAdvancedSearch
 } from '../helpers/findQuestionHandlers'
 import '../../../../../assets/styles/questions/find-question.css'
 import useFormState from '../../../../core/global/hooks/useFormState'
 
-const FindQuestion = ({ onResultsUpdate, lookingFor }) => {
+const FindQuestion = ({ onResultsUpdate }) => {
   const { formData: query, setFormData: setQuery } = useFormState('')
   const { formData: searchCode, setFormData: setSearchCode } = useFormState('')
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
   const [searchExamType, setSearchExamType] = useState('both')
 
   useEffect(() => {
-    handleSearch(query, onResultsUpdate, searchExamType, setSearchCode, lookingFor)
-  }, [query, onResultsUpdate, lookingFor, searchExamType])
+    handleSearch(query, onResultsUpdate, searchExamType, setSearchCode)
+  }, [query, onResultsUpdate, searchExamType])
 
   const examTypeOptions = [
     { value: 'both', label: 'Ambos' },
@@ -46,7 +45,7 @@ const FindQuestion = ({ onResultsUpdate, lookingFor }) => {
           setSearchCode={setSearchCode}
           setQuery={setQuery}
           setSearchExamType={setSearchExamType}
-          setQuestions={(questions) => setQuestions(questions, lookingFor, onResultsUpdate)}
+          setQuestions={(questions) => onResultsUpdate(questions)}
           searchExamType={searchExamType}
           handleExamTypeChange={(e) => handleExamTypeChange(e, setSearchExamType)}
           examTypeOptions={examTypeOptions}
