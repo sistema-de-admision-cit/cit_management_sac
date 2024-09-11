@@ -80,19 +80,12 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
           </>
         )}
 
-        <Button type='submit' className='btn btn-primary' disabled={getButtonState(questionData, isLoading)}>
-          {isLoading ? 'Guardando...' : submitButtonText}
-        </Button>
         <Button
-          type='button'
-          className='btn btn-secondary'
-          onClick={() => {
-            resetForm()
-            setIsLoading(false)
-          }}
-          disabled={isLoading}
+          type='submit'
+          className='btn btn-primary'
+          disabled={getButtonState(questionData, isLoading)}
         >
-          Limpiar
+          {isLoading ? 'Guardando...' : submitButtonText}
         </Button>
       </form>
       {renderMessages()}
