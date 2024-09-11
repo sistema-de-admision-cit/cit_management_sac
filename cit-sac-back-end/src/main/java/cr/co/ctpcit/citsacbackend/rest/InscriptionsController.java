@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -52,7 +53,7 @@ public class InscriptionsController {
      * @return a list of all inscriptions
      */
     @GetMapping
-    public ResponseEntity<Iterable<StudentDto>> getInscriptions(Pageable pageable) {
+    public ResponseEntity<Iterable<StudentDto>> getInscriptions(@PageableDefault(page = 0, size = 25) Pageable pageable) {
         List<StudentDto> inscriptions = inscriptionsService.getAllInscriptions(pageable);
         return inscriptions.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(inscriptions);
     }
@@ -62,6 +63,7 @@ public class InscriptionsController {
      * the official Request for Comments for HTTP Semantics and Content.
      * @return a response entity with the status code and Location header
      */
+    //TODO: Implement this method to create a new inscription
     @PostMapping("/add")
     public ResponseEntity<Void> createInscription() {
         return ResponseEntity.ok().build();

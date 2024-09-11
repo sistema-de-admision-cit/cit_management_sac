@@ -53,7 +53,7 @@ class InscriptionsControllerUnitTest {
     @Test
     public void testGetAllInscriptions_shouldReturnAllInscriptions() {
         // Arrange
-        String url = "/api/inscriptions?page=0&size=10";
+        String url = "/api/inscriptions?page=0&size=10&sort=idNumber,asc";
 
         // Act
         ResponseEntity<String> response = testRestTemplate.getForEntity(url, String.class);

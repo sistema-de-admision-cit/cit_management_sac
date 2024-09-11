@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +29,10 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
     public List<StudentDto> getAllInscriptions(Pageable pageable) {
         //Find all students
         Page<StudentEntity> students = studentRepository.findAll(
-                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize())
+                PageRequest.of(
+                        pageable.getPageNumber(),
+                        pageable.getPageSize(),
+                        pageable.getSortOr(Sort.by(Sort.Direction.ASC, "idNumber")))
         );
 
         //Convert students to DTOs
