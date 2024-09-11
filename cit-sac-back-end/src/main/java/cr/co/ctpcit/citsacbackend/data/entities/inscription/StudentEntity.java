@@ -2,11 +2,14 @@ package cr.co.ctpcit.citsacbackend.data.entities.inscription;
 
 import cr.co.ctpcit.citsacbackend.data.enums.IdType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -15,6 +18,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 @Entity
+@Validated
 @Table(name = "tbl_students")
 public class StudentEntity {
     @Id
@@ -22,13 +26,23 @@ public class StudentEntity {
     @Column(name = "student_id", nullable = false)
     private Integer id;
 
+    @OneToMany(mappedBy = "student")
+    @ToString.Exclude
+    private List<EnrollmentEntity> enrollments;
+
+    @OneToMany(mappedBy = "student")
+    @ToString.Exclude
+    private List<ParentGuardianStudentEntity> parents;
+
     @Size(max = 32)
     @NotNull
+    @NotBlank(message = "El nombre es obligatorio")
     @Column(name = "first_name", nullable = false, length = 32)
     private String firstName;
 
     @Size(max = 32)
     @NotNull
+    @NotBlank(message = "El primer apellido es obligatorio")
     @Column(name = "first_surname", nullable = false, length = 32)
     private String firstSurname;
 
@@ -37,17 +51,19 @@ public class StudentEntity {
     private String secondSurname;
 
     @NotNull
+    @NotBlank(message = "La fecha de nacimiento es obligatoria")
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
     @NotNull
-    @Lob
+    @NotBlank(message = "El tipo de identificación es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "id_type", nullable = false)
     private IdType idType;
 
     @Size(max = 20)
     @NotNull
+    @NotBlank(message = "El número de identificación es obligatorio")
     @Column(name = "id_number", nullable = false, length = 20)
     private String idNumber;
 
@@ -56,7 +72,25 @@ public class StudentEntity {
     private String previousSchool;
 
     @NotNull
+    @NotBlank(message = "Es obligatorio indicar si tiene adecuaciones")
     @Column(name = "has_accommodations", nullable = false)
     private Boolean hasAccommodations = false;
 
+    public void addEnrollment(EnrollmentEntity enrollmentEntity) {
+        if (enrollments == null) enrollments = List.of();
+        if (enrollmentEntity == null) return;
+        if (enrollments.contains(enrollmentEntity)) return;
+
+        enrollments.add(enrollmentEntity);
+        enrollmentEntity.setStudent(this);
+    }
+
+    public void addParentGuardian(ParentGuardianStudentEntity parentGuardianStudentEntity) {
+        if (parents == null) parents = List.of();
+        if (parentGuardianStudentEntity == null) return;
+        if (parents.contains(parentGuardianStudentEntity)) return;
+
+        parents.add(parentGuardianStudentEntity);
+        parentGuardianStudentEntity.setStudent(this);
+    }
 }
