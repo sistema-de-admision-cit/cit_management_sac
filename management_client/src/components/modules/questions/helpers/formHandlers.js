@@ -137,3 +137,27 @@ export const handleSearch = (query, setQuestions, searchExamType, setSearchCode)
       console.error(error)
     })
 }
+
+const searchQuestionByCodeUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_QUESTION_BY_CODE_ENDPOINT}`
+export const handleSearchByCode = (e, setQuery, setSearchCode, setQuestions, searchExamType) => {
+  e.preventDefault()
+  setQuery('')
+
+  const searchParams = new URLSearchParams()
+  searchParams.append('code', e.target.value)
+  searchParams.append('examType', searchExamType)
+
+  const searchCode = e.target.value
+  setSearchCode(searchCode)
+
+  const url = `${searchQuestionByCodeUrl}?${searchParams.toString()}`
+  axios.get(url)
+    .then(response => {
+      const questions = response.data
+      console.log(questions)
+      setQuestions(questions)
+    })
+    .catch(error => {
+      console.error(error)
+    })
+}
