@@ -29,6 +29,7 @@ const DeleteQuestionView = () => {
         questions={questions}
         onDelete={handleDelete}
         loading={loading}
+        actionType='delete'
       />
       {renderMessages()}
     </SectionLayout>
