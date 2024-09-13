@@ -30,6 +30,6 @@ public class DaiQuestionsEntity {
     private Grades questionGrade;
 
     @Size(max = 255)
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url", nullable = true)
     private String imageUrl;
 }

@@ -25,7 +25,6 @@ public class DaiExamsEntity {
     @ToString.Exclude
     private DaiGradesEntity daiGradesId;
 
-    //Este hay que revisarlo
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "exam_date", nullable = false)
     private Date examDate;
