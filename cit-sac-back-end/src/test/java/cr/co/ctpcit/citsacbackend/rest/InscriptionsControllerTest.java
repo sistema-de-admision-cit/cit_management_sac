@@ -34,7 +34,7 @@ class InscriptionsControllerTest {
     @Test
     void getInscriptionById_shouldReturnOneInscriptionById() throws Exception {
         // Act
-        MvcResult mvcResult = mockMvc.perform(get("/api/inscriptions/321654987"))
+        MvcResult mvcResult = mockMvc.perform(get("/api/inscriptions/603660526"))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -45,9 +45,9 @@ class InscriptionsControllerTest {
 
         // Assert
         assertThat(responseDto).isNotNull();
-        assertThat(responseDto.firstName()).isEqualTo("Michael");
-        assertThat(responseDto.parents().getFirst().firstName()).isEqualTo("John");
-        assertThat(responseDto.enrollments().getFirst().status()).isEqualTo(ProcessStatus.P);
+        assertThat(responseDto.firstName()).isEqualTo("Juan");
+        assertThat(responseDto.parents().getFirst().firstName()).isEqualTo("Sofia");
+        assertThat(responseDto.enrollments().getFirst().status()).isEqualTo(ProcessStatus.R);
     }
 
     @Test
@@ -66,7 +66,7 @@ class InscriptionsControllerTest {
         assertThat(inscriptions).isNotEmpty();
         assertThat(inscriptions[0].firstName()).isNotBlank();
         assertThat(inscriptions[0].parents().getFirst().firstName()).isNotBlank();
-        assertThat(inscriptions[0].enrollments().getFirst().status()).isEqualTo(ProcessStatus.P);
+        assertThat(inscriptions[0].enrollments().getFirst().status()).isEqualTo(ProcessStatus.E);
     }
 
     //@Test
