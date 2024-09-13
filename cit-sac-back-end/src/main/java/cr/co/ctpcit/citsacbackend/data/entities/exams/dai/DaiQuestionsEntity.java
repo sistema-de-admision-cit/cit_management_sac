@@ -24,8 +24,8 @@ public class DaiQuestionsEntity {
     @Column(name = "question_text", nullable = false)
     private String questionText;
 
+
     @NotNull
-    @Enumerated(EnumType.STRING)
     @Column(name = "question_grade", nullable = false)
     private Grades questionGrade;
 
