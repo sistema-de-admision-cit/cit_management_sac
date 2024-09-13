@@ -51,15 +51,15 @@ public class ExamAcademicController {
         }
     }
 
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarPregunta(@PathVariable Integer id) {
         try {
             academicQuestionsService.eliminarPregunta(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build();  // Devuelve 204 No Content si se elimina correctamente
         } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // Devuelve 404 si no se encuentra
         }
     }
+
 }

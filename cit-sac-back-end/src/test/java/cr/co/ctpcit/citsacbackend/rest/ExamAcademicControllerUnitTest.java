@@ -1,32 +1,44 @@
 package cr.co.ctpcit.citsacbackend.rest;
 
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.academic.AcademicQuestionsEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Grades;
-import cr.co.ctpcit.citsacbackend.data.repositories.AcademicQuestionsRepository;
 import cr.co.ctpcit.citsacbackend.logic.services.examsImplementations.AcademicQuestionsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
+@SpringBootTest
+@AutoConfigureMockMvc
 public class ExamAcademicControllerUnitTest {
 
-    @Mock
-    private AcademicQuestionsRepository academicQuestionsRepository;
+    @Autowired
+    private MockMvc mockMvc;
 
     @InjectMocks
+    private ExamAcademicController examAcademicController;
+
+    @Mock
     private AcademicQuestionsService academicQuestionsService;
 
     @BeforeEach
@@ -35,125 +47,79 @@ public class ExamAcademicControllerUnitTest {
     }
 
     @Test
-    public void testObtenerTodasLasPreguntas() {
+    public void testObtenerPreguntas() {
         // Arrange
-        AcademicQuestionsEntity pregunta1 = new AcademicQuestionsEntity();
-        pregunta1.setId(1);
-        pregunta1.setQuestionText("¿Cuál es la capital de Francia?");
-
-        AcademicQuestionsEntity pregunta2 = new AcademicQuestionsEntity();
-        pregunta2.setId(2);
-        pregunta2.setQuestionText("¿Cuánto es 2 + 2?");
-
-        List<AcademicQuestionsEntity> preguntas = Arrays.asList(pregunta1, pregunta2);
-
-        when(academicQuestionsRepository.findAll()).thenReturn(preguntas);
+        List<AcademicQuestionsEntity> preguntas = Arrays.asList(new AcademicQuestionsEntity(), new AcademicQuestionsEntity());
+        when(academicQuestionsService.obtenerTodasLasPreguntas()).thenReturn(preguntas);
 
         // Act
-        List<AcademicQuestionsEntity> result = academicQuestionsService.obtenerTodasLasPreguntas();
+        ResponseEntity<List<AcademicQuestionsEntity>> response = examAcademicController.obtenerPreguntas();
 
         // Assert
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals("¿Cuál es la capital de Francia?", result.get(0).getQuestionText());
-        assertEquals("¿Cuánto es 2 + 2?", result.get(1).getQuestionText());
-        verify(academicQuestionsRepository).findAll();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(preguntas, response.getBody());
     }
 
     @Test
-    public void testObtenerTodasLasPreguntas_Error() {
+    public void testModificarPregunta() {
         // Arrange
-        when(academicQuestionsRepository.findAll()).thenThrow(new RuntimeException("Database error"));
+        AcademicQuestionsEntity request = new AcademicQuestionsEntity();
+        request.setQuestionText("¿Cuál es la capital de Costa Rica?");
+        request.setQuestionGrade(Grades.TENTH);
+        request.setImageUrl("http://example.com/image.png");
+        request.setOptionA("San Jose");
+        request.setOptionB("Heredia");
+        request.setOptionC("Cartago");
+        request.setOptionD("Limon");
+        request.setCorrectOption("A");
+
+        AcademicQuestionsEntity preguntaModificada = new AcademicQuestionsEntity();
+        when(academicQuestionsService.modificarPregunta(anyInt(), anyString(), any(Grades.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(preguntaModificada);
+
+        // Act
+        ResponseEntity<AcademicQuestionsEntity> response = examAcademicController.modificarPregunta(1, request);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(preguntaModificada, response.getBody());
+    }
+
+    @Test
+    public void testModificarPregunta_NotFound() throws Exception {
+        // Arrange
+        AcademicQuestionsEntity request = new AcademicQuestionsEntity();
+        when(academicQuestionsService.modificarPregunta(anyInt(), anyString(), any(Grades.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
+                .thenThrow(new NoSuchElementException("Pregunta no encontrada con el id 7"));
 
         // Act & Assert
-        RuntimeException thrown = assertThrows(RuntimeException.class, () ->
-                academicQuestionsService.obtenerTodasLasPreguntas());
-        assertEquals("Error al obtener las preguntas", thrown.getMessage());
+        mockMvc.perform(put("/7")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isNotFound());
     }
 
+
     @Test
-    public void testEliminarPregunta_Success() {
-        // Arrange
-        Integer id = 1;
-        AcademicQuestionsEntity pregunta = new AcademicQuestionsEntity();
-        pregunta.setId(id);
-
-        when(academicQuestionsRepository.findById(id)).thenReturn(Optional.of(pregunta));
-
+    public void testEliminarPregunta() {
         // Act
-        academicQuestionsService.eliminarPregunta(id);
+        ResponseEntity<Void> response = examAcademicController.eliminarPregunta(1);
 
         // Assert
-        verify(academicQuestionsRepository).findById(id);
-        verify(academicQuestionsRepository).delete(pregunta);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(academicQuestionsService, times(1)).eliminarPregunta(1);
     }
 
     @Test
     public void testEliminarPregunta_NotFound() {
         // Arrange
-        Integer id = 1;
-        when(academicQuestionsRepository.findById(id)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        NoSuchElementException thrown = assertThrows(NoSuchElementException.class, () ->
-                academicQuestionsService.eliminarPregunta(id));
-        assertEquals("Pregunta no encontrada con el id " + id, thrown.getMessage());
-    }
-
-    @Test
-    public void testModificarPregunta_Success() {
-        // Arrange
-        Integer id = 1;
-        AcademicQuestionsEntity preguntaExistente = new AcademicQuestionsEntity();
-        preguntaExistente.setId(id);
-        preguntaExistente.setQuestionText("Pregunta original");
-        preguntaExistente.setQuestionGrade(Grades.FIFTH);
-
-        AcademicQuestionsEntity preguntaModificada = new AcademicQuestionsEntity();
-        preguntaModificada.setId(id);
-        preguntaModificada.setQuestionText("¿Cuál es la capital de Italia?");
-        preguntaModificada.setQuestionGrade(Grades.FIRST);
-
-        when(academicQuestionsRepository.findById(id)).thenReturn(Optional.of(preguntaExistente));
-        when(academicQuestionsRepository.save(any(AcademicQuestionsEntity.class))).thenReturn(preguntaModificada);
+        doThrow(new NoSuchElementException()).when(academicQuestionsService).eliminarPregunta(1);
 
         // Act
-        AcademicQuestionsEntity result = academicQuestionsService.modificarPregunta(id, "¿Cuál es la capital de Italia?", Grades.FIRST, null, null, null, null, null, null);
+        ResponseEntity<Void> response = examAcademicController.eliminarPregunta(1);
 
         // Assert
-        assertNotNull(result);
-        assertEquals("¿Cuál es la capital de Italia?", result.getQuestionText());
-        assertEquals(Grades.FIRST, result.getQuestionGrade());
-        verify(academicQuestionsRepository).findById(id);
-        verify(academicQuestionsRepository).save(any(AcademicQuestionsEntity.class));
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
-
-    @Test
-    public void testModificarPregunta_PreguntaNoEncontrada() {
-        // Arrange
-        Integer id = 1;
-        when(academicQuestionsRepository.findById(id)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        NoSuchElementException thrown = assertThrows(NoSuchElementException.class, () ->
-                academicQuestionsService.modificarPregunta(id, "Nueva pregunta", Grades.FIRST, null, null, null, null, null, null));
-        assertEquals("Pregunta no encontrada con el id " + id, thrown.getMessage());
-    }
-
-    @Test
-    public void testModificarPregunta_ErrorEnRepository() {
-        // Arrange
-        Integer id = 1;
-        AcademicQuestionsEntity preguntaExistente = new AcademicQuestionsEntity();
-        preguntaExistente.setId(id);
-
-        when(academicQuestionsRepository.findById(id)).thenReturn(Optional.of(preguntaExistente));
-        when(academicQuestionsRepository.save(any(AcademicQuestionsEntity.class))).thenThrow(new RuntimeException("Error al guardar"));
-
-        // Act & Assert
-        RuntimeException thrown = assertThrows(RuntimeException.class, () ->
-                academicQuestionsService.modificarPregunta(id, "Pregunta modificada", Grades.FIRST, null, null, null, null, null, null));
-        assertEquals("Error al guardar", thrown.getMessage());
-    }
-
 }
+

@@ -50,6 +50,7 @@ public class AcademicQuestionsService {
         AcademicQuestionsEntity pregunta = academicQuestionsRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Pregunta no encontrada con el id " + id));
 
-        academicQuestionsRepository.delete(pregunta);
+        academicQuestionsRepository.deleteById(id);
     }
+
 }
