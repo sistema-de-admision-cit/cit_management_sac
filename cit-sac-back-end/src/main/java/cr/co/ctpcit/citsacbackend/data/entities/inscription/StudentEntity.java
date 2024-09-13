@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
@@ -24,24 +26,25 @@ public class StudentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "student_id", nullable = false)
-    private Integer id;
+    @JdbcTypeCode(SqlTypes.INTEGER)
+    private Long id;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<EnrollmentEntity> enrollments;
 
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<ParentGuardianStudentEntity> parents;
 
     @Size(max = 32)
-    @NotNull
+    @NotNull(message = "El nombre es obligatorio")
     @NotBlank(message = "El nombre es obligatorio")
     @Column(name = "first_name", nullable = false, length = 32)
     private String firstName;
 
     @Size(max = 32)
-    @NotNull
+    @NotNull(message = "El primer apellido es obligatorio")
     @NotBlank(message = "El primer apellido es obligatorio")
     @Column(name = "first_surname", nullable = false, length = 32)
     private String firstSurname;
@@ -50,19 +53,17 @@ public class StudentEntity {
     @Column(name = "second_surname", length = 32)
     private String secondSurname;
 
-    @NotNull
-    @NotBlank(message = "La fecha de nacimiento es obligatoria")
+    @NotNull(message = "La fecha de nacimiento es obligatoria")
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
-    @NotNull
-    @NotBlank(message = "El tipo de identificación es obligatorio")
+    @NotNull(message = "El tipo de identificación es obligatorio")
     @Enumerated(EnumType.STRING)
     @Column(name = "id_type", nullable = false)
     private IdType idType;
 
     @Size(max = 20)
-    @NotNull
+    @NotNull(message = "El número de identificación es obligatorio")
     @NotBlank(message = "El número de identificación es obligatorio")
     @Column(name = "id_number", nullable = false, length = 20)
     private String idNumber;
@@ -71,8 +72,7 @@ public class StudentEntity {
     @Column(name = "previous_school", length = 100)
     private String previousSchool;
 
-    @NotNull
-    @NotBlank(message = "Es obligatorio indicar si tiene adecuaciones")
+    @NotNull(message = "Es obligatorio indicar si tiene adecuaciones")
     @Column(name = "has_accommodations", nullable = false)
     private Boolean hasAccommodations = false;
 

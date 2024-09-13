@@ -4,9 +4,12 @@ import cr.co.ctpcit.citsacbackend.data.enums.IdType;
 import cr.co.ctpcit.citsacbackend.data.enums.Relationship;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
@@ -24,16 +27,17 @@ public class ParentsGuardianEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "parent_guardian_id", nullable = false)
-    private Integer id;
+    @JdbcTypeCode(SqlTypes.INTEGER)
+    private Long id;
 
     @Size(max = 32)
-    @NotNull
+    @NotNull(message = "El nombre es obligatorio")
     @NotBlank(message = "El nombre es obligatorio")
     @Column(name = "first_name", nullable = false, length = 32)
     private String firstName;
 
     @Size(max = 32)
-    @NotNull
+    @NotNull(message = "El primer apellido es obligatorio")
     @NotBlank(message = "El primer apellido es obligatorio")
     @Column(name = "first_surname", nullable = false, length = 32)
     private String firstSurname;
@@ -42,43 +46,40 @@ public class ParentsGuardianEntity {
     @Column(name = "second_surname", length = 32)
     private String secondSurname;
 
-    @NotNull
+    @NotNull(message = "El tipo de identificación es obligatorio")
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "El tipo de identificación es obligatorio")
     @Column(name = "id_type", nullable = false)
     private IdType idType;
 
     @Size(max = 20)
-    @NotNull
+    @NotNull(message = "El número de identificación es obligatorio")
     @NotBlank(message = "El número de identificación es obligatorio")
     @Column(name = "id_number", nullable = false, length = 20)
     private String idNumber;
 
     @Size(max = 20)
-    @NotNull
+    @NotNull(message = "El número de teléfono es obligatorio")
     @NotBlank(message = "El número de teléfono es obligatorio")
     @Column(name = "phone_number", nullable = false, length = 20)
     private String phoneNumber;
 
     @Size(max = 100)
-    @NotNull
+    @NotNull(message = "El correo electrónico es obligatorio")
     @NotBlank(message = "El correo electrónico es obligatorio")
     @Column(name = "email", nullable = false, length = 100)
     private String email;
 
-    @Size(max = 100)
-    @NotNull
-    @NotBlank(message = "La dirección de casa es obligatoria")
-    @Column(name = "home_address", nullable = false, length = 100)
-    private String homeAddress;
-
-    @NotNull
+    @NotNull(message = "La relación con el estudiante es obligatoria")
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = "La relación con el estudiante es obligatoria")
     @Column(name = "relationship", nullable = false)
     private Relationship relationship;
 
-    @OneToMany(mappedBy = "parentGuardian")
+    @NotEmpty(message = "La lista de direcciones no puede estar vacía")
+    @OneToMany(mappedBy = "parentGuardian", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    private List<AddressEntity> addresses;
+
+    @OneToMany(mappedBy = "parentGuardian", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<ParentGuardianStudentEntity> students;
 
@@ -91,11 +92,21 @@ public class ParentsGuardianEntity {
         parentGuardianStudentEntity.setParentGuardian(this);
     }
 
-    public void removeStudent(ParentGuardianStudentEntity parentGuardianStudentEntity) {
-        if (students == null) students = List.of();
-        if (parentGuardianStudentEntity == null) return;
+    public void addAddress(AddressEntity addressEntity) {
+        if (addresses == null) addresses = List.of();
+        if (addressEntity == null) return;
+        if (addresses.contains(addressEntity)) return;
 
-        students.remove(parentGuardianStudentEntity);
-        parentGuardianStudentEntity.setParentGuardian(null);
+        addresses.add(addressEntity);
+        addressEntity.setParentGuardian(this);
+    }
+
+    public void removeAddress(AddressEntity addressEntity) {
+        if (addresses == null) return;
+        if (addressEntity == null) return;
+        if (!addresses.contains(addressEntity)) return;
+
+        addresses.remove(addressEntity);
+        addressEntity.setParentGuardian(null);
     }
 }

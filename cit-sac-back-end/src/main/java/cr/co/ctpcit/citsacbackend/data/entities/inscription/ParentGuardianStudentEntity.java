@@ -16,13 +16,13 @@ public class ParentGuardianStudentEntity {
     private ParentGuardianStudentEntityId id;
 
     @MapsId("studentId")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
     @ToString.Exclude
     private StudentEntity student;
 
     @MapsId("parentGuardianId")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "parentguardian_id", nullable = false)
     @ToString.Exclude
     private ParentsGuardianEntity parentGuardian;

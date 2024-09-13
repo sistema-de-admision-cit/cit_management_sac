@@ -16,7 +16,8 @@ VALUES
     ('Costa Rica', 'Heredia', 'Heredia', 'San Francisco', 'Avenida 5, Apartamento 3', 2),
     ('Costa Rica', 'Alajuela', 'Alajuela', 'Central', 'Calle 8, Casa 10', 3),
     ('Costa Rica', 'Cartago', 'Cartago', 'Oriental', 'Avenida 4, Casa 5', 4),
-    ('Costa Rica', 'Limon', 'Limon', 'Central', 'Calle 1, Edificio A', 5);
+    ('Costa Rica', 'Limon', 'Limon', 'Central', 'Calle 1, Edificio A', 5),
+    ('Costa Rica', 'Heredia', 'San Rafael', 'Concepción', 'Frente a plaza de Concepción', 4);
 
 -- Insert into tbl_students
 INSERT INTO `tbl_students`

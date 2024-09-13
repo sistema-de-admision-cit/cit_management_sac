@@ -14,12 +14,18 @@ import java.time.LocalDateTime;
  * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.inscription.EnrollmentEntity}
  */
 @Builder
-public record EnrollmentDto(@NotNull Integer id,
-                            @NotNull ProcessStatus status,
+public record EnrollmentDto(Long id,
+                            @NotNull(message = "Es obligatorio tener un estado de proceso")
+                            ProcessStatus status,
                             LocalDateTime enrollmentDate,
-                            @NotNull Grades gradeToEnroll,
-                            @NotNull KnownThrough knownThrough,
-                            @NotNull LocalDate examDate,
-                            @NotNull Boolean consentGiven,
-                            @NotNull Boolean whatsappNotification) implements Serializable {
+                            @NotNull(message = "Es obligatorio que se indique el grado al que se desea matricular")
+                            Grades gradeToEnroll,
+                            @NotNull(message = "Es obligatorio que se indique cómo se enteró de nosotros")
+                            KnownThrough knownThrough,
+                            @NotNull(message = "Es obligatorio que se indique la fecha del examen")
+                            LocalDate examDate,
+                            @NotNull(message = "Es obligatorio que se indique si se dio el consentimiento")
+                            Boolean consentGiven,
+                            @NotNull(message = "Es obligatorio que se indique si se dio el consentimiento para notificaciones por WhatsApp")
+                            Boolean whatsappNotification) implements Serializable {
 }

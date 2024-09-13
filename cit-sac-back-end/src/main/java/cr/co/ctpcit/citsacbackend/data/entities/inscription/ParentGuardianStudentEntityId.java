@@ -5,6 +5,8 @@ import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -20,11 +22,13 @@ public class ParentGuardianStudentEntityId implements Serializable {
     private static final long serialVersionUID = -3727431787214240435L;
     @NotNull
     @Column(name = "student_id", nullable = false)
-    private Integer studentId;
+    @JdbcTypeCode(SqlTypes.INTEGER)
+    private Long studentId;
 
     @NotNull
     @Column(name = "parentguardian_id", nullable = false)
-    private Integer parentGuardianId;
+    @JdbcTypeCode(SqlTypes.INTEGER)
+    private Long parentGuardianId;
 
     @Override
     public boolean equals(Object o) {
