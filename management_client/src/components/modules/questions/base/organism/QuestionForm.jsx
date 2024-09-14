@@ -9,9 +9,9 @@ import '../../../../../assets/styles/questions/question-form.css'
 import {
   handleChange,
   handleTestOptionChange,
-  handleOptionChange,
-  getButtonState
+  handleOptionChange
 } from '../../helpers/formHandlers'
+import { getButtonState } from '../../helpers/helpers'
 import { EXAM_TYPE_OPTIONS } from '../helpers/questionFormOptions'
 
 const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAgain }) => {
@@ -57,13 +57,13 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
         <InputField
           field={{ name: 'question', label: 'Pregunta', type: 'text', placeholder: 'Ingrese la pregunta aquí', required: true }}
           value={question}
-          handleChange={(e, isFile = false) => handleChange(e, questionData, setQuestionData, isFile)}
+          handleChange={(e, isFile = false) => handleChange(e, setQuestionData, isFile)}
           className='form-group'
         />
 
         <InputField
           field={{ name: 'images', label: 'Agregar Imágenes', type: 'file', multiple: true, required: false }}
-          handleChange={(e, isFile = true) => handleChange(e, questionData, setQuestionData, isFile)}
+          handleChange={(e, isFile = true) => handleChange(e, setQuestionData, isFile)}
           className='form-group'
         />
 
@@ -75,24 +75,17 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
               options={options}
               correctOption={correctOption}
               handleOptionChange={(index, value) => handleOptionChange(index, value, questionData, setQuestionData)}
-              handleInputChange={(e, isFile = false) => handleChange(e, questionData, setQuestionData, isFile)}
+              handleInputChange={(e, isFile = false) => handleChange(e, setQuestionData, isFile)}
             />
           </>
         )}
 
-        <Button type='submit' className='btn btn-primary' disabled={getButtonState(questionData, isLoading)}>
-          {isLoading ? 'Guardando...' : submitButtonText}
-        </Button>
         <Button
-          type='button'
-          className='btn btn-secondary'
-          onClick={() => {
-            resetForm()
-            setIsLoading(false)
-          }}
-          disabled={isLoading}
+          type='submit'
+          className='btn btn-primary'
+          disabled={getButtonState(questionData, isLoading)}
         >
-          Limpiar
+          {isLoading ? 'Guardando...' : submitButtonText}
         </Button>
       </form>
       {renderMessages()}

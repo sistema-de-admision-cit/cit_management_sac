@@ -18,3 +18,9 @@
   margin-bottom: 1rem;
   text-align: center;
 }
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

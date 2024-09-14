@@ -1,29 +1,25 @@
 import { useState, useEffect } from 'react'
 import InputField from '../../../../core/global/atoms/InputField'
 import Button from '../../../../core/global/atoms/Button'
-import SuggestionsList from '../../modify_questions/molecules/SuggestionsList'
 import AdvancedSearch from './AdvancedSearch'
 import { handleSearch } from '../../helpers/formHandlers'
 import {
   handleInputChange,
   handleExamTypeChange,
-  setQuestions,
-  handleSuggestionClick,
   handleAdvancedSearch
 } from '../helpers/findQuestionHandlers'
 import '../../../../../assets/styles/questions/find-question.css'
 import useFormState from '../../../../core/global/hooks/useFormState'
 
-const FindQuestion = ({ onQuestionFound, onResultsUpdate, lookingFor }) => {
+const FindQuestion = ({ onResultsUpdate }) => {
   const { formData: query, setFormData: setQuery } = useFormState('')
   const { formData: searchCode, setFormData: setSearchCode } = useFormState('')
   const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
   const [searchExamType, setSearchExamType] = useState('both')
-  const [suggestions, setSuggestions] = useState([])
 
   useEffect(() => {
-    handleSearch(query, (questions) => setQuestions(questions, lookingFor, onResultsUpdate, setSuggestions), searchExamType, setSearchCode, lookingFor)
-  }, [query, onResultsUpdate, lookingFor, searchExamType])
+    handleSearch(query, onResultsUpdate, searchExamType, setSearchCode)
+  }, [query, onResultsUpdate, searchExamType])
 
   const examTypeOptions = [
     { value: 'both', label: 'Ambos' },
@@ -49,16 +45,13 @@ const FindQuestion = ({ onQuestionFound, onResultsUpdate, lookingFor }) => {
           setSearchCode={setSearchCode}
           setQuery={setQuery}
           setSearchExamType={setSearchExamType}
-          setQuestions={(questions) => setQuestions(questions, lookingFor, onResultsUpdate, setSuggestions)}
+          setQuestions={(questions) => onResultsUpdate(questions)}
           searchExamType={searchExamType}
           handleExamTypeChange={(e) => handleExamTypeChange(e, setSearchExamType)}
           examTypeOptions={examTypeOptions}
         />
       )}
 
-      {suggestions.length > 0 && lookingFor !== 'delete' && (
-        <SuggestionsList suggestions={suggestions} onSuggestionClick={(item) => handleSuggestionClick(item, onQuestionFound, setQuery, setSuggestions)} />
-      )}
     </div>
   )
 }

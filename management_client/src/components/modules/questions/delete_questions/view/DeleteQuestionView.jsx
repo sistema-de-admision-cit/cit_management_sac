@@ -1,36 +1,34 @@
 import { useState, useEffect } from 'react'
-import QuestionList from '../organisms/QuestionList'
+import QuestionList from '../../base/organism/QuestionList.jsx'
 import '../../../../../assets/styles/global/view.css'
-import { dummyData } from '../../helpers/dummyData'
-import { handleDeleteFromList } from '../helpers/formHandlers'
+import { handleDeleteFromList, handleGetAllQuestions } from '../helpers/formHandlers'
 import FindQuestion from '../../base/molecules/FindQuestion'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import useMessages from '../../../../core/global/hooks/useMessages'
 
 const DeleteQuestionView = () => {
   const [questions, setQuestions] = useState([])
-  const [filteredQuestions, setFilteredQuestions] = useState([])
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
+  const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    setQuestions(dummyData)
-    setFilteredQuestions(dummyData)
-  }, [])
+  useEffect(() =>
+    handleGetAllQuestions(setQuestions, setLoading, setErrorMessage)
+  , [])
 
   const handleDelete = (code) => {
-    handleDeleteFromList(code, filteredQuestions, setFilteredQuestions, setErrorMessage, setSuccessMessage)
-    setQuestions(questions.filter(question => question.code !== code))
+    handleDeleteFromList(code, questions, setQuestions, setErrorMessage, setSuccessMessage)
   }
 
   return (
     <SectionLayout title='Eliminar pregunta'>
       <FindQuestion
-        onResultsUpdate={setFilteredQuestions}
-        lookingFor='delete'
+        onResultsUpdate={setQuestions}
       />
       <QuestionList
-        questions={filteredQuestions}
+        questions={questions}
         onDelete={handleDelete}
+        loading={loading}
+        actionType='delete'
       />
       {renderMessages()}
     </SectionLayout>

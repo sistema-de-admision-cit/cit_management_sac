@@ -1,5 +1,5 @@
 import QuestionForm from '../../base/organism/QuestionForm'
-import { handleSubmit } from '../../helpers/formHandlers'
+import { handleCreateQuestionSubmit } from '../../helpers/formHandlers'
 
 const AddQuestionForm = () => {
   const initialData = {
@@ -14,7 +14,7 @@ const AddQuestionForm = () => {
     <QuestionForm
       title='Ingresar Pregunta'
       initialData={initialData}
-      onSubmit={handleSubmit}
+      onSubmit={handleCreateQuestionSubmit}
       submitButtonText='Guardar Pregunta'
     />
   )
