@@ -23,14 +23,22 @@ public class DaiExamTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray());
     }
-
     @Test
     public void testAddExamQuestion() throws Exception {
-        String json = "{\"examId\": 1, \"questionId\": 1, \"studentAnswer\": \"Sample answer\"}";
+
+        String examJson = "{\"examId\": 1, \"examName\": \"Sample Exam\"}";
         mockMvc.perform(post("/api/exams")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
+                        .content(examJson))
+                .andExpect(status().isOk());
+
+
+        String questionJson = "{\"examId\": 1, \"questionId\": 1, \"studentAnswer\": \"Sample answer\"}";
+        mockMvc.perform(post("/api/exams/questions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(questionJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.studentAnswer").value("Sample answer"));
     }
+
 }

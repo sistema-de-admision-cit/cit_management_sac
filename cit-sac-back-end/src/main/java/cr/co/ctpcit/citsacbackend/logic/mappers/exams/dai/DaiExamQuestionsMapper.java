@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DaiExamQuestionsMapper {
+
     public static DaiExamQuestionsDto toDto(DaiExamQuestionsEntity entity) {
         return new DaiExamQuestionsDto(
                 entity.getExamId().getId(),
@@ -24,17 +25,15 @@ public class DaiExamQuestionsMapper {
     }
 
     public static DaiExamQuestionsEntity toEntity(DaiExamQuestionsDto dto) {
-        DaiExamQuestionsEntity entity = new DaiExamQuestionsEntity();
-        entity.setStudentAnswer(dto.studentAnswer());
+        DaiExamsEntity examEntity = new DaiExamsEntity();
+        examEntity.setId(dto.examId());
 
         DaiQuestionsEntity questionEntity = new DaiQuestionsEntity();
         questionEntity.setId(dto.questionId());
-        entity.setDaiQuestions(questionEntity);
 
-        //Aqui esta el problema digamos
-        DaiExamsEntity examEntity = new DaiExamsEntity();
-        examEntity.setId(dto.examId());
-        entity.setExamId(examEntity);
+        DaiExamQuestionsEntity entity = new DaiExamQuestionsEntity();
+        entity.setId(examEntity, questionEntity);
+        entity.setStudentAnswer(dto.studentAnswer());
 
         return entity;
     }
