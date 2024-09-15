@@ -8,6 +8,7 @@ import ExamMenuPageView from '../../../modules/questions/menu/view/ExamMenuPageV
 
 // enrollments views
 import EnrollmentsMenuPageView from '../../../modules/enrollments/menu/views/EnrollmentsMenuPageView.jsx'
+import EnrollmentManagementView from '../../../modules/enrollments/management/view/EnrollmentManagementView.jsx'
 
 // configurations views
 import ConfigurationMenuPageView from '../../../modules/system_configuration/menu/views/ConfigurationMenuPageView.jsx'
@@ -58,7 +59,7 @@ const menuConfig = [
             key: 'visit-requests',
             label: 'Consultar Inscripciones',
             path: '/inscripciones/consultar',
-            component: DefaultComponent,
+            component: EnrollmentManagementView,
             description: 'Consultar y revisar las inscripciones existentes.',
             imagePath: '/images/temp-card-image.avif'
           },
