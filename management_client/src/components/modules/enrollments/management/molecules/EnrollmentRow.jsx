@@ -3,18 +3,18 @@ import DatePicker from '../../../../core/global/atoms/DatePicker'
 import InputField from '../../../../core/global/atoms/InputField'
 import Button from '../../../../core/global/atoms/Button'
 
-const EnrollmentRow = ({ applicant, index, onCedulaClick, onDateChange, onWhatsappChange, onDocClick }) => (
+const EnrollmentRow = ({ applicant, index, onStudentIdClick, onDateChange, onWhatsappChange, onDocClick }) => (
   <tr>
-    <td className='applicant-id' onClick={() => onCedulaClick(applicant)}>{applicant.cedula}</td>
-    <td>{applicant.nombre}</td>
-    <td>{applicant.apellido1}</td>
-    <td>{applicant.apellido2}</td>
-    <td>{applicant.fechaInscripcion}</td>
+    <td className='applicant-id' onClick={() => onStudentIdClick(applicant)}>{applicant.studendtId}</td>
+    <td>{applicant.firstName}</td>
+    <td>{applicant.firstSurname}</td>
+    <td>{applicant.secondSurname}</td>
+    <td>{applicant.enrollmentDate}</td>
     <td>
       <DatePicker
         name={`interviewDate-${index}`}
         label={`Fecha Entrevista ${index + 1}`}
-        value={new Date(applicant.fechaExamen)}
+        value={new Date(applicant.examDate)}
         onChange={(date) => onDateChange(applicant, date)}
         required
         showLabel={false}
