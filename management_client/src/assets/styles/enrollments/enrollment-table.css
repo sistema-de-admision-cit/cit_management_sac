@@ -20,3 +20,21 @@
 .enrollment-table tr:hover {
   background-color: #f1f1f1;
 }
+
+/* pagination styles */
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.pagination .active {
+  background-color: #007bff;
+  color: white;
+}
