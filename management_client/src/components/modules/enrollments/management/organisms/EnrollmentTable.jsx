@@ -3,19 +3,16 @@ import EnrollmentRow from '../molecules/EnrollmentRow'
 import '../../../../../assets/styles/enrollments/enrollment-table.css'
 import Button from '../../../../core/global/atoms/Button'
 
-const EnrollmentTable = ({ applicants, onCedulaClick, onDateChange, onWhatsappChange, onDocClick }) => {
+const EnrollmentTable = ({ applicants, onStudentIdClick, onDateChange, onWhatsappChange, onDocClick }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
 
-  // Calcula el índice inicial y final de los elementos a mostrar en la página actual
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
   const currentApplicants = applicants.slice(indexOfFirstItem, indexOfLastItem)
 
-  // Calcula el número total de páginas
   const totalPages = Math.ceil(applicants.length / itemsPerPage)
 
-  // Función para cambiar de página
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
   return (
@@ -37,10 +34,10 @@ const EnrollmentTable = ({ applicants, onCedulaClick, onDateChange, onWhatsappCh
         <tbody>
           {currentApplicants.map((applicant, index) => (
             <EnrollmentRow
-              key={applicant.cedula}
+              key={applicant.id}
               applicant={applicant}
               index={indexOfFirstItem + index}
-              onCedulaClick={onCedulaClick}
+              onStudentIdClick={onStudentIdClick}
               onDateChange={onDateChange}
               onWhatsappChange={onWhatsappChange}
               onDocClick={onDocClick}
