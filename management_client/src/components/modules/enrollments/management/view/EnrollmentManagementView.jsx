@@ -4,9 +4,13 @@ import EnrollmentTable from '../organisms/EnrollmentTable'
 import '../../../../../assets/styles/enrollments/enrollment-management-view.css'
 import { dummyData } from './temp_data'
 import EnrollemntSearchBar from '../molecules/EnrollmentSearchBar'
+import ModalManageFiles from '../molecules/ModalManageFiles'
 
 const EnrollmentManagementView = ({ enrollments }) => {
   const [applicants, setApplicants] = useState(dummyData)
+  const [isDocModalOpen, setIsDocModalOpen] = useState(false)
+  const [selectedColumn, setSelectedColumn] = useState('')
+  const [selectedFiles, setSelectedFiles] = useState([])
 
   const handleStudendIdClick = (aspirante) => {
     console.log('Cédula:', aspirante.cedula)
@@ -20,8 +24,10 @@ const EnrollmentManagementView = ({ enrollments }) => {
     console.log('Whatsapp:', value)
   }
 
-  const handleDocClick = (applicant, type) => {
-    console.log('Documento:', type)
+  const handleDocClick = (applicant, column, files) => {
+    setSelectedColumn(column)
+    setSelectedFiles(files)
+    setIsDocModalOpen(true)
   }
 
   const handleSearch = (search) => {
@@ -50,6 +56,17 @@ const EnrollmentManagementView = ({ enrollments }) => {
           onDocClick={handleDocClick}
         />
       </div>
+
+      {isDocModalOpen && (
+        <ModalManageFiles
+          selectedColumn={selectedColumn}
+          selectedFiles={[{ documentId: '1', name: 'Documento 1' }, { documentId: '2', name: 'Documento 2' }]}
+          onFileUpload={() => console.log('Subir archivo')}
+          onFileDownload={(document) => console.log('Descargar:', document)}
+          onFileDelete={(document) => console.log('Eliminar:', document)}
+          onClose={() => setIsDocModalOpen(false)}
+        />
+      )}
     </SectionLayout>
   )
 }
