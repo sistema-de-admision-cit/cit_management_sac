@@ -6,6 +6,7 @@ import { dummyData } from './temp_data'
 import EnrollemntSearchBar from '../molecules/EnrollmentSearchBar'
 import ModalManageFiles from '../molecules/ModalManageFiles'
 import ModalApplicantDetails from '../molecules/ModalApplicantDetails'
+import { handleDateChange, handleDocClick, handleStudendIdClick, handleWhatsappChange, handleSearch } from '../helpers/handlers'
 
 const EnrollmentManagementView = ({ enrollments }) => {
   const [applicants, setApplicants] = useState(dummyData)
@@ -15,48 +16,19 @@ const EnrollmentManagementView = ({ enrollments }) => {
 
   const [isModalApplicantDetailsOpen, setIsModalApplicantDetailsOpen] = useState(false)
 
-  const handleStudendIdClick = (aspirante) => {
-    setIsModalApplicantDetailsOpen(true)
-  }
-
-  const handleDateChange = (applicant, date) => {
-    console.log('Fecha Entrevista:', date)
-  }
-
-  const handleWhatsappChange = (applicant, value) => {
-    console.log('Whatsapp:', value)
-  }
-
-  const handleDocClick = (applicant, column, files) => {
-    setSelectedColumn(column)
-    setSelectedFiles(files)
-    setIsDocModalOpen(true)
-  }
-
-  const handleSearch = (search) => {
-    const filteredApplicants = dummyData.filter((applicant) => {
-      return applicant.studendtId.includes(search) ||
-        applicant.firstName.toLowerCase().includes(search.toLowerCase()) ||
-        applicant.firstSurname.includes(search.toLowerCase()) ||
-        applicant.secondSurname.toLowerCase().includes(search.toLowerCase())
-    })
-
-    setApplicants(filteredApplicants)
-  }
-
   return (
     <SectionLayout title='Consultar Inscripciones'>
       <div className='enrollment-management-view'>
         <h1>Consultar Inscripciones</h1>
         <p className='description'>Aquí puedes consultar y gestionar las inscripciones de los aspirantes.</p>
 
-        <EnrollemntSearchBar onSearch={handleSearch} />
+        <EnrollemntSearchBar onSearch={(search) => handleSearch(search, setApplicants)} />
         <EnrollmentTable
           applicants={applicants}
-          onStudentIdClick={handleStudendIdClick}
+          onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen)}
           onDateChange={handleDateChange}
           onWhatsappChange={handleWhatsappChange}
-          onDocClick={handleDocClick}
+          onDocClick={(applicant, column, files) => handleDocClick(applicant, column, files, setSelectedColumn, setSelectedFiles, setIsDocModalOpen)}
         />
       </div>
 
