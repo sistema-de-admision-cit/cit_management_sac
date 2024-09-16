@@ -1,0 +1,28 @@
+.file-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+  border-top: 1px solid #eee;
+}
+
+.file-list-container {
+  margin-top: 20px;
+}
+
+.file-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.file-list-item .btn-primary {
+  margin-bottom: 0 !important;
+  width: 30%;
+}
+
+.file-list-item .btn-danger {
+  margin-bottom: 0 !important;
+  width: 30%;
+}
