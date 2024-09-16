@@ -5,6 +5,7 @@ import '../../../../../assets/styles/enrollments/enrollment-management-view.css'
 import { dummyData } from './temp_data'
 import EnrollemntSearchBar from '../molecules/EnrollmentSearchBar'
 import ModalManageFiles from '../molecules/ModalManageFiles'
+import ModalApplicantDetails from '../molecules/ModalApplicantDetails'
 
 const EnrollmentManagementView = ({ enrollments }) => {
   const [applicants, setApplicants] = useState(dummyData)
@@ -12,8 +13,10 @@ const EnrollmentManagementView = ({ enrollments }) => {
   const [selectedColumn, setSelectedColumn] = useState('')
   const [selectedFiles, setSelectedFiles] = useState([])
 
+  const [isModalApplicantDetailsOpen, setIsModalApplicantDetailsOpen] = useState(false)
+
   const handleStudendIdClick = (aspirante) => {
-    console.log('Cédula:', aspirante.cedula)
+    setIsModalApplicantDetailsOpen(true)
   }
 
   const handleDateChange = (applicant, date) => {
@@ -65,6 +68,25 @@ const EnrollmentManagementView = ({ enrollments }) => {
           onFileDownload={(document) => console.log('Descargar:', document)}
           onFileDelete={(document) => console.log('Eliminar:', document)}
           onClose={() => setIsDocModalOpen(false)}
+        />
+      )}
+
+      {isModalApplicantDetailsOpen && (
+        <ModalApplicantDetails
+          student={applicants[0]}
+          parentsGuardians={[{
+            id: 10,
+            firstName: 'Luis',
+            firstSurname: 'Vega',
+            secondSurname: 'Alvarado',
+            idType: 'DNI',
+            idNumber: 'DNI43215678',
+            phoneNumber: '8889990001',
+            email: 'luis.vega@example.com',
+            homeAddress: '444 Avenida Norte, Ciudad Central',
+            relationship: 'FATHER'
+          }]}
+          onClose={() => setIsModalApplicantDetailsOpen(false)}
         />
       )}
     </SectionLayout>
