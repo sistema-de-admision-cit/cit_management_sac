@@ -16,7 +16,7 @@ const EnrollmentTable = ({ applicants, onStudentIdClick, onDateChange, onWhatsap
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
   return (
-    <div>
+    <div className='enrollment-table-container'>
       <table className='enrollment-table'>
         <thead>
           <tr>
