@@ -6,12 +6,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.SqlTypes;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Builder
 @AllArgsConstructor
@@ -28,14 +33,6 @@ public class StudentEntity {
     @Column(name = "student_id", nullable = false)
     @JdbcTypeCode(SqlTypes.INTEGER)
     private Long id;
-
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    @ToString.Exclude
-    private List<EnrollmentEntity> enrollments;
-
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    @ToString.Exclude
-    private List<ParentGuardianStudentEntity> parents;
 
     @Size(max = 32)
     @NotNull(message = "El nombre es obligatorio")
@@ -74,10 +71,19 @@ public class StudentEntity {
 
     @NotNull(message = "Es obligatorio indicar si tiene adecuaciones")
     @Column(name = "has_accommodations", nullable = false)
-    private Boolean hasAccommodations = false;
+    @ColumnDefault("false")
+    private Boolean hasAccommodations;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<EnrollmentEntity> enrollments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private List<ParentGuardianStudentEntity> parents = new ArrayList<>();
 
     public void addEnrollment(EnrollmentEntity enrollmentEntity) {
-        if (enrollments == null) enrollments = List.of();
+        if (enrollments == null) enrollments = new ArrayList<>();
         if (enrollmentEntity == null) return;
         if (enrollments.contains(enrollmentEntity)) return;
 
@@ -86,11 +92,26 @@ public class StudentEntity {
     }
 
     public void addParentGuardian(ParentGuardianStudentEntity parentGuardianStudentEntity) {
-        if (parents == null) parents = List.of();
+        if (parents == null) parents = new ArrayList<>();
         if (parentGuardianStudentEntity == null) return;
         if (parents.contains(parentGuardianStudentEntity)) return;
 
         parents.add(parentGuardianStudentEntity);
-        parentGuardianStudentEntity.setStudent(this);
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        StudentEntity student = (StudentEntity) o;
+        return getId() != null && Objects.equals(getId(), student.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

@@ -20,13 +20,11 @@ import java.util.Objects;
 @Embeddable
 public class ParentGuardianStudentEntityId implements Serializable {
     private static final long serialVersionUID = -3727431787214240435L;
-    @NotNull
-    @Column(name = "student_id", nullable = false)
+    @Column(name = "student_id")
     @JdbcTypeCode(SqlTypes.INTEGER)
     private Long studentId;
 
-    @NotNull
-    @Column(name = "parentguardian_id", nullable = false)
+    @Column(name = "parentguardian_id")
     @JdbcTypeCode(SqlTypes.INTEGER)
     private Long parentGuardianId;
 

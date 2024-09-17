@@ -3,12 +3,14 @@ package cr.co.ctpcit.citsacbackend.logic.dto.inscription;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 import java.io.Serializable;
 
 /**
  * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.inscription.AddressEntity}
  */
+@Builder
 public record AddressDto(Long id,
                          @NotNull(message = "El país es obligatorio")
                          @Size(max = 16)

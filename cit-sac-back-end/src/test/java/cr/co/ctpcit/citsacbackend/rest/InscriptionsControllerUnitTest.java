@@ -3,6 +3,7 @@ package cr.co.ctpcit.citsacbackend.rest;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import cr.co.ctpcit.citsacbackend.data.enums.*;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscription.AddressDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.ParentsGuardianDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
@@ -38,6 +39,7 @@ class InscriptionsControllerUnitTest {
         String id = documentContext.read("$.idNumber");
         assertThat(id).isNotNull();
         assertThat(id).isEqualTo("603660526");
+        System.out.println(documentContext.jsonString());
     }
 
     @Test
@@ -69,7 +71,21 @@ class InscriptionsControllerUnitTest {
         assertThat(firstName).isEqualTo("Lucia");
     }
 
-    //@Test
+    @Test
+    public void testGetInscriptionsByValue_shouldReturnInscriptionsByValue() {
+        // Arrange
+        ResponseEntity<String> response = testRestTemplate.getForEntity("/api/inscriptions/search?value=Martinez", String.class);
+
+        // Assert
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        DocumentContext documentContext = JsonPath.parse(response.getBody());
+        int size = documentContext.read("$.length()");
+        assertThat(size).isEqualTo(2);
+        String firstName = documentContext.read("$[0].firstName");
+        assertThat(firstName).isEqualTo("Pedro");
+    }
+
+    @Test
     public void testCreateInscription_shouldCreateANewInscription() {
         // Arrange
         // Create sample enrollment
@@ -90,7 +106,7 @@ class InscriptionsControllerUnitTest {
 
     private static StudentDto getStudentDto() {
         EnrollmentDto enrollmentDto = new EnrollmentDto(
-                1,
+                null,
                 ProcessStatus.P,
                 LocalDateTime.of(2024, 9, 6, 12, 0),
                 Grades.FORTH,
@@ -101,21 +117,26 @@ class InscriptionsControllerUnitTest {
         );
 
         ParentsGuardianDto parentGuardianDto = new ParentsGuardianDto(
-                1,
+                null,
                 "Alice",
                 "Williams",
                 "Davis",
                 IdType.CC,  // Sample enum for idType
                 "159753486",
                 "3129876543",
-                "alice.williams@example.com",
-                "789 Birch Lane",
-                Relationship.M  // Sample enum for relationship
+                "alice.williams@gmail.com",
+                Relationship.M,  // Sample enum for relationship
+                List.of(AddressDto
+                        .builder()
+                        .addressInfo("Calle 4A, Casa 17")
+                        .city("Heredia")
+                        .district("San Francisco")
+                        .province("Heredia")
+                        .country("Costa Rica")
+                        .build())  // Empty list of addresses
         );
         return new StudentDto(
-                1,
-                List.of(enrollmentDto),
-                List.of(parentGuardianDto),
+                null,
                 "Lucas",
                 "Johnson",
                 "Taylor",
@@ -123,7 +144,9 @@ class InscriptionsControllerUnitTest {
                 IdType.DI,
                 "951357852",
                 "Springfield Academy",
-                false
+                false,
+                List.of(enrollmentDto),
+                List.of(parentGuardianDto)
         );
     }
 }

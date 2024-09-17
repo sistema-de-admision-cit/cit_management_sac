@@ -17,10 +17,6 @@ import java.util.List;
  */
 @Builder
 public record StudentDto(Long id,
-                         @NotEmpty
-                         List<EnrollmentDto> enrollments,
-                         @NotEmpty
-                         List<ParentsGuardianDto> parents,
                          @NotNull(message = "El nombre es obligatorio")
                          @NotBlank(message = "El nombre es obligatorio")
                          @Size(max = 32)
@@ -42,5 +38,9 @@ public record StudentDto(Long id,
                          @Size(max = 100)
                          String previousSchool,
                          @NotNull(message = "Es obligatorio indicar si tiene adecuaciones")
-                         Boolean hasAccommodations) implements Serializable {
+                         Boolean hasAccommodations,
+                         @NotEmpty
+                         List<EnrollmentDto> enrollments,
+                         @NotEmpty
+                         List<ParentsGuardianDto> parents) implements Serializable {
 }

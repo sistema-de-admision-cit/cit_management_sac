@@ -26,7 +26,7 @@ VALUES
     ('Pedro', 'Martinez', 'Lopez', '2010-04-15', 'CC', '504660525', 'Escuela Central', 0),
     ('Lucia', 'Gomez', 'Perez', '2011-06-20', 'DI', '223456789012345', 'Escuela Norte', 0),
     ('Jorge', 'Rodriguez', 'Fernandez', '2009-09-09', 'PA', 'P9876543210CR', 'Escuela Sur', 1),
-    ('Carla', 'Hernandez', 'Vargas', '2008-03-25', 'DI', '334567890123456', 'Escuela Este', 0),
+    ('Carla', 'Martinez', 'Vargas', '2008-03-25', 'DI', '334567890123456', 'Escuela Este', 0),
     ('Juan', 'Jimenez', 'Castro', '2012-11-12', 'CC', '603660526', 'Escuela Oeste', 0);
 
 -- Insert into tbl_parentguardianstudents

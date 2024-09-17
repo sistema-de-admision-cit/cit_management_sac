@@ -4,15 +4,17 @@ import cr.co.ctpcit.citsacbackend.data.enums.IdType;
 import cr.co.ctpcit.citsacbackend.data.enums.Relationship;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.SqlTypes;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Builder
 @AllArgsConstructor
@@ -26,7 +28,7 @@ import java.util.List;
 public class ParentsGuardianEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "parent_guardian_id", nullable = false)
+    @Column(name = "parent_guardian_id")
     @JdbcTypeCode(SqlTypes.INTEGER)
     private Long id;
 
@@ -74,26 +76,25 @@ public class ParentsGuardianEntity {
     @Column(name = "relationship", nullable = false)
     private Relationship relationship;
 
-    @NotEmpty(message = "La lista de direcciones no puede estar vacía")
+    //@NotEmpty(message = "La lista de direcciones no puede estar vacía")
     @OneToMany(mappedBy = "parentGuardian", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<AddressEntity> addresses;
+    private List<AddressEntity> addresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "parentGuardian", cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<ParentGuardianStudentEntity> students;
+    private List<ParentGuardianStudentEntity> students = new ArrayList<>();
 
     public void addStudent(ParentGuardianStudentEntity parentGuardianStudentEntity) {
-        if (students == null) students = List.of();
+        if (students == null) students = new ArrayList<>();
         if (parentGuardianStudentEntity == null) return;
         if (students.contains(parentGuardianStudentEntity)) return;
 
         students.add(parentGuardianStudentEntity);
-        parentGuardianStudentEntity.setParentGuardian(this);
     }
 
     public void addAddress(AddressEntity addressEntity) {
-        if (addresses == null) addresses = List.of();
+        if (addresses == null) addresses = new ArrayList<>();
         if (addressEntity == null) return;
         if (addresses.contains(addressEntity)) return;
 
@@ -108,5 +109,21 @@ public class ParentsGuardianEntity {
 
         addresses.remove(addressEntity);
         addressEntity.setParentGuardian(null);
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        ParentsGuardianEntity that = (ParentsGuardianEntity) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

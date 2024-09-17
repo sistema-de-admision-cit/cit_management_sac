@@ -18,7 +18,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +51,17 @@ public class InscriptionsController {
     }
 
     /**
+     * Get an inscription by value
+     * @param value the name of the student
+     * @return the inscription with the given name
+     */
+    @GetMapping("/search")
+    public ResponseEntity<Iterable<StudentDto>> getInscriptionsByValue(@NotNull @RequestParam String value) {
+        List<StudentDto> student = inscriptionsService.findStudentByValue(value);
+        return student == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(student);
+    }
+
+    /**
      * Get all inscriptions
      * @return a list of all inscriptions
      */
@@ -65,8 +78,10 @@ public class InscriptionsController {
      */
     //TODO: Implement this method to create a new inscription
     @PostMapping("/add")
-    public ResponseEntity<Void> createInscription() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> createInscription(@RequestBody @Valid StudentDto student, UriComponentsBuilder ucb) {
+        String id = inscriptionsService.addInscription(student).idNumber();
+        URI location = ucb.path("/api/inscriptions/{id}").buildAndExpand(id).toUri();
+        return ResponseEntity.created(location).build();
     }
 
     /**
