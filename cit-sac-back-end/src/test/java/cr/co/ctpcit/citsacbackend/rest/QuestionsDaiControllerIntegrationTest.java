@@ -62,4 +62,15 @@ public class QuestionsDaiControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.questionText").value("Describe una situación en la que te hayas sentido feliz."));
     }
+
+    @Test
+    public void testGetExamQuestionsByQuestionText() throws Exception {
+        String searchText = "Como";
+        mockMvc.perform(get("/api/Dai/search")
+                        .param("questionText", searchText))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].questionText").value(org.hamcrest.Matchers.containsString(searchText)));
+    }
 }

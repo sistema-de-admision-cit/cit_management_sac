@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import cr.co.ctpcit.citsacbackend.data.enums.Grades;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.examsImplementations.DaiQuestionsServiceImplementation;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,5 +114,18 @@ public class QuestionsDaiControllerUnitTest {
                         .content("{\"id\":1,\"questionText\":\"¿Cómo te has sentido las últimas semanas?\",\"questionGrade\":\"FORTH\",\"imageUrl\":null}"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Pregunta no encontrada con el id 1"));
+    }
+
+    @Test
+    void getExamQuestionsByQuestionText() throws Exception {
+        List<DaiQuestionsDto> questions = Arrays.asList(question1);
+        when(daiQuestionsService.obtenerPreguntasPorQuestionText("Puedes")).thenReturn(questions);
+
+        mockMvc.perform(get("/api/Dai/search")
+                        .param("questionText", "Puedes")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(question1.id()))
+                .andExpect(jsonPath("$[0].questionText").value(question1.questionText()));
     }
 }
