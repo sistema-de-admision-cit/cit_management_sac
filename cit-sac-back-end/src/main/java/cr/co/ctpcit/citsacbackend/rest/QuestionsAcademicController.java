@@ -36,6 +36,14 @@ public class QuestionsAcademicController {
         return ResponseEntity.ok(examQuestion);
     }
 
+    // Buscar preguntas por texto de la pregunta
+    @GetMapping("/search")
+    public ResponseEntity<List<AcademicQuestionsDto>> getExamQuestionsByQuestionText(@RequestParam String questionText) {
+        List<AcademicQuestionsDto> examQuestions = academicQuestionsServiceimplementation.obtenerPreguntasPorQuestionText(questionText);
+        return ResponseEntity.ok(examQuestions);
+    }
+
+
     // Eliminar una pregunta por ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteExamQuestion(@PathVariable Integer id) {

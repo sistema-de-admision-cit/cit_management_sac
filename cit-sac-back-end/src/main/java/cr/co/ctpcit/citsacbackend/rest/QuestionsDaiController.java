@@ -1,4 +1,5 @@
 package cr.co.ctpcit.citsacbackend.rest;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.examsImplementations.DaiQuestionsServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,13 @@ public class QuestionsDaiController {
     public ResponseEntity<DaiQuestionsDto> getExamQuestionById(@PathVariable Integer id) {
         DaiQuestionsDto examQuestion = daiQuestionsServiceimplementation.obtenerPreguntaPorId(id);
         return ResponseEntity.ok(examQuestion);
+    }
+
+    // Buscar preguntas por texto de la pregunta
+    @GetMapping("/search")
+    public ResponseEntity<List<DaiQuestionsDto>> getExamQuestionsByQuestionText(@RequestParam String questionText) {
+        List<DaiQuestionsDto> examQuestions = daiQuestionsServiceimplementation.obtenerPreguntasPorQuestionText(questionText);
+        return ResponseEntity.ok(examQuestions);
     }
 
     // Eliminar una pregunta por ID

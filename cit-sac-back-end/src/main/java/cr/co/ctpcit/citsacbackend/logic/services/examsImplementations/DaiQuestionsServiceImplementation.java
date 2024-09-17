@@ -1,9 +1,12 @@
 package cr.co.ctpcit.citsacbackend.logic.services.examsImplementations;
 
+import cr.co.ctpcit.citsacbackend.data.entities.exams.academic.AcademicQuestionsEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.dai.DaiQuestionsEntity;
 import cr.co.ctpcit.citsacbackend.data.repositories.DaiExamQuestionsRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.DaiQuestionsRepository;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiQuestionsDto;
+import cr.co.ctpcit.citsacbackend.logic.mappers.exams.academic.AcademicQuestionsMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.exams.dai.DaiQuestionsMapper;
 import cr.co.ctpcit.citsacbackend.logic.services.DaiQuestionsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class DaiQuestionsServiceImplementation implements DaiQuestionsService {
@@ -37,6 +41,17 @@ public class DaiQuestionsServiceImplementation implements DaiQuestionsService {
         DaiQuestionsEntity entity = daiQuestionsRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Pregunta no encontrada con el id " + id));
         return DaiQuestionsMapper.toDto(entity);
+    }
+
+    @Override
+    public List<DaiQuestionsDto> obtenerPreguntasPorQuestionText(String questionText) {
+        List<DaiQuestionsEntity> entities = daiQuestionsRepository.findByQuestionTextContaining(questionText);
+        if (entities.isEmpty()) {
+            throw new NoSuchElementException("No se encontraron preguntas que contengan: " + questionText);
+        }
+        return entities.stream()
+                .map(DaiQuestionsMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override

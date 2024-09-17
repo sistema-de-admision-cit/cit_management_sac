@@ -5,8 +5,10 @@ import cr.co.ctpcit.citsacbackend.data.entities.exams.academic.AcademicQuestions
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface AcademicQuestionsRepository extends JpaRepository<AcademicQuestionsEntity, Integer> {
-
+    List<AcademicQuestionsEntity> findByQuestionTextContaining(String questionText);
 }
 
