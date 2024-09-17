@@ -21,10 +21,6 @@ public class AddressMapper {
                 .build();
     }
 
-    public static List<AddressEntity> convertToEntityList(List<AddressDto> addresses) {
-        return addresses.stream().map(AddressMapper::convertToEntity).toList();
-    }
-
     public static AddressEntity convertToEntity(AddressDto addressDto) {
         return AddressEntity.builder()
                 .id(addressDto.id())

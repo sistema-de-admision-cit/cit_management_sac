@@ -5,6 +5,7 @@ import cr.co.ctpcit.citsacbackend.data.repositories.ParentGuardianStudentReposit
 import cr.co.ctpcit.citsacbackend.data.repositories.ParentsGuardianRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.StudentRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
+import cr.co.ctpcit.citsacbackend.logic.exceptions.SameDateEnrollmentException;
 import cr.co.ctpcit.citsacbackend.logic.mappers.AddressMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.EnrollmentMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.ParentGuardianMapper;
@@ -74,40 +75,68 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
     public StudentDto addInscription(StudentDto inscriptionDto) {
         //Validate if the student already exists
         Optional<StudentEntity> student = studentRepository.findStudentByIdNumber(inscriptionDto.idNumber());
+
+        //Get the student from optional or create a new one
+        StudentEntity studentEntity = student
+                .orElseGet(() -> StudentMapper.convertToEntity(inscriptionDto));
+
+        //Get the Enrollment
+        EnrollmentEntity enrollmentEntity = EnrollmentMapper
+                .convertToEntity(inscriptionDto.enrollments().getFirst());
+
+        //Verify if the student is already enrolled
+        if (student.isPresent()) {
+            if (student.get().getEnrollments().stream().anyMatch(enrollment ->
+                    enrollment.getExamDate().equals(enrollmentEntity.getExamDate()))) {
+                throw new SameDateEnrollmentException();
+            }
+        }
+
+        //Save the enrollment
+        studentEntity.addEnrollment(enrollmentEntity);
+
+        //Verify if parent/guardian exists
+        Optional<ParentsGuardianEntity> parentGuardian = parentsGuardianRepository
+                .findParentsGuardianByIdNumber(inscriptionDto.parents().getFirst().idNumber());
+
+        //Get the parent/guardian from optional or create a new one
+        ParentsGuardianEntity parent = parentGuardian
+                .orElseGet(() -> ParentGuardianMapper.convertToEntity(inscriptionDto.parents().getFirst()));
+
+        //Get the address
+        AddressEntity address = AddressMapper
+                .convertToEntity(inscriptionDto.parents().getFirst().addresses().getFirst());
+
+        //Save the address
+        parent.addAddress(address);
+
+        if(parentGuardian.isPresent()) {
+            //Update the parent/guardian information
+            parent.setEmail(inscriptionDto.parents().getFirst().email());
+            parent.setPhoneNumber(inscriptionDto.parents().getFirst().phoneNumber());
+        }
+
+        //Save the parent/guardian
+        parent = parentsGuardianRepository.save(parent);
+
         //If the student exists, add the enrollment and update/add parent/guardian information
         if (student.isEmpty()) {
-            //If the student does not exist, create the student, parent/guardian and enrollment
-            //Get the student
-            StudentEntity studentEntity = StudentMapper.convertToEntity(inscriptionDto);
-
-            //Get the Enrollment
-            EnrollmentEntity enrollmentEntity = EnrollmentMapper.convertToEntity(inscriptionDto.enrollments().getFirst());
-
-            //Save the enrollment
-            studentEntity.addEnrollment(enrollmentEntity);
-
-            //Get the parent/guardian
-            ParentsGuardianEntity parent = ParentGuardianMapper.convertToEntity(inscriptionDto.parents().getFirst());
-
-            //Get the address
-            AddressEntity address = AddressMapper.convertToEntity(inscriptionDto.parents().getFirst().addresses().getFirst());
-
-            //Save the address
-            parent.addAddress(address);
-
-            //Save the parent/guardian
-            parent = parentsGuardianRepository.save(parent);
-
             //Create the parent/guardian/student relation
             createParentGuardianStudentRelation(studentEntity, parent);
-
-            //Save the student
-            studentEntity = studentRepository.save(studentEntity);
-
-            //Return
-            return StudentMapper.convertToDto(studentEntity);
+        } else {
+            //Verify if the parent/guardian is already related to the student
+            Optional<ParentGuardianStudentEntity> parentGuardianStudent = parentGuardianStudentRepository
+                    .findParentGuardianStudentEntityByStudentAndParentGuardian(studentEntity, parent);
+            if (parentGuardianStudent.isEmpty()) {
+                //Create the parent/guardian/student relation
+                createParentGuardianStudentRelation(studentEntity, parent);
+            }
         }
-        return null;
+        //Save the student
+        studentEntity = studentRepository.save(studentEntity);
+
+        //Return
+        return StudentMapper.convertToDto(studentEntity);
     }
 
     private void createParentGuardianStudentRelation(StudentEntity student, ParentsGuardianEntity parent) {

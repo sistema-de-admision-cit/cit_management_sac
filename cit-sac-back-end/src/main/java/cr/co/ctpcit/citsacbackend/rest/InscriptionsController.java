@@ -76,7 +76,6 @@ public class InscriptionsController {
      * the official Request for Comments for HTTP Semantics and Content.
      * @return a response entity with the status code and Location header
      */
-    //TODO: Implement this method to create a new inscription
     @PostMapping("/add")
     public ResponseEntity<Void> createInscription(@RequestBody @Valid StudentDto student, UriComponentsBuilder ucb) {
         String id = inscriptionsService.addInscription(student).idNumber();
