@@ -1,6 +1,7 @@
 package cr.co.ctpcit.citsacbackend.rest;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
+import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
 import cr.co.ctpcit.citsacbackend.logic.services.InscriptionsService;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
@@ -9,27 +10,22 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/inscriptions")
 @Validated
 public class InscriptionsController {
-    InscriptionsService inscriptionsService;
+    private final InscriptionsService inscriptionsService;
 
     @Autowired
     public InscriptionsController(InscriptionsService inscriptionsService) {
@@ -83,22 +79,10 @@ public class InscriptionsController {
         return ResponseEntity.created(location).build();
     }
 
-    /**
-     * Handle validation exceptions
-     * @param e the exception
-     * @return a map with the errors
-     */
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException e) {
-        Map<String, String> errors = new HashMap<>();
-        e.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
+    //TODO: Implement an endpoint where to receive a POST request with a file in pdf or any other format and save it in the storage
+    @PostMapping(name = "/upload", consumes = "application/octet-stream")
+    public ResponseEntity<Void> uploadDocument(@RequestBody byte[] document) {
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -109,6 +93,17 @@ public class InscriptionsController {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
-        return new ResponseEntity<>("error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handle Enrollment exceptions
+     * @param e the exception
+     * @return a response entity with the error message
+     */
+    @ExceptionHandler(EnrollmentException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    ResponseEntity<String> handleEnrollmentException(EnrollmentException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
 }

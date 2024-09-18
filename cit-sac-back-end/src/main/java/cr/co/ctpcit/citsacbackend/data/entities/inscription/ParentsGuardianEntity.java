@@ -79,10 +79,12 @@ public class ParentsGuardianEntity {
     //@NotEmpty(message = "La lista de direcciones no puede estar vacía")
     @OneToMany(mappedBy = "parentGuardian", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
+    @Builder.Default
     private List<AddressEntity> addresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "parentGuardian", cascade = CascadeType.ALL)
     @ToString.Exclude
+    @Builder.Default
     private List<ParentGuardianStudentEntity> students = new ArrayList<>();
 
     public void addStudent(ParentGuardianStudentEntity parentGuardianStudentEntity) {

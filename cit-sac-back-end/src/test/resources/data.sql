@@ -6,7 +6,7 @@ VALUES
     ('Luis', 'Gomez', 'Perez', 'DI', '012345678901234', '87654322', 'luis.gomez@mail.com', 'F'),
     ('Maria', 'Rodriguez', 'Fernandez', 'PA', 'P1234567890CR', '87654323', 'maria.rodriguez@mail.com', 'M'),
     ('Carlos', 'Hernandez', 'Vargas', 'DI', '987654321012345', '87654324', 'carlos.hernandez@mail.com', 'G'),
-    ('Sofia', 'Jimenez', 'Castro', 'CC', '403660524', '87654325', 'sofia.jimenez@mail.com', 'F');
+    ('Sofia', 'Martinez', 'Castro', 'CC', '403660524', '87654325', 'sofia.jimenez@mail.com', 'F');
 
 -- Insert into tbl_address
 INSERT INTO `tbl_address`

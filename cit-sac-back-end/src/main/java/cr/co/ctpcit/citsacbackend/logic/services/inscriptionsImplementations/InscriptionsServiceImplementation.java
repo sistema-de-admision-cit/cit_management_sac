@@ -1,11 +1,12 @@
 package cr.co.ctpcit.citsacbackend.logic.services.inscriptionsImplementations;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.*;
+import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.data.repositories.ParentGuardianStudentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.ParentsGuardianRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.StudentRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
-import cr.co.ctpcit.citsacbackend.logic.exceptions.SameDateEnrollmentException;
+import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
 import cr.co.ctpcit.citsacbackend.logic.mappers.AddressMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.EnrollmentMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.ParentGuardianMapper;
@@ -88,8 +89,12 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
         if (student.isPresent()) {
             if (student.get().getEnrollments().stream().anyMatch(enrollment ->
                     enrollment.getExamDate().equals(enrollmentEntity.getExamDate()))) {
-                throw new SameDateEnrollmentException();
+                throw new EnrollmentException(
+                        "El estudiante ya tiene una inscripción para la fecha seleccionada. " +
+                        "Debe seleccionar otra fecha o comunicarse con el área de Servicio al Cliente."
+                );
             }
+
         }
 
         //Save the enrollment

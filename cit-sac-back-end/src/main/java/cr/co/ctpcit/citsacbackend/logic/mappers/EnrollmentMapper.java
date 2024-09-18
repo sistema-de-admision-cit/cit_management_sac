@@ -19,7 +19,6 @@ public class EnrollmentMapper {
         return EnrollmentDto.builder()
                 .id(enrollmentEntity.getId())
                 .status(enrollmentEntity.getStatus())
-                .enrollmentDate(LocalDateTime.ofInstant(enrollmentEntity.getEnrollmentDate(), ZoneId.systemDefault()))
                 .gradeToEnroll(enrollmentEntity.getGradeToEnroll())
                 .knownThrough(enrollmentEntity.getKnownThrough())
                 .examDate(enrollmentEntity.getExamDate())
@@ -45,7 +44,6 @@ public class EnrollmentMapper {
     public static EnrollmentEntity convertToEntity(EnrollmentDto enrollmentDto) {
         return EnrollmentEntity.builder()
                 .status(enrollmentDto.status())
-                .enrollmentDate(enrollmentDto.enrollmentDate().atZone(ZoneId.systemDefault()).toInstant())
                 .gradeToEnroll(enrollmentDto.gradeToEnroll())
                 .knownThrough(enrollmentDto.knownThrough())
                 .examDate(enrollmentDto.examDate())

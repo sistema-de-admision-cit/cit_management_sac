@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 public record EnrollmentDto(Long id,
                             @NotNull(message = "Es obligatorio tener un estado de proceso")
                             ProcessStatus status,
-                            LocalDateTime enrollmentDate,
                             @NotNull(message = "Es obligatorio que se indique el grado al que se desea matricular")
                             Grades gradeToEnroll,
                             @NotNull(message = "Es obligatorio que se indique cómo se enteró de nosotros")

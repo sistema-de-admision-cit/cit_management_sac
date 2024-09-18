@@ -76,10 +76,12 @@ public class StudentEntity {
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     @ToString.Exclude
+    @Builder.Default
     private List<EnrollmentEntity> enrollments = new ArrayList<>();
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     @ToString.Exclude
+    @Builder.Default
     private List<ParentGuardianStudentEntity> parents = new ArrayList<>();
 
     public void addEnrollment(EnrollmentEntity enrollmentEntity) {

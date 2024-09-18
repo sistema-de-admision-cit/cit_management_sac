@@ -17,7 +17,7 @@ public class StudentMapper {
         return StudentDto.builder()
                 .id(studentEntity.getId())
                 .enrollments(EnrollmentMapper.convertToDtoList(studentEntity.getEnrollments()))
-                //.parents(ParentGuardianMapper.convertToDtoList(studentEntity.getParents()))
+                .parents(ParentGuardianMapper.convertToDtoList(studentEntity.getParents()))
                 .firstName(studentEntity.getFirstName())
                 .firstSurname(studentEntity.getFirstSurname())
                 .secondSurname(studentEntity.getSecondSurname())

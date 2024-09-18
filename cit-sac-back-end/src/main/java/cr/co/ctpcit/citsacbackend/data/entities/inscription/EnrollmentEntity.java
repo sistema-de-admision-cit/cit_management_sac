@@ -14,6 +14,8 @@ import org.springframework.validation.annotation.Validated;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -68,5 +70,18 @@ public class EnrollmentEntity {
     @JoinColumn(name = "student_id", nullable = false)
     @ToString.Exclude
     private StudentEntity student;
+
+    @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @Builder.Default
+    private List<DocumentEntity> documents = new ArrayList<>();
+
+    public void addDocument(DocumentEntity document) {
+        if (documents == null) documents = new ArrayList<>();
+        if (document == null) return;
+        if (documents.contains(document)) return;
+
+        documents.add(document);
+    }
 
 }
