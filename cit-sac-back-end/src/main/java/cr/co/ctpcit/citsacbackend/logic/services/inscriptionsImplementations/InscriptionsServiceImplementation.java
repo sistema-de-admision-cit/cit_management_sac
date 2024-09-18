@@ -22,6 +22,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementation of the {@link InscriptionsService}
+ * This class is used to manage the inscriptions of the students
+ */
 @Service
 public class InscriptionsServiceImplementation implements InscriptionsService {
 
@@ -38,6 +42,11 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
         this.parentGuardianStudentRepository = parentGuardianStudentRepository;
     }
 
+    /**
+     * Get all inscriptions
+     * @param pageable the pageable object
+     * @return a list of all inscriptions
+     */
     @Override
     public List<StudentDto> getAllInscriptions(Pageable pageable) {
         //Find all students
@@ -52,6 +61,11 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
         return StudentMapper.convertToDtoList(students.getContent());
     }
 
+    /**
+     * Get an inscription by id
+     * @param id the idNumber of the student
+     * @return the inscription with the given id
+     */
     @Override
     public StudentDto findStudentByIdNumber(String id) {
         //Find student by id
@@ -61,6 +75,11 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
         return student.map(StudentMapper::convertToDto).orElse(null);
     }
 
+    /**
+     * Get an inscription by value
+     * @param value the name of the student or first surname or previous school
+     * @return a list of inscriptions that match the value
+     */
     @Override
     public List<StudentDto> findStudentByValue(String value) {
         //Find all by name or first surname or previous school
@@ -72,6 +91,12 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
         return StudentMapper.convertToDtoList(student);
     }
 
+    /**
+     * Add an inscription
+     * @param inscriptionDto the inscription to add
+     * @return the added inscription
+     * @throws EnrollmentException if the student is already enrolled for the selected date
+     */
     @Override
     public StudentDto addInscription(StudentDto inscriptionDto) {
         //Validate if the student already exists
@@ -144,6 +169,11 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
         return StudentMapper.convertToDto(studentEntity);
     }
 
+    /**
+     * Create the relation between the student and the parent/guardian
+     * @param student the student
+     * @param parent the parent/guardian
+     */
     private void createParentGuardianStudentRelation(StudentEntity student, ParentsGuardianEntity parent) {
         //Create ParentGuardianStudentEntity
         ParentGuardianStudentEntity parentGuardianStudentEntity = new ParentGuardianStudentEntity(student, parent);

@@ -6,6 +6,10 @@ import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
 
+/**
+ * Mapper class for the {@link AddressEntity} and {@link AddressDto} classes.
+ * This class is used to convert an {@link AddressEntity} to an {@link AddressDto} and vice versa.
+ */
 public class AddressMapper {
     public static List<AddressDto> convertToDtoList(List<AddressEntity> addresses) {
         return addresses.stream().map(AddressMapper::convertToDto).toList();
