@@ -6,11 +6,13 @@ import '../../../../../assets/styles/enrollments/modal-manage-files.css'
 const ModalManageFiles = ({ selectedColumn, selectedFiles, onFileUpload, onFileDownload, onFileDelete, onClose }) => (
   <Modal onClose={onClose}>
     <h2>Gestionar {selectedColumn}</h2>
-    <InputField
-      field={{ type: 'file', name: 'file', id: 'file', label: 'Subir archivo' }}
-      onChange={onFileUpload}
-      className='form-group'
-    />
+    {selectedFiles.length === 0 && (
+      <InputField
+        field={{ type: 'file', name: 'file', id: 'file', label: 'Subir archivo' }}
+        onChange={onFileUpload}
+        className='form-group'
+      />
+    )}
 
     <div className='file-list-container'>
       <ul className='file-list'>
