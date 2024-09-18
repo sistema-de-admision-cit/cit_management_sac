@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.logic.services.inscriptionsImplementations;
+package cr.co.ctpcit.citsacbackend.logic.services.inscriptions.inscriptionsImplementations;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.*;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
@@ -11,7 +11,7 @@ import cr.co.ctpcit.citsacbackend.logic.mappers.AddressMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.EnrollmentMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.ParentGuardianMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.StudentMapper;
-import cr.co.ctpcit.citsacbackend.logic.services.InscriptionsService;
+import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -109,6 +109,9 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
         //Get the Enrollment
         EnrollmentEntity enrollmentEntity = EnrollmentMapper
                 .convertToEntity(inscriptionDto.enrollments().getFirst());
+
+        //Set pending status to the enrollment
+        enrollmentEntity.setStatus(ProcessStatus.P);
 
         //Verify if the student is already enrolled
         if (student.isPresent()) {

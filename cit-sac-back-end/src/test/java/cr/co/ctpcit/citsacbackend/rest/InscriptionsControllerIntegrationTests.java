@@ -2,11 +2,7 @@ package cr.co.ctpcit.citsacbackend.rest;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import cr.co.ctpcit.citsacbackend.data.enums.*;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.AddressDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.EnrollmentDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.ParentsGuardianDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
+import cr.co.ctpcit.citsacbackend.rest.inscriptions.InscriptionsController;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -19,9 +15,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

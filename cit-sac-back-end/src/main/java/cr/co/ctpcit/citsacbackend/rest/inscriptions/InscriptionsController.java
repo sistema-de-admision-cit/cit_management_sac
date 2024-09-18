@@ -1,10 +1,9 @@
-package cr.co.ctpcit.citsacbackend.rest;
+package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
-import cr.co.ctpcit.citsacbackend.logic.services.InscriptionsService;
+import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -16,9 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -65,24 +62,6 @@ public class InscriptionsController {
     public ResponseEntity<Iterable<StudentDto>> getInscriptions(@PageableDefault(page = 0, size = 25) Pageable pageable) {
         List<StudentDto> inscriptions = inscriptionsService.getAllInscriptions(pageable);
         return inscriptions.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(inscriptions);
-    }
-
-    /**
-     * This method creates a new inscription in the database following RFC 9110 as
-     * the official Request for Comments for HTTP Semantics and Content.
-     * @return a response entity with the status code and Location header
-     */
-    @PostMapping("/add")
-    public ResponseEntity<Void> createInscription(@RequestBody @Valid StudentDto student, UriComponentsBuilder ucb) {
-        String id = inscriptionsService.addInscription(student).idNumber();
-        URI location = ucb.path("/api/inscriptions/{id}").buildAndExpand(id).toUri();
-        return ResponseEntity.created(location).build();
-    }
-
-    //TODO: Implement an endpoint where to receive a POST request with a file in pdf or any other format and save it in the storage
-    @PostMapping(name = "/upload", consumes = "application/octet-stream")
-    public ResponseEntity<Void> uploadDocument(@RequestBody byte[] document) {
-        return ResponseEntity.ok().build();
     }
 
     /**

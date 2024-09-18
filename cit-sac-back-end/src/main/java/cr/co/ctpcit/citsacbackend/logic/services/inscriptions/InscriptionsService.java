@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.logic.services;
+package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import jakarta.validation.constraints.NotNull;
