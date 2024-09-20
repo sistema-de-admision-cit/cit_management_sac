@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import EnrollmentTable from '../organisms/EnrollmentTable'
 import '../../../../../assets/styles/enrollments/enrollment-management-view.css'
-import { dummyData } from './temp_data'
 import EnrollemntSearchBar from '../molecules/EnrollmentSearchBar'
 import ModalManageFiles from '../molecules/ModalManageFiles'
 import ModalApplicantDetails from '../molecules/ModalApplicantDetails'
@@ -15,7 +14,7 @@ const EnrollmentManagementView = () => {
   const [enrollments, setEnrollments] = useState()
   const [isDocModalOpen, setIsDocModalOpen] = useState(false)
   const [selectedColumn, setSelectedColumn] = useState('')
-  const [selectedFiles, setSelectedFiles] = useState([])
+  const [selectedFile, setSelectedFile] = useState([])
   const [applicantSelected, setApplicantSelected] = useState({})
 
   const [isModalApplicantDetailsOpen, setIsModalApplicantDetailsOpen] = useState(false)
@@ -38,7 +37,7 @@ const EnrollmentManagementView = () => {
           onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen, setApplicantSelected)}
           onDateChange={handleDateChange}
           onWhatsappChange={handleWhatsappChange}
-          onDocClick={(applicant, column, files) => handleDocClick(applicant, column, files, setSelectedColumn, setSelectedFiles, setIsDocModalOpen)}
+          onDocClick={(applicant, column, file) => handleDocClick(applicant, column, file, setSelectedColumn, setSelectedFile, setIsDocModalOpen)}
           loading={loading}
         />
       </div>
@@ -46,7 +45,7 @@ const EnrollmentManagementView = () => {
       {isDocModalOpen && (
         <ModalManageFiles
           selectedColumn={selectedColumn}
-          selectedFiles={[{ documentId: '1', name: 'Documento 1' }, { documentId: '2', name: 'Documento 2' }]}
+          selectedFile={selectedFile}
           onFileUpload={() => console.log('Subir archivo')}
           onFileDownload={(document) => console.log('Descargar:', document)}
           onFileDelete={(document) => console.log('Eliminar:', document)}
