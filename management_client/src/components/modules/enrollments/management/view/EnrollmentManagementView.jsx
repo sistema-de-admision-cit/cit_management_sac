@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import EnrollmentTable from '../organisms/EnrollmentTable'
 import '../../../../../assets/styles/enrollments/enrollment-management-view.css'
@@ -6,15 +6,25 @@ import { dummyData } from './temp_data'
 import EnrollemntSearchBar from '../molecules/EnrollmentSearchBar'
 import ModalManageFiles from '../molecules/ModalManageFiles'
 import ModalApplicantDetails from '../molecules/ModalApplicantDetails'
-import { handleDateChange, handleDocClick, handleStudendIdClick, handleWhatsappChange, handleSearch } from '../helpers/handlers'
+import { handleDateChange, handleDocClick, handleStudendIdClick, handleWhatsappChange, handleSearch, handleGetAllEnrollments } from '../helpers/handlers'
+import useMessages from '../../../../core/global/hooks/useMessages'
 
-const EnrollmentManagementView = ({ enrollments }) => {
-  const [applicants, setApplicants] = useState(dummyData)
+const EnrollmentManagementView = () => {
+  const [loading, setLoading] = useState(false)
+
+  const [enrollments, setEnrollments] = useState()
   const [isDocModalOpen, setIsDocModalOpen] = useState(false)
   const [selectedColumn, setSelectedColumn] = useState('')
   const [selectedFiles, setSelectedFiles] = useState([])
+  const [applicantSelected, setApplicantSelected] = useState({})
 
   const [isModalApplicantDetailsOpen, setIsModalApplicantDetailsOpen] = useState(false)
+
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
+
+  useEffect(() =>
+    handleGetAllEnrollments(setEnrollments, setLoading, setErrorMessage)
+  , [])
 
   return (
     <SectionLayout title='Consultar Inscripciones'>
@@ -22,13 +32,14 @@ const EnrollmentManagementView = ({ enrollments }) => {
         <h1>Consultar Inscripciones</h1>
         <p className='description'>Aquí puedes consultar y gestionar las inscripciones de los aspirantes.</p>
 
-        <EnrollemntSearchBar onSearch={(search) => handleSearch(search, setApplicants)} />
+        <EnrollemntSearchBar onSearch={(search) => handleSearch(search, setEnrollments)} />
         <EnrollmentTable
-          applicants={applicants}
-          onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen)}
+          enrollments={enrollments}
+          onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen, setApplicantSelected)}
           onDateChange={handleDateChange}
           onWhatsappChange={handleWhatsappChange}
           onDocClick={(applicant, column, files) => handleDocClick(applicant, column, files, setSelectedColumn, setSelectedFiles, setIsDocModalOpen)}
+          loading={loading}
         />
       </div>
 
@@ -45,22 +56,12 @@ const EnrollmentManagementView = ({ enrollments }) => {
 
       {isModalApplicantDetailsOpen && (
         <ModalApplicantDetails
-          student={applicants[0]}
-          parentsGuardians={[{
-            id: 10,
-            firstName: 'Luis',
-            firstSurname: 'Vega',
-            secondSurname: 'Alvarado',
-            idType: 'DNI',
-            idNumber: 'DNI43215678',
-            phoneNumber: '8889990001',
-            email: 'luis.vega@example.com',
-            homeAddress: '444 Avenida Norte, Ciudad Central',
-            relationship: 'FATHER'
-          }]}
+          student={applicantSelected}
+          parentsGuardians={applicantSelected.parents}
           onClose={() => setIsModalApplicantDetailsOpen(false)}
         />
       )}
+      {renderMessages()}
     </SectionLayout>
   )
 }
