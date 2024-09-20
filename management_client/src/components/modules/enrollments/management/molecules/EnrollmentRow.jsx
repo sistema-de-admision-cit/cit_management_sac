@@ -2,23 +2,26 @@ import PdfIcon from '../../../../../assets/icons/pdf-svgrepo-com.svg'
 import DatePicker from '../../../../core/global/atoms/DatePicker'
 import InputField from '../../../../core/global/atoms/InputField'
 import Button from '../../../../core/global/atoms/Button'
+import { statusText } from '../helpers/helpers'
 
-const EnrollmentRow = ({ applicant, index, onStudentIdClick, onDateChange, onWhatsappChange, onDocClick }) => (
+const EnrollmentRow = ({ enrollment, index, onStudentIdClick, onDateChange, onWhatsappChange, onDocClick }) => (
   <tr>
-    <td className='applicant-id' onClick={() => onStudentIdClick(applicant)}>{applicant.studendtId}</td>
-    <td>{applicant.firstName}</td>
-    <td>{applicant.firstSurname}</td>
-    <td>{applicant.secondSurname}</td>
-    <td>{applicant.enrollmentDate}</td>
+    <td className='applicant-id' onClick={() => onStudentIdClick(enrollment)}>{enrollment.idNumber}</td>
+    <td>{enrollment.firstName}</td>
+    <td>{enrollment.firstSurname}</td>
+    <td>{enrollment.secondSurname}</td>
     <td>
       <DatePicker
         name={`interviewDate-${index}`}
         label={`Fecha Entrevista ${index + 1}`}
-        value={new Date(applicant.examDate)}
-        onChange={(date) => onDateChange(applicant, date)}
+        value={new Date(enrollment.enrollments[0].examDate)}
+        onChange={(date) => onDateChange(enrollment, date)}
         required
         showLabel={false}
       />
+    </td>
+    <td>
+      {statusText[enrollment.enrollments[0].status]}
     </td>
     <td>
       <InputField
@@ -28,8 +31,8 @@ const EnrollmentRow = ({ applicant, index, onStudentIdClick, onDateChange, onWha
           label: `Whatsapp ${index + 1}`,
           required: true
         }}
-        value={applicant.whatsapp}
-        handleChange={(e) => onWhatsappChange(applicant, e.target.value)}
+        value={enrollment.enrollments[0].whatsapp}
+        handleChange={(e) => onWhatsappChange(enrollment, e.target.value)}
         showLabel={false}
       />
 
@@ -37,7 +40,7 @@ const EnrollmentRow = ({ applicant, index, onStudentIdClick, onDateChange, onWha
     <td>
       <Button
         className='pdf-icon'
-        onClick={() => onDocClick(applicant, 'Notas', applicant.notes)}
+        onClick={() => onDocClick(enrollment, 'Notas', enrollment.notes)}
       >
         <img src={PdfIcon} alt='logo de un pdf' />
       </Button>
@@ -45,7 +48,7 @@ const EnrollmentRow = ({ applicant, index, onStudentIdClick, onDateChange, onWha
     <td>
       <Button
         className='pdf-icon'
-        onClick={() => onDocClick(applicant, 'Adecuación', applicant.adaptation)}
+        onClick={() => onDocClick(enrollment, 'Adecuación', enrollment.adaptation)}
       >
         <img src={PdfIcon} alt='logo de un pdf' />
       </Button>
