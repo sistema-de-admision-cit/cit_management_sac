@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
@@ -81,11 +82,21 @@ public class InscriptionsController {
     }
 
     //TODO: Create update endpoint to alter status
-    /*@PutMapping("/{id}/status")
-    public ResponseEntity<StudentDto> updateStatus(@PathVariable("id") String id, @RequestParam String status) {
+
+    /**
+     *
+     * @param id the id of the enrollment
+     * @param status the new status of the enrollment
+     * @return the updated student
+     */
+    @PutMapping("/{id}/status")
+    public ResponseEntity<StudentDto> updateStatus(@PathVariable("id") String id,
+                                                   @RequestParam
+                                                   @NotNull
+                                                   ProcessStatus status) {
         StudentDto student = inscriptionsService.updateStatus(id, status);
         return student == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(student);
-    }*/
+    }
 
     //TODO: Create update endpoint to alter documents
 

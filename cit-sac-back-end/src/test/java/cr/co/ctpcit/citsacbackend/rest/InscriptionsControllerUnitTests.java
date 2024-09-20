@@ -3,6 +3,7 @@ package cr.co.ctpcit.citsacbackend.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.rest.inscriptions.InscriptionsController;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
@@ -110,7 +111,7 @@ class InscriptionsControllerUnitTests {
         String invalidId = "999";  // Use an invalid ID that doesn't exist in the test database
         String newExamDate = "2024-02-15";
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/enrollment/{id}/exam", invalidId)
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/enrollment/{id}/exam", invalidId)
                         .param("date", newExamDate)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
@@ -118,6 +119,32 @@ class InscriptionsControllerUnitTests {
 
     @Test
     @Order(6)
+    void updateStatus_shouldReturnUpdatedStudent_whenValidIdAndStatusProvided() throws Exception {
+        String enrollmentId = "3";  // Use a valid enrollment ID from your test database
+        ProcessStatus newStatus = ProcessStatus.I; // New exam date to update
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/inscriptions/{id}/status", enrollmentId)
+                        .queryParam("status", newStatus.toString())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.enrollments[0].id").value(enrollmentId))
+                .andExpect(jsonPath("$.enrollments[0].status").value(newStatus.toString()));  // Check if the exam date is updated
+    }
+
+    @Test
+    @Order(7)
+    void updateStatus_shouldReturnNotFound_whenInvalidIdProvided() throws Exception {
+        String invalidId = "999";  // Use an invalid ID that doesn't exist in the test database
+        ProcessStatus newStatus = ProcessStatus.A;
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/enrollment/{id}/status", invalidId)
+                        .param("date", newStatus.toString())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Order(8)
     @Disabled
     public void testCreateInscription_shouldCreateANewInscription() throws IOException {
         // Arrange
@@ -143,7 +170,7 @@ class InscriptionsControllerUnitTests {
     }
 
     @Test
-    @Order(7)
+    @Order(9)
     @Disabled
     public void testCreateInscription_shouldFailDueToConflictEnrollment() throws IOException {
         // Arrange

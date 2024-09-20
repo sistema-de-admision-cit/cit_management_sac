@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -13,4 +14,6 @@ public interface InscriptionsService {
     List<StudentDto> findStudentByValue(String value);
     StudentDto addInscription(StudentDto inscriptionDto);
     StudentDto updateExamDate(String id, String date);
+
+    StudentDto updateStatus(String id, @NotNull ProcessStatus status);
 }

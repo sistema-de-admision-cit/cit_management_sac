@@ -197,6 +197,41 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
      */
     @Override
     public StudentDto updateExamDate(String id, String date) {
+        //Verify put parameters
+        EnrollmentEntity enrollmentEntity = verifyPutParameters(id);
+
+        //Update the exam date
+        enrollmentEntity.setExamDate(LocalDate.parse(date));
+
+        //Save the enrollment
+        enrollmentEntity = enrollmentRepository.save(enrollmentEntity);
+
+        //Return
+        return StudentMapper.convertToDto(enrollmentEntity.getStudent());
+    }
+
+    /**
+     * Update the status of the student
+     * @param id the id of the enrollment
+     * @param status the new status of the enrollment
+     * @return the updated student
+     */
+    @Override
+    public StudentDto updateStatus(String id, ProcessStatus status) {
+        //Get the enrollment
+        EnrollmentEntity enrollmentEntity = verifyPutParameters(id);
+
+        //Update the status
+        enrollmentEntity.setStatus(status);
+
+        //Save the enrollment
+        enrollmentEntity = enrollmentRepository.save(enrollmentEntity);
+
+        //Return
+        return StudentMapper.convertToDto(enrollmentEntity.getStudent());
+    }
+
+    private EnrollmentEntity verifyPutParameters(String id) {
         //Validate if the id is a number
         if (!id.matches("\\d+")) {
             throw new EnrollmentException("El id no es un número válido");
@@ -212,16 +247,7 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
         }
 
         //Get the enrollment
-        EnrollmentEntity enrollmentEntity = enrollment.get();
-
-        //Update the exam date
-        enrollmentEntity.setExamDate(LocalDate.parse(date));
-
-        //Save the enrollment
-        enrollmentEntity = enrollmentRepository.save(enrollmentEntity);
-
-        //Return
-        return StudentMapper.convertToDto(enrollmentEntity.getStudent());
+        return enrollment.get();
     }
 
     /**
