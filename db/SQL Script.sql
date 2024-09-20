@@ -55,7 +55,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_enrollments` (
   `enrollment_id` INT NOT NULL AUTO_INCREMENT,
-  `student_id` INT NOT NULL,
   `status` ENUM('P', 'E', 'I', 'A', 'R') NOT NULL,
   `enrollment_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `grade_to_enroll` ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '10') NOT NULL,
@@ -63,6 +62,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_enrollments` (
   `exam_date` DATE NOT NULL,
   `consent_given` BOOLEAN NOT NULL,
   `whatsapp_notification` BOOLEAN NOT NULL,
+  `student_id` INT NOT NULL,
   PRIMARY KEY (`enrollment_id`),
   INDEX `FK_Enrollments_Students` (`student_id` ASC) VISIBLE,
   CONSTRAINT `FK_Enrollments_Students`
@@ -237,9 +237,10 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_documents` (
   `document_id` INT NOT NULL AUTO_INCREMENT,
-  `enrollment_id` INT NOT NULL,
+  `document_name` VARCHAR(64) NOT NULL,
   `document_type` ENUM('HC', 'OT') NOT NULL,
   `document_url` VARCHAR(255) NOT NULL,
+  `enrollment_id` INT NOT NULL,
   PRIMARY KEY (`document_id`),
   INDEX `FK_Documents_Enrollments` (`enrollment_id` ASC) VISIBLE,
   CONSTRAINT `FK_Documents_Enrollments`
@@ -352,7 +353,6 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_parentsguardians` (
   `id_number` VARCHAR(20) NOT NULL,
   `phone_number` VARCHAR(20) NOT NULL,
   `email` VARCHAR(100) NOT NULL,
-  `home_address` VARCHAR(100) NOT NULL,
   `relationship` ENUM('M', 'F', 'G') NOT NULL,
   PRIMARY KEY (`parent_guardian_id`),
   UNIQUE INDEX `UQ_ParentsGuardians_IdNumber` (`id_number` ASC) VISIBLE,
@@ -419,6 +419,26 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_parentguardianstudents` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
+
+-- -----------------------------------------------------
+-- Table `db_cit_test`.`tbl_address`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_address` (
+  `address_id` INT NOT NULL AUTO_INCREMENT,
+  `country` VARCHAR(16) NOT NULL,
+  `province` VARCHAR(32) NOT NULL,
+  `city` VARCHAR(32) NOT NULL,
+  `district` VARCHAR(32) NOT NULL,
+  `address_info` VARCHAR(64) NOT NULL,
+  `parent_guardian_id` INT NOT NULL,
+  PRIMARY KEY (`address_id`),
+  INDEX `FK_Address_ParentGuardian` (`parent_guardian_id` ASC) VISIBLE,
+  CONSTRAINT `FK_Address_ParentGuardian`
+    FOREIGN KEY (`parent_guardian_id`)
+    REFERENCES `db_cit_test`.`tbl_parentsguardians` (`parent_guardian_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
