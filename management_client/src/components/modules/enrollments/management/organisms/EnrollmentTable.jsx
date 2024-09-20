@@ -4,15 +4,15 @@ import '../../../../../assets/styles/enrollments/enrollment-table.css'
 import Button from '../../../../core/global/atoms/Button'
 import Spinner from '../../../../core/global/atoms/Spinner'
 
-const EnrollmentTable = ({ applicants, onStudentIdClick, onDateChange, onWhatsappChange, onDocClick, loading }) => {
+const EnrollmentTable = ({ enrollments, onStudentIdClick, onDateChange, onWhatsappChange, onDocClick, loading }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
 
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentApplicants = applicants?.slice(indexOfFirstItem, indexOfLastItem)
+  const currentEnrollments = enrollments?.slice(indexOfFirstItem, indexOfLastItem)
 
-  const totalPages = Math.ceil(applicants?.length / itemsPerPage)
+  const totalPages = Math.ceil(enrollments?.length / itemsPerPage)
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
@@ -25,8 +25,8 @@ const EnrollmentTable = ({ applicants, onStudentIdClick, onDateChange, onWhatsap
             <th>Nombre</th>
             <th>Primer Apellido</th>
             <th>Segundo Apellido</th>
-            <th>Fecha Inscripción</th>
             <th>Fecha Entrevista</th>
+            <th>Estado</th>
             <th>Whatsapp</th>
             <th>Notas</th>
             <th>Adecuación</th>
@@ -44,12 +44,12 @@ const EnrollmentTable = ({ applicants, onStudentIdClick, onDateChange, onWhatsap
             )
           : (
             <tbody>
-              {currentApplicants
+              {currentEnrollments
                 ? (
-                    currentApplicants.map((applicant, index) => (
+                    currentEnrollments.map((enrollment, index) => (
                       <EnrollmentRow
-                        key={applicant.id}
-                        applicant={applicant}
+                        key={enrollment.id}
+                        enrollment={enrollment}
                         index={indexOfFirstItem + index}
                         onStudentIdClick={onStudentIdClick}
                         onDateChange={onDateChange}
