@@ -4,10 +4,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
@@ -73,7 +70,12 @@ public class InscriptionsController {
      * @return the updated enrollment
      */
     @PutMapping("/{id}/exam")
-    public ResponseEntity<StudentDto> updateExamDate(@PathVariable("id") String id, @RequestParam String date) {
+    public ResponseEntity<StudentDto> updateExamDate(@PathVariable("id") String id,
+                                                     @NotNull
+                                                     @NotEmpty
+                                                     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",
+                                                             message = "Formato de fecha incorrecto. Use yyyy-MM-dd")
+                                                     @RequestParam String date) {
         StudentDto student = inscriptionsService.updateExamDate(id, date);
         return student == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(student);
     }

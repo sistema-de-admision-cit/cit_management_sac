@@ -18,7 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -195,14 +197,9 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
      */
     @Override
     public StudentDto updateExamDate(String id, String date) {
-        //Validate if the date is in the correct format
-        if (!date.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            return null;
-        }
-
         //Validate if the id is a number
         if (!id.matches("\\d+")) {
-            return null;
+            throw new EnrollmentException("El id no es un número válido");
         }
 
         //Find enrollment by id
@@ -210,7 +207,8 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
 
         //If the enrollment is not present, return null
         if (enrollment.isEmpty()) {
-            return null;
+            //Return Not Found
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No hay una inscripción con el id " + id);
         }
 
         //Get the enrollment

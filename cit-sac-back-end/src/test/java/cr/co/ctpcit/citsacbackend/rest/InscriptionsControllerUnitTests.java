@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import cr.co.ctpcit.citsacbackend.rest.inscriptions.InscriptionsController;
@@ -7,24 +8,38 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Unit tests for the {@link InscriptionsController} class.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 class InscriptionsControllerUnitTests {
     @Autowired
     private TestRestTemplate testRestTemplate;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     @Order(1)
@@ -77,6 +92,32 @@ class InscriptionsControllerUnitTests {
 
     @Test
     @Order(4)
+    void updateExamDate_shouldReturnUpdatedStudent_whenValidIdAndDateProvided() throws Exception {
+        String enrollmentId = "1";  // Use a valid enrollment ID from your test database
+        String newExamDate = "2024-02-15"; // New exam date to update
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/inscriptions/{id}/exam", enrollmentId)
+                        .queryParam("date", newExamDate)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.enrollments[0].id").value(enrollmentId))
+                .andExpect(jsonPath("$.enrollments[0].examDate").value(newExamDate));  // Check if the exam date is updated
+    }
+
+    @Test
+    @Order(5)
+    void updateExamDate_shouldReturnNotFound_whenInvalidIdProvided() throws Exception {
+        String invalidId = "999";  // Use an invalid ID that doesn't exist in the test database
+        String newExamDate = "2024-02-15";
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/enrollment/{id}/exam", invalidId)
+                        .param("date", newExamDate)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Order(6)
     @Disabled
     public void testCreateInscription_shouldCreateANewInscription() throws IOException {
         // Arrange
@@ -102,7 +143,7 @@ class InscriptionsControllerUnitTests {
     }
 
     @Test
-    @Order(5)
+    @Order(7)
     @Disabled
     public void testCreateInscription_shouldFailDueToConflictEnrollment() throws IOException {
         // Arrange
