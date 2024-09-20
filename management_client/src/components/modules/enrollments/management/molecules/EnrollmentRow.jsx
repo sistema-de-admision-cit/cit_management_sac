@@ -40,7 +40,7 @@ const EnrollmentRow = ({ enrollment, index, onStudentIdClick, onDateChange, onWh
     <td>
       <Button
         className='pdf-icon'
-        onClick={() => onDocClick(enrollment, 'Notas', enrollment.notes)}
+        onClick={() => onDocClick(enrollment, 'Notas', enrollment.enrollments[0].document.find(doc => doc.documentType === 'NO'))}
       >
         <img src={PdfIcon} alt='logo de un pdf' />
       </Button>
@@ -48,11 +48,10 @@ const EnrollmentRow = ({ enrollment, index, onStudentIdClick, onDateChange, onWh
     <td>
       <Button
         className='pdf-icon'
-        onClick={() => onDocClick(enrollment, 'Adecuación', enrollment.adaptation)}
+        onClick={() => onDocClick(enrollment, 'Adecuación', enrollment.enrollments[0].document.find(doc => doc.documentType === 'HC'))}
       >
         <img src={PdfIcon} alt='logo de un pdf' />
       </Button>
-
     </td>
   </tr>
 )
