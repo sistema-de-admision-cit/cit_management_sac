@@ -73,18 +73,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.2.5</version>
-				<configuration>
-					<environmentVariables>
-						<SPRING_DATASOURCE_URL>jdbc:mysql://localhost:3306/db_cit_test</SPRING_DATASOURCE_URL>
-						<SPRING_DATASOURCE_USER>root</SPRING_DATASOURCE_USER>
-						<SPRING_DATASOURCE_PASS>root</SPRING_DATASOURCE_PASS>
-					</environmentVariables>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
