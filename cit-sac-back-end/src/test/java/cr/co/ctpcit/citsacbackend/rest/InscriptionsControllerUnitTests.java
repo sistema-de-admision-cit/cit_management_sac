@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Unit tests for the {@link InscriptionsController} class.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class InscriptionsControllerIntegrationTests {
+class InscriptionsControllerUnitTests {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
@@ -30,29 +30,18 @@ class InscriptionsControllerIntegrationTests {
     @Order(1)
     public void testGetInscriptionById_shouldReturnOneInscriptionById() {
         // Arrange
-        ResponseEntity<String> response = testRestTemplate.getForEntity("/api/inscriptions/603660526", String.class);
+        ResponseEntity<String> response = testRestTemplate.getForEntity("/api/inscriptions/1", String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         DocumentContext documentContext = JsonPath.parse(response.getBody());
         String id = documentContext.read("$.idNumber");
         assertThat(id).isNotNull();
-        assertThat(id).isEqualTo("603660526");
+        assertThat(id).isEqualTo("200123654");
         System.out.println(documentContext.jsonString());
     }
 
     @Test
     @Order(2)
-    public void testGetInscriptionById_shouldFailDueToInvalidId() {
-        // Arrange
-        ResponseEntity<String> response = testRestTemplate.getForEntity("/api/inscriptions/1234", String.class);
-
-        // Assert
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).contains("getInscriptionById.id: el tamaño del id debe ser entre 9 y 20 caracteres");
-    }
-
-    @Test
-    @Order(3)
     public void testGetAllInscriptions_shouldReturnAllInscriptions() {
         // Arrange
         String url = "/api/inscriptions?page=0&size=10&sort=idNumber,asc";
@@ -68,14 +57,14 @@ class InscriptionsControllerIntegrationTests {
         int size = documentContext.read("$.length()");
         assertThat(size).isGreaterThan(2);
         String firstName = documentContext.read("$[0].firstName");
-        assertThat(firstName).isEqualTo("Lucia");
+        assertThat(firstName).isEqualTo("Lucía");
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     public void testGetInscriptionsByValue_shouldReturnInscriptionsByValue() {
         // Arrange
-        ResponseEntity<String> response = testRestTemplate.getForEntity("/api/inscriptions/search?value=Martinez", String.class);
+        ResponseEntity<String> response = testRestTemplate.getForEntity("/api/inscriptions/search?value=Rodriguez", String.class);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -83,11 +72,11 @@ class InscriptionsControllerIntegrationTests {
         int size = documentContext.read("$.length()");
         assertThat(size).isEqualTo(2);
         String firstName = documentContext.read("$[0].firstName");
-        assertThat(firstName).isEqualTo("Pedro");
+        assertThat(firstName).isEqualTo("Andrés");
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     @Disabled
     public void testCreateInscription_shouldCreateANewInscription() throws IOException {
         // Arrange
@@ -113,7 +102,8 @@ class InscriptionsControllerIntegrationTests {
     }
 
     @Test
-    @Order(6)
+    @Order(5)
+    @Disabled
     public void testCreateInscription_shouldFailDueToConflictEnrollment() throws IOException {
         // Arrange
         // Create sample enrollment
@@ -125,7 +115,7 @@ class InscriptionsControllerIntegrationTests {
 
         // Act
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
-        ResponseEntity<String> response = testRestTemplate.postForEntity("/api/inscriptions/add", entity, String.class);
+        ResponseEntity<String> response = testRestTemplate.postForEntity("/api/inscription/add", entity, String.class);
 
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);

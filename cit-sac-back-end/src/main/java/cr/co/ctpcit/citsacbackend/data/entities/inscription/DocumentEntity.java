@@ -26,11 +26,11 @@ public class DocumentEntity {
     @JdbcTypeCode(SqlTypes.INTEGER)
     private Long id;
 
-    @NotNull(message = "Es obligatorio que exista un registro asociado.")
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "enrollment_id", nullable = false)
-    @ToString.Exclude
-    private EnrollmentEntity enrollment;
+    @NotNull(message = "Es obligatorio que se indique el nombre del documento.")
+    @Size(max = 64)
+    @NotBlank(message = "Es obligatorio que se indique el nombre del documento.")
+    @Column(name = "document_name", nullable = false)
+    private String documentName;
 
     @NotNull(message = "Es obligatorio que se indique el tipo de documento.")
     @Enumerated(EnumType.STRING)
@@ -42,4 +42,10 @@ public class DocumentEntity {
     @NotBlank(message = "Es obligatorio que se indique la URL del documento.")
     @Column(name = "document_url", nullable = false)
     private String documentUrl;
+
+    @NotNull(message = "Es obligatorio que exista un registro asociado.")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "enrollment_id", nullable = false)
+    @ToString.Exclude
+    private EnrollmentEntity enrollment;
 }

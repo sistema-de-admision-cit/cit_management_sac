@@ -2,6 +2,7 @@ package cr.co.ctpcit.citsacbackend.logic.services.inscriptions.inscriptionsImple
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.*;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
+import cr.co.ctpcit.citsacbackend.data.repositories.EnrollmentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.ParentGuardianStudentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.ParentsGuardianRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.StudentRepository;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,14 +35,17 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
     private final StudentRepository studentRepository;
     private final ParentsGuardianRepository parentsGuardianRepository;
     private final ParentGuardianStudentRepository parentGuardianStudentRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
     @Autowired
     public InscriptionsServiceImplementation(StudentRepository studentRepository,
                                              ParentsGuardianRepository parentsGuardianRepository,
-                                             ParentGuardianStudentRepository parentGuardianStudentRepository) {
+                                             ParentGuardianStudentRepository parentGuardianStudentRepository,
+                                             EnrollmentRepository enrollmentRepository) {
         this.studentRepository = studentRepository;
         this.parentsGuardianRepository = parentsGuardianRepository;
         this.parentGuardianStudentRepository = parentGuardianStudentRepository;
+        this.enrollmentRepository = enrollmentRepository;
     }
 
     /**
@@ -63,13 +69,13 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
 
     /**
      * Get an inscription by id
-     * @param id the idNumber of the student
+     * @param id the id of the student
      * @return the inscription with the given id
      */
     @Override
-    public StudentDto findStudentByIdNumber(String id) {
+    public StudentDto findStudentById(Long id) {
         //Find student by id
-        Optional<StudentEntity> student = studentRepository.findStudentByIdNumber(id);
+        Optional<StudentEntity> student = studentRepository.findStudentById(id);
 
         //Convert student to DTO or null if not present
         return student.map(StudentMapper::convertToDto).orElse(null);
@@ -77,13 +83,22 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
 
     /**
      * Get an inscription by value
-     * @param value the name of the student or first surname or previous school
+     * @param value of the idNumber, the name of the student or first surname or previous school
      * @return a list of inscriptions that match the value
      */
     @Override
     public List<StudentDto> findStudentByValue(String value) {
+        //Validate if the value is a number
+        if (value.matches("\\d+")) {
+            Optional<StudentEntity> student = studentRepository.findStudentByIdNumber(value);
+            if (student.isPresent()) {
+                return List.of(StudentMapper.convertToDto(student.get()));
+            }
+        }
+
         //Find all by name or first surname or previous school
-        List<StudentEntity> student = studentRepository.findAllByFirstName(value);
+        List<StudentEntity> student = new ArrayList<>();
+        student.addAll(studentRepository.findAllByFirstName(value));
         student.addAll(studentRepository.findAllByFirstSurname(value));
         student.addAll(studentRepository.findAllByPreviousSchool(value));
 
@@ -170,6 +185,45 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
 
         //Return
         return StudentMapper.convertToDto(studentEntity);
+    }
+
+    /**
+     * Update the exam date of the student
+     * @param id the id of the enrollment
+     * @param date the new exam date
+     * @return the updated student
+     */
+    @Override
+    public StudentDto updateExamDate(String id, String date) {
+        //Validate if the date is in the correct format
+        if (!date.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            return null;
+        }
+
+        //Validate if the id is a number
+        if (!id.matches("\\d+")) {
+            return null;
+        }
+
+        //Find enrollment by id
+        Optional<EnrollmentEntity> enrollment = enrollmentRepository.findById(Long.parseLong(id));
+
+        //If the enrollment is not present, return null
+        if (enrollment.isEmpty()) {
+            return null;
+        }
+
+        //Get the enrollment
+        EnrollmentEntity enrollmentEntity = enrollment.get();
+
+        //Update the exam date
+        enrollmentEntity.setExamDate(LocalDate.parse(date));
+
+        //Save the enrollment
+        enrollmentEntity = enrollmentRepository.save(enrollmentEntity);
+
+        //Return
+        return StudentMapper.convertToDto(enrollmentEntity.getStudent());
     }
 
     /**

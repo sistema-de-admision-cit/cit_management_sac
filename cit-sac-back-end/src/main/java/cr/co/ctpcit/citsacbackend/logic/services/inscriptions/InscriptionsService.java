@@ -9,7 +9,8 @@ import java.util.List;
 
 public interface InscriptionsService {
     List<StudentDto> getAllInscriptions(Pageable pageable);
-    StudentDto findStudentByIdNumber(@NotNull @Size(min = 9, max = 20) String id);
+    StudentDto findStudentById(@NotNull Long id);
     List<StudentDto> findStudentByValue(String value);
     StudentDto addInscription(StudentDto inscriptionDto);
+    StudentDto updateExamDate(String id, String date);
 }

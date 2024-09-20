@@ -43,6 +43,7 @@ public class EnrollmentEntity {
     private Instant enrollmentDate;
 
     @NotNull(message = "Es obligatorio que se indique el grado al que se desea matricular")
+    @Enumerated
     @Column(name = "grade_to_enroll", nullable = false)
     private Grades gradeToEnroll;
 

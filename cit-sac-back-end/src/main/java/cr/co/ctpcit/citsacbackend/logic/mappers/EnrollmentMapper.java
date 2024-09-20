@@ -24,6 +24,7 @@ public class EnrollmentMapper {
                 .examDate(enrollmentEntity.getExamDate())
                 .consentGiven(enrollmentEntity.getConsentGiven())
                 .whatsappNotification(enrollmentEntity.getWhatsappNotification())
+                .document(DocumentMapper.convertToDtoList(enrollmentEntity.getDocuments()))
                 .build();
     }
 

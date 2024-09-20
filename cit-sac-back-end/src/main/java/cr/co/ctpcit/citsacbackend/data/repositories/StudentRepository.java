@@ -16,7 +16,12 @@ import java.util.Optional;
 @Repository
 public interface StudentRepository extends JpaRepository<StudentEntity, Integer> {
     Optional<StudentEntity> findStudentByIdNumber(@NotNull @Size(min = 9, max = 20) String idNumber);
+
     List<StudentEntity> findAllByFirstName(@NotBlank String firstName);
+
     List<StudentEntity> findAllByFirstSurname(@NotBlank String firstSurname);
+
     List<StudentEntity> findAllByPreviousSchool(@NotBlank String previousSchool);
+
+    Optional<StudentEntity> findStudentById(Long id);
 }
