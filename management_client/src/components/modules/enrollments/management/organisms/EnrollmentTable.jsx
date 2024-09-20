@@ -2,16 +2,17 @@ import React, { useState } from 'react'
 import EnrollmentRow from '../molecules/EnrollmentRow'
 import '../../../../../assets/styles/enrollments/enrollment-table.css'
 import Button from '../../../../core/global/atoms/Button'
+import Spinner from '../../../../core/global/atoms/Spinner'
 
-const EnrollmentTable = ({ applicants, onStudentIdClick, onDateChange, onWhatsappChange, onDocClick }) => {
+const EnrollmentTable = ({ applicants, onStudentIdClick, onDateChange, onWhatsappChange, onDocClick, loading }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
 
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentApplicants = applicants.slice(indexOfFirstItem, indexOfLastItem)
+  const currentApplicants = applicants?.slice(indexOfFirstItem, indexOfLastItem)
 
-  const totalPages = Math.ceil(applicants.length / itemsPerPage)
+  const totalPages = Math.ceil(applicants?.length / itemsPerPage)
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
@@ -31,19 +32,41 @@ const EnrollmentTable = ({ applicants, onStudentIdClick, onDateChange, onWhatsap
             <th>Adecuación</th>
           </tr>
         </thead>
-        <tbody>
-          {currentApplicants.map((applicant, index) => (
-            <EnrollmentRow
-              key={applicant.id}
-              applicant={applicant}
-              index={indexOfFirstItem + index}
-              onStudentIdClick={onStudentIdClick}
-              onDateChange={onDateChange}
-              onWhatsappChange={onWhatsappChange}
-              onDocClick={onDocClick}
-            />
-          ))}
-        </tbody>
+        {loading
+          ? (
+            <tbody>
+              <tr>
+                <td colSpan='9'>
+                  <Spinner />
+                </td>
+              </tr>
+            </tbody>
+            )
+          : (
+            <tbody>
+              {currentApplicants
+                ? (
+                    currentApplicants.map((applicant, index) => (
+                      <EnrollmentRow
+                        key={applicant.id}
+                        applicant={applicant}
+                        index={indexOfFirstItem + index}
+                        onStudentIdClick={onStudentIdClick}
+                        onDateChange={onDateChange}
+                        onWhatsappChange={onWhatsappChange}
+                        onDocClick={onDocClick}
+                      />
+                    ))
+                  )
+                : (
+                  <tr>
+                    <td colSpan='9' className='no-applicants'>
+                      No hay aspirantes
+                    </td>
+                  </tr>
+                  )}
+            </tbody>
+            )}
       </table>
       <div className='pagination'>
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
