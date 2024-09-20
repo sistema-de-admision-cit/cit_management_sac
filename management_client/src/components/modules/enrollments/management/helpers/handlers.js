@@ -14,9 +14,9 @@ export const handleWhatsappChange = (applicant, value) => {
   console.log('Whatsapp:', value)
 }
 
-export const handleDocClick = (applicant, column, files, setSelectedColumn, setSelectedFiles, setIsDocModalOpen) => {
+export const handleDocClick = (applicant, column, file, setSelectedColumn, setSelectedFile, setIsDocModalOpen) => {
   setSelectedColumn(column)
-  setSelectedFiles(files)
+  setSelectedFile(file)
   setIsDocModalOpen(true)
 }
 
