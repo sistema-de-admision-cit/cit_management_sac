@@ -1,0 +1,46 @@
+{
+  "id": null,
+  "firstName": "Andrea",
+  "firstSurname": "Vargas",
+  "secondSurname": "Rodriguez",
+  "birthDate": "2011-11-23",
+  "idType": "CC",
+  "idNumber": "403880324",
+  "previousSchool": "Escuela Nueva Esperanza",
+  "hasAccommodations": false,
+  "enrollments": [
+    {
+      "id": null,
+      "status": "P",
+      "enrollmentDate": null,
+      "gradeToEnroll": "3",
+      "knownThrough": "SM",
+      "examDate": "2023-09-10",
+      "consentGiven": true,
+      "whatsappNotification": true
+    }
+  ],
+  "parents": [
+    {
+      "id": null,
+      "firstName": "Laura",
+      "firstSurname": "Vargas",
+      "secondSurname": "Gomez",
+      "idType": "CC",
+      "idNumber": "403920712",
+      "phoneNumber": "88880006",
+      "email": "laura.vargas@example.com",
+      "relationship": "M",
+      "addresses": [
+        {
+          "id": null,
+          "country": "Costa Rica",
+          "province": "San José",
+          "city": "San José",
+          "district": "Hospital",
+          "addressInfo": "Avenida 12, Calle 5, Apartamento 3B"
+        }
+      ]
+    }
+  ]
+}
