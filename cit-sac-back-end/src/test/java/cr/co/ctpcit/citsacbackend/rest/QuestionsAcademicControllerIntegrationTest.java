@@ -62,4 +62,15 @@ public class QuestionsAcademicControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.questionText").value("Al resolver la ecuación: 2x+1=5, obtenemos"));
     }
+
+    @Test
+    public void testGetExamQuestionsByQuestionText() throws Exception {
+        String searchText = "Cual";
+        mockMvc.perform(get("/api/Academic/search")
+                        .param("questionText", searchText))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].questionText").value(org.hamcrest.Matchers.containsString(searchText)));
+    }
 }

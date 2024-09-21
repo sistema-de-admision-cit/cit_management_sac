@@ -128,5 +128,18 @@ public class QuestionsAcademicControllerUnitTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Pregunta no encontrada con el id 1"));
     }
+
+    @Test
+    void getExamQuestionsByQuestionText() throws Exception {
+        List<AcademicQuestionsDto> questions = Arrays.asList(question1);
+        when(academicQuestionsService.obtenerPreguntasPorQuestionText("cual")).thenReturn(questions);
+
+        mockMvc.perform(get("/api/Academic/search")
+                        .param("questionText", "cual")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(question1.id()))
+                .andExpect(jsonPath("$[0].questionText").value(question1.questionText()));
+    }
 }
 

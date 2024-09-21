@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class AcademicQuestionsServiceImplementation implements AcademicQuestionsService {
@@ -42,6 +43,18 @@ public class AcademicQuestionsServiceImplementation implements AcademicQuestions
                 .orElseThrow(() -> new NoSuchElementException("Pregunta no encontrada con el id " + id));
         return AcademicQuestionsMapper.toDto(entity);
     }
+
+    @Override
+    public List<AcademicQuestionsDto> obtenerPreguntasPorQuestionText(String questionText) {
+        List<AcademicQuestionsEntity> entities = academicQuestionsRepository.findByQuestionTextContaining(questionText);
+        if (entities.isEmpty()) {
+            throw new NoSuchElementException("No se encontraron preguntas que contengan: " + questionText);
+        }
+        return entities.stream()
+                .map(AcademicQuestionsMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public void eliminarPregunta(Integer questionId) {
