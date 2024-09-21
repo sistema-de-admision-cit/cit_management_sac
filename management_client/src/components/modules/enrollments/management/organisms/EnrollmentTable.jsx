@@ -4,13 +4,13 @@ import '../../../../../assets/styles/enrollments/enrollment-table.css'
 import Button from '../../../../core/global/atoms/Button'
 import Spinner from '../../../../core/global/atoms/Spinner'
 
-const EnrollmentTable = ({ enrollments, onStudentIdClick, onDateChange, onStatusChange, onWhatsappChange, onDocClick, loading }) => {
+const EnrollmentTable = ({ enrollments, onStudentIdClick, loading }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
 
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentEnrollments = enrollments?.slice(indexOfFirstItem, indexOfLastItem)
+  const currentEnrollments = enrollments?.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage)
 
   const totalPages = Math.ceil(enrollments?.length / itemsPerPage)
 
@@ -25,18 +25,15 @@ const EnrollmentTable = ({ enrollments, onStudentIdClick, onDateChange, onStatus
             <th>Nombre</th>
             <th>Primer Apellido</th>
             <th>Segundo Apellido</th>
-            <th>Fecha Entrevista</th>
-            <th>Estado</th>
-            <th>Whatsapp</th>
-            <th>Notas</th>
-            <th>Adecuación</th>
+            <th>Escuela de Procedencia</th>
+            <th>Posee Adaptaciones</th>
           </tr>
         </thead>
         {loading
           ? (
             <tbody>
               <tr>
-                <td colSpan='9'>
+                <td colSpan='4'>
                   <Spinner />
                 </td>
               </tr>
@@ -52,16 +49,12 @@ const EnrollmentTable = ({ enrollments, onStudentIdClick, onDateChange, onStatus
                         enrollment={enrollment}
                         index={indexOfFirstItem + index}
                         onStudentIdClick={onStudentIdClick}
-                        onDateChange={onDateChange}
-                        onStatusChange={onStatusChange}
-                        onWhatsappChange={onWhatsappChange}
-                        onDocClick={onDocClick}
                       />
                     ))
                   )
                 : (
                   <tr>
-                    <td colSpan='9' className='no-applicants'>
+                    <td colSpan='4' className='no-applicants'>
                       No hay aspirantes
                     </td>
                   </tr>
