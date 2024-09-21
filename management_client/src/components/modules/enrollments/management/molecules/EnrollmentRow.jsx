@@ -2,9 +2,9 @@ import PdfIcon from '../../../../../assets/icons/pdf-svgrepo-com.svg'
 import DatePicker from '../../../../core/global/atoms/DatePicker'
 import InputField from '../../../../core/global/atoms/InputField'
 import Button from '../../../../core/global/atoms/Button'
-import { statusText } from '../helpers/helpers'
+import { statusText, statusOptions } from '../helpers/helpers'
 
-const EnrollmentRow = ({ enrollment, index, onStudentIdClick, onDateChange, onWhatsappChange, onDocClick }) => (
+const EnrollmentRow = ({ enrollment, index, onStudentIdClick, onDateChange, onStatusChange, onWhatsappChange, onDocClick }) => (
   <tr>
     <td className='applicant-id' onClick={() => onStudentIdClick(enrollment)}>{enrollment.idNumber}</td>
     <td>{enrollment.firstName}</td>
@@ -21,7 +21,17 @@ const EnrollmentRow = ({ enrollment, index, onStudentIdClick, onDateChange, onWh
       />
     </td>
     <td>
-      {statusText[enrollment.enrollments[0].status]}
+      <InputField
+        field={{
+          type: 'dropdown',
+          name: `status-${index}`,
+          options: statusOptions,
+          required: true
+        }}
+        value={enrollment.enrollments[0].status}
+        handleChange={(e) => onStatusChange(enrollment, e.target.value)}
+        showLabel={false}
+      />
     </td>
     <td>
       <InputField
