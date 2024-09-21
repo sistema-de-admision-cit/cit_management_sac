@@ -21,7 +21,7 @@ const ModalManageFiles = ({ selectedColumn, selectedFile, onFileUpload, onFileDo
             <li className='file-list-item'>
               {selectedFile.documentName}
               <Button
-                onClick={() => onFileDownload(selectedFile)}
+                onClick={() => onFileDownload(selectedFile.documentUrl)}
                 className='btn btn-primary'
               >
                 Descargar
