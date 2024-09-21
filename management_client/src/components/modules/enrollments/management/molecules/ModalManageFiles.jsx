@@ -3,9 +3,9 @@ import InputField from '../../../../core/global/atoms/InputField'
 import Modal from '../../../../core/global/molecules/Modal'
 import '../../../../../assets/styles/enrollments/modal-manage-files.css'
 
-const ModalManageFiles = ({ selectedColumn, selectedFile, onFileUpload, onFileDownload, onFileDelete, onClose }) => (
-  <Modal onClose={onClose}>
-    <h2>Gestionar {selectedColumn}</h2>
+const ModalManageFiles = ({ selectedFileType, selectedFile, onFileUpload, onFileDownload, onFileDelete, onClose }) => (
+  <Modal onClose={onClose} className='modal-manage-files'>
+    <h2>Gestionar {selectedFileType}</h2>
     {!selectedFile
       ? (
         <InputField
