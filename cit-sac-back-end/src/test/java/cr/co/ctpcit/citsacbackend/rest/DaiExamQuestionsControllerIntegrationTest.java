@@ -27,7 +27,7 @@ public class DaiExamQuestionsControllerIntegrationTest {
 
     @Test
     public void testGetExamQuestions() throws Exception {
-        int examId = 1; // Usa un ID de examen que exista en la base de datos
+        int examId = 1;
 
         mockMvc.perform(get("/api/exams/{examId}/questions", examId)
                         .contentType(MediaType.APPLICATION_JSON))

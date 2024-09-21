@@ -15,7 +15,6 @@ public class DaiExamQuestionsController {
 
     private final DaiExamQuestionsService service;
 
-    // Obtener todas las respuestas de un examen
     @GetMapping("/{examId}/questions")
     public ResponseEntity<List<DaiExamQuestionsDto>> getExamQuestions(@PathVariable Integer examId) {
         List<DaiExamQuestionsDto> examAnswers = service.getExamAnswers(examId);

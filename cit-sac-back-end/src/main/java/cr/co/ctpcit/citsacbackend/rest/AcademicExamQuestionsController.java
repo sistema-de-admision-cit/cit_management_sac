@@ -15,7 +15,6 @@ public class AcademicExamQuestionsController {
 
     private final AcademicExamQuestionsService service;
 
-    // Obtener todas las respuestas de un examen académico
     @GetMapping("/{examId}/questions")
     public ResponseEntity<List<AcademicExamQuestionsDto>> getAcademicExamQuestions(@PathVariable Integer examId) {
         List<AcademicExamQuestionsDto> examAnswers = service.getExamAnswers(examId);

@@ -33,7 +33,6 @@ public class DaiExamQuestionsControllerUnitTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        // Inicializamos los objetos de prueba con examId y questionId
         question1 = new DaiExamQuestionsDto(1, 101, "Me gusta explorar la naturaleza");
         question2 = new DaiExamQuestionsDto(1, 102, "Soy muy tímido");
     }
