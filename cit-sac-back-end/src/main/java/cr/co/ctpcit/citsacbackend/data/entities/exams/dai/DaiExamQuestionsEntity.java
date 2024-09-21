@@ -28,10 +28,4 @@ public class DaiExamQuestionsEntity {
 
     @Column(name = "student_answer", columnDefinition = "TEXT")
     private String studentAnswer;
-
-    public void setId(DaiExamsEntity exam, DaiQuestionsEntity question) {
-        this.id = new DaiExamQuestionsEntityId(exam.getId(), question.getId());
-        this.examId = exam;
-        this.daiQuestions = question;
-    }
 }

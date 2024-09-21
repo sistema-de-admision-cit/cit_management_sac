@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class DaiQuestionsServiceImplementation implements DaiQuestionsService {
@@ -59,5 +60,4 @@ public class DaiQuestionsServiceImplementation implements DaiQuestionsService {
         DaiQuestionsEntity updatedEntity = daiQuestionsRepository.save(entity);
         return DaiQuestionsMapper.toDto(updatedEntity);
     }
-
 }
