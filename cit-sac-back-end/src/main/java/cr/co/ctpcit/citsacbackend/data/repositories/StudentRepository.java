@@ -17,11 +17,13 @@ import java.util.Optional;
 public interface StudentRepository extends JpaRepository<StudentEntity, Integer> {
     Optional<StudentEntity> findStudentByIdNumber(@NotNull @Size(min = 9, max = 20) String idNumber);
 
-    List<StudentEntity> findAllByFirstName(@NotBlank String firstName);
+    List<StudentEntity> findStudentByIdNumberContaining(@NotNull @Size(min = 9, max = 20) String idNumber);
 
-    List<StudentEntity> findAllByFirstSurname(@NotBlank String firstSurname);
+    List<StudentEntity> findByFirstNameContaining(@NotBlank String firstName);
 
-    List<StudentEntity> findAllByPreviousSchool(@NotBlank String previousSchool);
+    List<StudentEntity> findByFirstSurnameContaining(@NotBlank String firstSurname);
+
+    List<StudentEntity> findBySecondSurnameContaining(@NotBlank String secondSurname);
 
     Optional<StudentEntity> findStudentById(Long id);
 }
