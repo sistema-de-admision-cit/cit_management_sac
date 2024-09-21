@@ -20,22 +20,19 @@ export const handleDocClick = (applicant, column, file, setSelectedColumn, setSe
   setIsDocModalOpen(true)
 }
 
+const searchEnrollmentUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT}`
 export const handleSearch = (search, setApplicants) => {
-  const filteredApplicants = dummyData.filter((applicant) => {
-    return applicant.studendtId.includes(search) ||
-      applicant.firstName.toLowerCase().includes(search.toLowerCase()) ||
-      applicant.firstSurname.includes(search.toLowerCase()) ||
-      applicant.secondSurname.toLowerCase().includes(search.toLowerCase())
+  axios.get(`${searchEnrollmentUrl}?value=${search}`).then(response => {
+    console.log(response)
+    setApplicants(response.data)
+  }).catch(error => {
+    console.error(error)
   })
-
-  setApplicants(filteredApplicants)
 }
 
 const getAllEnrollmentsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_ALL_ENROLLMENTS_ENDPOINT}`
 export const handleGetAllEnrollments = (setEnrollments, setLoading, setErrorMessage) => {
   setLoading(true)
-
-  console.log('getAllEnrollmentsUrl:', getAllEnrollmentsUrl)
 
   axios.get(getAllEnrollmentsUrl).then(response => {
     console.log(response)
