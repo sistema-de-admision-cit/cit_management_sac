@@ -24,8 +24,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Implementation of the {@link InscriptionsService}
@@ -52,6 +54,7 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
 
     /**
      * Get all inscriptions
+     *
      * @param pageable the pageable object
      * @return a list of all inscriptions
      */
@@ -71,6 +74,7 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
 
     /**
      * Get an inscription by id
+     *
      * @param id the id of the student
      * @return the inscription with the given id
      */
@@ -85,6 +89,7 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
 
     /**
      * Get an inscription by value
+     *
      * @param value of the idNumber, the name of the student or first surname or previous school
      * @return a list of inscriptions that match the value
      */
@@ -92,24 +97,25 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
     public List<StudentDto> findStudentByValue(String value) {
         //Validate if the value is a number
         if (value.matches("\\d+")) {
-            Optional<StudentEntity> student = studentRepository.findStudentByIdNumber(value);
-            if (student.isPresent()) {
-                return List.of(StudentMapper.convertToDto(student.get()));
-            }
+            List<StudentEntity> student = studentRepository.findStudentByIdNumberContaining(value);
+            return StudentMapper.convertToDtoList(student);
         }
 
-        //Find all by name or first surname or previous school
-        List<StudentEntity> student = new ArrayList<>();
-        student.addAll(studentRepository.findAllByFirstName(value));
-        student.addAll(studentRepository.findAllByFirstSurname(value));
-        student.addAll(studentRepository.findAllByPreviousSchool(value));
+        // Set to avoid duplicates
+        Set<StudentEntity> studentSet = new HashSet<>();
 
-        //Convert student to DTO or null if not present
-        return StudentMapper.convertToDtoList(student);
+        // Find all by name, first surname, or second surname
+        studentSet.addAll(studentRepository.findByFirstNameContaining(value));
+        studentSet.addAll(studentRepository.findByFirstSurnameContaining(value));
+        studentSet.addAll(studentRepository.findBySecondSurnameContaining(value));
+
+        // Convert the Set to a List of DTOs
+        return StudentMapper.convertToDtoList(new ArrayList<>(studentSet));
     }
 
     /**
      * Add an inscription
+     *
      * @param inscriptionDto the inscription to add
      * @return the added inscription
      * @throws EnrollmentException if the student is already enrolled for the selected date
@@ -136,7 +142,7 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
                     enrollment.getExamDate().equals(enrollmentEntity.getExamDate()))) {
                 throw new EnrollmentException(
                         "El estudiante ya tiene una inscripción para la fecha seleccionada. " +
-                        "Debe seleccionar otra fecha o comunicarse con el área de Servicio al Cliente."
+                                "Debe seleccionar otra fecha o comunicarse con el área de Servicio al Cliente."
                 );
             }
 
@@ -160,7 +166,7 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
         //Save the address
         parent.addAddress(address);
 
-        if(parentGuardian.isPresent()) {
+        if (parentGuardian.isPresent()) {
             //Update the parent/guardian information
             parent.setEmail(inscriptionDto.parents().getFirst().email());
             parent.setPhoneNumber(inscriptionDto.parents().getFirst().phoneNumber());
@@ -191,7 +197,8 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
 
     /**
      * Update the exam date of the student
-     * @param id the id of the enrollment
+     *
+     * @param id   the id of the enrollment
      * @param date the new exam date
      * @return the updated student
      */
@@ -212,7 +219,8 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
 
     /**
      * Update the status of the student
-     * @param id the id of the enrollment
+     *
+     * @param id     the id of the enrollment
      * @param status the new status of the enrollment
      * @return the updated student
      */
@@ -252,8 +260,9 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
 
     /**
      * Create the relation between the student and the parent/guardian
+     *
      * @param student the student
-     * @param parent the parent/guardian
+     * @param parent  the parent/guardian
      */
     private void createParentGuardianStudentRelation(StudentEntity student, ParentsGuardianEntity parent) {
         //Create ParentGuardianStudentEntity
