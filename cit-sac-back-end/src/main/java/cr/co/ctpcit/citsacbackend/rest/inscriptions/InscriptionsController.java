@@ -27,13 +27,14 @@ public class InscriptionsController {
 
     @Autowired
     public InscriptionsController(InscriptionsService inscriptionsService,
-                                  StorageService storageService) {
+            StorageService storageService) {
         this.inscriptionsService = inscriptionsService;
         this.storageService = storageService;
     }
 
     /**
      * Get an inscription by id
+     *
      * @param id the id of the student
      * @return the inscription with the given id
      */
@@ -45,76 +46,90 @@ public class InscriptionsController {
 
     /**
      * Get an inscription by value
+     *
      * @param value the name of the student
      * @return the inscription with the given name
      */
     @GetMapping("/search")
-    public ResponseEntity<Iterable<StudentDto>> getInscriptionsByValue(@NotNull @RequestParam String value) {
+    public ResponseEntity<Iterable<StudentDto>> getInscriptionsByValue(
+            @NotNull @RequestParam String value) {
         List<StudentDto> student = inscriptionsService.findStudentByValue(value);
         return student == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(student);
     }
 
     /**
      * Get all inscriptions
+     *
      * @return a list of all inscriptions
      */
     @GetMapping
-    public ResponseEntity<Iterable<StudentDto>> getInscriptions(@PageableDefault(page = 0, size = 25) Pageable pageable) {
+    public ResponseEntity<Iterable<StudentDto>> getInscriptions(
+            @PageableDefault(page = 0, size = 25) Pageable pageable) {
         List<StudentDto> inscriptions = inscriptionsService.getAllInscriptions(pageable);
-        return inscriptions.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(inscriptions);
+        return inscriptions.isEmpty() ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(inscriptions);
     }
 
     /**
      * Update exam date
+     *
      * @param id the id of the enrollment
      * @param date the new date of the exam
      * @return the updated enrollment
      */
     @PutMapping("/{id}/exam")
     public ResponseEntity<StudentDto> updateExamDate(@PathVariable("id") String id,
-                                                     @NotNull
-                                                     @NotEmpty
-                                                     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",
-                                                             message = "Formato de fecha incorrecto. Use yyyy-MM-dd")
-                                                     @RequestParam String date) {
+            @NotNull @NotEmpty @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",
+                    message = "Formato de fecha incorrecto. Use yyyy-MM-dd") @RequestParam String date) {
         StudentDto student = inscriptionsService.updateExamDate(id, date);
         return student == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(student);
     }
 
-    //TODO: Create update endpoint to alter status
+    // TODO: Create update endpoint to alter status
 
     /**
-     *
      * @param id the id of the enrollment
      * @param status the new status of the enrollment
      * @return the updated student
      */
     @PutMapping("/{id}/status")
     public ResponseEntity<StudentDto> updateStatus(@PathVariable("id") String id,
-                                                   @RequestParam
-                                                   @NotNull
-                                                   ProcessStatus status) {
+            @RequestParam @NotNull ProcessStatus status) {
         StudentDto student = inscriptionsService.updateStatus(id, status);
         return student == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(student);
     }
 
-    //TODO: Create update endpoint to alter documents
+    // TODO: Create update endpoint to alter documents
 
     /**
      * Download documents
+     *
      * @param filename the name of the document
      * @return the document as a resource
      */
     @GetMapping("/documents/{filename}")
     public ResponseEntity<Resource> downloadDocuments(@PathVariable String filename) {
         Resource resource = storageService.loadAsResource(filename);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
+    }
+
+    /**
+     * Change whatsapp notification permission
+     *
+     * @param id the id of the student
+     * @param permission the new permission
+     */
+    @PutMapping("/whatsapp/{id}")
+    public ResponseEntity<StudentDto> changeWhatsappPermission(@PathVariable("id") Long id,
+            @RequestParam @NotNull Boolean permission) {
+        boolean updated = inscriptionsService.changeWhatsappPermission(id, permission);
+        return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
     /**
      * Handle constraint violation exceptions
+     *
      * @param e the exception
      * @return a response entity with the error message
      */
