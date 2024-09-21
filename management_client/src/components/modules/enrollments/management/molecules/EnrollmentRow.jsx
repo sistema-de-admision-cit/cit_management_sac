@@ -32,10 +32,9 @@ const EnrollmentRow = ({ enrollment, index, onStudentIdClick, onDateChange, onWh
           required: true
         }}
         value={enrollment.enrollments[0].whatsappNotification}
-        handleChange={(e) => onWhatsappChange(enrollment, e.target.value)}
+        handleChange={(e) => onWhatsappChange(enrollment, e.target.checked)}
         showLabel={false}
       />
-
     </td>
     <td>
       <Button
