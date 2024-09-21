@@ -1,6 +1,7 @@
 package cr.co.ctpcit.citsacbackend.data.repositories;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.EnrollmentEntity;
+import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,9 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
     @Transactional
     @Query("UPDATE EnrollmentEntity e SET e.whatsappNotification = :whatsappNotification WHERE e.id = :id")
     void updateWhatsappNotificationById(@NotNull Long id, @NotNull Boolean whatsappNotification);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE EnrollmentEntity e SET e.status = :status WHERE e.id = :id")
+    void updateStatusById(Long id, ProcessStatus status);
 }
