@@ -20,7 +20,6 @@ public class AcademicQuestionsEntity {
     private Integer id;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
     @Column(name = "question_grade", nullable = false)
     private Grades questionGrade;
 
@@ -54,8 +53,7 @@ public class AcademicQuestionsEntity {
     private String questionText;
 
     @Size(max = 255)
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
-
-
+    @Column(name = "image_url")
+    private String imageUrl;  // Cambié a permitir nulo, reflejando la base de datos
 }
+

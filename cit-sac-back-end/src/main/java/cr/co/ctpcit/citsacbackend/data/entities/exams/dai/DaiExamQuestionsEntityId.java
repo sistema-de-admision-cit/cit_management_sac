@@ -17,7 +17,6 @@ import java.util.Objects;
 @ToString
 @Embeddable
 public class DaiExamQuestionsEntityId implements Serializable {
-        private static final long serialVersionUID = -3727431787214240435L;
 
         @NotNull
         @Column(name = "exam_id", nullable = false)

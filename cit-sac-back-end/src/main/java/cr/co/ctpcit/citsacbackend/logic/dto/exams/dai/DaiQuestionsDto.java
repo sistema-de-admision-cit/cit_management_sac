@@ -2,6 +2,7 @@ package cr.co.ctpcit.citsacbackend.logic.dto.exams.dai;
 
 import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import jakarta.validation.constraints.NotNull;
+
 import java.io.Serializable;
 
 /**
