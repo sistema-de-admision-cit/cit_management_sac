@@ -5,7 +5,7 @@ import '../../../../../assets/styles/enrollments/enrollment-management-view.css'
 import EnrollemntSearchBar from '../molecules/EnrollmentSearchBar'
 import ModalManageFiles from '../molecules/ModalManageFiles'
 import ModalApplicantDetails from '../molecules/ModalApplicantDetails'
-import { handleDateChange, handleDocClick, handleFileDownload, handleStudendIdClick, handleWhatsappChange, handleSearch, handleGetAllEnrollments } from '../helpers/handlers'
+import { handleDateChange, handleDocClick, handleFileDownload, handleStudendIdClick, handleStatusChange, handleWhatsappChange, handleSearch, handleGetAllEnrollments } from '../helpers/handlers'
 import useMessages from '../../../../core/global/hooks/useMessages'
 
 const EnrollmentManagementView = () => {
@@ -36,6 +36,7 @@ const EnrollmentManagementView = () => {
           enrollments={enrollments}
           onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen, setApplicantSelected)}
           onDateChange={handleDateChange}
+          onStatusChange={(applicant, value) => handleStatusChange(applicant, value, setErrorMessage, setEnrollments)}
           onWhatsappChange={(applicant, value) => handleWhatsappChange(applicant, value, setErrorMessage, setEnrollments)}
           onDocClick={(applicant, column, file) => handleDocClick(applicant, column, file, setSelectedColumn, setSelectedFile, setIsDocModalOpen)}
           loading={loading}

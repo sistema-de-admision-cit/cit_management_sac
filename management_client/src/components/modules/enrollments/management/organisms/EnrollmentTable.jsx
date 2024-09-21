@@ -4,7 +4,7 @@ import '../../../../../assets/styles/enrollments/enrollment-table.css'
 import Button from '../../../../core/global/atoms/Button'
 import Spinner from '../../../../core/global/atoms/Spinner'
 
-const EnrollmentTable = ({ enrollments, onStudentIdClick, onDateChange, onWhatsappChange, onDocClick, loading }) => {
+const EnrollmentTable = ({ enrollments, onStudentIdClick, onDateChange, onStatusChange, onWhatsappChange, onDocClick, loading }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 5
 
@@ -53,6 +53,7 @@ const EnrollmentTable = ({ enrollments, onStudentIdClick, onDateChange, onWhatsa
                         index={indexOfFirstItem + index}
                         onStudentIdClick={onStudentIdClick}
                         onDateChange={onDateChange}
+                        onStatusChange={onStatusChange}
                         onWhatsappChange={onWhatsappChange}
                         onDocClick={onDocClick}
                       />
