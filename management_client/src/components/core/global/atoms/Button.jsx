@@ -1,8 +1,8 @@
 import '../../../../assets/styles/global/buttons.css'
 
-const Button = ({ type, className, children, onClick, disabled, key }) => {
+const Button = ({ type, className, children, onClick, disabled }) => {
   return (
-    <button key={key} type={type} className={className} onClick={onClick} disabled={disabled || false}>
+    <button type={type} className={className} onClick={onClick} disabled={disabled || false}>
       {children}
     </button>
   )
