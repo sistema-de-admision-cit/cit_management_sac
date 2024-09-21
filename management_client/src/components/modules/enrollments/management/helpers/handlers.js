@@ -9,8 +9,24 @@ export const handleDateChange = (applicant, date) => {
   console.log('Fecha Entrevista:', date)
 }
 
-export const handleWhatsappChange = (applicant, value) => {
-  console.log('Whatsapp:', value)
+const updateWhatsappPermissionUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_WHATSAPP_PERMISSION_ENDPOINT}`
+export const handleWhatsappChange = (applicant, value, setErrorMessage, setEnrollments) => {
+  axios.put(`${updateWhatsappPermissionUrl}/${applicant.id}?permission=${value}`)
+    .then(response => {
+      // update the state of the enrollments
+      setEnrollments(prevEnrollments => {
+        const updatedEnrollments = prevEnrollments.map(enrollment => {
+          if (enrollment.id === applicant.id) {
+            enrollment.enrollments[0].whatsappNotification = value
+          }
+          return enrollment
+        })
+        return updatedEnrollments
+      })
+    }).catch(error => {
+      console.error(error)
+      setErrorMessage('Hubo un error al actualizar el permiso de Whatsapp. Por favor, intenta de nuevo.')
+    })
 }
 
 export const handleDocClick = (applicant, column, file, setSelectedColumn, setSelectedFile, setIsDocModalOpen) => {
