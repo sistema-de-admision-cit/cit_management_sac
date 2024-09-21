@@ -16,4 +16,6 @@ public interface InscriptionsService {
     StudentDto updateExamDate(String id, String date);
 
     StudentDto updateStatus(String id, @NotNull ProcessStatus status);
+
+    boolean changeWhatsappPermission(Long id, Boolean permission);
 }

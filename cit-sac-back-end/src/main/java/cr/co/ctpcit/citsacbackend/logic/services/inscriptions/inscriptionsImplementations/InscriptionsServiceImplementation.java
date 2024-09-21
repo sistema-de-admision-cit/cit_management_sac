@@ -234,6 +234,17 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
         return StudentMapper.convertToDto(enrollmentEntity.getStudent());
     }
 
+    @Override
+    public boolean changeWhatsappPermission(Long id, Boolean permission) {
+        try {
+            this.enrollmentRepository.updateWhatsappNotificationById(id, permission);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al actualizar la notificación de whatsapp");
+        }
+
+        return true;
+    }
+
     private EnrollmentEntity verifyPutParameters(String id) {
         //Validate if the id is a number
         if (!id.matches("\\d+")) {
