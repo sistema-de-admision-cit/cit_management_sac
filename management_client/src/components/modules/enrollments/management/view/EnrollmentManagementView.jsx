@@ -36,7 +36,7 @@ const EnrollmentManagementView = () => {
           enrollments={enrollments}
           onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen, setApplicantSelected)}
           onDateChange={handleDateChange}
-          onWhatsappChange={handleWhatsappChange}
+          onWhatsappChange={(applicant, value) => handleWhatsappChange(applicant, value, setErrorMessage, setEnrollments)}
           onDocClick={(applicant, column, file) => handleDocClick(applicant, column, file, setSelectedColumn, setSelectedFile, setIsDocModalOpen)}
           loading={loading}
         />
