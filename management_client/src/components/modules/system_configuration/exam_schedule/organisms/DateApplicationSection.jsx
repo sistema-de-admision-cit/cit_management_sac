@@ -1,4 +1,3 @@
-import React from 'react'
 import DateRangePicker from '../molecules/DateRangePicker'
 import InputField from '../../../../core/global/atoms/InputField'
 

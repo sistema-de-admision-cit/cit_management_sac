@@ -1,4 +1,3 @@
-import React from 'react'
 import DatePicker from '../../../../core/global/atoms/DatePicker'
 
 const DateRangePicker = ({ startDate, endDate, onStartDateChange, onEndDateChange }) => (
