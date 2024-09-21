@@ -32,6 +32,18 @@
 }
 
 .applicant-id-button:focus {
-  outline: 2px solid var(--primary-color);   
+  outline: 2px solid var(--primary-color);
   outline-offset: 2px;
+}
+
+
+.document-item {
+  display: flex;
+  align-items: center;
+}
+
+.pdf-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
 }
