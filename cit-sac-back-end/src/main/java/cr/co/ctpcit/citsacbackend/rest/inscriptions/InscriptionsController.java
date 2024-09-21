@@ -102,12 +102,12 @@ public class InscriptionsController {
 
     /**
      * Download documents
-     * @param id the id of the document
-     * @return the document with the given id
+     * @param filename the name of the document
+     * @return the document as a resource
      */
-    @GetMapping("/{id}/documents")
-    public ResponseEntity<Resource> downloadDocuments(@PathVariable("id") String id) {
-        Resource resource = storageService.loadAsResource(id);
+    @GetMapping("/documents/{filename}")
+    public ResponseEntity<Resource> downloadDocuments(@PathVariable String filename) {
+        Resource resource = storageService.loadAsResource(filename);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
