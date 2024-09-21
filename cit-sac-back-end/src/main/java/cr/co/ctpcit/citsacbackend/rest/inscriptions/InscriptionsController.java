@@ -90,13 +90,27 @@ public class InscriptionsController {
     /**
      * @param id the id of the enrollment
      * @param status the new status of the enrollment
-     * @return the updated student
+     * @return ok if the status was updated, not found otherwise
      */
-    @PutMapping("/{id}/status")
-    public ResponseEntity<StudentDto> updateStatus(@PathVariable("id") String id,
+    @PutMapping("/update-status/{id}")
+    public ResponseEntity<StudentDto> updateStatus(@PathVariable("id") Long id,
             @RequestParam @NotNull ProcessStatus status) {
-        StudentDto student = inscriptionsService.updateStatus(id, status);
-        return student == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(student);
+        boolean updated = inscriptionsService.changeStatus(id, status);
+        return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    /**
+     * Change whatsapp notification permission
+     *
+     * @param id the id of the student
+     * @param permission the new permission
+     * @return ok if the permission was updated, not found otherwise
+     */
+    @PutMapping("/update-whatsapp/{id}")
+    public ResponseEntity<StudentDto> changeWhatsappPermission(@PathVariable("id") Long id,
+            @RequestParam @NotNull Boolean permission) {
+        boolean updated = inscriptionsService.changeWhatsappPermission(id, permission);
+        return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
     // TODO: Create update endpoint to alter documents
@@ -112,19 +126,6 @@ public class InscriptionsController {
         Resource resource = storageService.loadAsResource(filename);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
-    }
-
-    /**
-     * Change whatsapp notification permission
-     *
-     * @param id the id of the student
-     * @param permission the new permission
-     */
-    @PutMapping("/whatsapp/{id}")
-    public ResponseEntity<StudentDto> changeWhatsappPermission(@PathVariable("id") Long id,
-            @RequestParam @NotNull Boolean permission) {
-        boolean updated = inscriptionsService.changeWhatsappPermission(id, permission);
-        return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
     /**
