@@ -16,3 +16,11 @@ export const guardianTabText = {
   F: 'Informacion del Padre',
   G: 'Informacion del Encargado'
 }
+
+export const statusOptions = [
+  { value: 'P', label: 'Inscrito' },
+  { value: 'E', label: 'Permitido' },
+  { value: 'I', label: 'Inelegible' },
+  { value: 'A', label: 'Aceptado' },
+  { value: 'R', label: 'Rechazado' }
+]
