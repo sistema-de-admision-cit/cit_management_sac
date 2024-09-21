@@ -103,6 +103,23 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     )
   }
 
+  const dropdownInput = () => {
+    return (
+      <select
+        name={field.name}
+        value={value}
+        onChange={handleChange}
+        required={field.required || false}
+      >
+        {field.options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    )
+  }
+
   // map
   const inputRenderers = {
     text: () => textRelatedInput('text'),
@@ -115,7 +132,8 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     file: () => fileInput(),
     date: () => datePicker(),
     checkbox: () => checkboxInput(),
-    time: () => timePicker()
+    time: () => timePicker(),
+    dropdown: () => dropdownInput()
   }
 
   const renderInput = () => {
