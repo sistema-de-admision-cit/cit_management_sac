@@ -12,9 +12,6 @@ const EnrollmentManagementView = () => {
   const [loading, setLoading] = useState(false)
 
   const [enrollments, setEnrollments] = useState()
-  const [isDocModalOpen, setIsDocModalOpen] = useState(false)
-  const [selectedColumn, setSelectedColumn] = useState('')
-  const [selectedFile, setSelectedFile] = useState([])
   const [applicantSelected, setApplicantSelected] = useState({})
 
   const [isModalApplicantDetailsOpen, setIsModalApplicantDetailsOpen] = useState(false)
@@ -35,30 +32,20 @@ const EnrollmentManagementView = () => {
         <EnrollmentTable
           enrollments={enrollments}
           onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen, setApplicantSelected)}
-          onDateChange={handleDateChange}
-          onStatusChange={(applicant, value) => handleStatusChange(applicant, value, setErrorMessage, setEnrollments)}
-          onWhatsappChange={(applicant, value) => handleWhatsappChange(applicant, value, setErrorMessage, setEnrollments)}
-          onDocClick={(applicant, column, file) => handleDocClick(applicant, column, file, setSelectedColumn, setSelectedFile, setIsDocModalOpen)}
           loading={loading}
         />
       </div>
-
-      {isDocModalOpen && (
-        <ModalManageFiles
-          selectedColumn={selectedColumn}
-          selectedFile={selectedFile}
-          onFileUpload={() => console.log('Subir archivo')}
-          onFileDownload={handleFileDownload}
-          onFileDelete={(document) => console.log('Eliminar:', document)}
-          onClose={() => setIsDocModalOpen(false)}
-        />
-      )}
 
       {isModalApplicantDetailsOpen && (
         <ModalApplicantDetails
           student={applicantSelected}
           parentsGuardians={applicantSelected.parents}
+          enrollments={applicantSelected.enrollments}
           onClose={() => setIsModalApplicantDetailsOpen(false)}
+          onDocClick={handleDocClick}
+          onFileDownload={handleFileDownload}
+          onDateChange={handleDateChange}
+          onStatusChange={handleStatusChange}
         />
       )}
       {renderMessages()}
