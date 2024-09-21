@@ -1,4 +1,3 @@
-import { dummyData } from '../view/temp_data'
 import axios from 'axios'
 
 export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, setApplicantSelected) => {
@@ -18,6 +17,28 @@ export const handleDocClick = (applicant, column, file, setSelectedColumn, setSe
   setSelectedColumn(column)
   setSelectedFile(file)
   setIsDocModalOpen(true)
+}
+
+const downloadFileUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_DOWNLOAD_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT}`
+export const handleFileDownload = (filename) => {
+  console.log('Descargando:', filename)
+  console.log('Descargando:', downloadFileUrl)
+
+  axios.get(`${downloadFileUrl}/${filename}`, { responseType: 'blob' })
+    .then(response => {
+      console.log(response)
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', filename)
+      document.body.appendChild(link)
+      link.click()
+      // Limpia el URL después de descargar el archivo
+      window.URL.revokeObjectURL(url)
+    })
+    .catch(error => {
+      console.error(error)
+    })
 }
 
 const searchEnrollmentUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT}`
