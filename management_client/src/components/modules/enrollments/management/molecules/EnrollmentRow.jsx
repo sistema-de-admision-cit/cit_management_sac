@@ -1,6 +1,16 @@
+import Button from '../../../../core/global/atoms/Button'
+
 const EnrollmentRow = ({ enrollment, index, onStudentIdClick }) => (
   <tr>
-    <td className='applicant-id' onClick={() => onStudentIdClick(enrollment)}>{enrollment.idNumber}</td>
+    <td>
+      <Button
+        className='applicant-id-button'
+        onClick={() => onStudentIdClick(enrollment)}
+        ariaLabel={`Ver detalles del estudiante con cédula ${enrollment.idNumber}`}
+      >
+        {enrollment.idNumber}
+      </Button>
+    </td>
     <td>{enrollment.firstName}</td>
     <td>{enrollment.firstSurname}</td>
     <td>{enrollment.secondSurname}</td>
