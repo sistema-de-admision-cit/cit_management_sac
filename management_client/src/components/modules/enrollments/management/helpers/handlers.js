@@ -51,8 +51,8 @@ export const handleWhatsappChange = (applicant, value, setErrorMessage, setEnrol
     })
 }
 
-export const handleDocClick = (applicant, column, file, setSelectedColumn, setSelectedFile, setIsDocModalOpen) => {
-  setSelectedColumn(column)
+export const handleDocClick = (file, setSelectedFile, setIsDocModalOpen) => {
+  console.log('Abriendo documento:', file)
   setSelectedFile(file)
   setIsDocModalOpen(true)
 }
