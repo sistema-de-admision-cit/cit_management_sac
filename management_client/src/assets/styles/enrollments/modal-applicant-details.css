@@ -22,6 +22,27 @@
 
 .tab-content {
   padding: 20px;
+  position: relative;
+}
+
+.edit-icon { 
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  cursor: pointer;
+}
+
+.edit-icon img {
+  width: 24x;
+  height: 24px;
+}
+
+.edit-icon img:hover {
+  opacity: 0.8;
+}
+
+.edit-icon:disabled {
+  cursor: not-allowed;
 }
 
 .guardian-info {
