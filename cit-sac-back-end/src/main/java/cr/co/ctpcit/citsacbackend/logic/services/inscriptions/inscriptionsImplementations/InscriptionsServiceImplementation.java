@@ -101,16 +101,11 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
             return StudentMapper.convertToDtoList(student);
         }
 
-        // Set to avoid duplicates
-        Set<StudentEntity> studentSet = new HashSet<>();
+        // Find students by first name, first surname or second surname
+        List<StudentEntity> students = studentRepository.findByFirstNameContainingOrFirstSurnameContainingOrSecondSurnameContaining(
+                value, value, value);
 
-        // Find all by name, first surname, or second surname
-        studentSet.addAll(studentRepository.findByFirstNameContaining(value));
-        studentSet.addAll(studentRepository.findByFirstSurnameContaining(value));
-        studentSet.addAll(studentRepository.findBySecondSurnameContaining(value));
-
-        // Convert the Set to a List of DTOs
-        return StudentMapper.convertToDtoList(new ArrayList<>(studentSet));
+        return StudentMapper.convertToDtoList(students);
     }
 
     /**
