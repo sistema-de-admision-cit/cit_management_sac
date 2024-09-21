@@ -40,7 +40,7 @@ const EnrollmentRow = ({ enrollment, index, onStudentIdClick, onDateChange, onWh
     <td>
       <Button
         className='pdf-icon'
-        onClick={() => onDocClick(enrollment, 'Notas', enrollment.enrollments[0].document.find(doc => doc.documentType === 'NO'))}
+        onClick={() => onDocClick(enrollment, 'Notas', enrollment.enrollments[0].document.find(doc => doc.documentType === 'OT'))}
       >
         <img src={PdfIcon} alt='logo de un pdf' />
       </Button>
