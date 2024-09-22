@@ -12,24 +12,17 @@ import java.io.Serializable;
  */
 @Builder
 public record AddressDto(Long id,
-                         @NotNull(message = "El país es obligatorio")
-                         @Size(max = 16)
-                         @NotBlank(message = "El país es obligatorio")
-                         String country,
-                         @NotNull(message = "La provincia es obligatoria")
-                         @Size(max = 32)
-                         @NotBlank(message = "La provincia es obligatoria")
-                         String province,
-                         @NotNull(message = "La ciudad es obligatoria")
-                         @Size(max = 32)
-                         @NotBlank(message = "La ciudad es obligatoria")
-                         String city,
-                         @NotNull(message = "El distrito es obligatorio")
-                         @Size(max = 32)
-                         @NotBlank(message = "El distrito es obligatorio")
-                         String district,
-                         @NotNull(message = "La dirección es obligatoria")
-                         @Size(max = 64)
-                         @NotBlank(message = "La dirección es obligatoria")
-                         String addressInfo) implements Serializable {
+                         @NotNull(message = "El país es obligatorio") @Size(max = 16) @NotBlank(
+                             message = "El país es obligatorio") String country,
+                         @NotNull(message = "La provincia es obligatoria") @Size(
+                             max = 32) @NotBlank(
+                             message = "La provincia es obligatoria") String province,
+                         @NotNull(message = "La ciudad es obligatoria") @Size(max = 32) @NotBlank(
+                             message = "La ciudad es obligatoria") String city,
+                         @NotNull(message = "El distrito es obligatorio") @Size(max = 32) @NotBlank(
+                             message = "El distrito es obligatorio") String district,
+                         @NotNull(message = "La dirección es obligatoria") @Size(
+                             max = 64) @NotBlank(
+                             message = "La dirección es obligatoria") String addressInfo)
+    implements Serializable {
 }

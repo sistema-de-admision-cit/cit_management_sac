@@ -22,63 +22,69 @@ import java.util.Objects;
 @ToString
 @Validated
 public class AddressEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "address_id")
-    @JdbcTypeCode(SqlTypes.INTEGER)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "address_id")
+  @JdbcTypeCode(SqlTypes.INTEGER)
+  private Long id;
 
-    @Column(name = "country")
-    @Size(max = 16)
-    @NotNull(message = "El país es obligatorio")
-    @NotBlank(message = "El país es obligatorio")
-    private String country;
+  @Column(name = "country")
+  @Size(max = 16)
+  @NotNull(message = "El país es obligatorio")
+  @NotBlank(message = "El país es obligatorio")
+  private String country;
 
-    @Column(name = "province")
-    @Size(max = 32)
-    @NotNull(message = "La provincia es obligatoria")
-    @NotBlank(message = "La provincia es obligatoria")
-    private String province;
+  @Column(name = "province")
+  @Size(max = 32)
+  @NotNull(message = "La provincia es obligatoria")
+  @NotBlank(message = "La provincia es obligatoria")
+  private String province;
 
-    @Column(name = "city")
-    @Size(max = 32)
-    @NotNull(message = "La ciudad es obligatoria")
-    @NotBlank(message = "La ciudad es obligatoria")
-    private String city;
+  @Column(name = "city")
+  @Size(max = 32)
+  @NotNull(message = "La ciudad es obligatoria")
+  @NotBlank(message = "La ciudad es obligatoria")
+  private String city;
 
-    @Column(name = "district")
-    @Size(max = 32)
-    @NotNull(message = "El distrito es obligatorio")
-    @NotBlank(message = "El distrito es obligatorio")
-    private String district;
+  @Column(name = "district")
+  @Size(max = 32)
+  @NotNull(message = "El distrito es obligatorio")
+  @NotBlank(message = "El distrito es obligatorio")
+  private String district;
 
-    @Column(name = "address_info")
-    @Size(max = 64)
-    @NotNull(message = "La dirección es obligatoria")
-    @NotBlank(message = "La dirección es obligatoria")
-    private String addressInfo;
+  @Column(name = "address_info")
+  @Size(max = 64)
+  @NotNull(message = "La dirección es obligatoria")
+  @NotBlank(message = "La dirección es obligatoria")
+  private String addressInfo;
 
-    @NotNull(message = "Es obligatorio que exista un padre asociado")
-    @ManyToOne
-    @JoinColumn(name = "parent_guardian_id", nullable = false)
-    private ParentsGuardianEntity parentGuardian;
+  @NotNull(message = "Es obligatorio que exista un padre asociado")
+  @ManyToOne
+  @JoinColumn(name = "parent_guardian_id", nullable = false)
+  private ParentsGuardianEntity parentGuardian;
 
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ?
-                ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
-                ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
-        AddressEntity that = (AddressEntity) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
-    }
+  @Override
+  public final boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (o == null)
+      return false;
+    Class<?> oEffectiveClass = o instanceof HibernateProxy ?
+        ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() :
+        o.getClass();
+    Class<?> thisEffectiveClass = this instanceof HibernateProxy ?
+        ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() :
+        this.getClass();
+    if (thisEffectiveClass != oEffectiveClass)
+      return false;
+    AddressEntity that = (AddressEntity) o;
+    return getId() != null && Objects.equals(getId(), that.getId());
+  }
 
-    @Override
-    public final int hashCode() {
-        return this instanceof HibernateProxy ?
-                ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
-    }
+  @Override
+  public final int hashCode() {
+    return this instanceof HibernateProxy ?
+        ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() :
+        getClass().hashCode();
+  }
 }

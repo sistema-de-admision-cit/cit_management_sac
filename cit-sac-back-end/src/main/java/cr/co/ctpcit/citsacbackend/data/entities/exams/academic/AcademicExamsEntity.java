@@ -18,22 +18,22 @@ import java.util.Date;
 @Table(name = "tbl_academicexams")
 public class AcademicExamsEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "exam_id", nullable = false)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "exam_id", nullable = false)
+  private Integer id;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "enrollment_id", nullable = false)
-    @ToString.Exclude
-    private EnrollmentEntity enrollment;
+  @NotNull
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "enrollment_id", nullable = false)
+  @ToString.Exclude
+  private EnrollmentEntity enrollment;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "exam_date", nullable = false)
-    private Date examDate;
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "exam_date", nullable = false)
+  private Date examDate;
 
-    @NotNull
-    @Column(name = "grade", precision = 5, scale = 2, nullable = false)
-    private BigDecimal grade;
+  @NotNull
+  @Column(name = "grade", precision = 5, scale = 2, nullable = false)
+  private BigDecimal grade;
 }

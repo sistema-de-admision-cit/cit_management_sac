@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AcademicQuestionsRepository extends JpaRepository<AcademicQuestionsEntity, Integer> {
-    List<AcademicQuestionsEntity> findByQuestionTextContaining(String questionText);
+public interface AcademicQuestionsRepository
+    extends JpaRepository<AcademicQuestionsEntity, Integer> {
+  List<AcademicQuestionsEntity> findByQuestionTextContaining(String questionText);
 }
 

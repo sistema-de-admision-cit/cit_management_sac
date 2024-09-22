@@ -7,19 +7,17 @@ import cr.co.ctpcit.citsacbackend.logic.mappers.SystemConfigMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @RequiredArgsConstructor
 @Service
 public class SystemConfigServiceImplementation implements SystemConfigService {
 
-    private final SystemConfigRepository systemConfigRepository;
+  private final SystemConfigRepository systemConfigRepository;
 
-    @Override
-    public SystemConfigDto addSystemConfig(SystemConfigDto systemConfigDto) {
-        SystemConfigEntity systemConfigEntity = SystemConfigMapper.toEntity(systemConfigDto);
-        SystemConfigEntity savedEntity = systemConfigRepository.save(systemConfigEntity);
-        return SystemConfigMapper.toDto(savedEntity);
-    }
+  @Override
+  public SystemConfigDto addSystemConfig(SystemConfigDto systemConfigDto) {
+    SystemConfigEntity systemConfigEntity = SystemConfigMapper.toEntity(systemConfigDto);
+    SystemConfigEntity savedEntity = systemConfigRepository.save(systemConfigEntity);
+    return SystemConfigMapper.toDto(savedEntity);
+  }
 
 }

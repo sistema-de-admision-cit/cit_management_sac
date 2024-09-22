@@ -13,23 +13,20 @@ import org.springframework.data.repository.query.Param;
 import java.sql.Date;
 
 public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Long> {
-    @Modifying
-    @Transactional
-    @Query("UPDATE EnrollmentEntity e SET e.whatsappNotification = :whatsappNotification WHERE e.id = :id")
-    void updateWhatsappNotificationById(@NotNull Long id, @NotNull Boolean whatsappNotification);
+  @Modifying
+  @Transactional
+  @Query(
+      "UPDATE EnrollmentEntity e SET e.whatsappNotification = :whatsappNotification WHERE e.id = :id")
+  void updateWhatsappNotificationById(@NotNull Long id, @NotNull Boolean whatsappNotification);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE EnrollmentEntity e SET e.status = :status WHERE e.id = :id")
-    void updateStatusById(Long id, ProcessStatus status);
+  @Modifying
+  @Transactional
+  @Query("UPDATE EnrollmentEntity e SET e.status = :status WHERE e.id = :id")
+  void updateStatusById(Long id, ProcessStatus status);
 
-    @Procedure(name = "usp_update_enrollment_and_log")
-    void usp_update_enrollment_and_log(
-            @Param("p_enrollment_id") Long enrollmentId,
-            @Param("p_new_status") String newStatus,
-            @Param("p_new_exam_date") Date newExamDate,
-            @Param("p_new_whatsapp_permission") Boolean newWhatsappPermission,
-            @Param("p_comment") String comment,
-            @Param("p_changed_by") Integer changedBy
-    );
+  @Procedure(name = "usp_update_enrollment_and_log")
+  void usp_update_enrollment_and_log(@Param("p_enrollment_id") Long enrollmentId,
+      @Param("p_new_status") String newStatus, @Param("p_new_exam_date") Date newExamDate,
+      @Param("p_new_whatsapp_permission") Boolean newWhatsappPermission,
+      @Param("p_comment") String comment, @Param("p_changed_by") Integer changedBy);
 }

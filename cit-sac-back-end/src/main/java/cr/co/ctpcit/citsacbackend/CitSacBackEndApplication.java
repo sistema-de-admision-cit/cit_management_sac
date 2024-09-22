@@ -12,21 +12,18 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(StorageProperties.class)
 public class CitSacBackEndApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(CitSacBackEndApplication.class, args);
+  public static void main(String[] args) {
+    SpringApplication.run(CitSacBackEndApplication.class, args);
 
 
 
+  }
 
-
-
-	}
-
-	@Bean
-	CommandLineRunner init(StorageService storageService) {
-		return (args) -> {
-			//storageService.deleteAll();
-			storageService.init();
-		};
-	}
+  @Bean
+  CommandLineRunner init(StorageService storageService) {
+    return (args) -> {
+      //storageService.deleteAll();
+      storageService.init();
+    };
+  }
 }

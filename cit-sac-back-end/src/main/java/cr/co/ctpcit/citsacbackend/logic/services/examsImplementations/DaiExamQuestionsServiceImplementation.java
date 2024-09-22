@@ -14,13 +14,12 @@ import java.util.stream.Collectors;
 @Service
 public class DaiExamQuestionsServiceImplementation implements DaiExamQuestionsService {
 
-    private final DaiExamQuestionsRepository repository;
+  private final DaiExamQuestionsRepository repository;
 
-    @Override
-    public List<DaiExamQuestionsDto> getExamAnswers(Integer examId) {
-        return repository.findAllByIdExamId(examId).stream()
-                .map(DaiExamQuestionsMapper::toDto)
-                .collect(Collectors.toList());
-    }
+  @Override
+  public List<DaiExamQuestionsDto> getExamAnswers(Integer examId) {
+    return repository.findAllByIdExamId(examId).stream().map(DaiExamQuestionsMapper::toDto)
+        .collect(Collectors.toList());
+  }
 
 }

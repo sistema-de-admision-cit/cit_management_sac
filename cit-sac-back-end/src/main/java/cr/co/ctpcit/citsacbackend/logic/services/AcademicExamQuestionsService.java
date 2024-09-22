@@ -5,5 +5,5 @@ import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamQuestions
 import java.util.List;
 
 public interface AcademicExamQuestionsService {
-    List<AcademicExamQuestionsDto> getExamAnswers(Integer examId);
+  List<AcademicExamQuestionsDto> getExamAnswers(Integer examId);
 }

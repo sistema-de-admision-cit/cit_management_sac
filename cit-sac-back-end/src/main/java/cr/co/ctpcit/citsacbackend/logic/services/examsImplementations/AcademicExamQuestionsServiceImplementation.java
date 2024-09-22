@@ -14,13 +14,12 @@ import java.util.stream.Collectors;
 @Service
 public class AcademicExamQuestionsServiceImplementation implements AcademicExamQuestionsService {
 
-    private final AcademicExamQuestionRepository repository;
+  private final AcademicExamQuestionRepository repository;
 
-    @Override
-    public List<AcademicExamQuestionsDto> getExamAnswers(Integer examId) {
-        return repository.findAllByIdExamId(examId).stream()
-                .map(AcademicExamQuestionsMapper::toDto)
-                .collect(Collectors.toList());
-    }
+  @Override
+  public List<AcademicExamQuestionsDto> getExamAnswers(Integer examId) {
+    return repository.findAllByIdExamId(examId).stream().map(AcademicExamQuestionsMapper::toDto)
+        .collect(Collectors.toList());
+  }
 
 }

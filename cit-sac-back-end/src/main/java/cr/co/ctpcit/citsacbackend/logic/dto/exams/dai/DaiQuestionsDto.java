@@ -8,10 +8,7 @@ import java.io.Serializable;
 /**
  * DTO para {@link cr.co.ctpcit.citsacbackend.data.entities.exams.dai.DaiQuestionsEntity}
  */
-public record DaiQuestionsDto(
-        @NotNull Integer id,
-        @NotNull String questionText,
-        @NotNull Grades questionGrade,
-        String imageUrl
-) implements Serializable {
+public record DaiQuestionsDto(@NotNull Integer id, @NotNull String questionText,
+                              @NotNull Grades questionGrade, String imageUrl)
+    implements Serializable {
 }

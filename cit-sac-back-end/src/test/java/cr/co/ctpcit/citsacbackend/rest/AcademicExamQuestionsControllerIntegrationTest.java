@@ -19,20 +19,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Rollback
 public class AcademicExamQuestionsControllerIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  @Autowired
+  private ObjectMapper objectMapper;
 
-    @Test
-    public void testGetAcademicExamQuestions() throws Exception {
-        int examId = 1;
+  @Test
+  public void testGetAcademicExamQuestions() throws Exception {
+    int examId = 1;
 
-        mockMvc.perform(get("/api/academic-exams/{examId}/questions", examId)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray());
-    }
+    mockMvc.perform(get("/api/academic-exams/{examId}/questions", examId).contentType(
+            MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray());
+  }
 }

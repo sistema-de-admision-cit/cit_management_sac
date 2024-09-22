@@ -1,7 +1,9 @@
 package cr.co.ctpcit.citsacbackend.data.entities.exams.dai;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -14,22 +16,22 @@ import java.util.Date;
 @Entity
 @Table(name = "tbl_daiexams")
 public class DaiExamsEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "exam_id", nullable = false)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "exam_id", nullable = false)
+  private Integer id;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "daigrades_id", nullable = false)
-    @ToString.Exclude
-    private DaiGradesEntity daiGradesId;
+  @NotNull
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "daigrades_id", nullable = false)
+  @ToString.Exclude
+  private DaiGradesEntity daiGradesId;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "exam_date", nullable = false)
-    private Date examDate;
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "exam_date", nullable = false)
+  private Date examDate;
 
-    @NotNull
-    @Column(name = "grade", precision = 5, scale = 2, nullable = false)
-    private BigDecimal grade;
+  @NotNull
+  @Column(name = "grade", precision = 5, scale = 2, nullable = false)
+  private BigDecimal grade;
 }

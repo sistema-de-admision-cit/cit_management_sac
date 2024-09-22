@@ -7,13 +7,13 @@ import jakarta.persistence.Converter;
 @Converter(autoApply = true)
 public class GradeToEnrollConverter implements AttributeConverter<Grades, String> {
 
-    @Override
-    public String convertToDatabaseColumn(Grades attribute) {
-        return attribute == null ? null : attribute.getGrade();
-    }
+  @Override
+  public String convertToDatabaseColumn(Grades attribute) {
+    return attribute == null ? null : attribute.getGrade();
+  }
 
-    @Override
-    public Grades convertToEntityAttribute(String dbData) {
-        return Grades.fromGrade(dbData);
-    }
+  @Override
+  public Grades convertToEntityAttribute(String dbData) {
+    return Grades.fromGrade(dbData);
+  }
 }

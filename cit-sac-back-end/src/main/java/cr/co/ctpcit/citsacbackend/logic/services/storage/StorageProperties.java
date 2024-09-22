@@ -9,9 +9,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("storage")
 public class StorageProperties {
 
-	/**
-	 * Folder location for storing files as a directory named files located in resources directory of the project
-	 */
-	private String location = "src/main/resources/static/files";
+  /**
+   * Folder location for storing files as a directory named files located in resources directory of
+   * the project
+   */
+  private String location = "src/main/resources/static/files";
 
 }

@@ -1,13 +1,9 @@
 package cr.co.ctpcit.citsacbackend.logic.services.examsImplementations;
 
 import cr.co.ctpcit.citsacbackend.data.entities.exams.academic.AcademicQuestionsEntity;
-
 import cr.co.ctpcit.citsacbackend.data.repositories.AcademicExamQuestionRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.AcademicQuestionsRepository;
-
-
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicQuestionsDto;
-
 import cr.co.ctpcit.citsacbackend.logic.mappers.exams.academic.AcademicQuestionsMapper;
 import cr.co.ctpcit.citsacbackend.logic.services.AcademicQuestionsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,66 +16,67 @@ import java.util.stream.Collectors;
 @Service
 public class AcademicQuestionsServiceImplementation implements AcademicQuestionsService {
 
-    @Autowired
-    private AcademicQuestionsRepository academicQuestionsRepository;
+  @Autowired
+  private AcademicQuestionsRepository academicQuestionsRepository;
 
-    @Autowired
-    private AcademicExamQuestionRepository academicExamQuestionsRepository;
+  @Autowired
+  private AcademicExamQuestionRepository academicExamQuestionsRepository;
 
-    @Autowired
-    public AcademicQuestionsServiceImplementation(AcademicQuestionsRepository repository) {
-        this.academicQuestionsRepository = repository;
+  @Autowired
+  public AcademicQuestionsServiceImplementation(AcademicQuestionsRepository repository) {
+    this.academicQuestionsRepository = repository;
+  }
+
+  @Override
+  public List<AcademicQuestionsDto> obtenerTodasLasPreguntas() {
+    List<AcademicQuestionsEntity> entities = academicQuestionsRepository.findAll();
+    return AcademicQuestionsMapper.toDtoList(entities);
+  }
+
+  @Override
+  public AcademicQuestionsDto obtenerPreguntaPorId(Integer id) {
+    AcademicQuestionsEntity entity = academicQuestionsRepository.findById(id)
+        .orElseThrow(() -> new NoSuchElementException("Pregunta no encontrada con el id " + id));
+    return AcademicQuestionsMapper.toDto(entity);
+  }
+
+  @Override
+  public List<AcademicQuestionsDto> obtenerPreguntasPorQuestionText(String questionText) {
+    List<AcademicQuestionsEntity> entities =
+        academicQuestionsRepository.findByQuestionTextContaining(questionText);
+    if (entities.isEmpty()) {
+      throw new NoSuchElementException(
+          "No se encontraron preguntas que contengan: " + questionText);
     }
+    return entities.stream().map(AcademicQuestionsMapper::toDto).collect(Collectors.toList());
+  }
 
-    @Override
-    public List<AcademicQuestionsDto> obtenerTodasLasPreguntas() {
-        List<AcademicQuestionsEntity> entities = academicQuestionsRepository.findAll();
-        return AcademicQuestionsMapper.toDtoList(entities);
+
+  @Override
+  public void eliminarPregunta(Integer questionId) {
+    if (academicExamQuestionsRepository.existsByQuestionId(questionId)) {
+      throw new IllegalStateException(
+          "No se puede eliminar la pregunta porque está asociada a un examen.");
     }
+    academicQuestionsRepository.deleteById(questionId);
+  }
 
-    @Override
-    public AcademicQuestionsDto obtenerPreguntaPorId(Integer id) {
-        AcademicQuestionsEntity entity = academicQuestionsRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Pregunta no encontrada con el id " + id));
-        return AcademicQuestionsMapper.toDto(entity);
-    }
+  @Override
+  public AcademicQuestionsDto modificarPregunta(Integer id, AcademicQuestionsDto preguntaDto) {
+    AcademicQuestionsEntity entity = academicQuestionsRepository.findById(id)
+        .orElseThrow(() -> new NoSuchElementException("Pregunta no encontrada con el id " + id));
 
-    @Override
-    public List<AcademicQuestionsDto> obtenerPreguntasPorQuestionText(String questionText) {
-        List<AcademicQuestionsEntity> entities = academicQuestionsRepository.findByQuestionTextContaining(questionText);
-        if (entities.isEmpty()) {
-            throw new NoSuchElementException("No se encontraron preguntas que contengan: " + questionText);
-        }
-        return entities.stream()
-                .map(AcademicQuestionsMapper::toDto)
-                .collect(Collectors.toList());
-    }
+    entity.setQuestionText(preguntaDto.questionText());
+    entity.setQuestionGrade(preguntaDto.questionGrade());
+    entity.setOptionA(preguntaDto.option_A());
+    entity.setOptionB(preguntaDto.option_B());
+    entity.setOptionC(preguntaDto.option_C());
+    entity.setOptionD(preguntaDto.option_D());
+    entity.setCorrectOption(preguntaDto.correctOption());
+    entity.setImageUrl(preguntaDto.imageUrl());
 
-
-    @Override
-    public void eliminarPregunta(Integer questionId) {
-        if (academicExamQuestionsRepository.existsByQuestionId(questionId)) {
-            throw new IllegalStateException("No se puede eliminar la pregunta porque está asociada a un examen.");
-        }
-        academicQuestionsRepository.deleteById(questionId);
-    }
-
-    @Override
-    public AcademicQuestionsDto modificarPregunta(Integer id, AcademicQuestionsDto preguntaDto) {
-        AcademicQuestionsEntity entity = academicQuestionsRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Pregunta no encontrada con el id " + id));
-
-        entity.setQuestionText(preguntaDto.questionText());
-        entity.setQuestionGrade(preguntaDto.questionGrade());
-        entity.setOptionA(preguntaDto.option_A());
-        entity.setOptionB(preguntaDto.option_B());
-        entity.setOptionC(preguntaDto.option_C());
-        entity.setOptionD(preguntaDto.option_D());
-        entity.setCorrectOption(preguntaDto.correctOption());
-        entity.setImageUrl(preguntaDto.imageUrl());
-
-        AcademicQuestionsEntity updatedEntity = academicQuestionsRepository.save(entity);
-        return AcademicQuestionsMapper.toDto(updatedEntity);
-    }
+    AcademicQuestionsEntity updatedEntity = academicQuestionsRepository.save(entity);
+    return AcademicQuestionsMapper.toDto(updatedEntity);
+  }
 
 }
