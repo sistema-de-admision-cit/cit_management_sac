@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { isCommentRequired } from './helpers'
+import { formatDateToObj, isCommentRequired } from './helpers'
 
 export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, setApplicantSelected) => {
   setApplicantSelected(applicant)
@@ -142,8 +142,8 @@ export const handleGetAllEnrollments = (setEnrollments, setLoading, setErrorMess
   setLoading(true)
 
   axios.get(getAllEnrollmentsUrl).then(response => {
-    console.log(response)
-    setEnrollments(response.data)
+    const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
+    setEnrollments(enrollments)
     setLoading(false)
   }).catch(error => {
     console.error(error)
