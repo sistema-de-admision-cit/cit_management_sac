@@ -33,7 +33,7 @@ const EnrollmentTable = ({ enrollments, onStudentIdClick, loading }) => {
           ? (
             <tbody>
               <tr>
-                <td colSpan='4'>
+                <td colSpan='6'>
                   <Spinner />
                 </td>
               </tr>
@@ -54,7 +54,7 @@ const EnrollmentTable = ({ enrollments, onStudentIdClick, loading }) => {
                   )
                 : (
                   <tr>
-                    <td colSpan='4' className='no-applicants'>
+                    <td colSpan='6' className='no-applicants'>
                       No hay aspirantes
                     </td>
                   </tr>
