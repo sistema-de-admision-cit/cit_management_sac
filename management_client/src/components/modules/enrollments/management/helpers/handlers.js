@@ -6,10 +6,6 @@ export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, 
   setIsModalApplicantDetailsOpen(true)
 }
 
-export const handleDateChange = (applicant, date) => {
-  console.log('Fecha Entrevista:', date)
-}
-
 const validateDataBeforeSubmit = (formData, enrollment) => {
   if (!formData.status) {
     throw new Error('El estado de la inscripción es obligatorio')
@@ -54,48 +50,6 @@ export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setE
     }).catch(error => {
       console.error(error)
       setErrorMessage('Hubo un error al actualizar la inscripción. Por favor, intenta de nuevo.')
-    })
-}
-
-const updateStatusUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_STATUS_ENDPOINT}`
-export const handleStatusChange = (applicant, value, setErrorMessage, setEnrollments) => {
-  console.log('Estado:', value)
-  console.log('Aspirante:', applicant)
-  axios.put(`${updateStatusUrl}/${applicant.id}?status=${value}`)
-    .then(response => {
-      // update the state of the enrollments
-      setEnrollments(prevEnrollments => {
-        const updatedEnrollments = prevEnrollments.map(enrollment => {
-          if (enrollment.id === applicant.id) {
-            enrollment.enrollments[0].status = value
-          }
-          return enrollment
-        })
-        return updatedEnrollments
-      })
-    }).catch(error => {
-      console.error(error)
-      setErrorMessage('Hubo un error al actualizar el estado. Por favor, intenta de nuevo.')
-    })
-}
-
-const updateWhatsappPermissionUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_WHATSAPP_PERMISSION_ENDPOINT}`
-export const handleWhatsappChange = (applicant, value, setErrorMessage, setEnrollments) => {
-  axios.put(`${updateWhatsappPermissionUrl}/${applicant.id}?permission=${value}`)
-    .then(response => {
-      // update the state of the enrollments
-      setEnrollments(prevEnrollments => {
-        const updatedEnrollments = prevEnrollments.map(enrollment => {
-          if (enrollment.id === applicant.id) {
-            enrollment.enrollments[0].whatsappNotification = value
-          }
-          return enrollment
-        })
-        return updatedEnrollments
-      })
-    }).catch(error => {
-      console.error(error)
-      setErrorMessage('Hubo un error al actualizar el permiso de Whatsapp. Por favor, intenta de nuevo.')
     })
 }
 
