@@ -43,3 +43,45 @@ export const isEnabled = (formData, enrollment) => {
   }
   return true
 }
+
+// formtDates: parse the dates in the object to Date objects
+export const formatDateToObj = (obj) => {
+  if (obj.birthDate) {
+    obj.birthDate = new Date(obj.birthDate)
+  }
+
+  // if the object has enrollments, parse the examDate to Date objects
+  if (obj.enrollments && Array.isArray(obj.enrollments)) {
+    obj.enrollments.forEach(enrollment => {
+      if (enrollment.examDate) {
+        enrollment.examDate = new Date(enrollment.examDate)
+      }
+    })
+  }
+
+  return obj
+}
+
+// parse the object dates to "day/month/year" format
+export const formatDate = (date) => {
+  let day = date.getDate()
+  let month = date.getMonth() + 1
+  const year = date.getFullYear()
+
+  day = day < 10 ? '0' + day : day
+  month = month < 10 ? '0' + month : month
+
+  return `${day}/${month}/${year}`
+}
+
+// parse the date to "year-month-day" format
+export const formatDateForApi = (date) => {
+  let day = date.getDate()
+  let month = date.getMonth() + 1
+  const year = date.getFullYear()
+
+  day = day < 10 ? '0' + day : day
+  month = month < 10 ? '0' + month : month
+
+  return `${year}-${month}-${day}`
+}
