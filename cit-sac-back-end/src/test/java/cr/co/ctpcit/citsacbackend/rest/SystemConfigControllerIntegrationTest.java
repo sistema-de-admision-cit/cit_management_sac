@@ -28,15 +28,14 @@ public class SystemConfigControllerIntegrationTest {
 
     @Test
     void addSystemConfigIntegrationTest() throws Exception {
-        // Arrange
-        SystemConfigDto systemConfigDto = new SystemConfigDto(null, "max_connections", "200");
 
-        // Act & Assert
+        SystemConfigDto systemConfigDto = new SystemConfigDto(null, "examen_academico", "40");
+
         mockMvc.perform(post("/api/system-config")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(systemConfigDto)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.configName").value("max_connections"))
-                .andExpect(jsonPath("$.configValue").value("200"));
+                .andExpect(jsonPath("$.configName").value("examen_academico"))
+                .andExpect(jsonPath("$.configValue").value("40"));
     }
 }

@@ -30,7 +30,7 @@ public class SystemConfigControllerUnitTest {
 
     @Test
     void addSystemConfigTest() {
-        SystemConfigDto systemConfigDto = new SystemConfigDto(null, "max_users", "100");
+        SystemConfigDto systemConfigDto = new SystemConfigDto(null, "examenDai", "40");
         SystemConfigEntity systemConfigEntity = SystemConfigMapper.toEntity(systemConfigDto);
         systemConfigEntity.setId(1);
 
@@ -40,8 +40,8 @@ public class SystemConfigControllerUnitTest {
         SystemConfigDto result = systemConfigService.addSystemConfig(systemConfigDto);
 
         assertNotNull(result);
-        assertEquals("max_users", result.configName());
-        assertEquals("100", result.configValue());
+        assertEquals("examenDai", result.configName());
+        assertEquals("40", result.configValue());
         assertEquals(1, result.id());
 
         verify(systemConfigRepository, times(1)).save(any(SystemConfigEntity.class));
