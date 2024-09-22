@@ -67,7 +67,7 @@ const ModalApplicantDetails = ({
         <EnrollmentInfo
           enrollment={enrollments.find((enrollment) => activeTab === `enrollment-${enrollment.id}`)}
           isEditing={isEditing}
-          onEnrollmentEdit={onEnrollmentEdit}
+          onEnrollmentEdit={(e, formData, enrollment) => onEnrollmentEdit(e, formData, enrollment, setIsEditing)}
           setIsEditing={setIsEditing}
           onDocClick={(file) => onDocClick(file, setSelectedFile, setIsDocModalOpen)}
           setSelectedFileType={setSelectedFileType}

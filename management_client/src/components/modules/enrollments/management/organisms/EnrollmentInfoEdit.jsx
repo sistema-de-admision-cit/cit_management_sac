@@ -12,14 +12,14 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
     examDate: enrollment.examDate,
     whatsappNotification: enrollment.whatsappNotification,
     comment: '',
-    changedBy: 'admin' // todo: get the current user
+    changedBy: 1 // todo: get the current user id
   })
 
   return (
     <div className='tab-content enrollment-info-edit'>
       <h2 className='enrollment-title'>Inscripción - {enrollment.id}</h2>
 
-      <form className='enrollment-form' onSubmit={(e) => handleEnrollmentEdit(e, formData, setIsEditing)}>
+      <form className='enrollment-form' onSubmit={(e) => handleEnrollmentEdit(e, formData, enrollment)}>
         <InputField
           field={{
             type: 'dropdown',

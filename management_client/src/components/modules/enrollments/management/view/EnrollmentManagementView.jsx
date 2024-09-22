@@ -43,7 +43,9 @@ const EnrollmentManagementView = () => {
           onClose={() => setIsModalApplicantDetailsOpen(false)}
           onDocClick={handleDocClick}
           onFileDownload={handleFileDownload}
-          onEnrollmentEdit={handleEnrollmentEdit}
+          onEnrollmentEdit={
+            (e, formData, enrollment, setIsEditing) => handleEnrollmentEdit(e, formData, enrollment, setIsEditing, setErrorMessage, setSuccessMessage)
+          }
         />
       )}
       {renderMessages()}
