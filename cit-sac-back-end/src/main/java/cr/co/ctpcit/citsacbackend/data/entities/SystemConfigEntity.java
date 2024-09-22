@@ -19,6 +19,7 @@ public class SystemConfigEntity {
     @Column(name = "config_id", nullable = false)
     private Integer id;
 
+
     @Size(max = 100)
     @NotNull
     @Column(name = "config_name", nullable = false, length = 100)
