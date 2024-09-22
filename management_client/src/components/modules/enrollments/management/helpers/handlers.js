@@ -166,10 +166,11 @@ export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollmen
 }
 
 const searchEnrollmentUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT}`
-export const handleSearch = (search, setApplicants) => {
+export const handleSearch = (search, setEnrollments) => {
   axios.get(`${searchEnrollmentUrl}?value=${search}`).then(response => {
     console.log(response)
-    setApplicants(response.data)
+    const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
+    setEnrollments(enrollments)
   }).catch(error => {
     console.error(error)
   })
