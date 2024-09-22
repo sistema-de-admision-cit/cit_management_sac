@@ -3,10 +3,22 @@ import FindQuestion from '../../base/molecules/FindQuestion'
 import ModifyQuestionForm from '../organisms/ModifyQuestionForm'
 import '../../../../../assets/styles/global/view.css'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
+import QuestionList from '../../base/organism/QuestionList.jsx'
+import { handleGetAllQuestions } from '../../delete_questions/helpers/formHandlers'
+import { getQuestionByCode } from '../helpers/helpers'
+import useMessages from '../../../../core/global/hooks/useMessages'
 
 const ModifyQuestionView = () => {
   const [questionData, setQuestionData] = useState(null)
   const [incomingData, setIncomingData] = useState(null)
+  const [questions, setQuestions] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  const { setErrorMessage, renderMessages } = useMessages()
+
+  useEffect(() =>
+    handleGetAllQuestions(setQuestions, setLoading, setErrorMessage)
+  , [])
 
   // Efecto para manejar la actualización de questionData
   useEffect(() => {
@@ -23,7 +35,8 @@ const ModifyQuestionView = () => {
 
   // Maneja la pregunta encontrada
   const handleQuestionFound = (data) => {
-    setIncomingData(data) // Establece los datos para que useEffect los maneje
+    // getQuestionByCode is async
+    getQuestionByCode(data.code, setIncomingData, setErrorMessage, setLoading)
   }
 
   // si el usuario decide buscar otra pregunta, limpiar los datos actuales (esto arregla el error de que no se podia eliminar una pregunta y volve a buscar la misma)
@@ -37,19 +50,29 @@ const ModifyQuestionView = () => {
         <div className='search-section'>
           {!questionData &&
             <FindQuestion
-              onQuestionFound={handleQuestionFound}
-              lookingFor='modify'
+              onResultsUpdate={setQuestions}
             />}
         </div>
-        <div className='form-section'>
-          {questionData && (
+        {!questionData && (
+          <div className='list-section'>
+            <QuestionList
+              questions={questions}
+              onModify={handleQuestionFound}
+              loading={loading}
+              actionType='modify'
+            />
+          </div>
+        )}
+        {questionData && (
+          <div className='form-section'>
             <ModifyQuestionForm
               questionData={questionData}
               setQuestionData={setQuestionData}
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
+      {renderMessages()}
     </SectionLayout>
   )
 }

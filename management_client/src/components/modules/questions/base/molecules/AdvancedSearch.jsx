@@ -8,7 +8,7 @@ const AdvancedSearch = ({ searchCode, setSearchCode, setQuery, setSearchExamType
       <InputField
         field={{ name: 'questionCode', label: 'Código de Pregunta', type: 'text', placeholder: 'Ingrese el código de la pregunta' }}
         value={searchCode}
-        handleChange={(e) => handleSearchByCode(e, setQuery, setSearchCode, setSearchExamType, setQuestions)}
+        handleChange={(e) => handleSearchByCode(e, setQuery, setSearchCode, setQuestions, searchExamType)}
         className='form-group'
       />
       <ExamTypeOptions

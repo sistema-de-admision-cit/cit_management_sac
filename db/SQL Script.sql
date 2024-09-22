@@ -237,9 +237,10 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_documents` (
   `document_id` INT NOT NULL AUTO_INCREMENT,
-  `enrollment_id` INT NOT NULL,
+  `document_name` VARCHAR(64) NOT NULL,
   `document_type` ENUM('HC', 'OT') NOT NULL,
   `document_url` VARCHAR(255) NOT NULL,
+  `enrollment_id` INT NOT NULL,
   PRIMARY KEY (`document_id`),
   INDEX `FK_Documents_Enrollments` (`enrollment_id` ASC) VISIBLE,
   CONSTRAINT `FK_Documents_Enrollments`

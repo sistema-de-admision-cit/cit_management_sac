@@ -3,8 +3,11 @@ package cr.co.ctpcit.citsacbackend.logic.mappers;
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.ParentGuardianStudentEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.ParentsGuardianEntity;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.ParentsGuardianDto;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Mapper for {@link ParentsGuardianDto}
@@ -21,8 +24,8 @@ public class ParentGuardianMapper {
                 .idNumber(parentGuardianEntity.getParentGuardian().getIdNumber())
                 .phoneNumber(parentGuardianEntity.getParentGuardian().getPhoneNumber())
                 .email(parentGuardianEntity.getParentGuardian().getEmail())
-                .homeAddress(parentGuardianEntity.getParentGuardian().getHomeAddress())
                 .relationship(parentGuardianEntity.getParentGuardian().getRelationship())
+                .addresses(AddressMapper.convertToDtoList(parentGuardianEntity.getParentGuardian().getAddresses()))
                 .build();
     }
 
@@ -30,6 +33,27 @@ public class ParentGuardianMapper {
         return parentsGuardianEntities
                 .stream()
                 .map(ParentGuardianMapper::convertToDto)
+                .toList();
+    }
+
+    public static ParentsGuardianEntity convertToEntity(ParentsGuardianDto parentDto) {
+        return ParentsGuardianEntity.builder()
+                .id(parentDto.id())
+                .firstName(parentDto.firstName())
+                .firstSurname(parentDto.firstSurname())
+                .secondSurname(parentDto.secondSurname())
+                .idType(parentDto.idType())
+                .idNumber(parentDto.idNumber())
+                .phoneNumber(parentDto.phoneNumber())
+                .email(parentDto.email())
+                .relationship(parentDto.relationship())
+                .build();
+    }
+
+    public static List<ParentsGuardianEntity> convertToEntityList(List<ParentsGuardianDto> parents) {
+        return parents
+                .stream()
+                .map(ParentGuardianMapper::convertToEntity)
                 .toList();
     }
 }

@@ -1,34 +1,22 @@
-// para validar los campos del formulario
-import { dummyData } from './dummyData'
+import axios from 'axios'
+import { validateFields } from './helpers'
 
-const validateFields = (questionData, setErrorMessage) => {
-  if (!questionData.examType) {
-    setErrorMessage('Por favor, seleccione el tipo de examen.')
-    return
-  }
-  if (!questionData.question) {
-    setErrorMessage('Por favor, ingrese la pregunta.')
-    return
-  }
-  if (questionData.examType === 'academic') {
-    for (let i = 0; i < 4; i++) {
-      if (!questionData.options[i]) {
-        setErrorMessage(`Por favor, ingrese la opción ${i + 1}.`)
-        return
-      }
-    }
-    if (questionData.correctOption === '') {
-      setErrorMessage('Por favor, seleccione la respuesta correcta.')
-    }
-  }
-}
+export const handleChange = (e, setQuestionData, isFile = false) => {
+  const { name, value, files } = e.target
 
-export const handleChange = (e, questionData, setQuestionData) => {
-  const { name, value } = e.target
-  setQuestionData({
-    ...questionData,
-    [name]: value
-  })
+  if (isFile && files) {
+    const fileArray = Array.from(files) // Convierte los archivos a un array
+    setQuestionData(prevState => ({
+      ...prevState,
+      [name]: fileArray
+    }))
+  } else {
+    // Manejar campos de texto
+    setQuestionData(prevState => ({
+      ...prevState,
+      [name]: value
+    }))
+  }
 }
 
 export const handleTestOptionChange = (e, questionData, setQuestionData) => {
@@ -60,64 +48,48 @@ export const clearForm = (setQuestionData) => {
   })
 }
 
-export const handleSubmit = (e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData) => {
+const createQuestionUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_CREATE_QUESTION_ENDPOINT}`
+export const handleCreateQuestionSubmit = (e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData) => {
   e.preventDefault()
   setErrorMessage('')
   setSuccessMessage('')
-
-  // Validar los campos del formulario
   validateFields(questionData, setErrorMessage)
+
+  // Crea un nuevo objeto FormData
+  const formData = new FormData()
+
+  // Agregar los campos de texto
+  formData.append('examType', questionData.examType)
+  formData.append('question', questionData.question)
+  formData.append('options', JSON.stringify(questionData.options))
+  formData.append('correctOption', questionData.correctOption)
+
+  // Agregar los archivos (imágenes)
+  if (questionData.images && questionData.images.length) {
+    for (const image of questionData.images) {
+      formData.append('images', image)
+    }
+  }
 
   setIsLoading(true)
 
-  // hacer el papel de enviar los datos al servidor (TODO: reemplazar por la API)
-  setTimeout(() => {
-    console.log(questionData)
+  axios.post(
+    createQuestionUrl,
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 10000
+    }
+  ).then(response => {
+    console.log(response)
     setIsLoading(false)
     setSuccessMessage('Pregunta guardada exitosamente')
-    setQuestionData({
-      examType: '',
-      question: '',
-      images: [],
-      options: ['', '', '', ''],
-      correctOption: ''
-    })
-  }, 1000)
-}
-
-export const getButtonState = (questionData, isLoading) => {
-  // Si se está cargando, deshabilitar el botón
-  if (isLoading) {
-    return true
-  }
-
-  // si alguno de los campos está vacío, deshabilitar el botón
-  if (!questionData.examType || !questionData.question) {
-    return true
-  }
-
-  // si es seleccion unica
-  if (questionData.examType === 'academic') {
-    // crear un set para verificar que no haya opciones repetidas
-    const set = new Set(questionData.options)
-    if (set.size !== 4) {
-      return true
-    }
-
-    // verificar que no haya campos vacíos
-    for (let i = 0; i < 4; i++) {
-      if (!questionData.options[i]) {
-        return true
-      }
-    }
-
-    // verificar que la respuesta correcta no esté vacía
-    if (questionData.correctOption === '') {
-      return true
-    }
-  }
-
-  return false
+    clearForm(setQuestionData) // Limpia el formulario si es necesario
+  }).catch(error => {
+    console.error(error)
+    setErrorMessage('Ocurrió un error al guardar la pregunta')
+    setIsLoading(false)
+  })
 }
 
 // modif
@@ -139,30 +111,53 @@ export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessM
   }, 1000)
 }
 
-// findQuestion
-const mockFetchQuestions = (query, dummyData, filterByExamType) => {
-  return filterByExamType === 'both' ? dummyData.filter(question => question.question.toLowerCase().includes(query.toLowerCase())) : dummyData.filter(question => question.question.toLowerCase().includes(query.toLowerCase()) && question.examType === filterByExamType)
-}
-
-export const handleSearch = (query, setQuestions, searchExamType, setSearchCode, lookingFor) => {
+/**
+ *
+ * @param {string} query - looking for
+ * @param {function} setQuestions - setter function for the questions
+ * @param {string} searchExamType - exam type to search (both, dai or academic)
+ * @param {string} setSearchCode - setter function for the search code
+*/
+const searchQuestionByTitleUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_QUESTIONS_ENDPOINT}`
+export const handleSearch = (query, setQuestions, searchExamType, setSearchCode) => {
   setSearchCode('')
-  const questions = mockFetchQuestions(query, dummyData, searchExamType)
-  query ? setQuestions(questions) : lookingFor === 'delete' ? setQuestions(questions) : setQuestions([])
+  const searchParams = new URLSearchParams()
+  searchParams.append('query', query)
+  searchParams.append('examType', searchExamType)
+
+  const url = `${searchQuestionByTitleUrl}?${searchParams.toString()}`
+
+  axios.get(url)
+    .then(response => {
+      const questions = response.data
+      console.log(questions)
+      setQuestions(questions)
+    })
+    .catch(error => {
+      console.error(error)
+    })
 }
 
-const mockFetchQuestionByCode = (code) => {
-  return dummyData.find(question => question.code === code)
-}
-
-export const handleSearchByCode = (e, setQuery, setSearchCode, setSearchExamType, setQuestions) => {
+const searchQuestionByCodeUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_QUESTION_BY_CODE_ENDPOINT}`
+export const handleSearchByCode = (e, setQuery, setSearchCode, setQuestions, searchExamType) => {
   e.preventDefault()
   setQuery('')
-  setSearchExamType('both')
 
-  const code = e.target.value
+  const searchParams = new URLSearchParams()
+  searchParams.append('code', e.target.value)
+  searchParams.append('examType', searchExamType)
 
-  setSearchCode(code)
-  const question = mockFetchQuestionByCode(code)
-  const questions = code ? [] : dummyData
-  question ? setQuestions([question]) : setQuestions(questions)
+  const searchCode = e.target.value
+  setSearchCode(searchCode)
+
+  const url = `${searchQuestionByCodeUrl}?${searchParams.toString()}`
+  axios.get(url)
+    .then(response => {
+      const questions = response.data
+      console.log(questions)
+      setQuestions(questions)
+    })
+    .catch(error => {
+      console.error(error)
+    })
 }

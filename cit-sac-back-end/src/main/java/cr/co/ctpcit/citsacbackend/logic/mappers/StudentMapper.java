@@ -1,5 +1,8 @@
 package cr.co.ctpcit.citsacbackend.logic.mappers;
 
+import cr.co.ctpcit.citsacbackend.data.entities.inscription.EnrollmentEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.inscription.ParentGuardianStudentEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.inscription.ParentsGuardianEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.StudentEntity;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 
@@ -27,6 +30,22 @@ public class StudentMapper {
     }
 
     public static List<StudentDto> convertToDtoList(List<StudentEntity> studentEntities) {
+        if (studentEntities == null) {
+            return null;
+        }
         return studentEntities.stream().map(StudentMapper::convertToDto).toList();
+    }
+
+    public static StudentEntity convertToEntity(StudentDto inscriptionDto) {
+        return StudentEntity.builder()
+                .firstName(inscriptionDto.firstName())
+                .firstSurname(inscriptionDto.firstSurname())
+                .secondSurname(inscriptionDto.secondSurname())
+                .birthDate(inscriptionDto.birthDate())
+                .idType(inscriptionDto.idType())
+                .idNumber(inscriptionDto.idNumber())
+                .previousSchool(inscriptionDto.previousSchool())
+                .hasAccommodations(inscriptionDto.hasAccommodations())
+                .build();
     }
 }

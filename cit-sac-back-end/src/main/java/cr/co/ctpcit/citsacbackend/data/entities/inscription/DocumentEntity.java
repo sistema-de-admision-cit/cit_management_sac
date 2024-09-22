@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.validation.annotation.Validated;
 
 @Builder
@@ -21,24 +23,29 @@ public class DocumentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "document_id", nullable = false)
-    private Integer id;
+    @JdbcTypeCode(SqlTypes.INTEGER)
+    private Long id;
 
-    @NotNull
-    @NotBlank(message = "Es obligatorio que exista un registro asociado")
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "enrollment_id", nullable = false)
-    @ToString.Exclude
-    private EnrollmentEntity enrollment;
+    @NotNull(message = "Es obligatorio que se indique el nombre del documento.")
+    @Size(max = 64)
+    @NotBlank(message = "Es obligatorio que se indique el nombre del documento.")
+    @Column(name = "document_name", nullable = false)
+    private String documentName;
 
-    @NotNull
-    @NotBlank(message = "Es obligatorio que se indique el tipo de documento")
+    @NotNull(message = "Es obligatorio que se indique el tipo de documento.")
     @Enumerated(EnumType.STRING)
     @Column(name = "document_type", nullable = false)
     private DocType documentType;
 
     @Size(max = 255)
-    @NotNull
-    @NotBlank(message = "Es obligatorio que se indique la URL del documento")
+    @NotNull(message = "Es obligatorio que se indique la URL del documento.")
+    @NotBlank(message = "Es obligatorio que se indique la URL del documento.")
     @Column(name = "document_url", nullable = false)
     private String documentUrl;
+
+    @NotNull(message = "Es obligatorio que exista un registro asociado.")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "enrollment_id", nullable = false)
+    @ToString.Exclude
+    private EnrollmentEntity enrollment;
 }
