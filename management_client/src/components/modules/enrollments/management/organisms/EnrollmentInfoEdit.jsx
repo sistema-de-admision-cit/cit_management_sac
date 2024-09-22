@@ -34,7 +34,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
 
         <DatePicker
           label='Fecha del Examen'
-          value={new Date(formData.examDate)}
+          value={formData.examDate}
           onChange={(date) => setFormData({ ...formData, examDate: date })}
           className='form-group'
         />

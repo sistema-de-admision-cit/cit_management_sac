@@ -1,13 +1,13 @@
 import Button from '../../../../core/global/atoms/Button'
 import PdfIcon from '../../../../../assets/icons/pdf-svgrepo-com.svg'
 import EditIcon from '../../../../../assets/icons/pencil-svgrepo-com.svg'
-import { statusText } from '../helpers/helpers'
+import { formatDate, statusText } from '../helpers/helpers'
 
 const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileType, setIsEditing }) => (
   <div className='tab-content'>
     <h2>Inscripción - {enrollment.id}</h2>
     <p><strong>Estado:</strong> {statusText[enrollment.status]}</p>
-    <p><strong>Fecha del Examen:</strong> {enrollment.examDate}</p>
+    <p><strong>Fecha del Examen:</strong> {formatDate(enrollment.examDate)}</p>
     <p><strong>Notificación por WhatsApp:</strong> {enrollment.whatsappNotification ? 'Sí' : 'No'}</p>
     <p><strong>Consentimiento:</strong> {enrollment.consentGiven ? 'Dado' : 'No Dado'}</p>
 
