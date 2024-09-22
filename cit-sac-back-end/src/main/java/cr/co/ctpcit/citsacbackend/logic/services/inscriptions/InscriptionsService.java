@@ -28,4 +28,6 @@ public interface InscriptionsService {
       String whatsappPermission, String comment, Integer changedBy);
 
   boolean deleteDocument(Long documentId);
+
+  void saveDocument(String documentName, String documentType, Long enrollmentId);
 }

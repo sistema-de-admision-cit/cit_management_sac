@@ -1,6 +1,7 @@
 package cr.co.ctpcit.citsacbackend.logic.services.inscriptions.inscriptionsImplementations;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.*;
+import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.data.repositories.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
@@ -282,6 +283,25 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
     documentRepository.deleteById(documentId);
 
     return true;
+  }
+
+  @Override
+  public void saveDocument(String documentUrl, String documentType, Long enrollmentId) {
+    EnrollmentEntity enrollment = enrollmentRepository.findById(enrollmentId).get();
+
+    if (enrollment == null) {
+      throw new EnrollmentException("No hay una inscripción con el id " + enrollmentId);
+    }
+
+    // Create the document
+    DocumentEntity document = new DocumentEntity();
+    document.setDocumentName(documentUrl.split("\\.")[0]);
+    document.setDocumentType(DocType.valueOf(documentType));
+    document.setDocumentUrl(documentUrl);
+    document.setEnrollment(enrollment);
+
+    // Save the document
+    documentRepository.save(document);
   }
 
   private boolean existsEnrollment(Long enrollmentId) {
