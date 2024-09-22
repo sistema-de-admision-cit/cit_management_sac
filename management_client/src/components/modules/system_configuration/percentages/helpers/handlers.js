@@ -1,9 +1,24 @@
 import axios from 'axios'
 
+let initValues = {
+  academicExam: 0,
+  daiExam: 0,
+  englishExam: 0
+}
+
+/**
+ *
+ * @param {JSON Object} formValues
+ * @param {JSON Object} initValues to compare with formValues (if they are the same, the save button will be disabled)
+ * @returns
+ */
 export const getSaveButtonState = (formValues) => {
   // sum all values in formValues object
   const total = Object.values(formValues).reduce((acc, value) => acc + Number(value), 0)
-  return total === 100
+  // compare formValues with initValues
+  const isSame = Object.keys(formValues).every(key => formValues[key] === initValues[key])
+
+  return total === 100 && !isSame
 }
 
 const getExamPercentagesUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_EXAM_PERCENTAGES_ENDPOINT}`
@@ -21,8 +36,7 @@ export const getCurrentPercentages = async () => {
       return acc
     }, { academicExam: 0, daiExam: 0, englishExam: 0 })
 
-    console.log(data)
-
+    initValues = { ...data }
     return data
   } catch (error) {
     throw new Error('Error al cargar los porcentajes.')
