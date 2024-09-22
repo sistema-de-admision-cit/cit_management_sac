@@ -3,13 +3,17 @@ import { formatDateForApi, formatDateToObj, isCommentRequired } from './helpers'
 
 // Manejo de errores
 const getErrorMessage = (error) => {
+  if (error.code === 'ECONNABORTED') {
+    return 'La conexión al servidor tardó demasiado. Por favor, intenta de nuevo.'
+  }
+
   if (error.response) {
     if (error.response.status === 404) {
       return 'El documento no se encontró. Puede que ya haya sido eliminado.'
     } else if (error.response.status === 500) {
       return 'Hubo un error en el servidor. Por favor, intenta de nuevo más tarde.'
     } else {
-      return 'Hubo un error: ' + (error.response.data.message || 'Por favor, intenta de nuevo.')
+      return (error.response.data.message || 'Por favor, intenta de nuevo.')
     }
   } else if (error.request) {
     return 'Error de red: No se pudo conectar al servidor. Por favor, verifica tu conexión.'
@@ -50,13 +54,12 @@ export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setE
   try {
     validateDataBeforeSubmit(formData, enrollment)
   } catch (error) {
-    console.error(error)
     setErrorMessage(error.message)
     return
   }
 
-  console.log('Actualizando inscripción:', formData)
-  axios.put(`${updateEnrollmentUrl}/${enrollment.id}?status=${formData.status}&examDate=${formatDateForApi(formData.examDate)}&whatsappPermission=${formData.whatsappNotification}&comment=${formData.comment}&changedBy=1`)
+  axios.put(`${updateEnrollmentUrl}/${enrollment.id}?status=${formData.status}&examDate=${formatDateForApi(formData.examDate)}&whatsappPermission=${formData.whatsappNotification}&comment=${formData.comment}&changedBy=1`,
+    { timeout: 10000 })
     .then(response => {
       setIsEditing(false)
       setSuccessMessage('La inscripción se actualizó correctamente.')
@@ -68,17 +71,17 @@ export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setE
 }
 
 export const handleDocClick = (file, setSelectedFile, setIsDocModalOpen) => {
-  console.log('Abriendo documento:', file)
   setSelectedFile(file)
   setIsDocModalOpen(true)
 }
 
 const downloadFileUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_DOWNLOAD_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT}`
 export const handleFileDownload = (filename, setErrorMessage) => {
-  console.log('Descargando:', filename)
-  console.log('Descargando:', downloadFileUrl)
-
-  axios.get(`${downloadFileUrl}/${filename}`, { responseType: 'blob' })
+  axios.get(`${downloadFileUrl}/${filename}`,
+    {
+      responseType: 'blob',
+      timeout: 10000
+    })
     .then(response => {
       const url = window.URL.createObjectURL(new Blob([response.data]))
       const link = document.createElement('a')
@@ -95,11 +98,8 @@ export const handleFileDownload = (filename, setErrorMessage) => {
 
 const deleteFileUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_DELETE_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT}`
 export const handleFileDelete = (selectedFile, setSelectedFile, setErrorMessage, setSuccessMessage, setEnrollments, enrollmentId, studentId) => {
-  console.log('Eliminando:', selectedFile.documentUrl)
-
-  axios.delete(`${deleteFileUrl}/${selectedFile.id}?filename=${selectedFile.documentUrl}`)
+  axios.delete(`${deleteFileUrl}/${selectedFile.id}?filename=${selectedFile.documentUrl}`, { timeout: 10000 }) // 10 segundos
     .then(response => {
-      console.log(response)
       setSuccessMessage('El documento se eliminó correctamente.')
       setSelectedFile(null)
       setEnrollments(prevEnrollments =>
@@ -123,7 +123,6 @@ export const handleFileDelete = (selectedFile, setSelectedFile, setErrorMessage,
       )
     })
     .catch(error => {
-      console.error(error)
       setErrorMessage(getErrorMessage(error))
     })
 }
@@ -147,9 +146,11 @@ export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollmen
   data.append('documentType', documentType)
   data.append('enrollmentId', enrollment.id)
 
-  axios.post(uploadFileUrl, data)
+  axios.post(
+    uploadFileUrl,
+    data,
+    { timeout: 10000 })
     .then(response => {
-      console.log(response)
       setSuccessMessage('El documento se subió correctamente.')
 
       const updatedDoc = {
@@ -163,16 +164,14 @@ export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollmen
       setSelectedFile(updatedDoc)
     })
     .catch(error => {
-      console.error(error)
       setErrorMessage(getErrorMessage(error))
     })
 }
 
 const searchEnrollmentUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT}`
 export const handleSearch = (search, setEnrollments) => {
-  axios.get(`${searchEnrollmentUrl}?value=${search}`)
+  axios.get(`${searchEnrollmentUrl}?value=${search}`, { timeout: 10000 })
     .then(response => {
-      console.log(response)
       const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
       setEnrollments(enrollments)
     })
@@ -185,13 +184,12 @@ const getAllEnrollmentsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.
 export const handleGetAllEnrollments = (setEnrollments, setLoading, setErrorMessage) => {
   setLoading(true)
 
-  axios.get(getAllEnrollmentsUrl)
+  axios.get(getAllEnrollmentsUrl, { timeout: 10000 })
     .then(response => {
       const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
       setEnrollments(enrollments)
     })
     .catch(error => {
-      console.error(error)
       setErrorMessage(getErrorMessage(error))
     })
     .finally(() => {
