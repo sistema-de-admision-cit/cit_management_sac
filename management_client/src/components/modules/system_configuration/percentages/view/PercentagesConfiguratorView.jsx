@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import PercentagesForm from '../molecules/PercentagesForm'
 import useMessages from '../../../../core/global/hooks/useMessages'
-import { getCurrentPercentages, handleSave } from '../helpers/handlers'
+import { getCurrentPercentages, updateExamPercentages } from '../helpers/handlers'
 
 const PercentagesConfiguratorView = () => {
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
@@ -46,7 +46,7 @@ const PercentagesConfiguratorView = () => {
           <PercentagesForm
             formValues={formValues}
             handleChange={handleChange}
-            onSave={() => handleSave(formValues, setLoading, setSuccessMessage, setErrorMessage)}
+            onSave={() => updateExamPercentages(formValues, setFormValues, setLoading, setSuccessMessage, setErrorMessage)}
             loading={loading}
           />
         </div>

@@ -370,11 +370,11 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_systemconfig` (
   `config_id` INT NOT NULL AUTO_INCREMENT,
   `config_name` VARCHAR(100) NOT NULL,
   `config_value` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`config_id`))
-ENGINE = InnoDB
+  PRIMARY KEY (`config_id`),
+  CONSTRAINT `uq_config_name` UNIQUE (`config_name`)
+) ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
-
 
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_users`
