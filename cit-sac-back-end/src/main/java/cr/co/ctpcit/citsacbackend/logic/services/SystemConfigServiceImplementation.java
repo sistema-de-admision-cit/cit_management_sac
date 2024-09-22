@@ -7,6 +7,8 @@ import cr.co.ctpcit.citsacbackend.logic.mappers.SystemConfigMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class SystemConfigServiceImplementation implements SystemConfigService {
@@ -18,6 +20,11 @@ public class SystemConfigServiceImplementation implements SystemConfigService {
     SystemConfigEntity systemConfigEntity = SystemConfigMapper.toEntity(systemConfigDto);
     SystemConfigEntity savedEntity = systemConfigRepository.save(systemConfigEntity);
     return SystemConfigMapper.toDto(savedEntity);
+  }
+
+  @Override
+  public List<SystemConfigEntity> getExamsPercentages(String configName) {
+    return systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
   }
 
 }
