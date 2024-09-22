@@ -2,10 +2,7 @@ package cr.co.ctpcit.citsacbackend.logic.services.inscriptions.inscriptionsImple
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.*;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
-import cr.co.ctpcit.citsacbackend.data.repositories.EnrollmentRepository;
-import cr.co.ctpcit.citsacbackend.data.repositories.ParentGuardianStudentRepository;
-import cr.co.ctpcit.citsacbackend.data.repositories.ParentsGuardianRepository;
-import cr.co.ctpcit.citsacbackend.data.repositories.StudentRepository;
+import cr.co.ctpcit.citsacbackend.data.repositories.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
 import cr.co.ctpcit.citsacbackend.logic.mappers.AddressMapper;
@@ -34,282 +31,299 @@ import java.util.Optional;
 @Service
 public class InscriptionsServiceImplementation implements InscriptionsService {
 
-    private final StudentRepository studentRepository;
-    private final ParentsGuardianRepository parentsGuardianRepository;
-    private final ParentGuardianStudentRepository parentGuardianStudentRepository;
-    private final EnrollmentRepository enrollmentRepository;
+  private final StudentRepository studentRepository;
+  private final ParentsGuardianRepository parentsGuardianRepository;
+  private final ParentGuardianStudentRepository parentGuardianStudentRepository;
+  private final EnrollmentRepository enrollmentRepository;
+  private final DocumentRepository documentRepository;
 
-    @Autowired
-    public InscriptionsServiceImplementation(StudentRepository studentRepository,
-                                             ParentsGuardianRepository parentsGuardianRepository,
-                                             ParentGuardianStudentRepository parentGuardianStudentRepository,
-                                             EnrollmentRepository enrollmentRepository) {
-        this.studentRepository = studentRepository;
-        this.parentsGuardianRepository = parentsGuardianRepository;
-        this.parentGuardianStudentRepository = parentGuardianStudentRepository;
-        this.enrollmentRepository = enrollmentRepository;
+  @Autowired
+  public InscriptionsServiceImplementation(StudentRepository studentRepository,
+      ParentsGuardianRepository parentsGuardianRepository,
+      ParentGuardianStudentRepository parentGuardianStudentRepository,
+      EnrollmentRepository enrollmentRepository, DocumentRepository documentRepository) {
+    this.studentRepository = studentRepository;
+    this.parentsGuardianRepository = parentsGuardianRepository;
+    this.parentGuardianStudentRepository = parentGuardianStudentRepository;
+    this.enrollmentRepository = enrollmentRepository;
+    this.documentRepository = documentRepository;
+  }
+
+  /**
+   * Get all inscriptions
+   *
+   * @param pageable the pageable object
+   * @return a list of all inscriptions
+   */
+  @Override
+  public List<StudentDto> getAllInscriptions(Pageable pageable) {
+    // Find all students
+    Page<StudentEntity> students = studentRepository.findAll(
+        PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+            pageable.getSortOr(Sort.by(Sort.Direction.ASC, "idNumber"))));
+
+    // Convert students to DTOs
+    return StudentMapper.convertToDtoList(students.getContent());
+  }
+
+  /**
+   * Get an inscription by id
+   *
+   * @param id the id of the student
+   * @return the inscription with the given id
+   */
+  @Override
+  public StudentDto findStudentById(Long id) {
+    // Find student by id
+    Optional<StudentEntity> student = studentRepository.findStudentById(id);
+
+    // Convert student to DTO or null if not present
+    return student.map(StudentMapper::convertToDto).orElse(null);
+  }
+
+  /**
+   * Get an inscription by value
+   *
+   * @param value of the idNumber, the name of the student or first surname or previous school
+   * @return a list of inscriptions that match the value
+   */
+  @Override
+  public List<StudentDto> findStudentByValue(String value) {
+    // Validate if the value is a number
+    if (value.matches("\\d+")) {
+      List<StudentEntity> student = studentRepository.findStudentByIdNumberContaining(value);
+      return StudentMapper.convertToDtoList(student);
     }
 
-    /**
-     * Get all inscriptions
-     *
-     * @param pageable the pageable object
-     * @return a list of all inscriptions
-     */
-    @Override
-    public List<StudentDto> getAllInscriptions(Pageable pageable) {
-        // Find all students
-        Page<StudentEntity> students = studentRepository
-                .findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-                        pageable.getSortOr(Sort.by(Sort.Direction.ASC, "idNumber"))));
+    // Find students by first name, first surname or second surname
+    List<StudentEntity> students =
+        studentRepository.findByFirstNameContainingOrFirstSurnameContainingOrSecondSurnameContaining(
+            value, value, value);
 
-        // Convert students to DTOs
-        return StudentMapper.convertToDtoList(students.getContent());
+    return StudentMapper.convertToDtoList(students);
+  }
+
+  /**
+   * Add an inscription
+   *
+   * @param inscriptionDto the inscription to add
+   * @return the added inscription
+   * @throws EnrollmentException if the student is already enrolled for the selected date
+   */
+  @Override
+  public StudentDto addInscription(StudentDto inscriptionDto) {
+    // Validate if the student already exists
+    Optional<StudentEntity> student =
+        studentRepository.findStudentByIdNumber(inscriptionDto.idNumber());
+
+    // Get the student from optional or create a new one
+    StudentEntity studentEntity =
+        student.orElseGet(() -> StudentMapper.convertToEntity(inscriptionDto));
+
+    // Get the Enrollment
+    EnrollmentEntity enrollmentEntity =
+        EnrollmentMapper.convertToEntity(inscriptionDto.enrollments().getFirst());
+
+    // Set pending status to the enrollment
+    enrollmentEntity.setStatus(ProcessStatus.P);
+
+    // Verify if the student is already enrolled
+    if (student.isPresent()) {
+      if (student.get().getEnrollments().stream().anyMatch(
+          enrollment -> enrollment.getExamDate().equals(enrollmentEntity.getExamDate()))) {
+        throw new EnrollmentException(
+            "El estudiante ya tiene una inscripción para la fecha seleccionada. " + "Debe seleccionar otra fecha o comunicarse con el área de Servicio al Cliente.");
+      }
+
     }
 
-    /**
-     * Get an inscription by id
-     *
-     * @param id the id of the student
-     * @return the inscription with the given id
-     */
-    @Override
-    public StudentDto findStudentById(Long id) {
-        // Find student by id
-        Optional<StudentEntity> student = studentRepository.findStudentById(id);
+    // Save the enrollment
+    studentEntity.addEnrollment(enrollmentEntity);
 
-        // Convert student to DTO or null if not present
-        return student.map(StudentMapper::convertToDto).orElse(null);
+    // Verify if parent/guardian exists
+    Optional<ParentsGuardianEntity> parentGuardian =
+        parentsGuardianRepository.findParentsGuardianByIdNumber(
+            inscriptionDto.parents().getFirst().idNumber());
+
+    // Get the parent/guardian from optional or create a new one
+    ParentsGuardianEntity parent = parentGuardian.orElseGet(
+        () -> ParentGuardianMapper.convertToEntity(inscriptionDto.parents().getFirst()));
+
+    // Get the address
+    AddressEntity address =
+        AddressMapper.convertToEntity(inscriptionDto.parents().getFirst().addresses().getFirst());
+
+    // Save the address
+    parent.addAddress(address);
+
+    if (parentGuardian.isPresent()) {
+      // Update the parent/guardian information
+      parent.setEmail(inscriptionDto.parents().getFirst().email());
+      parent.setPhoneNumber(inscriptionDto.parents().getFirst().phoneNumber());
     }
 
-    /**
-     * Get an inscription by value
-     *
-     * @param value of the idNumber, the name of the student or first surname or previous school
-     * @return a list of inscriptions that match the value
-     */
-    @Override
-    public List<StudentDto> findStudentByValue(String value) {
-        // Validate if the value is a number
-        if (value.matches("\\d+")) {
-            List<StudentEntity> student = studentRepository.findStudentByIdNumberContaining(value);
-            return StudentMapper.convertToDtoList(student);
-        }
+    // Save the parent/guardian
+    parent = parentsGuardianRepository.save(parent);
 
-        // Find students by first name, first surname or second surname
-        List<StudentEntity> students = studentRepository
-                .findByFirstNameContainingOrFirstSurnameContainingOrSecondSurnameContaining(value,
-                        value, value);
+    // If the student exists, add the enrollment and update/add parent/guardian information
+    if (student.isEmpty()) {
+      // Create the parent/guardian/student relation
+      createParentGuardianStudentRelation(studentEntity, parent);
+    } else {
+      // Verify if the parent/guardian is already related to the student
+      Optional<ParentGuardianStudentEntity> parentGuardianStudent =
+          parentGuardianStudentRepository.findParentGuardianStudentEntityByStudentAndParentGuardian(
+              studentEntity, parent);
+      if (parentGuardianStudent.isEmpty()) {
+        // Create the parent/guardian/student relation
+        createParentGuardianStudentRelation(studentEntity, parent);
+      }
+    }
+    // Save the student
+    studentEntity = studentRepository.save(studentEntity);
 
-        return StudentMapper.convertToDtoList(students);
+    // Return
+    return StudentMapper.convertToDto(studentEntity);
+  }
+
+  /**
+   * Update the exam date of the student
+   *
+   * @param id   the id of the enrollment
+   * @param date the new exam date
+   * @return the updated student
+   */
+  @Override
+  public StudentDto updateExamDate(String id, String date) {
+    // Verify put parameters
+    EnrollmentEntity enrollmentEntity = verifyPutParameters(id);
+
+    // Update the exam date
+    enrollmentEntity.setExamDate(LocalDate.parse(date));
+
+    // Save the enrollment
+    enrollmentEntity = enrollmentRepository.save(enrollmentEntity);
+
+    // Return
+    return StudentMapper.convertToDto(enrollmentEntity.getStudent());
+  }
+
+  /**
+   * Change the status of the enrollment
+   *
+   * @param id
+   * @param status
+   * @return true if the status was updated
+   */
+  @Override
+  public boolean changeStatus(Long id, ProcessStatus status) {
+    try {
+      this.enrollmentRepository.updateStatusById(id, status);
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+          "Error al actualizar el estado de la inscripción");
     }
 
-    /**
-     * Add an inscription
-     *
-     * @param inscriptionDto the inscription to add
-     * @return the added inscription
-     * @throws EnrollmentException if the student is already enrolled for the selected date
-     */
-    @Override
-    public StudentDto addInscription(StudentDto inscriptionDto) {
-        // Validate if the student already exists
-        Optional<StudentEntity> student =
-                studentRepository.findStudentByIdNumber(inscriptionDto.idNumber());
+    return true;
+  }
 
-        // Get the student from optional or create a new one
-        StudentEntity studentEntity =
-                student.orElseGet(() -> StudentMapper.convertToEntity(inscriptionDto));
-
-        // Get the Enrollment
-        EnrollmentEntity enrollmentEntity =
-                EnrollmentMapper.convertToEntity(inscriptionDto.enrollments().getFirst());
-
-        // Set pending status to the enrollment
-        enrollmentEntity.setStatus(ProcessStatus.P);
-
-        // Verify if the student is already enrolled
-        if (student.isPresent()) {
-            if (student.get().getEnrollments().stream().anyMatch(enrollment -> enrollment
-                    .getExamDate().equals(enrollmentEntity.getExamDate()))) {
-                throw new EnrollmentException(
-                        "El estudiante ya tiene una inscripción para la fecha seleccionada. "
-                                + "Debe seleccionar otra fecha o comunicarse con el área de Servicio al Cliente.");
-            }
-
-        }
-
-        // Save the enrollment
-        studentEntity.addEnrollment(enrollmentEntity);
-
-        // Verify if parent/guardian exists
-        Optional<ParentsGuardianEntity> parentGuardian = parentsGuardianRepository
-                .findParentsGuardianByIdNumber(inscriptionDto.parents().getFirst().idNumber());
-
-        // Get the parent/guardian from optional or create a new one
-        ParentsGuardianEntity parent = parentGuardian.orElseGet(
-                () -> ParentGuardianMapper.convertToEntity(inscriptionDto.parents().getFirst()));
-
-        // Get the address
-        AddressEntity address = AddressMapper
-                .convertToEntity(inscriptionDto.parents().getFirst().addresses().getFirst());
-
-        // Save the address
-        parent.addAddress(address);
-
-        if (parentGuardian.isPresent()) {
-            // Update the parent/guardian information
-            parent.setEmail(inscriptionDto.parents().getFirst().email());
-            parent.setPhoneNumber(inscriptionDto.parents().getFirst().phoneNumber());
-        }
-
-        // Save the parent/guardian
-        parent = parentsGuardianRepository.save(parent);
-
-        // If the student exists, add the enrollment and update/add parent/guardian information
-        if (student.isEmpty()) {
-            // Create the parent/guardian/student relation
-            createParentGuardianStudentRelation(studentEntity, parent);
-        } else {
-            // Verify if the parent/guardian is already related to the student
-            Optional<ParentGuardianStudentEntity> parentGuardianStudent =
-                    parentGuardianStudentRepository
-                            .findParentGuardianStudentEntityByStudentAndParentGuardian(
-                                    studentEntity, parent);
-            if (parentGuardianStudent.isEmpty()) {
-                // Create the parent/guardian/student relation
-                createParentGuardianStudentRelation(studentEntity, parent);
-            }
-        }
-        // Save the student
-        studentEntity = studentRepository.save(studentEntity);
-
-        // Return
-        return StudentMapper.convertToDto(studentEntity);
+  /**
+   * Change the whatsapp notification permission
+   *
+   * @param id         the id of the student
+   * @param permission the new permission
+   * @return true if the permission was updated
+   */
+  @Override
+  public boolean changeWhatsappPermission(Long id, Boolean permission) {
+    try {
+      this.enrollmentRepository.updateWhatsappNotificationById(id, permission);
+    } catch (Exception e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+          "Error al actualizar la notificación de whatsapp");
     }
 
-    /**
-     * Update the exam date of the student
-     *
-     * @param id   the id of the enrollment
-     * @param date the new exam date
-     * @return the updated student
-     */
-    @Override
-    public StudentDto updateExamDate(String id, String date) {
-        // Verify put parameters
-        EnrollmentEntity enrollmentEntity = verifyPutParameters(id);
+    return true;
+  }
 
-        // Update the exam date
-        enrollmentEntity.setExamDate(LocalDate.parse(date));
+  @Override
+  public Boolean updateEnrollment(Long enrollmentId, ProcessStatus status, String examDate,
+      String whatsappPermission, String comment, Integer changedBy) {
+    try {
+      // verify if the enrollment exists
+      if (!existsEnrollment(enrollmentId)) {
+        System.out.println("No hay una inscripción con el id " + enrollmentId);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+            "No hay una inscripción con el id " + enrollmentId);
+      }
 
-        // Save the enrollment
-        enrollmentEntity = enrollmentRepository.save(enrollmentEntity);
+      // Update the enrollment
+      enrollmentRepository.usp_update_enrollment_and_log(enrollmentId, status.name(),
+          Date.valueOf(examDate), Boolean.parseBoolean(whatsappPermission), comment, changedBy);
 
-        // Return
-        return StudentMapper.convertToDto(enrollmentEntity.getStudent());
+      return true;
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+          "Error al actualizar la inscripción");
+    }
+  }
+
+  @Override
+  public boolean deleteDocument(Long documentId) {
+
+    // If the document is not present, return Not Found
+    if (!documentRepository.existsById(documentId)) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+          "No hay un documento con el id " + documentId);
     }
 
-    /**
-     * Change the status of the enrollment
-     *
-     * @param id
-     * @param status
-     * @return true if the status was updated
-     */
-    @Override
-    public boolean changeStatus(Long id, ProcessStatus status) {
-        try {
-            this.enrollmentRepository.updateStatusById(id, status);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al actualizar el estado de la inscripción");
-        }
+    // Delete the document
+    documentRepository.deleteById(documentId);
 
-        return true;
+    return true;
+  }
+
+  private boolean existsEnrollment(Long enrollmentId) {
+    return enrollmentRepository.existsById(enrollmentId);
+  }
+
+  private EnrollmentEntity verifyPutParameters(String id) {
+    // Validate if the id is a number
+    if (!id.matches("\\d+")) {
+      throw new EnrollmentException("El id no es un número válido");
     }
 
-    /**
-     * Change the whatsapp notification permission
-     *
-     * @param id         the id of the student
-     * @param permission the new permission
-     * @return true if the permission was updated
-     */
-    @Override
-    public boolean changeWhatsappPermission(Long id, Boolean permission) {
-        try {
-            this.enrollmentRepository.updateWhatsappNotificationById(id, permission);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al actualizar la notificación de whatsapp");
-        }
+    // Find enrollment by id
+    Optional<EnrollmentEntity> enrollment = enrollmentRepository.findById(Long.parseLong(id));
 
-        return true;
+    // If the enrollment is not present, return null
+    if (enrollment.isEmpty()) {
+      // Return Not Found
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+          "No hay una inscripción con el id " + id);
     }
 
-    @Override
-    public Boolean updateEnrollment(Long enrollmentId, ProcessStatus status, String examDate, String whatsappPermission, String comment, Integer changedBy) {
-        try {
-            // verify if the enrollment exists
-            if (!existsEnrollment(enrollmentId)) {
-                System.out.println("No hay una inscripción con el id " + enrollmentId);
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "No hay una inscripción con el id " + enrollmentId);
-            }
+    // Get the enrollment
+    return enrollment.get();
+  }
 
-            // Update the enrollment
-            enrollmentRepository.usp_update_enrollment_and_log(enrollmentId, status.name(), Date.valueOf(examDate),
-                    Boolean.parseBoolean(whatsappPermission), comment, changedBy);
+  /**
+   * Create the relation between the student and the parent/guardian
+   *
+   * @param student the student
+   * @param parent  the parent/guardian
+   */
+  private void createParentGuardianStudentRelation(StudentEntity student,
+      ParentsGuardianEntity parent) {
+    // Create ParentGuardianStudentEntity
+    ParentGuardianStudentEntity parentGuardianStudentEntity =
+        new ParentGuardianStudentEntity(student, parent);
 
-            return true;
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Error al actualizar la inscripción");
-        }
-    }
+    // Add the relation to the student
+    student.addParentGuardian(parentGuardianStudentEntity);
 
-    private boolean existsEnrollment(Long enrollmentId) {
-        return enrollmentRepository.existsById(enrollmentId);
-    }
-
-    private EnrollmentEntity verifyPutParameters(String id) {
-        // Validate if the id is a number
-        if (!id.matches("\\d+")) {
-            throw new EnrollmentException("El id no es un número válido");
-        }
-
-        // Find enrollment by id
-        Optional<EnrollmentEntity> enrollment = enrollmentRepository.findById(Long.parseLong(id));
-
-        // If the enrollment is not present, return null
-        if (enrollment.isEmpty()) {
-            // Return Not Found
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "No hay una inscripción con el id " + id);
-        }
-
-        // Get the enrollment
-        return enrollment.get();
-    }
-
-    /**
-     * Create the relation between the student and the parent/guardian
-     *
-     * @param student the student
-     * @param parent  the parent/guardian
-     */
-    private void createParentGuardianStudentRelation(StudentEntity student,
-                                                     ParentsGuardianEntity parent) {
-        // Create ParentGuardianStudentEntity
-        ParentGuardianStudentEntity parentGuardianStudentEntity =
-                new ParentGuardianStudentEntity(student, parent);
-
-        // Add the relation to the student
-        student.addParentGuardian(parentGuardianStudentEntity);
-
-        // Add the relation to the parent/guardian
-        parent.addStudent(parentGuardianStudentEntity);
-    }
+    // Add the relation to the parent/guardian
+    parent.addStudent(parentGuardianStudentEntity);
+  }
 }
