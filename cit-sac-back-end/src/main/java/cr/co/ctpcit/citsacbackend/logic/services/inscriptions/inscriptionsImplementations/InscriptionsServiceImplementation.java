@@ -286,7 +286,7 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
   }
 
   @Override
-  public void saveDocument(String documentUrl, String documentType, Long enrollmentId) {
+  public DocumentEntity saveDocument(String documentUrl, String documentType, Long enrollmentId) {
     EnrollmentEntity enrollment = enrollmentRepository.findById(enrollmentId).get();
 
     if (enrollment == null) {
@@ -301,7 +301,7 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
     document.setEnrollment(enrollment);
 
     // Save the document
-    documentRepository.save(document);
+    return documentRepository.save(document);
   }
 
   private boolean existsEnrollment(Long enrollmentId) {

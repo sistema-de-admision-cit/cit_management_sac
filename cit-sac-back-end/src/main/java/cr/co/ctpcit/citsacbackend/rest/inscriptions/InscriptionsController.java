@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.data.entities.inscription.DocumentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
@@ -169,18 +170,19 @@ public class InscriptionsController {
    * @return
    */
   @PostMapping("/documents/upload")
-  public ResponseEntity<String> uploadDocument(@RequestParam("file") MultipartFile file,
+  public ResponseEntity<DocumentEntity> uploadDocument(@RequestParam("file") MultipartFile file,
       @RequestParam("documentName") String documentName,
       @RequestParam("documentType") String documentType,
       @RequestParam("enrollmentId") Long enrollmentId) {
     if (file.isEmpty()) {
-      return ResponseEntity.badRequest().body("No se seleccionó ningún archivo para subir.");
+      return ResponseEntity.badRequest().build();
     }
     storageService.store(file, documentName);
 
-    inscriptionsService.saveDocument(documentName, documentType, enrollmentId);
+    DocumentEntity document =
+        inscriptionsService.saveDocument(documentName, documentType, enrollmentId);
 
-    return ResponseEntity.ok().build();
+    return document == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(document);
   }
 
   /**

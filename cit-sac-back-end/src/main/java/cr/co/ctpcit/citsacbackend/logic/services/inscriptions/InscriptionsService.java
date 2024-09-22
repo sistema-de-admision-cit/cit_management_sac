@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.data.entities.inscription.DocumentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import jakarta.validation.constraints.NotNull;
@@ -29,5 +30,5 @@ public interface InscriptionsService {
 
   boolean deleteDocument(Long documentId);
 
-  void saveDocument(String documentName, String documentType, Long enrollmentId);
+  DocumentEntity saveDocument(String documentName, String documentType, Long enrollmentId);
 }
