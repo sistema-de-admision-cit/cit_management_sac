@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import '../../../../../assets/styles/enrollments/modal-applicant-details.css'
 import Modal from '../../../../core/global/molecules/Modal'
 import StudentInfo from '../molecules/StudentInfo'
@@ -24,6 +24,10 @@ const ModalApplicantDetails = ({
   const [selectedFile, setSelectedFile] = useState([])
   const [selectedFileType, setSelectedFileType] = useState('')
   const [isEditing, setIsEditing] = useState(false)
+
+  useEffect(() => {
+    setIsEditing(false)
+  }, [activeTab, enrollments])
 
   return (
     <Modal onClose={onClose}>
