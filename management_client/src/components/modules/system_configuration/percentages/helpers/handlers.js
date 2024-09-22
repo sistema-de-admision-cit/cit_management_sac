@@ -61,7 +61,7 @@ const mapOutgoingData = (data) => {
 
 export const getCurrentPercentages = async () => {
   try {
-    const response = await axios.get(getExamPercentagesUrl)
+    const response = await axios.get(getExamPercentagesUrl, { timeout: 5000 })
     const data = mapIncomingData(response.data)
 
     initValues = { ...data }
@@ -72,12 +72,13 @@ export const getCurrentPercentages = async () => {
 }
 
 const saveExamPercentagesUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_EXAM_PERCENTAGES_ENDPOINT}`
+
 export const updateExamPercentages = async (formValues, setFormValues, setLoading, setSuccessMessage, setErrorMessage) => {
   setLoading(true)
 
   try {
     const dataToSend = mapOutgoingData(formValues)
-    const response = await axios.put(`${saveExamPercentagesUrl}?${new URLSearchParams(dataToSend)}`)
+    const response = await axios.put(`${saveExamPercentagesUrl}?${new URLSearchParams(dataToSend)}`, {}, { timeout: 5000 })
     setSuccessMessage('Porcentajes actualizados correctamente.')
 
     const data = mapIncomingData(response.data)
