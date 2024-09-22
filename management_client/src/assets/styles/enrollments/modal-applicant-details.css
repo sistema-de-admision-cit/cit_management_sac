@@ -82,4 +82,5 @@
 
 .edit-icon:disabled {
   cursor: not-allowed;
+  opacity: 0.5;
 }
