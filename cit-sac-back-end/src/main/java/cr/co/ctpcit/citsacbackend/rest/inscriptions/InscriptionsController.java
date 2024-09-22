@@ -136,7 +136,14 @@ public class InscriptionsController {
    */
   @GetMapping("/documents/download/{filename}")
   public ResponseEntity<Resource> downloadDocuments(@PathVariable String filename) {
-    Resource resource = storageService.loadAsResource(filename);
+    Resource resource;
+
+    try {
+      resource = storageService.loadAsResource(filename);
+    } catch (Exception e) {
+      return ResponseEntity.notFound().build();
+    }
+
     return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
         "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
   }
