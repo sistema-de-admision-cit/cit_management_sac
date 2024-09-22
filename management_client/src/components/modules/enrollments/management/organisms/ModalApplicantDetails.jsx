@@ -16,6 +16,7 @@ const ModalApplicantDetails = ({
   onDocClick,
   onFileDownload,
   onFileDelete,
+  onFileUpload,
   onEnrollmentEdit
 }) => {
   const [activeTab, setActiveTab] = useState('student')
@@ -83,7 +84,7 @@ const ModalApplicantDetails = ({
         <ModalManageFiles
           selectedFileType={selectedFileType}
           selectedFile={selectedFile}
-          onFileUpload={() => console.log('Subir archivo')}
+          onFileUpload={(e) => onFileUpload(e, selectedFileType, setSelectedFile, enrollment)}
           onFileDownload={onFileDownload}
           onFileDelete={((selectedFile) => onFileDelete(selectedFile, setSelectedFile, student.id, enrollment.id))}
           onClose={() => setIsDocModalOpen(false)}
