@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.data.entities.inscription.EnrollmentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
@@ -111,6 +112,20 @@ public class InscriptionsController {
             @RequestParam @NotNull Boolean permission) {
         boolean updated = inscriptionsService.changeWhatsappPermission(id, permission);
         return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/update-enrollment/{enrollmentId}")
+    public ResponseEntity<String> updateEnrollment(@PathVariable("enrollmentId") Long enrollmentId,
+            @RequestParam @NotNull ProcessStatus status,
+            @RequestParam @NotNull String examDate,
+            @RequestParam @NotNull String whatsappPermission,
+            @RequestParam String comment,
+            @RequestParam Integer changedBy
+    ) {
+        Boolean updated = inscriptionsService.updateEnrollment(enrollmentId, status, examDate,
+                whatsappPermission, comment, changedBy);
+
+        return updated ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     // TODO: Create update endpoint to alter documents
