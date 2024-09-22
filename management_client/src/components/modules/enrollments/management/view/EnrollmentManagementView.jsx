@@ -4,7 +4,7 @@ import EnrollmentTable from '../organisms/EnrollmentTable'
 import '../../../../../assets/styles/enrollments/enrollment-management-view.css'
 import EnrollemntSearchBar from '../molecules/EnrollmentSearchBar'
 import ModalApplicantDetails from '../organisms/ModalApplicantDetails'
-import { handleEnrollmentEdit, handleDocClick, handleFileDownload, handleStudendIdClick, handleSearch, handleGetAllEnrollments } from '../helpers/handlers'
+import { handleEnrollmentEdit, handleDocClick, handleFileDownload, handleStudendIdClick, handleSearch, handleGetAllEnrollments, handleFileDelete } from '../helpers/handlers'
 import useMessages from '../../../../core/global/hooks/useMessages'
 
 const EnrollmentManagementView = () => {
@@ -43,6 +43,7 @@ const EnrollmentManagementView = () => {
           onClose={() => setIsModalApplicantDetailsOpen(false)}
           onDocClick={handleDocClick}
           onFileDownload={handleFileDownload}
+          onFileDelete={(selectedFile, setSelectedFile, enrollmentId, studentId) => handleFileDelete(selectedFile, setSelectedFile, setErrorMessage, setSuccessMessage, setEnrollments, enrollmentId, studentId)}
           onEnrollmentEdit={
             (e, formData, enrollment, setIsEditing) => handleEnrollmentEdit(e, formData, enrollment, setIsEditing, setErrorMessage, setSuccessMessage)
           }
