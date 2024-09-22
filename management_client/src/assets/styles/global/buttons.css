@@ -22,6 +22,12 @@
 .btn[disabled]:target {
   transform: scale(1);
 }
+ 
+.btn[disabled]:hover {
+  /* do nothing */
+  cursor: not-allowed;
+  transform: scale(1) !important;
+}
 
 .btn.btn-primary {
   background-color: var(--primary-color);
