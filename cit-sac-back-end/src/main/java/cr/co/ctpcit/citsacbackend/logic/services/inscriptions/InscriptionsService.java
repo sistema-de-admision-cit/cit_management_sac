@@ -1,13 +1,16 @@
 package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.data.entities.inscription.EnrollmentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface InscriptionsService {
     List<StudentDto> getAllInscriptions(Pageable pageable);
 
@@ -22,4 +25,6 @@ public interface InscriptionsService {
     boolean changeStatus(Long id, @NotNull ProcessStatus status);
 
     boolean changeWhatsappPermission(Long id, Boolean permission);
+
+    Boolean updateEnrollment(Long enrollmentId, ProcessStatus status, String examDate, String whatsappPermission, String comment, Integer changedBy);
 }

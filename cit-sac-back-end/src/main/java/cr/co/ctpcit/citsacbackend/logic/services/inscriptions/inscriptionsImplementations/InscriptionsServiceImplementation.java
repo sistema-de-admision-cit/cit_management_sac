@@ -22,12 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Implementation of the {@link InscriptionsService} This class is used to manage the inscriptions
@@ -43,9 +41,9 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
 
     @Autowired
     public InscriptionsServiceImplementation(StudentRepository studentRepository,
-            ParentsGuardianRepository parentsGuardianRepository,
-            ParentGuardianStudentRepository parentGuardianStudentRepository,
-            EnrollmentRepository enrollmentRepository) {
+                                             ParentsGuardianRepository parentsGuardianRepository,
+                                             ParentGuardianStudentRepository parentGuardianStudentRepository,
+                                             EnrollmentRepository enrollmentRepository) {
         this.studentRepository = studentRepository;
         this.parentsGuardianRepository = parentsGuardianRepository;
         this.parentGuardianStudentRepository = parentGuardianStudentRepository;
@@ -193,7 +191,7 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
     /**
      * Update the exam date of the student
      *
-     * @param id the id of the enrollment
+     * @param id   the id of the enrollment
      * @param date the new exam date
      * @return the updated student
      */
@@ -234,7 +232,7 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
     /**
      * Change the whatsapp notification permission
      *
-     * @param id the id of the student
+     * @param id         the id of the student
      * @param permission the new permission
      * @return true if the permission was updated
      */
@@ -248,6 +246,32 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
         }
 
         return true;
+    }
+
+    @Override
+    public Boolean updateEnrollment(Long enrollmentId, ProcessStatus status, String examDate, String whatsappPermission, String comment, Integer changedBy) {
+        try {
+            // verify if the enrollment exists
+            if (!existsEnrollment(enrollmentId)) {
+                System.out.println("No hay una inscripción con el id " + enrollmentId);
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "No hay una inscripción con el id " + enrollmentId);
+            }
+
+            // Update the enrollment
+            enrollmentRepository.usp_update_enrollment_and_log(enrollmentId, status.name(), Date.valueOf(examDate),
+                    Boolean.parseBoolean(whatsappPermission), comment, changedBy);
+
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error al actualizar la inscripción");
+        }
+    }
+
+    private boolean existsEnrollment(Long enrollmentId) {
+        return enrollmentRepository.existsById(enrollmentId);
     }
 
     private EnrollmentEntity verifyPutParameters(String id) {
@@ -274,10 +298,10 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
      * Create the relation between the student and the parent/guardian
      *
      * @param student the student
-     * @param parent the parent/guardian
+     * @param parent  the parent/guardian
      */
     private void createParentGuardianStudentRelation(StudentEntity student,
-            ParentsGuardianEntity parent) {
+                                                     ParentsGuardianEntity parent) {
         // Create ParentGuardianStudentEntity
         ParentGuardianStudentEntity parentGuardianStudentEntity =
                 new ParentGuardianStudentEntity(student, parent);
