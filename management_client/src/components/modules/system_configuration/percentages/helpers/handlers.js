@@ -71,13 +71,18 @@ export const getCurrentPercentages = async () => {
   }
 }
 
-const saveExamPercentagesUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SAVE_EXAM_PERCENTAGES_ENDPOINT}`
-export const handleSave = async (formValues, setLoading, setSuccessMessage, setErrorMessage) => {
+const saveExamPercentagesUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_EXAM_PERCENTAGES_ENDPOINT}`
+export const updateExamPercentages = async (formValues, setFormValues, setLoading, setSuccessMessage, setErrorMessage) => {
   setLoading(true)
+
   try {
     const dataToSend = mapOutgoingData(formValues)
-    await axios.post(saveExamPercentagesUrl, dataToSend)
-    setSuccessMessage('Porcentajes guardados correctamente.')
+    const response = await axios.put(`${saveExamPercentagesUrl}?${new URLSearchParams(dataToSend)}`)
+    setSuccessMessage('Porcentajes actualizados correctamente.')
+
+    const data = mapIncomingData(response.data)
+    initValues = { ...data }
+    setFormValues(data)
   } catch (error) {
     setErrorMessage(getErrorMessage(error))
   } finally {
