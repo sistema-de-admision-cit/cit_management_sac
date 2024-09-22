@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { formatDateToObj, isCommentRequired } from './helpers'
+import { formatDateForApi, formatDateToObj, isCommentRequired } from './helpers'
 
 export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, setApplicantSelected) => {
   setApplicantSelected(applicant)
@@ -45,7 +45,7 @@ export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setE
 
   console.log('Actualizando inscripción:', formData)
   // send the data to the server
-  axios.put(`${updateEnrollmentUrl}/${enrollment.id}?status=${formData.status}&examDate=${formData.examDate}&whatsappPermission=${formData.whatsappNotification}&comment=${formData.comment}&changedBy=1`)
+  axios.put(`${updateEnrollmentUrl}/${enrollment.id}?status=${formData.status}&examDate=${formatDateForApi(formData.examDate)}&whatsappPermission=${formData.whatsappNotification}&comment=${formData.comment}&changedBy=1`)
     .then(response => {
       console.log(response)
       setIsEditing(false)
