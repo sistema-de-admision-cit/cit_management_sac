@@ -6,6 +6,19 @@ let initValues = {
   englishExam: 0
 }
 
+const getErrorMessage = (error) => {
+  if (error.response) {
+    if (error.response.status === 400) {
+      return 'Porcentajes inválidos. La suma de los porcentajes debe ser 100.'
+    } else if (error.response.status === 500) {
+      return 'Error al guardar los porcentajes.'
+    } else if (error.response.status === 404) {
+      return 'Parece que no se pudo resolver la solicitud. Inténtalo de nuevo.'
+    }
+  }
+  return 'Error al cargar los porcentajes.'
+}
+
 /**
  *
  * @param {JSON Object} formValues
@@ -50,7 +63,7 @@ export const handleSave = async (formValues, setLoading, setSuccessMessage, setE
     await axios.post(saveExamPercentagesUrl, formValues)
     setSuccessMessage('Porcentajes guardados correctamente.')
   } catch (error) {
-    setErrorMessage(error.response ? error.response.data.error : 'Error al guardar los porcentajes.')
+    setErrorMessage(getErrorMessage(error))
   } finally {
     setLoading(false)
   }
