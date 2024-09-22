@@ -126,7 +126,7 @@ export const handleFileDelete = (selectedFile, setSelectedFile, setErrorMessage,
 }
 
 const uploadFileUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPLOAD_DOCUMENT_ENDPOINT}`
-export const handleFileUpload = (e, selectedFileType, enrollment, setErrorMessage, setSuccessMessage, setEnrollments) => {
+export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollment, setErrorMessage, setSuccessMessage) => {
   e.preventDefault()
 
   const file = e.target[0].files[0]
@@ -148,6 +148,16 @@ export const handleFileUpload = (e, selectedFileType, enrollment, setErrorMessag
     .then(response => {
       console.log(response)
       setSuccessMessage('El documento se subió correctamente.')
+
+      const updatedDoc = {
+        id: response.data.id,
+        documentName: response.data.documentName,
+        documentType: response.data.documentType,
+        documentUrl: response.data.documentUrl
+      }
+
+      enrollment.document.push(updatedDoc)
+      setSelectedFile(updatedDoc)
     })
     .catch(error => {
       console.error(error)
