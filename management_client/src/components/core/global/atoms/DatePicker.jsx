@@ -1,6 +1,6 @@
 import InputField from './InputField'
 
-const DatePicker = ({ name, label, placeholder, value, onChange, availableDates, required = false }) => (
+const DatePicker = ({ name, label, placeholder, value, onChange, availableDates, required = false, showLabel }) => (
   <div className='date-picker-container'>
     <InputField
       field={{ name, label, placeholder, type: 'date', required }}
@@ -8,6 +8,7 @@ const DatePicker = ({ name, label, placeholder, value, onChange, availableDates,
       handleChange={onChange}
       className='date-picker'
       availableDates={availableDates}
+      showLabel={showLabel}
     />
   </div>
 )

@@ -8,6 +8,7 @@ import ExamMenuPageView from '../../../modules/questions/menu/view/ExamMenuPageV
 
 // enrollments views
 import EnrollmentsMenuPageView from '../../../modules/enrollments/menu/views/EnrollmentsMenuPageView.jsx'
+import EnrollmentManagementView from '../../../modules/enrollments/management/view/EnrollmentManagementView.jsx'
 
 // configurations views
 import ConfigurationMenuPageView from '../../../modules/system_configuration/menu/views/ConfigurationMenuPageView.jsx'
@@ -56,26 +57,10 @@ const menuConfig = [
         subItems: [
           {
             key: 'visit-requests',
-            label: 'Consultar Inscripciones',
+            label: 'Gestionar Inscripciones',
             path: '/inscripciones/consultar',
-            component: DefaultComponent,
+            component: EnrollmentManagementView,
             description: 'Consultar y revisar las inscripciones existentes.',
-            imagePath: '/images/temp-card-image.avif'
-          },
-          {
-            key: 'update-dates',
-            label: 'Actualizar Fechas de Examen',
-            path: '/inscripciones/actualizar-fechas',
-            component: DefaultComponent,
-            description: 'Actualizar las fechas de los exámenes en el sistema.',
-            imagePath: '/images/temp-card-image.avif'
-          },
-          {
-            key: 'notification-method',
-            label: 'Método de Notificación',
-            path: '/inscripciones/metodo-notificacion',
-            component: DefaultComponent,
-            description: 'Configurar métodos de notificación para inscripciones.',
             imagePath: '/images/temp-card-image.avif'
           }
         ]

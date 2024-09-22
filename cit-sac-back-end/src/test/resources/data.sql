@@ -57,3 +57,64 @@ VALUES
     ('Health Certificate Felipe', 'HC', '/home/user/docs/felipe_health.pdf', 3),
     ('Health Certificate Lucía', 'HC', '/home/user/docs/lucia_health.pdf', 4),
     ('Other Document Javier', 'OT', '/home/user/docs/javier_other.pdf', 5);
+
+
+-- Insert values into tbl_parentsguardians
+INSERT INTO `tbl_parentsguardians`
+(`first_name`, `first_surname`, `second_surname`, `id_type`, `id_number`, `phone_number`, `email`, `relationship`)
+VALUES
+    ('Ana', 'Martínez', 'Lopez', 'CC', '900654321', '876542019', 'ana.martinez@example.com', 'M'),
+    ('Ricardo', 'Gómez', 'Ramírez', 'DI', '920312678', '865742013', 'ricardo.gomez@example.com', 'F'),
+    ('Laura', 'Pérez', 'Castro', 'PA', 'A76543210', '876590348', 'laura.perez@example.com', 'G'),
+    ('Gabriel', 'Sánchez', 'Hernández', 'CC', '870567890', '834792019', 'gabriel.sanchez@example.com', 'M'),
+    ('Elena', 'Cordero', 'Solano', 'DI', '940123789', '896734320', 'elena.cordero@example.com', 'F');
+
+-- Insert values into tbl_address
+INSERT INTO `tbl_address`
+(`country`, `province`, `city`, `district`, `address_info`, `parent_guardian_id`)
+VALUES
+    ('Costa Rica', 'Guanacaste', 'Liberia', 'Curubandé', '200m norte del supermercado', 6),
+    ('Costa Rica', 'San José', 'Desamparados', 'San Rafael', 'Casa 45, Calle Principal', 7),
+    ('Costa Rica', 'Heredia', 'Barva', 'San Pablo', 'Calle 10 #3', 8),
+    ('Costa Rica', 'Cartago', 'Paraíso', 'Orosi', '50m sur del parque', 9),
+    ('Costa Rica', 'Puntarenas', 'Esparza', 'Macacona', 'Detrás de la iglesia', 10);
+
+-- Insert values into tbl_students
+INSERT INTO `tbl_students`
+(`first_name`, `first_surname`, `second_surname`, `birth_date`, `id_type`, `id_number`, `previous_school`, `has_accommodations`)
+VALUES
+    ('Daniela', 'Martínez', 'Lopez', '2012-04-21', 'CC', '201654987', 'Escuela La Paz', 1),
+    ('Pablo', 'Gómez', 'Ramírez', '2013-06-10', 'DI', '230987654', 'Escuela Nueva Vida', 0),
+    ('Camila', 'Pérez', 'Castro', '2011-09-30', 'PA', 'P87654321', 'Escuela San Isidro', 0),
+    ('Mateo', 'Sánchez', 'Hernández', '2009-05-05', 'CC', '191234567', 'Escuela Santa Marta', 1),
+    ('Valeria', 'Cordero', 'Solano', '2008-10-14', 'DI', '270456789', 'Escuela San Lucas', 0);
+
+-- Insert values into tbl_parentguardianstudents
+INSERT INTO `tbl_parentguardianstudents`
+(`student_id`, `parentguardian_id`)
+VALUES
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10);
+
+-- Insert values into tbl_enrollments
+INSERT INTO `tbl_enrollments`
+(`status`, `enrollment_date`, `grade_to_enroll`, `known_through`, `exam_date`, `consent_given`, `whatsapp_notification`, `student_id`)
+VALUES
+    ('P', '2024-02-01 09:00:00', '4', 'SM', '2024-01-28', 1, 0, 6),
+    ('E', '2024-02-02 10:15:00', '3', 'FM', '2024-01-29', 0, 1, 7),
+    ('A', '2024-02-03 11:30:00', '5', 'OH', '2024-01-30', 1, 0, 8),
+    ('R', '2024-02-04 08:45:00', '6', 'FD', '2024-01-31', 1, 1, 9),
+    ('I', '2024-02-05 12:30:00', '7', 'OT', '2024-02-01', 0, 1, 10);
+
+-- Insert values into tbl_documents
+INSERT INTO `tbl_documents`
+(`document_name`, `document_type`, `document_url`, `enrollment_id`)
+VALUES
+    ('Health Certificate Daniela', 'HC', 'file_example.pdf', 6),
+    ('Other Document Pablo', 'OT', 'file_example.pdf', 7),
+    ('Health Certificate Camila', 'HC', 'file_example.pdf', 8),
+    ('Health Certificate Mateo', 'HC', 'file_example.pdf', 9),
+    ('Other Document Valeria', 'OT', 'file_example.pdf', 10);
