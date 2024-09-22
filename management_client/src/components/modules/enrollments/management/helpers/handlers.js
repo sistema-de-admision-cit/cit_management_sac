@@ -60,7 +60,7 @@ export const handleDocClick = (file, setSelectedFile, setIsDocModalOpen) => {
 }
 
 const downloadFileUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_DOWNLOAD_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT}`
-export const handleFileDownload = (filename) => {
+export const handleFileDownload = (filename, setErrorMessage) => {
   console.log('Descargando:', filename)
   console.log('Descargando:', downloadFileUrl)
 
@@ -77,7 +77,11 @@ export const handleFileDownload = (filename) => {
       window.URL.revokeObjectURL(url)
     })
     .catch(error => {
-      console.error(error)
+      if (error.response && error.response.status === 404) {
+        setErrorMessage('El documento no se encontró. Puede que ya haya sido eliminado.')
+      } else {
+        setErrorMessage('Hubo un error al descargar el documento. Por favor, intenta de nuevo.')
+      }
     })
 }
 
