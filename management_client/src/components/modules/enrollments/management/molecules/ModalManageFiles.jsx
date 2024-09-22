@@ -8,11 +8,19 @@ const ModalManageFiles = ({ selectedFileType, selectedFile, onFileUpload, onFile
     <h2>Gestionar {selectedFileType}</h2>
     {!selectedFile
       ? (
-        <InputField
-          field={{ type: 'file', name: 'file', id: 'file', label: 'Subir archivo' }}
-          onChange={onFileUpload}
-          className='form-group'
-        />
+        <form onSubmit={(e) => onFileUpload(e)} className='file-upload-form'>
+          <InputField
+            field={{ type: 'file', name: 'file', id: 'file', label: 'Subir archivo' }}
+            onChange={onFileUpload}
+            className='form-group'
+          />
+          <Button
+            type='submit'
+            className='btn btn-primary'
+          >
+            Subir
+          </Button>
+        </form>
         )
       : (
         <div className='file-list-container'>
