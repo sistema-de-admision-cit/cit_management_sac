@@ -22,6 +22,14 @@ const validateDataBeforeSubmit = (formData, enrollment) => {
   }
 }
 
+// not sure if this is the best way to update the local state
+// but it works for now
+const updateEnrollmentLocal = (enrollment, formData) => {
+  enrollment.status = formData.status
+  enrollment.examDate = formData.examDate
+  enrollment.whatsappNotification = formData.whatsappNotification
+}
+
 const updateEnrollmentUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_ENROLLMENT_INFORMATION_ENDPOINT}`
 export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setErrorMessage, setSuccessMessage) => {
   e.preventDefault()
@@ -42,6 +50,7 @@ export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setE
       console.log(response)
       setIsEditing(false)
       setSuccessMessage('La inscripción se actualizó correctamente.')
+      updateEnrollmentLocal(enrollment, formData)
     }).catch(error => {
       console.error(error)
       setErrorMessage('Hubo un error al actualizar la inscripción. Por favor, intenta de nuevo.')
