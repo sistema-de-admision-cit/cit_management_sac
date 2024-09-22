@@ -15,6 +15,7 @@ const ModalApplicantDetails = ({
   onClose,
   onDocClick,
   onFileDownload,
+  onFileDelete,
   onEnrollmentEdit
 }) => {
   const [activeTab, setActiveTab] = useState('student')
@@ -22,6 +23,7 @@ const ModalApplicantDetails = ({
   const [selectedFile, setSelectedFile] = useState([])
   const [selectedFileType, setSelectedFileType] = useState('')
   const [isEditing, setIsEditing] = useState(false)
+  const [enrollment, setEnrollment] = useState({})
 
   useEffect(() => {
     setIsEditing(false)
@@ -53,7 +55,10 @@ const ModalApplicantDetails = ({
           <Button
             key={`enrollment-${enrollment.id}`}
             className={`tab-button ${activeTab === `enrollment-${enrollment.id}` ? 'active' : ''}`}
-            onClick={() => setActiveTab(`enrollment-${enrollment.id}`)}
+            onClick={() => {
+              setActiveTab(`enrollment-${enrollment.id}`)
+              setEnrollment(enrollment)
+            }}
           >
             Inscripción - {enrollment.id}
           </Button>
@@ -80,7 +85,7 @@ const ModalApplicantDetails = ({
           selectedFile={selectedFile}
           onFileUpload={() => console.log('Subir archivo')}
           onFileDownload={onFileDownload}
-          onFileDelete={(document) => console.log('Eliminar:', document)}
+          onFileDelete={((selectedFile) => onFileDelete(selectedFile, setSelectedFile, student.id, enrollment.id))}
           onClose={() => setIsDocModalOpen(false)}
         />
       )}
