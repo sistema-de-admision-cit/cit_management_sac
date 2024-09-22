@@ -35,19 +35,34 @@ export const getSaveButtonState = (formValues) => {
 }
 
 const getExamPercentagesUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_EXAM_PERCENTAGES_ENDPOINT}`
+
+// mappear los datos que llegan
+const mapIncomingData = (data) => {
+  return data.reduce((acc, item) => {
+    if (item.configName === 'dai_weight') {
+      acc.daiExam = item.configValue * 100
+    } else if (item.configName === 'academic_weight') {
+      acc.academicExam = item.configValue * 100
+    } else if (item.configName === 'english_weight') {
+      acc.englishExam = item.configValue * 100
+    }
+    return acc
+  }, { academicExam: 0, daiExam: 0, englishExam: 0 })
+}
+
+// mappear los datos antes de enviarlos
+const mapOutgoingData = (data) => {
+  return {
+    academic_weight: data.academicExam / 100,
+    dai_weight: data.daiExam / 100,
+    english_weight: data.englishExam / 100
+  }
+}
+
 export const getCurrentPercentages = async () => {
   try {
     const response = await axios.get(getExamPercentagesUrl)
-    const data = response.data.reduce((acc, item) => {
-      if (item.configName === 'dai_weight') {
-        acc.daiExam = item.configValue * 100
-      } else if (item.configName === 'academic_weight') {
-        acc.academicExam = item.configValue * 100
-      } else if (item.configName === 'english_weight') {
-        acc.englishExam = item.configValue * 100
-      }
-      return acc
-    }, { academicExam: 0, daiExam: 0, englishExam: 0 })
+    const data = mapIncomingData(response.data)
 
     initValues = { ...data }
     return data
@@ -60,7 +75,8 @@ const saveExamPercentagesUrl = `${import.meta.env.VITE_API_BASE_URL}${import.met
 export const handleSave = async (formValues, setLoading, setSuccessMessage, setErrorMessage) => {
   setLoading(true)
   try {
-    await axios.post(saveExamPercentagesUrl, formValues)
+    const dataToSend = mapOutgoingData(formValues)
+    await axios.post(saveExamPercentagesUrl, dataToSend)
     setSuccessMessage('Porcentajes guardados correctamente.')
   } catch (error) {
     setErrorMessage(getErrorMessage(error))
