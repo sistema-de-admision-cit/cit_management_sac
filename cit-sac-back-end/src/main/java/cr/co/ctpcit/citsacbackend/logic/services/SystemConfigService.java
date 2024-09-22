@@ -9,4 +9,6 @@ public interface SystemConfigService {
   SystemConfigDto addSystemConfig(SystemConfigDto systemConfigDto);
 
   List<SystemConfigEntity> getExamsPercentages(String configName);
+
+  void updateExamsPercentages(double academicWeight, double daiWeight, double englishWeight);
 }

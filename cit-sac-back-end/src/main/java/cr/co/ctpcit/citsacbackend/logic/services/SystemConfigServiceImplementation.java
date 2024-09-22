@@ -27,4 +27,14 @@ public class SystemConfigServiceImplementation implements SystemConfigService {
     return systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
   }
 
+  @Override
+  public void updateExamsPercentages(double academicWeight, double daiWeight,
+      double englishWeight) {
+    try {
+      systemConfigRepository.updateExamsPercentages(academicWeight, daiWeight, englishWeight);
+    } catch (Exception e) {
+      throw new RuntimeException("Error al actualizar los porcentajes de los exámenes");
+    }
+  }
+
 }
