@@ -10,7 +10,20 @@ const getExamPercentagesUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta
 export const getCurrentPercentages = async () => {
   try {
     const response = await axios.get(getExamPercentagesUrl)
-    return response.data
+    const data = response.data.reduce((acc, item) => {
+      if (item.configName === 'dai_weight') {
+        acc.daiExam = item.configValue * 100
+      } else if (item.configName === 'academic_weight') {
+        acc.academicExam = item.configValue * 100
+      } else if (item.configName === 'english_weight') {
+        acc.englishExam = item.configValue * 100
+      }
+      return acc
+    }, { academicExam: 0, daiExam: 0, englishExam: 0 })
+
+    console.log(data)
+
+    return data
   } catch (error) {
     throw new Error('Error al cargar los porcentajes.')
   }
