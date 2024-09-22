@@ -24,3 +24,22 @@ export const statusOptions = [
   { value: 'A', label: 'Aceptado' },
   { value: 'R', label: 'Rechazado' }
 ]
+
+export const isCommentRequired = (formData, enrollment) => {
+  if (formData.status !== enrollment.status || formData.examDate !== enrollment.examDate) {
+    return true
+  }
+}
+
+export const isEnabled = (formData, enrollment) => {
+  if (formData.status === enrollment.status &&
+    formData.examDate === enrollment.examDate &&
+    formData.whatsappNotification === enrollment.whatsappNotification) {
+    return false
+  }
+
+  if (isCommentRequired(formData, enrollment) && formData.comment === '') {
+    return false
+  }
+  return true
+}
