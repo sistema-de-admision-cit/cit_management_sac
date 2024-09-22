@@ -35,13 +35,6 @@ public class ExamDayController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdDay);
     }
 
-//    // Obtener un día de examen por ID
-//    @GetMapping("/{id}")
-//    public ResponseEntity<ExamDayDto> getExamDayById(@PathVariable Integer id) {
-//        ExamDayDto examDay = examDayService.getExamDayById(id);
-//        return ResponseEntity.ok(examDay);
-//    }
-
     // Modificar un día de examen por ID
     @PutMapping("/{id}")
     public ResponseEntity<ExamDayDto> updateExamDay(@PathVariable Integer id, @RequestBody ExamDayDto dto) {
