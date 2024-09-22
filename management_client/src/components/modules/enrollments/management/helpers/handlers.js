@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { isCommentRequired } from './helpers'
 
 export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, setApplicantSelected) => {
   setApplicantSelected(applicant)
@@ -7,6 +8,44 @@ export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, 
 
 export const handleDateChange = (applicant, date) => {
   console.log('Fecha Entrevista:', date)
+}
+
+const validateDataBeforeSubmit = (formData, enrollment) => {
+  if (!formData.status) {
+    throw new Error('El estado de la inscripción es obligatorio')
+  }
+  if (!formData.examDate) {
+    throw new Error('La fecha del examen es obligatoria')
+  }
+  if (isCommentRequired(formData, enrollment) && !formData.comment) {
+    throw new Error('El comentario es obligatorio')
+  }
+}
+
+const updateEnrollmentUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_ENROLLMENT_INFORMATION_ENDPOINT}`
+export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setErrorMessage, setSuccessMessage) => {
+  e.preventDefault()
+
+  // check if the data is valid
+  try {
+    validateDataBeforeSubmit(formData, enrollment)
+  } catch (error) {
+    console.error(error)
+    setErrorMessage(error.message)
+    return
+  }
+
+  console.log('Actualizando inscripción:', formData)
+  // send the data to the server
+  axios.put(`${updateEnrollmentUrl}/${enrollment.id}?status=${formData.status}&examDate=${formData.examDate}&whatsappPermission=${formData.whatsappNotification}&comment=${formData.comment}&changedBy=1`)
+    .then(response => {
+      console.log(response)
+      setIsEditing(false)
+      setSuccessMessage('La inscripción se actualizó correctamente.')
+    }).catch(error => {
+      console.error(error)
+      setErrorMessage('Hubo un error al actualizar la inscripción. Por favor, intenta de nuevo.')
+    })
 }
 
 const updateStatusUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_STATUS_ENDPOINT}`
