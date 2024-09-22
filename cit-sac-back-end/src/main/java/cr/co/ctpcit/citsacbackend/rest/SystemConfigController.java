@@ -31,5 +31,16 @@ public class SystemConfigController {
     return new ResponseEntity<>(examsPercentages, HttpStatus.OK);
   }
 
+  @PutMapping("/update-exams-percentages")
+  public ResponseEntity<List<SystemConfigEntity>> updateExamsPercentages(
+      @RequestParam("academic_weight") double academicWeight,
+      @RequestParam("dai_weight") double daiWeight,
+      @RequestParam("english_weight") double englishWeight) {
+
+    systemConfigService.updateExamsPercentages(academicWeight, daiWeight, englishWeight);
+
+    // return the updated exams percentages
+    return new ResponseEntity<>(getExamsPercentages().getBody(), HttpStatus.OK);
+  }
 }
 
