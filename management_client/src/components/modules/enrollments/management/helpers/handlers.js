@@ -127,6 +127,50 @@ export const handleFileDownload = (filename) => {
     })
 }
 
+const deleteFileUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_DELETE_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT}`
+
+export const handleFileDelete = (selectedFile, setSelectedFile, setErrorMessage, setSuccessMessage, setEnrollments, enrollmentId, studentId) => {
+  console.log('Eliminando:', selectedFile.documentUrl)
+
+  axios.delete(`${deleteFileUrl}/${selectedFile.id}?filename=${selectedFile.documentUrl}`)
+    .then(response => {
+      console.log(response)
+      setSuccessMessage('El documento se eliminó correctamente.')
+      setSelectedFile(null)
+
+      // Actualiza el estado de las inscripciones eliminando el documento del estudiante correspondiente
+      setEnrollments((prevEnrollments) => {
+        return prevEnrollments.map((student) => {
+          if (student.id === studentId) {
+            return {
+              ...student,
+              enrollments: student.enrollments.map((enrollment) => {
+                if (enrollment.id === enrollmentId) {
+                  return {
+                    ...enrollment,
+                    document: enrollment.document.filter(doc => doc.id !== selectedFile.id)
+                  }
+                }
+                return enrollment
+              })
+            }
+          }
+          return student
+        })
+      })
+    })
+    .catch(error => {
+      console.error(error)
+      if (error.response && error.response.status === 404) {
+        setErrorMessage('El documento no se encontró. Puede que ya haya sido eliminado.')
+      } else if (error.response && error.response.status === 500) {
+        setErrorMessage('Hubo un error en el servidor. Por favor, intenta de nuevo más tarde.')
+      } else {
+        setErrorMessage('Hubo un error al eliminar el documento. Por favor, intenta de nuevo.')
+      }
+    })
+}
+
 const searchEnrollmentUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT}`
 export const handleSearch = (search, setApplicants) => {
   axios.get(`${searchEnrollmentUrl}?value=${search}`).then(response => {
