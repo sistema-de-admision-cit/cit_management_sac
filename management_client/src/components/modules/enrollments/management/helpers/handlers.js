@@ -1,6 +1,23 @@
 import axios from 'axios'
 import { formatDateForApi, formatDateToObj, isCommentRequired } from './helpers'
 
+// Manejo de errores
+const getErrorMessage = (error) => {
+  if (error.response) {
+    if (error.response.status === 404) {
+      return 'El documento no se encontró. Puede que ya haya sido eliminado.'
+    } else if (error.response.status === 500) {
+      return 'Hubo un error en el servidor. Por favor, intenta de nuevo más tarde.'
+    } else {
+      return 'Hubo un error: ' + (error.response.data.message || 'Por favor, intenta de nuevo.')
+    }
+  } else if (error.request) {
+    return 'Error de red: No se pudo conectar al servidor. Por favor, verifica tu conexión.'
+  } else {
+    return 'Error inesperado: ' + error.message
+  }
+}
+
 export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, setApplicantSelected) => {
   setApplicantSelected(applicant)
   setIsModalApplicantDetailsOpen(true)
@@ -30,7 +47,6 @@ const updateEnrollmentUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.e
 export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setErrorMessage, setSuccessMessage) => {
   e.preventDefault()
 
-  // check if the data is valid
   try {
     validateDataBeforeSubmit(formData, enrollment)
   } catch (error) {
@@ -40,16 +56,14 @@ export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setE
   }
 
   console.log('Actualizando inscripción:', formData)
-  // send the data to the server
   axios.put(`${updateEnrollmentUrl}/${enrollment.id}?status=${formData.status}&examDate=${formatDateForApi(formData.examDate)}&whatsappPermission=${formData.whatsappNotification}&comment=${formData.comment}&changedBy=1`)
     .then(response => {
-      console.log(response)
       setIsEditing(false)
       setSuccessMessage('La inscripción se actualizó correctamente.')
       updateEnrollmentLocal(enrollment, formData)
-    }).catch(error => {
-      console.error(error)
-      setErrorMessage('Hubo un error al actualizar la inscripción. Por favor, intenta de nuevo.')
+    })
+    .catch(error => {
+      setErrorMessage(getErrorMessage(error))
     })
 }
 
@@ -66,27 +80,20 @@ export const handleFileDownload = (filename, setErrorMessage) => {
 
   axios.get(`${downloadFileUrl}/${filename}`, { responseType: 'blob' })
     .then(response => {
-      console.log(response)
       const url = window.URL.createObjectURL(new Blob([response.data]))
       const link = document.createElement('a')
       link.href = url
       link.setAttribute('download', filename)
       document.body.appendChild(link)
       link.click()
-      // Limpia el URL después de descargar el archivo
       window.URL.revokeObjectURL(url)
     })
     .catch(error => {
-      if (error.response && error.response.status === 404) {
-        setErrorMessage('El documento no se encontró. Puede que ya haya sido eliminado.')
-      } else {
-        setErrorMessage('Hubo un error al descargar el documento. Por favor, intenta de nuevo.')
-      }
+      setErrorMessage(getErrorMessage(error))
     })
 }
 
 const deleteFileUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_DELETE_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT}`
-
 export const handleFileDelete = (selectedFile, setSelectedFile, setErrorMessage, setSuccessMessage, setEnrollments, enrollmentId, studentId) => {
   console.log('Eliminando:', selectedFile.documentUrl)
 
@@ -95,14 +102,12 @@ export const handleFileDelete = (selectedFile, setSelectedFile, setErrorMessage,
       console.log(response)
       setSuccessMessage('El documento se eliminó correctamente.')
       setSelectedFile(null)
-
-      // Actualiza el estado de las inscripciones eliminando el documento del estudiante correspondiente
-      setEnrollments((prevEnrollments) => {
-        return prevEnrollments.map((student) => {
+      setEnrollments(prevEnrollments =>
+        prevEnrollments.map(student => {
           if (student.id === studentId) {
             return {
               ...student,
-              enrollments: student.enrollments.map((enrollment) => {
+              enrollments: student.enrollments.map(enrollment => {
                 if (enrollment.id === enrollmentId) {
                   return {
                     ...enrollment,
@@ -115,17 +120,11 @@ export const handleFileDelete = (selectedFile, setSelectedFile, setErrorMessage,
           }
           return student
         })
-      })
+      )
     })
     .catch(error => {
       console.error(error)
-      if (error.response && error.response.status === 404) {
-        setErrorMessage('El documento no se encontró. Puede que ya haya sido eliminado.')
-      } else if (error.response && error.response.status === 500) {
-        setErrorMessage('Hubo un error en el servidor. Por favor, intenta de nuevo más tarde.')
-      } else {
-        setErrorMessage('Hubo un error al eliminar el documento. Por favor, intenta de nuevo.')
-      }
+      setErrorMessage(getErrorMessage(error))
     })
 }
 
@@ -165,32 +164,37 @@ export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollmen
     })
     .catch(error => {
       console.error(error)
-      setErrorMessage('Hubo un error al subir el documento. Por favor, intenta de nuevo.')
+      setErrorMessage(getErrorMessage(error))
     })
 }
 
 const searchEnrollmentUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT}`
 export const handleSearch = (search, setEnrollments) => {
-  axios.get(`${searchEnrollmentUrl}?value=${search}`).then(response => {
-    console.log(response)
-    const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
-    setEnrollments(enrollments)
-  }).catch(error => {
-    console.error(error)
-  })
+  axios.get(`${searchEnrollmentUrl}?value=${search}`)
+    .then(response => {
+      console.log(response)
+      const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
+      setEnrollments(enrollments)
+    })
+    .catch(error => {
+      console.error(error)
+    })
 }
 
 const getAllEnrollmentsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_ALL_ENROLLMENTS_ENDPOINT}`
 export const handleGetAllEnrollments = (setEnrollments, setLoading, setErrorMessage) => {
   setLoading(true)
 
-  axios.get(getAllEnrollmentsUrl).then(response => {
-    const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
-    setEnrollments(enrollments)
-    setLoading(false)
-  }).catch(error => {
-    console.error(error)
-    setLoading(false)
-    setErrorMessage('Hubo un error al cargar los aspirantes. Por favor, intenta de nuevo.')
-  })
+  axios.get(getAllEnrollmentsUrl)
+    .then(response => {
+      const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
+      setEnrollments(enrollments)
+    })
+    .catch(error => {
+      console.error(error)
+      setErrorMessage(getErrorMessage(error))
+    })
+    .finally(() => {
+      setLoading(false)
+    })
 }
