@@ -10,7 +10,8 @@ const EnrollmentInfo = ({
   setIsEditing,
   onDocClick,
   student,
-  setSelectedFileType
+  setSelectedFileType,
+  onEnrollmentEdit
 }) => (
   <>
     {isEditing
@@ -21,6 +22,7 @@ const EnrollmentInfo = ({
           onDateChange={onDateChange}
           onWhatsappChange={onWhatsappChange}
           setIsEditing={setIsEditing}
+          handleEnrollmentEdit={onEnrollmentEdit}
         />
         )
       : (

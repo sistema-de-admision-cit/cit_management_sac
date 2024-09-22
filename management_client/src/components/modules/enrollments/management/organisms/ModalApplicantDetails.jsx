@@ -15,9 +15,7 @@ const ModalApplicantDetails = ({
   onClose,
   onDocClick,
   onFileDownload,
-  onDateChange,
-  onStatusChange,
-  onWhatsappChange
+  onEnrollmentEdit
 }) => {
   const [activeTab, setActiveTab] = useState('student')
   const [isDocModalOpen, setIsDocModalOpen] = useState(false)
@@ -69,9 +67,7 @@ const ModalApplicantDetails = ({
         <EnrollmentInfo
           enrollment={enrollments.find((enrollment) => activeTab === `enrollment-${enrollment.id}`)}
           isEditing={isEditing}
-          onStatusChange={onStatusChange}
-          onDateChange={onDateChange}
-          onWhatsappChange={onWhatsappChange}
+          onEnrollmentEdit={onEnrollmentEdit}
           setIsEditing={setIsEditing}
           onDocClick={(file) => onDocClick(file, setSelectedFile, setIsDocModalOpen)}
           setSelectedFileType={setSelectedFileType}
