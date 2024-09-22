@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -88,8 +89,6 @@ public class InscriptionsController {
     return student == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(student);
   }
 
-  // TODO: Create update endpoint to alter status
-
   /**
    * @param id     the id of the enrollment
    * @param status the new status of the enrollment
@@ -128,8 +127,6 @@ public class InscriptionsController {
     return updated ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
   }
 
-  // TODO: Create update endpoint to alter documents
-
   /**
    * Download documents
    *
@@ -160,6 +157,30 @@ public class InscriptionsController {
     return databaseDeleted && storageDeleted ?
         ResponseEntity.ok().build() :
         ResponseEntity.notFound().build();
+  }
+
+  /**
+   * Upload a document
+   *
+   * @param file
+   * @param documentName
+   * @param documentType
+   * @param enrollmentId
+   * @return
+   */
+  @PostMapping("/documents/upload")
+  public ResponseEntity<String> uploadDocument(@RequestParam("file") MultipartFile file,
+      @RequestParam("documentName") String documentName,
+      @RequestParam("documentType") String documentType,
+      @RequestParam("enrollmentId") Long enrollmentId) {
+    if (file.isEmpty()) {
+      return ResponseEntity.badRequest().body("No se seleccionó ningún archivo para subir.");
+    }
+    storageService.store(file, documentName);
+
+    inscriptionsService.saveDocument(documentName, documentType, enrollmentId);
+
+    return ResponseEntity.ok().build();
   }
 
   /**
