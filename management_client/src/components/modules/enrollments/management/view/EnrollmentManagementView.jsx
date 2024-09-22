@@ -42,7 +42,7 @@ const EnrollmentManagementView = () => {
           enrollments={applicantSelected.enrollments}
           onClose={() => setIsModalApplicantDetailsOpen(false)}
           onDocClick={handleDocClick}
-          onFileDownload={handleFileDownload}
+          onFileDownload={(filename) => handleFileDownload(filename, setErrorMessage)}
           onFileDelete={
             (selectedFile, setSelectedFile, enrollmentId, studentId) => handleFileDelete(selectedFile, setSelectedFile, setErrorMessage, setSuccessMessage, setEnrollments, enrollmentId, studentId)
           }
