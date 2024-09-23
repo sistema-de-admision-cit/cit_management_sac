@@ -3,6 +3,7 @@ package cr.co.ctpcit.citsacbackend.rest.unit;
 import cr.co.ctpcit.citsacbackend.data.enums.WeekDays;
 import cr.co.ctpcit.citsacbackend.logic.dto.dates.ExamDayDto;
 import cr.co.ctpcit.citsacbackend.logic.services.ExamDayService;
+import cr.co.ctpcit.citsacbackend.logic.services.storage.FileSystemStorageService;
 import cr.co.ctpcit.citsacbackend.rest.ExamDayController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,9 @@ public class ExamDayControllerUnitTest {
 
   @MockBean
   private ExamDayService examDayService;
+
+  @MockBean
+  private FileSystemStorageService serviceStorage;
 
   private ExamDayDto examDay1;
   private ExamDayDto examDay2;

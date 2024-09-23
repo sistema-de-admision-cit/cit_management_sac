@@ -5,11 +5,13 @@ import cr.co.ctpcit.citsacbackend.data.repositories.SystemConfigRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.SystemConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.SystemConfigMapper;
 import cr.co.ctpcit.citsacbackend.logic.services.SystemConfigServiceImplementation;
+import cr.co.ctpcit.citsacbackend.logic.services.storage.FileSystemStorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -23,6 +25,9 @@ public class SystemConfigControllerUnitTest {
 
   @InjectMocks
   private SystemConfigServiceImplementation systemConfigService;
+
+  @MockBean
+  private FileSystemStorageService serviceStorage;
 
   @BeforeEach
   void setUp() {

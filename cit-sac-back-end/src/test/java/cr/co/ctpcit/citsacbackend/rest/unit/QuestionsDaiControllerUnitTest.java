@@ -3,6 +3,7 @@ package cr.co.ctpcit.citsacbackend.rest.unit;
 import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.examsImplementations.DaiQuestionsServiceImplementation;
+import cr.co.ctpcit.citsacbackend.logic.services.storage.FileSystemStorageService;
 import cr.co.ctpcit.citsacbackend.rest.QuestionsDaiController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ public class QuestionsDaiControllerUnitTest {
 
   @MockBean
   private DaiQuestionsServiceImplementation daiQuestionsService;
+
+  @MockBean
+  private FileSystemStorageService serviceStorage;
 
   private DaiQuestionsDto question1;
   private DaiQuestionsDto question2;

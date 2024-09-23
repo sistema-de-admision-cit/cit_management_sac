@@ -2,6 +2,7 @@ package cr.co.ctpcit.citsacbackend.rest.unit;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.AcademicExamQuestionsService;
+import cr.co.ctpcit.citsacbackend.logic.services.storage.FileSystemStorageService;
 import cr.co.ctpcit.citsacbackend.rest.AcademicExamQuestionsController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ public class AcademicExamQuestionsControllerUnitTest {
 
   @MockBean
   private AcademicExamQuestionsService service;
+
+  @MockBean
+  private FileSystemStorageService serviceStorage;
 
   private AcademicExamQuestionsDto question1;
   private AcademicExamQuestionsDto question2;
