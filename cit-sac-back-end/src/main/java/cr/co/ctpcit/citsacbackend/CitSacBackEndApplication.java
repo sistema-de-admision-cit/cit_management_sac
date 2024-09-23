@@ -18,6 +18,7 @@ public class CitSacBackEndApplication {
 
   }
 
+  @Bean
   CommandLineRunner init(StorageService storageService) {
     return (args) -> {
       // storageService.deleteAll();
