@@ -16,6 +16,7 @@ import ExamScheduleConfiguratorView from '../../../modules/system_configuration/
 
 // results views
 import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenuPageView.jsx'
+import ExamScoreManagementView from '../../../modules/results/load_results/view/ExamScoreManagementView.jsx'
 
 // reports views
 import ReportsMenuPageView from '../../../modules/reports/menu/views/ReportsMenuPageView.jsx'
@@ -171,7 +172,7 @@ const menuConfig = [
             key: 'load-results',
             label: 'Cargar Notas',
             path: '/resultados/cargar',
-            component: DefaultComponent,
+            component: ExamScoreManagementView,
             description: 'Cargar y registrar las notas obtenidas.'
           },
           {
