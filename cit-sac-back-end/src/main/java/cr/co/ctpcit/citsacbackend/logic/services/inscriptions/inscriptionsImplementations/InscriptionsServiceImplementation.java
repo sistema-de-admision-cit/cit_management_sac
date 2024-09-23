@@ -3,13 +3,13 @@ package cr.co.ctpcit.citsacbackend.logic.services.inscriptions.inscriptionsImple
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.*;
 import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
-import cr.co.ctpcit.citsacbackend.data.repositories.*;
+import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
-import cr.co.ctpcit.citsacbackend.logic.mappers.AddressMapper;
-import cr.co.ctpcit.citsacbackend.logic.mappers.EnrollmentMapper;
-import cr.co.ctpcit.citsacbackend.logic.mappers.ParentGuardianMapper;
-import cr.co.ctpcit.citsacbackend.logic.mappers.StudentMapper;
+import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.AddressMapper;
+import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.EnrollmentMapper;
+import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.ParentGuardianMapper;
+import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.StudentMapper;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -133,7 +133,8 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
       if (student.get().getEnrollments().stream().anyMatch(
           enrollment -> enrollment.getExamDate().equals(enrollmentEntity.getExamDate()))) {
         throw new EnrollmentException(
-            "El estudiante ya tiene una inscripción para la fecha seleccionada. " + "Debe seleccionar otra fecha o comunicarse con el área de Servicio al Cliente.");
+            "El estudiante ya tiene una inscripción para la fecha seleccionada. " +
+            "Debe seleccionar otra fecha o comunicarse con el área de Servicio al Cliente.");
       }
 
     }

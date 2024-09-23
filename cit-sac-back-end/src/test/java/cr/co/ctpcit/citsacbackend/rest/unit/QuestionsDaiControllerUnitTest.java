@@ -4,7 +4,7 @@ import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.examsImplementations.DaiQuestionsServiceImplementation;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.FileSystemStorageService;
-import cr.co.ctpcit.citsacbackend.rest.QuestionsDaiController;
+import cr.co.ctpcit.citsacbackend.rest.exams.dai.QuestionsDaiController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
