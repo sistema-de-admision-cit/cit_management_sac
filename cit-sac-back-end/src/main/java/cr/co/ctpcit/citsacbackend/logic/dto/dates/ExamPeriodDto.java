@@ -1,12 +1,13 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.dates;
 
+import cr.co.ctpcit.citsacbackend.data.entities.config.ExamPeriodEntity;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * DTO para {@link cr.co.ctpcit.citsacbackend.data.entities.ExamPeriodEntity}
+ * DTO para {@link ExamPeriodEntity}
  */
 
 

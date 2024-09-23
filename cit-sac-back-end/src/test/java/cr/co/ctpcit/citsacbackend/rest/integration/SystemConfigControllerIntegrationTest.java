@@ -1,7 +1,7 @@
 package cr.co.ctpcit.citsacbackend.rest.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cr.co.ctpcit.citsacbackend.logic.dto.SystemConfigDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.config.SystemConfigDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

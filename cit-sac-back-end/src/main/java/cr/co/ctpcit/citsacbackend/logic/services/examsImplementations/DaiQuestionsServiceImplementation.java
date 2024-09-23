@@ -1,11 +1,11 @@
 package cr.co.ctpcit.citsacbackend.logic.services.examsImplementations;
 
 import cr.co.ctpcit.citsacbackend.data.entities.exams.dai.DaiQuestionsEntity;
-import cr.co.ctpcit.citsacbackend.data.repositories.DaiExamQuestionsRepository;
-import cr.co.ctpcit.citsacbackend.data.repositories.DaiQuestionsRepository;
+import cr.co.ctpcit.citsacbackend.data.repositories.exam.dai.DaiExamQuestionsRepository;
+import cr.co.ctpcit.citsacbackend.data.repositories.exam.dai.DaiQuestionsRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.exams.dai.DaiQuestionsMapper;
-import cr.co.ctpcit.citsacbackend.logic.services.DaiQuestionsService;
+import cr.co.ctpcit.citsacbackend.logic.services.exams.dai.DaiQuestionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

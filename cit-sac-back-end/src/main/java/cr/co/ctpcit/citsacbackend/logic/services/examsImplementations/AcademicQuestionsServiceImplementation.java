@@ -1,11 +1,11 @@
 package cr.co.ctpcit.citsacbackend.logic.services.examsImplementations;
 
 import cr.co.ctpcit.citsacbackend.data.entities.exams.academic.AcademicQuestionsEntity;
-import cr.co.ctpcit.citsacbackend.data.repositories.AcademicExamQuestionRepository;
-import cr.co.ctpcit.citsacbackend.data.repositories.AcademicQuestionsRepository;
+import cr.co.ctpcit.citsacbackend.data.repositories.exam.academic.AcademicExamQuestionRepository;
+import cr.co.ctpcit.citsacbackend.data.repositories.exam.academic.AcademicQuestionsRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.exams.academic.AcademicQuestionsMapper;
-import cr.co.ctpcit.citsacbackend.logic.services.AcademicQuestionsService;
+import cr.co.ctpcit.citsacbackend.logic.services.exams.academic.AcademicQuestionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
