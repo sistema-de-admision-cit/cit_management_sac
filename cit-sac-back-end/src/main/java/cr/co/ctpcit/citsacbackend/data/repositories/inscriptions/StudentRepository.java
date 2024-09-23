@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.repositories;
+package cr.co.ctpcit.citsacbackend.data.repositories.inscriptions;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.StudentEntity;
 import jakarta.validation.constraints.NotBlank;

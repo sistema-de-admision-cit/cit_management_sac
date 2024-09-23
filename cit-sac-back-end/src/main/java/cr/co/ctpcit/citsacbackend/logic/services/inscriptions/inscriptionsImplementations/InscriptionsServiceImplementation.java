@@ -3,7 +3,7 @@ package cr.co.ctpcit.citsacbackend.logic.services.inscriptions.inscriptionsImple
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.*;
 import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
-import cr.co.ctpcit.citsacbackend.data.repositories.*;
+import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
 import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.AddressMapper;

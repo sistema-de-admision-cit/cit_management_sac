@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.repositories;
+package cr.co.ctpcit.citsacbackend.data.repositories.exam.dai;
 
 
 import cr.co.ctpcit.citsacbackend.data.entities.exams.dai.DaiQuestionsEntity;

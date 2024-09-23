@@ -1,9 +1,9 @@
 package cr.co.ctpcit.citsacbackend.logic.services.examsImplementations;
 
-import cr.co.ctpcit.citsacbackend.data.repositories.DaiExamQuestionsRepository;
+import cr.co.ctpcit.citsacbackend.data.repositories.exam.dai.DaiExamQuestionsRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiExamQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.exams.dai.DaiExamQuestionsMapper;
-import cr.co.ctpcit.citsacbackend.logic.services.DaiExamQuestionsService;
+import cr.co.ctpcit.citsacbackend.logic.services.exams.dai.DaiExamQuestionsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

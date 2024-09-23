@@ -1,7 +1,7 @@
 package cr.co.ctpcit.citsacbackend.rest.unit;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamQuestionsDto;
-import cr.co.ctpcit.citsacbackend.logic.services.AcademicExamQuestionsService;
+import cr.co.ctpcit.citsacbackend.logic.services.exams.academic.AcademicExamQuestionsService;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.FileSystemStorageService;
 import cr.co.ctpcit.citsacbackend.rest.exams.academic.AcademicExamQuestionsController;
 import org.junit.jupiter.api.BeforeEach;

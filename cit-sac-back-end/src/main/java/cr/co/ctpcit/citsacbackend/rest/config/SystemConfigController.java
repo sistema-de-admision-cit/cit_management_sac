@@ -1,7 +1,7 @@
 package cr.co.ctpcit.citsacbackend.rest.config;
 
 import cr.co.ctpcit.citsacbackend.data.entities.config.SystemConfigEntity;
-import cr.co.ctpcit.citsacbackend.logic.dto.SystemConfigDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.config.SystemConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.services.SystemConfigServiceImplementation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

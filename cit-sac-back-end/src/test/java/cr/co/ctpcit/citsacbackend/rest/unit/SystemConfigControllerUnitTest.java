@@ -1,8 +1,8 @@
 package cr.co.ctpcit.citsacbackend.rest.unit;
 
 import cr.co.ctpcit.citsacbackend.data.entities.config.SystemConfigEntity;
-import cr.co.ctpcit.citsacbackend.data.repositories.SystemConfigRepository;
-import cr.co.ctpcit.citsacbackend.logic.dto.SystemConfigDto;
+import cr.co.ctpcit.citsacbackend.data.repositories.config.SystemConfigRepository;
+import cr.co.ctpcit.citsacbackend.logic.dto.config.SystemConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.config.SystemConfigMapper;
 import cr.co.ctpcit.citsacbackend.logic.services.SystemConfigServiceImplementation;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.FileSystemStorageService;

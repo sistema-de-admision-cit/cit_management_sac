@@ -1,9 +1,10 @@
 package cr.co.ctpcit.citsacbackend.logic.services;
 
 import cr.co.ctpcit.citsacbackend.data.entities.config.SystemConfigEntity;
-import cr.co.ctpcit.citsacbackend.data.repositories.SystemConfigRepository;
-import cr.co.ctpcit.citsacbackend.logic.dto.SystemConfigDto;
+import cr.co.ctpcit.citsacbackend.data.repositories.config.SystemConfigRepository;
+import cr.co.ctpcit.citsacbackend.logic.dto.config.SystemConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.config.SystemConfigMapper;
+import cr.co.ctpcit.citsacbackend.logic.services.config.SystemConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

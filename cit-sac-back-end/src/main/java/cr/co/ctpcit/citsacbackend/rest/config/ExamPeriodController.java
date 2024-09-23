@@ -1,7 +1,7 @@
 package cr.co.ctpcit.citsacbackend.rest.config;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.dates.ExamPeriodDto;
-import cr.co.ctpcit.citsacbackend.logic.services.ExamPeriodService;
+import cr.co.ctpcit.citsacbackend.logic.services.config.ExamPeriodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.repositories;
+package cr.co.ctpcit.citsacbackend.data.repositories.inscriptions;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.ParentsGuardianEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

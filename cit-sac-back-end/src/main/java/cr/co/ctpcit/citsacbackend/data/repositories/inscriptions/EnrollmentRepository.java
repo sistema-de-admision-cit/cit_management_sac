@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.repositories;
+package cr.co.ctpcit.citsacbackend.data.repositories.inscriptions;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.EnrollmentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;

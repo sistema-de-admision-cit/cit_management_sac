@@ -1,7 +1,7 @@
 package cr.co.ctpcit.citsacbackend.rest.exams.academic;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamQuestionsDto;
-import cr.co.ctpcit.citsacbackend.logic.services.AcademicExamQuestionsService;
+import cr.co.ctpcit.citsacbackend.logic.services.exams.academic.AcademicExamQuestionsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

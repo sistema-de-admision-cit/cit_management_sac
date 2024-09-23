@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.repositories;
+package cr.co.ctpcit.citsacbackend.data.repositories.exam.academic;
 
 import cr.co.ctpcit.citsacbackend.data.entities.exams.academic.AcademicExamQuestionsEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.academic.AcademicExamQuestionsEntityId;

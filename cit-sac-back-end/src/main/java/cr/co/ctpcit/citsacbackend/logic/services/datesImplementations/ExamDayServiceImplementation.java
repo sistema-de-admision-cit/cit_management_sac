@@ -2,11 +2,11 @@ package cr.co.ctpcit.citsacbackend.logic.services.datesImplementations;
 
 import cr.co.ctpcit.citsacbackend.data.entities.config.ExamDayEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.config.ExamPeriodEntity;
-import cr.co.ctpcit.citsacbackend.data.repositories.ExamDayRepository;
-import cr.co.ctpcit.citsacbackend.data.repositories.ExamPeriodRepository;
+import cr.co.ctpcit.citsacbackend.data.repositories.config.ExamDayRepository;
+import cr.co.ctpcit.citsacbackend.data.repositories.config.ExamPeriodRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.dates.ExamDayDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.config.ExamDayMapper;
-import cr.co.ctpcit.citsacbackend.logic.services.ExamDayService;
+import cr.co.ctpcit.citsacbackend.logic.services.config.ExamDayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

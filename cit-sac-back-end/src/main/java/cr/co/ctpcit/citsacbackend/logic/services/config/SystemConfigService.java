@@ -1,7 +1,7 @@
-package cr.co.ctpcit.citsacbackend.logic.services;
+package cr.co.ctpcit.citsacbackend.logic.services.config;
 
 import cr.co.ctpcit.citsacbackend.data.entities.config.SystemConfigEntity;
-import cr.co.ctpcit.citsacbackend.logic.dto.SystemConfigDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.config.SystemConfigDto;
 
 import java.util.List;
 
