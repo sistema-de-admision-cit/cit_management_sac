@@ -1,6 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.repositories;
 
-import cr.co.ctpcit.citsacbackend.data.entities.SystemConfigEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.config.SystemConfigEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

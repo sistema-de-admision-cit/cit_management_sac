@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.rest;
+package cr.co.ctpcit.citsacbackend.rest.config;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.dates.ExamPeriodDto;
 import cr.co.ctpcit.citsacbackend.logic.services.ExamPeriodService;

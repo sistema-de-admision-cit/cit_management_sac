@@ -1,8 +1,8 @@
-package cr.co.ctpcit.citsacbackend.logic.mappers;
+package cr.co.ctpcit.citsacbackend.logic.mappers.config;
 
 
 
-import cr.co.ctpcit.citsacbackend.data.entities.ExamPeriodEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.config.ExamPeriodEntity;
 import cr.co.ctpcit.citsacbackend.logic.dto.dates.ExamPeriodDto;
 
 import java.util.List;

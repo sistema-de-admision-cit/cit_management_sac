@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.rest;
+package cr.co.ctpcit.citsacbackend.rest.exams.dai;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.examsImplementations.DaiQuestionsServiceImplementation;

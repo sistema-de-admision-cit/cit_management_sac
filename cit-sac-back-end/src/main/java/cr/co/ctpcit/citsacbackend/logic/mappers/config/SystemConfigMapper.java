@@ -1,6 +1,6 @@
-package cr.co.ctpcit.citsacbackend.logic.mappers;
+package cr.co.ctpcit.citsacbackend.logic.mappers.config;
 
-import cr.co.ctpcit.citsacbackend.data.entities.SystemConfigEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.config.SystemConfigEntity;
 import cr.co.ctpcit.citsacbackend.logic.dto.SystemConfigDto;
 
 public class SystemConfigMapper {

@@ -1,6 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.repositories;
 
-import cr.co.ctpcit.citsacbackend.data.entities.ExamPeriodEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.config.ExamPeriodEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

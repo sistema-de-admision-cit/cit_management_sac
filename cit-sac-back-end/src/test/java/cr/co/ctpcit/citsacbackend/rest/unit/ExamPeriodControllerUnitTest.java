@@ -3,7 +3,7 @@ package cr.co.ctpcit.citsacbackend.rest.unit;
 import cr.co.ctpcit.citsacbackend.logic.dto.dates.ExamPeriodDto;
 import cr.co.ctpcit.citsacbackend.logic.services.ExamPeriodService;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.FileSystemStorageService;
-import cr.co.ctpcit.citsacbackend.rest.ExamPeriodController;
+import cr.co.ctpcit.citsacbackend.rest.config.ExamPeriodController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;

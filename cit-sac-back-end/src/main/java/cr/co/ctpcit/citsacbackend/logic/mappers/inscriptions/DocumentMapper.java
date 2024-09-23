@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.logic.mappers;
+package cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.DocumentEntity;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.DocumentDto;

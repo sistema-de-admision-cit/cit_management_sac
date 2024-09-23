@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.entities;
+package cr.co.ctpcit.citsacbackend.data.entities.config;
 
 import jakarta.persistence.*;
 import lombok.*;

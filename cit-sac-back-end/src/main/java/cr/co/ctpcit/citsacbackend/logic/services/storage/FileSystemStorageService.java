@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.services.storage;
 
+import cr.co.ctpcit.citsacbackend.logic.dto.inscription.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageFileNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class FileSystemStorageService implements StorageService {
   }
 
   @Override
-  public void store(MultipartFile file, String filename) {
+  public DocumentDto store(MultipartFile file, String filename) {
     try {
       if (file.isEmpty()) {
         throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
@@ -54,6 +55,8 @@ public class FileSystemStorageService implements StorageService {
     } catch (IOException e) {
       throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
     }
+    //TODO: Return DocumentDto with the filename and the URL to download the file
+    return null;
   }
 
   @Override

@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.rest;
+package cr.co.ctpcit.citsacbackend.rest.exams.academic;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.examsImplementations.AcademicQuestionsServiceImplementation;
