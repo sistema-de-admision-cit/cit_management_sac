@@ -16,13 +16,12 @@ public class CitSacBackEndApplication {
     SpringApplication.run(CitSacBackEndApplication.class, args);
 
 
-
   }
 
   @Bean
   CommandLineRunner init(StorageService storageService) {
     return (args) -> {
-      //storageService.deleteAll();
+      // storageService.deleteAll();
       storageService.init();
     };
   }

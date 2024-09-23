@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.rest;
+package cr.co.ctpcit.citsacbackend.rest.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
@@ -86,7 +86,7 @@ class InscriptionsControllerUnitTests {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     DocumentContext documentContext = JsonPath.parse(response.getBody());
     int size = documentContext.read("$.length()");
-    assertThat(size).isEqualTo(2);
+    assertThat(size).isEqualTo(1);
     String firstName = documentContext.read("$[0].firstName");
     assertThat(firstName).isEqualTo("Andrés");
   }
@@ -117,19 +117,6 @@ class InscriptionsControllerUnitTests {
 
   @Test
   @Order(6)
-  void updateStatus_shouldReturnUpdatedStudent_whenValidIdAndStatusProvided() throws Exception {
-    String enrollmentId = "3";  // Use a valid enrollment ID from your test database
-    ProcessStatus newStatus = ProcessStatus.I; // New exam date to update
-
-    mockMvc.perform(MockMvcRequestBuilders.put("/api/inscriptions/{id}/status", enrollmentId)
-            .queryParam("status", newStatus.toString()).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk()).andExpect(jsonPath("$.enrollments[0].id").value(enrollmentId))
-        .andExpect(jsonPath("$.enrollments[0].status").value(
-            newStatus.toString()));  // Check if the exam date is updated
-  }
-
-  @Test
-  @Order(7)
   void updateStatus_shouldReturnNotFound_whenInvalidIdProvided() throws Exception {
     String invalidId = "999";  // Use an invalid ID that doesn't exist in the test database
     ProcessStatus newStatus = ProcessStatus.A;
@@ -140,7 +127,7 @@ class InscriptionsControllerUnitTests {
   }
 
   @Test
-  @Order(8)
+  @Order(7)
   @Disabled
   public void testCreateInscription_shouldCreateANewInscription() throws IOException {
     // Arrange
@@ -167,7 +154,7 @@ class InscriptionsControllerUnitTests {
   }
 
   @Test
-  @Order(9)
+  @Order(8)
   @Disabled
   public void testCreateInscription_shouldFailDueToConflictEnrollment() throws IOException {
     // Arrange

@@ -1,8 +1,10 @@
-package cr.co.ctpcit.citsacbackend.rest;
+package cr.co.ctpcit.citsacbackend.rest.unit;
 
 import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.examsImplementations.AcademicQuestionsServiceImplementation;
+import cr.co.ctpcit.citsacbackend.logic.services.storage.FileSystemStorageService;
+import cr.co.ctpcit.citsacbackend.rest.QuestionsAcademicController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -30,6 +32,9 @@ public class QuestionsAcademicControllerUnitTest {
 
   @MockBean
   private AcademicQuestionsServiceImplementation academicQuestionsService;
+
+  @MockBean
+  private FileSystemStorageService serviceStorage;
 
   private AcademicQuestionsDto question1;
   private AcademicQuestionsDto question2;
