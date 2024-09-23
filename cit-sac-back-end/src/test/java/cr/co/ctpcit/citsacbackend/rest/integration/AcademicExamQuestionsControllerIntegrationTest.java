@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.rest;
+package cr.co.ctpcit.citsacbackend.rest.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-public class DaiExamQuestionsControllerIntegrationTest {
+public class AcademicExamQuestionsControllerIntegrationTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -26,12 +26,12 @@ public class DaiExamQuestionsControllerIntegrationTest {
   private ObjectMapper objectMapper;
 
   @Test
-  public void testGetExamQuestions() throws Exception {
+  public void testGetAcademicExamQuestions() throws Exception {
     int examId = 1;
 
-    mockMvc.perform(
-            get("/api/exams/{examId}/questions", examId).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get("/api/academic-exams/{examId}/questions", examId).contentType(
+            MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray());
   }
 }

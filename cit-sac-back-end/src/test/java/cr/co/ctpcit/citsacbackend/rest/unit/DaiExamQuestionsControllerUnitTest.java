@@ -1,7 +1,8 @@
-package cr.co.ctpcit.citsacbackend.rest;
+package cr.co.ctpcit.citsacbackend.rest.unit;
 
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamQuestionsDto;
-import cr.co.ctpcit.citsacbackend.logic.services.AcademicExamQuestionsService;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiExamQuestionsDto;
+import cr.co.ctpcit.citsacbackend.logic.services.DaiExamQuestionsService;
+import cr.co.ctpcit.citsacbackend.rest.DaiExamQuestionsController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -19,34 +20,34 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AcademicExamQuestionsController.class)
-public class AcademicExamQuestionsControllerUnitTest {
+@WebMvcTest(DaiExamQuestionsController.class)
+public class DaiExamQuestionsControllerUnitTest {
 
   @Autowired
   private MockMvc mockMvc;
 
   @MockBean
-  private AcademicExamQuestionsService service;
+  private DaiExamQuestionsService service;
 
-  private AcademicExamQuestionsDto question1;
-  private AcademicExamQuestionsDto question2;
+  private DaiExamQuestionsDto question1;
+  private DaiExamQuestionsDto question2;
 
   @BeforeEach
   public void setUp() {
     MockitoAnnotations.openMocks(this);
-    question1 = new AcademicExamQuestionsDto(1, 101, "El verbo ir");
-    question2 = new AcademicExamQuestionsDto(1, 102, "La respuesta es 7");
+    question1 = new DaiExamQuestionsDto(1, 101, "Me gusta explorar la naturaleza");
+    question2 = new DaiExamQuestionsDto(1, 102, "Soy muy tímido");
   }
 
   @Test
-  public void testGetAcademicExamQuestions() throws Exception {
+  public void testGetExamQuestions() throws Exception {
     int examId = 1;
-    List<AcademicExamQuestionsDto> questions = Arrays.asList(question1, question2);
+    List<DaiExamQuestionsDto> questions = Arrays.asList(question1, question2);
     when(service.getExamAnswers(examId)).thenReturn(questions);
 
-    mockMvc.perform(get("/api/academic-exams/{examId}/questions", examId).contentType(
-            MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].examId").value(question1.examId()))
+    mockMvc.perform(
+            get("/api/exams/{examId}/questions", examId).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andExpect(jsonPath("$[0].examId").value(question1.examId()))
         .andExpect(jsonPath("$[0].questionId").value(question1.questionId()))
         .andExpect(jsonPath("$[0].studentAnswer").value(question1.studentAnswer()))
         .andExpect(jsonPath("$[1].examId").value(question2.examId()))

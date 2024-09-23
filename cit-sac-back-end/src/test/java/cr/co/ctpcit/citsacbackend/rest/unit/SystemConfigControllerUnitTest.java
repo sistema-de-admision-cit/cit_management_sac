@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.rest;
+package cr.co.ctpcit.citsacbackend.rest.unit;
 
 import cr.co.ctpcit.citsacbackend.data.entities.SystemConfigEntity;
 import cr.co.ctpcit.citsacbackend.data.repositories.SystemConfigRepository;

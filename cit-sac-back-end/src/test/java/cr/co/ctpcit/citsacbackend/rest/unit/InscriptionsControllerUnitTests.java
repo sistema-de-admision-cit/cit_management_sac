@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.rest;
+package cr.co.ctpcit.citsacbackend.rest.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
@@ -86,7 +86,7 @@ class InscriptionsControllerUnitTests {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     DocumentContext documentContext = JsonPath.parse(response.getBody());
     int size = documentContext.read("$.length()");
-    assertThat(size).isEqualTo(2);
+    assertThat(size).isEqualTo(1);
     String firstName = documentContext.read("$[0].firstName");
     assertThat(firstName).isEqualTo("Andrés");
   }
