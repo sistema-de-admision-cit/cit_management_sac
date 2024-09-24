@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/exams")
+@RequestMapping("/api/dai-exam-questions")
 @RequiredArgsConstructor
 public class DaiExamQuestionsController {
 
