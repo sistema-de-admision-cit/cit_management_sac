@@ -49,9 +49,9 @@ public class DaiExamQuestionsControllerUnitTest {
     List<DaiExamQuestionsDto> questions = Arrays.asList(question1, question2);
     when(service.getExamAnswers(examId)).thenReturn(questions);
 
-    mockMvc.perform(
-            get("/api/exams/{examId}/questions", examId).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk()).andExpect(jsonPath("$[0].examId").value(question1.examId()))
+    mockMvc.perform(get("/api/dai-exam-questions/{examId}/questions", examId).contentType(
+            MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].examId").value(question1.examId()))
         .andExpect(jsonPath("$[0].questionId").value(question1.questionId()))
         .andExpect(jsonPath("$[0].studentAnswer").value(question1.studentAnswer()))
         .andExpect(jsonPath("$[1].examId").value(question2.examId()))

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/api/Academic")
+@RequestMapping("/api/questions-academic")
 public class QuestionsAcademicController {
 
   @Autowired

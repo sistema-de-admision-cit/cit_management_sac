@@ -29,7 +29,7 @@ public class ExamDayControllerIntegrationTest {
 
   @Test
   public void testGetAllExamDays() throws Exception {
-    mockMvc.perform(get("/api/ExamDays")).andExpect(status().isOk())
+    mockMvc.perform(get("/api/exam-days")).andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray());
   }
@@ -39,7 +39,7 @@ public class ExamDayControllerIntegrationTest {
     int testId = 1;
     ExamDayDto examDayDto = new ExamDayDto(testId, 1, WeekDays.M, "08:00");
 
-    mockMvc.perform(put("/api/ExamDays/{id}", testId).contentType(MediaType.APPLICATION_JSON)
+    mockMvc.perform(put("/api/exam-days/{id}", testId).contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(examDayDto))).andExpect(status().isOk())
         .andExpect(jsonPath("$.startTime").value("08:00"));
   }
@@ -48,7 +48,7 @@ public class ExamDayControllerIntegrationTest {
   public void testCreateExamDay() throws Exception {
     ExamDayDto examDayDto = new ExamDayDto(3, 1, WeekDays.M, "09:00");
 
-    mockMvc.perform(post("/api/ExamDays").contentType(MediaType.APPLICATION_JSON)
+    mockMvc.perform(post("/api/exam-days").contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(examDayDto))).andExpect(status().isCreated())
         .andExpect(jsonPath("$.examDay").value("M"))
         .andExpect(jsonPath("$.startTime").value("09:00"));

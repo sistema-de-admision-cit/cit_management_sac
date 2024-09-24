@@ -54,7 +54,7 @@ public class QuestionsDaiControllerUnitTest {
     List<DaiQuestionsDto> allQuestions = Arrays.asList(question1, question2);
     when(daiQuestionsService.obtenerTodasLasPreguntas()).thenReturn(allQuestions);
 
-    mockMvc.perform(get("/api/Dai").contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get("/api/questions-dai").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andExpect(jsonPath("$[0].id").value(question1.id()))
         .andExpect(jsonPath("$[1].id").value(question2.id()));
   }
@@ -63,7 +63,7 @@ public class QuestionsDaiControllerUnitTest {
   void getExamQuestionById() throws Exception {
     when(daiQuestionsService.obtenerPreguntaPorId(1)).thenReturn(question1);
 
-    mockMvc.perform(get("/api/Dai/1").contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get("/api/questions-dai/1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andExpect(jsonPath("$.id").value(question1.id()));
   }
 
@@ -72,14 +72,14 @@ public class QuestionsDaiControllerUnitTest {
     when(daiQuestionsService.obtenerPreguntaPorId(1)).thenThrow(
         new NoSuchElementException("Pregunta no encontrada con el id 1"));
 
-    mockMvc.perform(get("/api/Dai/1").contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get("/api/questions-dai/1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().string("Pregunta no encontrada con el id 1"));
   }
 
   @Test
   void deleteExamQuestion() throws Exception {
-    mockMvc.perform(delete("/api/Dai/1").contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(delete("/api/questions-dai/1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 
@@ -88,7 +88,7 @@ public class QuestionsDaiControllerUnitTest {
     doThrow(new NoSuchElementException("Pregunta no encontrada con el id 1")).when(
         daiQuestionsService).eliminarPregunta(1);
 
-    mockMvc.perform(delete("/api/Dai/1").contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(delete("/api/questions-dai/1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().string("Pregunta no encontrada con el id 1"));
   }
@@ -99,7 +99,7 @@ public class QuestionsDaiControllerUnitTest {
         new DaiQuestionsDto(1, "¿Cómo te has sentido las últimas semanas?", Grades.FORTH, null);
     when(daiQuestionsService.modificarPregunta(1, updatedQuestion)).thenReturn(updatedQuestion);
 
-    mockMvc.perform(put("/api/Dai/1").contentType(MediaType.APPLICATION_JSON).content(
+    mockMvc.perform(put("/api/questions-dai/1").contentType(MediaType.APPLICATION_JSON).content(
             "{\"id\":1,\"questionText\":\"¿Cómo te has sentido las últimas semanas?\",\"questionGrade\":\"FORTH\",\"imageUrl\":null}"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.questionText").value("¿Cómo te has sentido las últimas semanas?"))
@@ -114,7 +114,7 @@ public class QuestionsDaiControllerUnitTest {
     when(daiQuestionsService.modificarPregunta(1, updatedQuestion)).thenThrow(
         new NoSuchElementException("Pregunta no encontrada con el id 1"));
 
-    mockMvc.perform(put("/api/Dai/1").contentType(MediaType.APPLICATION_JSON).content(
+    mockMvc.perform(put("/api/questions-dai/1").contentType(MediaType.APPLICATION_JSON).content(
             "{\"id\":1,\"questionText\":\"¿Cómo te has sentido las últimas semanas?\",\"questionGrade\":\"FORTH\",\"imageUrl\":null}"))
         .andExpect(status().isNotFound())
         .andExpect(content().string("Pregunta no encontrada con el id 1"));
@@ -125,7 +125,7 @@ public class QuestionsDaiControllerUnitTest {
     List<DaiQuestionsDto> questions = Arrays.asList(question1);
     when(daiQuestionsService.obtenerPreguntasPorQuestionText("Puedes")).thenReturn(questions);
 
-    mockMvc.perform(get("/api/Dai/search").param("questionText", "Puedes")
+    mockMvc.perform(get("/api/questions-dai/search").param("questionText", "Puedes")
             .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
         .andExpect(jsonPath("$[0].id").value(question1.id()))
         .andExpect(jsonPath("$[0].questionText").value(question1.questionText()));
