@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -54,44 +56,38 @@ public class ExamPeriodServiceImplementation implements ExamPeriodService {
     ExamPeriodEntity updated = examPeriodRepository.save(entity);
     return ExamPeriodMapper.convertToDto(updated);
   }
-  
+
   @Override
   public Boolean addExamApplicationDays(ConfigDateDTO configDateDTO) {
-    Calendar calendar = Calendar.getInstance();
-
-    // Obtener el año actual
-    int currentYear = calendar.get(Calendar.YEAR);
+    // año actual
+    LocalDate startOfThisYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+    LocalDate endOfThisYear = LocalDate.of(LocalDate.now().getYear(), 12, 31);
 
     // Formato para las fechas
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-    // Fechas de inicio y fin del año actual
-    Date startOfThisYear;
-    Date endOfThisYear;
-    try {
-      startOfThisYear = sdf.parse(currentYear + "-01-01");
-      endOfThisYear = sdf.parse(currentYear + "-12-31");
-    } catch (Exception e) {
-      throw new RuntimeException("Error parsing dates");
-    }
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     // Definir las fechas basadas en allYear
-    Date startDate = configDateDTO.allYear() ?
+    LocalDate startDate = configDateDTO.allYear() ?
         startOfThisYear :
-        configDateDTO.startDate() != null ? new Date(configDateDTO.startDate()) : startOfThisYear;
+        configDateDTO.startDate() != null ?
+            LocalDate.parse(configDateDTO.startDate(), formatter) :
+            startOfThisYear;
 
-    Date endDate = configDateDTO.allYear() ?
+    LocalDate endDate = configDateDTO.allYear() ?
         endOfThisYear :
-        configDateDTO.endDate() != null ? new Date(configDateDTO.endDate()) : endOfThisYear;
+        configDateDTO.endDate() != null ?
+            LocalDate.parse(configDateDTO.endDate(), formatter) :
+            endOfThisYear;
 
     // Crear el nuevo periodo de examen
     ExamPeriodEntity examPeriod = new ExamPeriodEntity();
-    examPeriod.setStartDate(startDate);
-    examPeriod.setEndDate(endDate);
+    examPeriod.setStartDate(java.sql.Date.valueOf(startDate));
+    examPeriod.setEndDate(java.sql.Date.valueOf(endDate));
 
     // Guardar el nuevo periodo de examen
     ExamPeriodEntity savedPeriod = examPeriodRepository.save(examPeriod);
 
+    // Obtener los días de la semana de aplicación en ENUM format
     final List<WeekDays> applicationDays = WeekDays.getWeekDays(configDateDTO.applicationDays());
 
     final String startTime = configDateDTO.startTime();
@@ -106,7 +102,6 @@ public class ExamPeriodServiceImplementation implements ExamPeriodService {
       // Guardar el día de examen
       examDayRepository.save(examDay);
     }
-
 
     return true;
   }
