@@ -29,7 +29,7 @@ public class QuestionsAcademicControllerIntegrationTest {
 
   @Test
   public void testGetAllExamQuestions() throws Exception {
-    mockMvc.perform(get("/api/Academic")).andExpect(status().isOk())
+    mockMvc.perform(get("/api/questions-academic")).andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray());
   }
@@ -37,7 +37,7 @@ public class QuestionsAcademicControllerIntegrationTest {
   @Test
   public void testGetExamQuestionById() throws Exception {
     int testId = 1;
-    mockMvc.perform(get("/api/Academic/{id}", testId)).andExpect(status().isOk())
+    mockMvc.perform(get("/api/questions-academic/{id}", testId)).andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.id").value(testId));
   }
@@ -45,7 +45,8 @@ public class QuestionsAcademicControllerIntegrationTest {
   @Test
   public void testDeleteExamQuestion() throws Exception {
     int testId = 1;
-    mockMvc.perform(delete("/api/Academic/{id}", testId)).andExpect(status().isNoContent());
+    mockMvc.perform(delete("/api/questions-academic/{id}", testId))
+        .andExpect(status().isNoContent());
   }
 
   @Test
@@ -55,15 +56,16 @@ public class QuestionsAcademicControllerIntegrationTest {
         new AcademicQuestionsDto(testId, "Al resolver la ecuación: 2x+1=5, obtenemos",
             Grades.SEVENTH, "3", "2", "1", "5", "B", null);
 
-    mockMvc.perform(put("/api/Academic/{id}", testId).contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(preguntaDto))).andExpect(status().isOk())
+    mockMvc.perform(
+            put("/api/questions-academic/{id}", testId).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(preguntaDto))).andExpect(status().isOk())
         .andExpect(jsonPath("$.questionText").value("Al resolver la ecuación: 2x+1=5, obtenemos"));
   }
 
   @Test
   public void testGetExamQuestionsByQuestionText() throws Exception {
     String searchText = "Cual";
-    mockMvc.perform(get("/api/Academic/search").param("questionText", searchText))
+    mockMvc.perform(get("/api/questions-academic/search").param("questionText", searchText))
         .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray()).andExpect(
             jsonPath("$[0].questionText").value(org.hamcrest.Matchers.containsString(searchText)));

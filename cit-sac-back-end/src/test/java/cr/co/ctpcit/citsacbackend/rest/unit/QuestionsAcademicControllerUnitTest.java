@@ -54,7 +54,7 @@ public class QuestionsAcademicControllerUnitTest {
     List<AcademicQuestionsDto> allQuestions = Arrays.asList(question1, question2);
     when(academicQuestionsService.obtenerTodasLasPreguntas()).thenReturn(allQuestions);
 
-    mockMvc.perform(get("/api/Academic").contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get("/api/questions-academic").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andExpect(jsonPath("$[0].id").value(question1.id()))
         .andExpect(jsonPath("$[1].id").value(question2.id()));
   }
@@ -63,7 +63,7 @@ public class QuestionsAcademicControllerUnitTest {
   void getExamQuestionById() throws Exception {
     when(academicQuestionsService.obtenerPreguntaPorId(1)).thenReturn(question1);
 
-    mockMvc.perform(get("/api/Academic/1").contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get("/api/questions-academic/1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andExpect(jsonPath("$.id").value(question1.id()));
   }
 
@@ -72,14 +72,14 @@ public class QuestionsAcademicControllerUnitTest {
     when(academicQuestionsService.obtenerPreguntaPorId(1)).thenThrow(
         new NoSuchElementException("Pregunta no encontrada con el id 1"));
 
-    mockMvc.perform(get("/api/Academic/1").contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get("/api/questions-academic/1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().string("Pregunta no encontrada con el id 1"));
   }
 
   @Test
   void deleteExamQuestion() throws Exception {
-    mockMvc.perform(delete("/api/Academic/1").contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(delete("/api/questions-academic/1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNoContent());
   }
 
@@ -88,7 +88,7 @@ public class QuestionsAcademicControllerUnitTest {
     doThrow(new NoSuchElementException("Pregunta no encontrada con el id 1")).when(
         academicQuestionsService).eliminarPregunta(1);
 
-    mockMvc.perform(delete("/api/Academic/1").contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(delete("/api/questions-academic/1").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().string("Pregunta no encontrada con el id 1"));
   }
@@ -101,8 +101,9 @@ public class QuestionsAcademicControllerUnitTest {
     when(academicQuestionsService.modificarPregunta(1, updatedQuestion)).thenReturn(
         updatedQuestion);
 
-    mockMvc.perform(put("/api/Academic/1").contentType(MediaType.APPLICATION_JSON).content(
-            "{\"id\":1,\"questionText\":\"¿Cuál es el océano más grande del mundo?\",\"questionGrade\":\"FORTH\",\"option_A\":\"Atlántico\",\"option_B\":\"Pacífico\",\"option_C\":\"Índico\",\"option_D\":\"Ártico\",\"correctOption\":\"B\",\"imageUrl\":null}"))
+    mockMvc.perform(put("/api/questions-academic/1").contentType(MediaType.APPLICATION_JSON)
+            .content(
+                "{\"id\":1,\"questionText\":\"¿Cuál es el océano más grande del mundo?\",\"questionGrade\":\"FORTH\",\"option_A\":\"Atlántico\",\"option_B\":\"Pacífico\",\"option_C\":\"Índico\",\"option_D\":\"Ártico\",\"correctOption\":\"B\",\"imageUrl\":null}"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.questionText").value("¿Cuál es el océano más grande del mundo?"))
         .andExpect(jsonPath("$.questionGrade").value("FORTH"))
@@ -122,8 +123,9 @@ public class QuestionsAcademicControllerUnitTest {
     when(academicQuestionsService.modificarPregunta(1, updatedQuestion)).thenThrow(
         new NoSuchElementException("Pregunta no encontrada con el id 1"));
 
-    mockMvc.perform(put("/api/Academic/1").contentType(MediaType.APPLICATION_JSON).content(
-            "{\"id\":1,\"questionText\":\"¿Cuál es el océano más grande del mundo?\",\"questionGrade\":\"FORTH\",\"option_A\":\"Atlántico\",\"option_B\":\"Pacífico\",\"option_C\":\"Índico\",\"option_D\":\"Ártico\",\"correctOption\":\"B\",\"imageUrl\":null}"))
+    mockMvc.perform(put("/api/questions-academic/1").contentType(MediaType.APPLICATION_JSON)
+            .content(
+                "{\"id\":1,\"questionText\":\"¿Cuál es el océano más grande del mundo?\",\"questionGrade\":\"FORTH\",\"option_A\":\"Atlántico\",\"option_B\":\"Pacífico\",\"option_C\":\"Índico\",\"option_D\":\"Ártico\",\"correctOption\":\"B\",\"imageUrl\":null}"))
         .andExpect(status().isNotFound())
         .andExpect(content().string("Pregunta no encontrada con el id 1"));
   }
@@ -133,7 +135,7 @@ public class QuestionsAcademicControllerUnitTest {
     List<AcademicQuestionsDto> questions = Arrays.asList(question1);
     when(academicQuestionsService.obtenerPreguntasPorQuestionText("cual")).thenReturn(questions);
 
-    mockMvc.perform(get("/api/Academic/search").param("questionText", "cual")
+    mockMvc.perform(get("/api/questions-academic/search").param("questionText", "cual")
             .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
         .andExpect(jsonPath("$[0].id").value(question1.id()))
         .andExpect(jsonPath("$[0].questionText").value(question1.questionText()));
