@@ -49,7 +49,7 @@ public class ExamPeriodControllerUnitTest {
     List<ExamPeriodDto> allExamPeriods = Arrays.asList(examPeriod1, examPeriod2);
     when(examPeriodService.getAllExamPeriods()).thenReturn(allExamPeriods);
 
-    mockMvc.perform(get("/api/ExamPeriods").contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get("/api/exam-periods").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].examPeriodId").value(examPeriod1.examPeriodId()))
         .andExpect(jsonPath("$[1].examPeriodId").value(examPeriod2.examPeriodId()));
@@ -59,7 +59,7 @@ public class ExamPeriodControllerUnitTest {
   void createExamPeriod() throws Exception {
     when(examPeriodService.createExamPeriod(any(ExamPeriodDto.class))).thenReturn(examPeriod1);
 
-    mockMvc.perform(post("/api/ExamPeriods").contentType(MediaType.APPLICATION_JSON).content(
+    mockMvc.perform(post("/api/exam-periods").contentType(MediaType.APPLICATION_JSON).content(
             "{\"examPeriodId\":1,\"startDate\":\"2024-09-01T00:00:00.000+00:00\",\"endDate\":\"2024-09-10T00:00:00.000+00:00\"}"))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.examPeriodId").value(examPeriod1.examPeriodId()));
@@ -70,7 +70,7 @@ public class ExamPeriodControllerUnitTest {
     when(examPeriodService.updateExamPeriod(eq(1), any(ExamPeriodDto.class))).thenReturn(
         examPeriod1);
 
-    mockMvc.perform(put("/api/ExamPeriods/1").contentType(MediaType.APPLICATION_JSON).content(
+    mockMvc.perform(put("/api/exam-periods/1").contentType(MediaType.APPLICATION_JSON).content(
             "{\"examPeriodId\":1,\"startDate\":\"2024-09-01T00:00:00.000+00:00\",\"endDate\":\"2024-09-10T00:00:00.000+00:00\"}"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.examPeriodId").value(examPeriod1.examPeriodId()));
@@ -81,7 +81,7 @@ public class ExamPeriodControllerUnitTest {
     when(examPeriodService.updateExamPeriod(eq(1), any(ExamPeriodDto.class))).thenThrow(
         new NoSuchElementException("Periodo de examen no encontrado con el id 1"));
 
-    mockMvc.perform(put("/api/ExamPeriods/1").contentType(MediaType.APPLICATION_JSON).content(
+    mockMvc.perform(put("/api/exam-periods/1").contentType(MediaType.APPLICATION_JSON).content(
             "{\"examPeriodId\":1,\"startDate\":\"2024-09-01T00:00:00.000+00:00\",\"endDate\":\"2024-09-10T00:00:00.000+00:00\"}"))
         .andExpect(status().isNotFound())
         .andExpect(content().string("Periodo de examen no encontrado con el id 1"));
@@ -89,7 +89,7 @@ public class ExamPeriodControllerUnitTest {
 
   @Test
   void createExamPeriodBadRequest() throws Exception {
-    mockMvc.perform(post("/api/ExamPeriods").contentType(MediaType.APPLICATION_JSON).content(
+    mockMvc.perform(post("/api/exam-periods").contentType(MediaType.APPLICATION_JSON).content(
             "{\"examPeriodId\":null,\"startDate\":\"InvalidDate\",\"endDate\":\"2024-09-10T00:00:00.000+00:00\"}"))
         .andExpect(status().isBadRequest());
   }

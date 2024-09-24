@@ -30,7 +30,7 @@ public class ExamPeriodControllerIntegrationTest {
 
   @Test
   public void testGetAllExamPeriods() throws Exception {
-    mockMvc.perform(get("/api/ExamPeriods")).andExpect(status().isOk())
+    mockMvc.perform(get("/api/exam-periods")).andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray());
   }
@@ -46,7 +46,7 @@ public class ExamPeriodControllerIntegrationTest {
             "2024-09-30T00:00:00.000+00:00"));
 
     // Serializar y realizar la prueba
-    mockMvc.perform(put("/api/ExamPeriods/{id}", testId).contentType(MediaType.APPLICATION_JSON)
+    mockMvc.perform(put("/api/exam-periods/{id}", testId).contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(updatedPeriodDto))).andExpect(status().isOk())
         .andExpect(jsonPath("$.startDate").value("2024-09-01T00:00:00.000+00:00"))
         .andExpect(jsonPath("$.endDate").value("2024-09-30T00:00:00.000+00:00"));
@@ -61,7 +61,7 @@ public class ExamPeriodControllerIntegrationTest {
             "2024-09-30T00:00:00.000+00:00"));
 
     // Realizar la prueba
-    mockMvc.perform(post("/api/ExamPeriods").contentType(MediaType.APPLICATION_JSON)
+    mockMvc.perform(post("/api/exam-periods").contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(newPeriodDto))).andExpect(status().isCreated())
         .andExpect(jsonPath("$.startDate").value("2024-09-01T00:00:00.000+00:00"))
         .andExpect(jsonPath("$.endDate").value("2024-09-30T00:00:00.000+00:00"));
