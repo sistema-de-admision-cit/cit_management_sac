@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/api/ExamDays")
+@RequestMapping("/api/exam-days")
 public class ExamDayController {
 
   ExamDayService examDayService;
