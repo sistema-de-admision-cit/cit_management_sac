@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.services.config;
 
+import cr.co.ctpcit.citsacbackend.logic.dto.dates.ConfigDateDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.dates.ExamPeriodDto;
 
 import java.util.List;
@@ -10,4 +11,6 @@ public interface ExamPeriodService {
   ExamPeriodDto createExamPeriod(ExamPeriodDto dto);
 
   ExamPeriodDto updateExamPeriod(int id, ExamPeriodDto dto);
+
+  Boolean addExamApplicationDays(ConfigDateDTO dto);
 }
