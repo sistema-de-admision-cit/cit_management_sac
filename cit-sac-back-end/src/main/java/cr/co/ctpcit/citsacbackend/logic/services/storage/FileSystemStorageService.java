@@ -1,11 +1,15 @@
 package cr.co.ctpcit.citsacbackend.logic.services.storage;
 
+import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageFileNotFoundException;
+import lombok.Getter;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,9 +20,12 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 @Service
+@Getter
 public class FileSystemStorageService implements StorageService {
 
   private final Path rootLocation;
@@ -26,7 +33,7 @@ public class FileSystemStorageService implements StorageService {
   @Autowired
   public FileSystemStorageService(StorageProperties properties) {
 
-    if (properties.getLocation().trim().length() == 0) {
+    if (properties.getLocation().trim().isEmpty()) {
       throw new StorageException("File upload location can not be Empty.");
     }
 
@@ -39,24 +46,25 @@ public class FileSystemStorageService implements StorageService {
       if (file.isEmpty()) {
         throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
       }
-      Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
+      Files.copy(file.getInputStream(), this.rootLocation.resolve(Objects.requireNonNull(file.getOriginalFilename())));
     } catch (IOException e) {
       throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
     }
   }
 
   @Override
-  public DocumentDto store(MultipartFile file, String filename) {
+  @SneakyThrows
+  @Async
+  public void store(MultipartFile file, String filename) {
     try {
       if (file.isEmpty()) {
-        throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
+        throw new StorageException("Failed to store empty file " + filename);
       }
+
       Files.copy(file.getInputStream(), this.rootLocation.resolve(filename));
     } catch (IOException e) {
       throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
     }
-    //TODO: Return DocumentDto with the filename and the URL to download the file
-    return null;
   }
 
   @Override

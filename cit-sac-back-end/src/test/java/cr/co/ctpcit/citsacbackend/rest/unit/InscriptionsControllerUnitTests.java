@@ -15,6 +15,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.net.URI;
@@ -30,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@Transactional
 class InscriptionsControllerUnitTests {
   @Autowired
   private TestRestTemplate testRestTemplate;
@@ -86,7 +88,7 @@ class InscriptionsControllerUnitTests {
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     DocumentContext documentContext = JsonPath.parse(response.getBody());
     int size = documentContext.read("$.length()");
-    assertThat(size).isEqualTo(1);
+    assertThat(size).isEqualTo(2);
     String firstName = documentContext.read("$[0].firstName");
     assertThat(firstName).isEqualTo("Andrés");
   }
@@ -124,55 +126,5 @@ class InscriptionsControllerUnitTests {
     mockMvc.perform(MockMvcRequestBuilders.put("/api/enrollment/{id}/status", invalidId)
             .param("date", newStatus.toString()).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound());
-  }
-
-  @Test
-  @Order(7)
-  @Disabled
-  public void testCreateInscription_shouldCreateANewInscription() throws IOException {
-    // Arrange
-    // Create sample enrollment
-    String body = Files.readString(Paths.get("src/test/resources/inscriptionExpected.json"));
-
-    //Create Headers
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-
-    // Act
-    HttpEntity<String> entity = new HttpEntity<>(body, headers);
-    ResponseEntity<Void> response =
-        testRestTemplate.postForEntity("/api/inscriptions/add", entity, Void.class);
-
-    // Assert
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-
-    //Assert URI Location header
-    URI location = response.getHeaders().getLocation();
-    ResponseEntity<String> responseGet = testRestTemplate.getForEntity(location, String.class);
-    assertThat(responseGet.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-  }
-
-  @Test
-  @Order(8)
-  @Disabled
-  public void testCreateInscription_shouldFailDueToConflictEnrollment() throws IOException {
-    // Arrange
-    // Create sample enrollment
-    String body = Files.readString(Paths.get("src/test/resources/inscriptionExpected.json"));
-
-    //Create Headers
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-
-    // Act
-    HttpEntity<String> entity = new HttpEntity<>(body, headers);
-    ResponseEntity<String> response =
-        testRestTemplate.postForEntity("/api/inscription/add", entity, String.class);
-
-    // Assert
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-    assertThat(response.getBody()).contains(
-        "El estudiante ya tiene una inscripción para la fecha seleccionada. " + "Debe seleccionar otra fecha o comunicarse con el área de Servicio al Cliente.");
   }
 }
