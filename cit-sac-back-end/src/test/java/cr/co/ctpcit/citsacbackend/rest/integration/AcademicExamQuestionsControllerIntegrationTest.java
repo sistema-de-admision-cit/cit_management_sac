@@ -29,7 +29,7 @@ public class AcademicExamQuestionsControllerIntegrationTest {
   public void testGetAcademicExamQuestions() throws Exception {
     int examId = 1;
 
-    mockMvc.perform(get("/api/academic-exams/{examId}/questions", examId).contentType(
+    mockMvc.perform(get("/api/academic-exam-questions/{examId}/questions", examId).contentType(
             MediaType.APPLICATION_JSON)).andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray());

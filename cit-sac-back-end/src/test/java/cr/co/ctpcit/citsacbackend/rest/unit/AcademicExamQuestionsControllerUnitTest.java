@@ -49,7 +49,7 @@ public class AcademicExamQuestionsControllerUnitTest {
     List<AcademicExamQuestionsDto> questions = Arrays.asList(question1, question2);
     when(service.getExamAnswers(examId)).thenReturn(questions);
 
-    mockMvc.perform(get("/api/academic-exams/{examId}/questions", examId).contentType(
+    mockMvc.perform(get("/api/academic-exam-questions/{examId}/questions", examId).contentType(
             MediaType.APPLICATION_JSON)).andExpect(status().isOk())
         .andExpect(jsonPath("$[0].examId").value(question1.examId()))
         .andExpect(jsonPath("$[0].questionId").value(question1.questionId()))
