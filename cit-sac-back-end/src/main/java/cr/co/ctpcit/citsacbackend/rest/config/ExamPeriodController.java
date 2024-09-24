@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest.config;
 
+import cr.co.ctpcit.citsacbackend.logic.dto.dates.ConfigDateDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.dates.ExamPeriodDto;
 import cr.co.ctpcit.citsacbackend.logic.services.config.ExamPeriodService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,18 @@ public class ExamPeriodController {
       @RequestBody ExamPeriodDto dto) {
     ExamPeriodDto updatedPeriod = examPeriodService.updateExamPeriod(id, dto);
     return ResponseEntity.ok(updatedPeriod);
+  }
+
+  @PostMapping("/save-exam-schedule")
+  public ResponseEntity<ExamPeriodDto> addExamApplicationDays(@RequestBody ConfigDateDTO dto) {
+    Boolean added = false;
+    try {
+      added = examPeriodService.addExamApplicationDays(dto);
+    } catch (Exception e) {
+      ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    return added ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
   }
 
   // Manejar excepciones NoSuchElementException
