@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 @Service
@@ -15,7 +16,7 @@ public interface StorageService {
 
   void store(MultipartFile file);
 
-  DocumentDto store(MultipartFile file, String filename);
+  void store(MultipartFile file, String filename);
 
   Stream<Path> loadAll();
 

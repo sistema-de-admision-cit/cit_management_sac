@@ -15,9 +15,7 @@ import java.util.NoSuchElementException;
 
 @Service
 public class ExamDayServiceImplementation implements ExamDayService {
-  @Autowired
   private final ExamDayRepository examDayRepository;
-  @Autowired
   private final ExamPeriodRepository examPeriodRepository;
 
   @Autowired

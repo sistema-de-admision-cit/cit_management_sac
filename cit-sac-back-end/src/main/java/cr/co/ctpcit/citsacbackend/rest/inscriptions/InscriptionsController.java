@@ -1,8 +1,9 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.data.entities.inscription.DocumentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscription.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
+import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import jakarta.validation.ConstraintViolationException;
@@ -16,11 +17,14 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/inscriptions")
@@ -169,27 +173,28 @@ public class InscriptionsController {
 
   /**
    * Upload a document
-   *
-   * @param file
-   * @param documentName
-   * @param documentType
-   * @param enrollmentId
-   * @return
+   * @param file the file to upload
+   * @param documentName the name of the document
+   * @param documentType the type of the document
+   * @param enrollmentId the id of the enrollment
+   * @return the document
    */
   @PostMapping("/documents/upload")
-  public ResponseEntity<DocumentEntity> uploadDocument(@RequestParam("file") MultipartFile file,
-      @RequestParam("documentName") String documentName,
-      @RequestParam("documentType") String documentType,
-      @RequestParam("enrollmentId") Long enrollmentId) {
+  @Async
+  public CompletableFuture<ResponseEntity<DocumentDto>>
+  uploadDocument(@RequestParam("file") MultipartFile file,
+                 @RequestParam("documentName") String documentName,
+                 @RequestParam("documentType") String documentType,
+                 @RequestParam("enrollmentId") Long enrollmentId) {
     if (file.isEmpty()) {
-      return ResponseEntity.badRequest().build();
+      return CompletableFuture.completedFuture(ResponseEntity.badRequest().build());
     }
+    DocumentDto document =
+            inscriptionsService.saveDocument(documentName, documentType, enrollmentId);
+
     storageService.store(file, documentName);
 
-    DocumentEntity document =
-        inscriptionsService.saveDocument(documentName, documentType, enrollmentId);
-
-    return document == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(document);
+    return CompletableFuture.completedFuture(ResponseEntity.ok(document));
   }
 
   /**
@@ -202,5 +207,15 @@ public class InscriptionsController {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
     return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Handle not found exceptions
+   * @param exc the exception
+   * @return a response entity with the status code
+   */
+  @ExceptionHandler({NoSuchElementException.class, StorageException.class})
+  ResponseEntity<?> handleNoSuchElementException(NoSuchElementException exc) {
+      return ResponseEntity.notFound().build();
   }
 }

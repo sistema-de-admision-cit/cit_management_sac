@@ -25,5 +25,5 @@ public record EnrollmentDto(Long id, ProcessStatus status, @NotNull(
                                 message = "Es obligatorio que se indique si se dio el consentimiento") Boolean consentGiven,
                             @NotNull(
                                 message = "Es obligatorio que se indique si se dio el consentimiento para notificaciones por WhatsApp") Boolean whatsappNotification,
-                            @NotEmpty List<DocumentDto> document) implements Serializable {
+                            List<DocumentDto> document) implements Serializable {
 }
