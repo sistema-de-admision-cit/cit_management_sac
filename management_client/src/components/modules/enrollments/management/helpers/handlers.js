@@ -128,7 +128,7 @@ export const handleFileDelete = (selectedFile, setSelectedFile, setErrorMessage,
 }
 
 const uploadFileUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPLOAD_DOCUMENT_ENDPOINT}`
-export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollment, setErrorMessage, setSuccessMessage) => {
+export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollment, studentId, setErrorMessage, setSuccessMessage) => {
   e.preventDefault()
 
   const file = e.target[0].files[0]
@@ -138,14 +138,15 @@ export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollmen
   }
 
   const documentType = selectedFileType === 'Documento de Notas' ? 'OT' : 'HC'
-  const documentName = selectedFileType === 'Documento de Notas' ? `${enrollment.id}_OT.pdf` : `${enrollment.id}_HC.pdf`
+  const documentName = selectedFileType === 'Documento de Notas'
+    ? `notas_${enrollment.id}_${studentId}.pdf`
+    : `carta_${enrollment.id}_${studentId}.pdf`
 
   const data = new FormData()
   data.append('file', file)
   data.append('documentName', documentName)
   data.append('documentType', documentType)
   data.append('enrollmentId', enrollment.id)
-
   axios.post(
     uploadFileUrl,
     data,
