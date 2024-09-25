@@ -45,8 +45,17 @@ const ExamScoreManagementView = () => {
         {renderMessages()}
         <MethodSelection uploadMethod={uploadMethod} handleChange={(e) => setUploadMethod(e.target.value)} />
 
-        {uploadMethod === 'csv' && <CSVUploadSection handleCSVLoad={handleCSVLoad} />}
-        {uploadMethod === 'api' && <APILoadSection handleAPILoad={handleAPILoad} loading={loading} />}
+        {
+          uploadMethod === 'csv' &&
+            <CSVUploadSection
+              handleCSVLoad={handleCSVLoad}
+              setErrorMessage={setErrorMessage}
+            />
+        }
+        {
+          uploadMethod === 'api' &&
+            <APILoadSection handleAPILoad={handleAPILoad} loading={loading} />
+        }
 
         <LogsList logs={logs} />
       </div>

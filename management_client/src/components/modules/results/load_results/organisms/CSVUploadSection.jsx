@@ -3,7 +3,7 @@ import InputField from '../../../../core/global/atoms/InputField'
 
 import { useState } from 'react'
 
-const CSVUploadSection = ({ handleCSVLoad }) => {
+const CSVUploadSection = ({ handleCSVLoad, setErrorMessage }) => {
   const [selectedFile, setSelectedFile] = useState(null)
 
   const handleFileChange = (e) => {
@@ -14,7 +14,7 @@ const CSVUploadSection = ({ handleCSVLoad }) => {
     if (selectedFile) {
       handleCSVLoad(selectedFile)
     } else {
-      console.error('No file selected')
+      setErrorMessage('Debes seleccionar un archivo CSV o Excel para procesar.')
     }
   }
 
