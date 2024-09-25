@@ -13,7 +13,6 @@ import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsServic
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageProperties;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

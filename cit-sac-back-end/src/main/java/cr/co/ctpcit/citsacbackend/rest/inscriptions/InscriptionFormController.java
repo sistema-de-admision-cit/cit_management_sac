@@ -1,10 +1,8 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
-import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageFileNotFoundException;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
@@ -17,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.NoSuchElementException;
