@@ -8,6 +8,7 @@ const CSVUploadSection = ({ handleCSVLoad }) => (
       handleChange={(e) => handleCSVLoad(e.target.files[0])}
       autoComplete='off'
       className='form-group'
+      accept='.csv, .xls, .xlsx'
     />
   </div>
 )
