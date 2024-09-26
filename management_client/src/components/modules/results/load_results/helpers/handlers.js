@@ -17,6 +17,12 @@ const handleXlsxFile = (file, setEnglishScores, setLoading, setErrorMessage) => 
     .then((data) => {
       // data is an array with the headers in the first position and the rows in the rest
       const headers = data[0]
+      if (!validateFileStructure(headers)) {
+        setErrorMessage('Estructura de archivo inválida.')
+        setLoading(false)
+        return
+      }
+
       const rows = data.slice(1)
       const jsonData = convertToJson(headers, rows)
       setEnglishScores(jsonData)
@@ -36,6 +42,12 @@ const handleCsvFile = (file, setEnglishScores, setLoading, setErrorMessage) => {
     .then((data) => {
       // data is an array with the headers in the first position and the rows in the rest
       const headers = data[0]
+      if (!validateFileStructure(headers)) {
+        setErrorMessage('Estructura de archivo CSV inválida.')
+        setLoading(false)
+        return
+      }
+
       const rows = data.slice(1)
       const jsonData = convertToJson(headers, rows)
       setEnglishScores(jsonData)
@@ -46,6 +58,14 @@ const handleCsvFile = (file, setEnglishScores, setLoading, setErrorMessage) => {
       setErrorMessage('Error al leer el archivo CSV.')
       setLoading(false)
     })
+}
+
+// the file structure should have at least the following headers: 'ID', 'First and Middle Name', 'Last Name(s)', 'Last Test', 'Core'
+const validateFileStructure = (headers) => {
+  const requiredHeaders = ['ID', 'First and Middle Name', 'Last Name(s)', 'Last Test', 'Core']
+  const missingHeaders = requiredHeaders.filter((header) => !headers.includes(header))
+
+  return missingHeaders.length === 0
 }
 
 // this function is called when the user uploads a file
