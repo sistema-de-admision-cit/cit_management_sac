@@ -3,19 +3,14 @@ import InputField from '../../../../core/global/atoms/InputField'
 
 import { useState } from 'react'
 
-const CSVUploadSection = ({ handleCSVLoad, setErrorMessage }) => {
+const CSVUploadSection = ({ handleFileLoad, processSelectedFile, setErrorMessage }) => {
   const [selectedFile, setSelectedFile] = useState(null)
 
-  const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0])
-  }
+  const handleLoadFile = (file) => {
+    if (!file) return
 
-  const handleProcessFile = () => {
-    if (selectedFile) {
-      handleCSVLoad(selectedFile)
-    } else {
-      setErrorMessage('Debes seleccionar un archivo CSV o Excel para procesar.')
-    }
+    setSelectedFile(file)
+    handleFileLoad(file)
   }
 
   return (
@@ -23,13 +18,13 @@ const CSVUploadSection = ({ handleCSVLoad, setErrorMessage }) => {
       <h2>Cargar Notas desde CSV</h2>
       <InputField
         field={{ type: 'file', name: 'csv', placeholder: 'Selecciona un archivo CSV' }}
-        handleChange={handleFileChange}
+        handleChange={(e) => handleLoadFile(e.target.files[0])}
         autoComplete='off'
         className='form-group'
         accept='.csv, .xls, .xlsx'
       />
       <Button
-        onClick={handleProcessFile}
+        onClick={() => processSelectedFile(selectedFile)}
         className='btn btn-primary'
         disabled={!selectedFile}
       >
