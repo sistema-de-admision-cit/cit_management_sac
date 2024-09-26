@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx'
 
-export const xlsxToJson = (file) => {
+export const parseXlsxToArray = (file) => {
   return new Promise((resolve, reject) => {
     // eslint-disable-next-line no-undef
     const reader = new FileReader()
@@ -16,6 +16,22 @@ export const xlsxToJson = (file) => {
       reject(e)
     }
     reader.readAsArrayBuffer(file)
+  })
+}
+
+export const parseCsvToArray = (file) => {
+  return new Promise((resolve, reject) => {
+    // eslint-disable-next-line no-undef
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const text = e.target.result
+      const rows = text.split('\n').map((row) => row.split(','))
+      resolve(rows)
+    }
+    reader.onerror = (e) => {
+      reject(e)
+    }
+    reader.readAsText(file)
   })
 }
 
