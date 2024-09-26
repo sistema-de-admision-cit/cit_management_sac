@@ -29,9 +29,9 @@ public class DaiExamQuestionsControllerIntegrationTest {
   public void testGetExamQuestions() throws Exception {
     int examId = 1;
 
-    mockMvc.perform(
-            get("/api/exams/{examId}/questions", examId).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get("/api/dai-exam-questions/{examId}/questions", examId).contentType(
+            MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray());
   }
 }

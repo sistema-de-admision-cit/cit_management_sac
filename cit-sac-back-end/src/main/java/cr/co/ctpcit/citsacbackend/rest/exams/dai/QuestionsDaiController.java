@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/api/Dai")
+@RequestMapping("/api/questions-dai")
 public class QuestionsDaiController {
 
   @Autowired

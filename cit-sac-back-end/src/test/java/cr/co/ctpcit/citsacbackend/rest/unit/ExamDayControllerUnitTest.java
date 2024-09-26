@@ -49,7 +49,7 @@ public class ExamDayControllerUnitTest {
     List<ExamDayDto> allExamDays = Arrays.asList(examDay1, examDay2);
     when(examDayService.getAllExamDays()).thenReturn(allExamDays);
 
-    mockMvc.perform(get("/api/ExamDays").contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get("/api/exam-days").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].examDayId").value(examDay1.examDayId()))
         .andExpect(jsonPath("$[1].examDayId").value(examDay2.examDayId()));
@@ -59,7 +59,7 @@ public class ExamDayControllerUnitTest {
   void createExamDay() throws Exception {
     when(examDayService.createExamDay(any(ExamDayDto.class))).thenReturn(examDay1);
 
-    mockMvc.perform(post("/api/ExamDays").contentType(MediaType.APPLICATION_JSON)
+    mockMvc.perform(post("/api/exam-days").contentType(MediaType.APPLICATION_JSON)
             .content("{\"examDayId\":1,\"examPeriodId\":1,\"examDay\":\"M\",\"startTime\":\"10:00\"}"))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.examDayId").value(examDay1.examDayId()));
@@ -69,7 +69,7 @@ public class ExamDayControllerUnitTest {
   void updateExamDay() throws Exception {
     when(examDayService.updateExamDay(eq(1), any(ExamDayDto.class))).thenReturn(examDay1);
 
-    mockMvc.perform(put("/api/ExamDays/1").contentType(MediaType.APPLICATION_JSON)
+    mockMvc.perform(put("/api/exam-days/1").contentType(MediaType.APPLICATION_JSON)
             .content("{\"examDayId\":1,\"examPeriodId\":1,\"examDay\":\"M\",\"startTime\":\"10:00\"}"))
         .andExpect(status().isOk()).andExpect(jsonPath("$.examDayId").value(examDay1.examDayId()));
   }
@@ -79,7 +79,7 @@ public class ExamDayControllerUnitTest {
     when(examDayService.updateExamDay(eq(1), any(ExamDayDto.class))).thenThrow(
         new NoSuchElementException("Día de examen no encontrado con el id 1"));
 
-    mockMvc.perform(put("/api/ExamDays/1").contentType(MediaType.APPLICATION_JSON)
+    mockMvc.perform(put("/api/exam-days/1").contentType(MediaType.APPLICATION_JSON)
             .content("{\"examDayId\":1,\"examPeriodId\":1,\"examDay\":\"M\",\"startTime\":\"10:00\"}"))
         .andExpect(status().isNotFound())
         .andExpect(content().string("Día de examen no encontrado con el id 1"));
@@ -90,14 +90,14 @@ public class ExamDayControllerUnitTest {
     when(examDayService.getAllExamDays()).thenThrow(
         new NoSuchElementException("Día de examen no encontrado"));
 
-    mockMvc.perform(get("/api/ExamDays").contentType(MediaType.APPLICATION_JSON))
+    mockMvc.perform(get("/api/exam-days").contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(content().string("Día de examen no encontrado"));
   }
 
   @Test
   void createExamDayBadRequest() throws Exception {
-    mockMvc.perform(post("/api/ExamDays").contentType(MediaType.APPLICATION_JSON).content(
+    mockMvc.perform(post("/api/exam-days").contentType(MediaType.APPLICATION_JSON).content(
             "{\"examDayId\":null,\"examPeriodId\":1,\"examDay\":\"Monday\",\"startTime\":\"10:00\"}"))
         .andExpect(status().isBadRequest());
   }

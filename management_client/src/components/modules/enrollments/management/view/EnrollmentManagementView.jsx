@@ -47,7 +47,7 @@ const EnrollmentManagementView = () => {
             (selectedFile, setSelectedFile, enrollmentId, studentId) => handleFileDelete(selectedFile, setSelectedFile, setErrorMessage, setSuccessMessage, setEnrollments, enrollmentId, studentId)
           }
           onFileUpload={
-            (e, selectedFileType, setSelectedFile, enrollment) => handleFileUpload(e, selectedFileType, setSelectedFile, enrollment, setErrorMessage, setSuccessMessage)
+            (e, selectedFileType, setSelectedFile, enrollment, studentId) => handleFileUpload(e, selectedFileType, setSelectedFile, enrollment, studentId, setErrorMessage, setSuccessMessage)
           }
           onEnrollmentEdit={
             (e, formData, enrollment, setIsEditing) => handleEnrollmentEdit(e, formData, enrollment, setIsEditing, setErrorMessage, setSuccessMessage)

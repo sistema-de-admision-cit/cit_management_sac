@@ -130,15 +130,15 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
 
     //Save inscription
     EnrollmentDto enrollment = createInscription(inscriptionDto);
-    String documentName = "grades_" + enrollment.id() + "_" + inscriptionDto.idNumber() + ".pdf";
+    String documentName = "notas_" + enrollment.id() + "_" + inscriptionDto.idNumber() + ".pdf";
 
     // Save the grades document related to the enrollment
     saveDocument(documentName, "OT", enrollment.id());
 
     //Save the letter document related to the enrollment
-    if(letter != null) {
-      documentName = "letter_" + enrollment.id() + "_" + inscriptionDto.idNumber() + ".pdf";
-      saveDocument(documentName, "OT", enrollment.id());
+    if (letter != null) {
+      documentName = "carta_" + enrollment.id() + "_" + inscriptionDto.idNumber() + ".pdf";
+      saveDocument(documentName, "HC", enrollment.id());
       storageService.store(letter, documentName);
     }
 
@@ -345,12 +345,12 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
   @Override
   public DocumentDto saveDocument(String documentName, String documentType, Long enrollmentId) {
     EnrollmentEntity enrollment = enrollmentRepository.findById(enrollmentId).get();
-    String url = rootLocation + "/" + documentName;
+
 
     // Create the document
     DocumentEntity document = DocumentEntity.builder().documentName(documentName)
-        .documentType(DocType.valueOf(documentType)).documentUrl(url).enrollment(enrollment)
-        .build();
+        .documentType(DocType.valueOf(documentType)).documentUrl(documentName)
+        .enrollment(enrollment).build();
 
     // Save the document
     return DocumentMapper.convertToDto(documentRepository.save(document));

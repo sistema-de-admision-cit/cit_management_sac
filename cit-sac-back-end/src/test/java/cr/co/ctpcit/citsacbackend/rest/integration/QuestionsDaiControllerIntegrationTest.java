@@ -29,7 +29,7 @@ public class QuestionsDaiControllerIntegrationTest {
 
   @Test
   public void testGetAllExamQuestions() throws Exception {
-    mockMvc.perform(get("/api/Dai")).andExpect(status().isOk())
+    mockMvc.perform(get("/api/questions-dai")).andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray());
   }
@@ -37,7 +37,7 @@ public class QuestionsDaiControllerIntegrationTest {
   @Test
   public void testGetExamQuestionById() throws Exception {
     int testId = 1;
-    mockMvc.perform(get("/api/Dai/{id}", testId)).andExpect(status().isOk())
+    mockMvc.perform(get("/api/questions-dai/{id}", testId)).andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.id").value(testId));
   }
@@ -45,7 +45,7 @@ public class QuestionsDaiControllerIntegrationTest {
   @Test
   public void testDeleteExamQuestion() throws Exception {
     int testId = 1;
-    mockMvc.perform(delete("/api/Dai/{id}", testId)).andExpect(status().isNoContent());
+    mockMvc.perform(delete("/api/questions-dai/{id}", testId)).andExpect(status().isNoContent());
   }
 
   @Test
@@ -55,7 +55,7 @@ public class QuestionsDaiControllerIntegrationTest {
         new DaiQuestionsDto(testId, "Describe una situación en la que te hayas sentido feliz.",
             Grades.TENTH, null);
 
-    mockMvc.perform(put("/api/Dai/{id}", testId).contentType(MediaType.APPLICATION_JSON)
+    mockMvc.perform(put("/api/questions-dai/{id}", testId).contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(preguntaDto))).andExpect(status().isOk())
         .andExpect(jsonPath("$.questionText").value(
             "Describe una situación en la que te hayas sentido feliz."));
@@ -64,7 +64,7 @@ public class QuestionsDaiControllerIntegrationTest {
   @Test
   public void testGetExamQuestionsByQuestionText() throws Exception {
     String searchText = "Como";
-    mockMvc.perform(get("/api/Dai/search").param("questionText", searchText))
+    mockMvc.perform(get("/api/questions-dai/search").param("questionText", searchText))
         .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray()).andExpect(
             jsonPath("$[0].questionText").value(org.hamcrest.Matchers.containsString(searchText)));
