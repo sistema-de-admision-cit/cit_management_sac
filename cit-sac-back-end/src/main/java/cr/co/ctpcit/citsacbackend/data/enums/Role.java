@@ -9,6 +9,6 @@ package cr.co.ctpcit.citsacbackend.data.enums;
  * P: psychologist
  * </p>
  */
-public enum RoleType {
+public enum Role {
   S, A, T, P
 }
