@@ -2,7 +2,7 @@ import { useState } from 'react'
 import useMessages from '../../../../core/global/hooks/useMessages'
 import Spinner from '../../../../core/global/atoms/Spinner'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
-import { fetchTrackTestScores, handleEnglishScoresFileUpload } from '../helpers/handlers'
+import { fetchTrackTestScores, handleEnglishScoresFileUpload, handleEnglishScoresFileProcess } from '../helpers/handlers'
 import MethodSelection from '../molecules/MethodSelection'
 import LogsList from '../molecules/LogsList'
 import CSVUploadSection from '../organisms/CSVUploadSection'
@@ -41,7 +41,8 @@ const ExamScoreManagementView = () => {
         {
           uploadMethod === 'csv' &&
             <CSVUploadSection
-              handleCSVLoad={(file) => handleEnglishScoresFileUpload(file, setEnglishScores, setLoading, setErrorMessage)}
+              handleFileLoad={(file) => handleEnglishScoresFileUpload(file, setEnglishScores, setLoading, setErrorMessage)}
+              processSelectedFile={() => handleEnglishScoresFileProcess(englishScores, setSuccessMessage, setErrorMessage, setLogs)}
               setErrorMessage={setErrorMessage}
             />
         }
