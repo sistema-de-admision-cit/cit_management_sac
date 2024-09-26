@@ -2,7 +2,7 @@ import { useState } from 'react'
 import useMessages from '../../../../core/global/hooks/useMessages'
 import Spinner from '../../../../core/global/atoms/Spinner'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
-import { fetchTrackTestScores } from '../helpers/handlers'
+import { fetchTrackTestScores, handleEnglishScoresFileUpload } from '../helpers/handlers'
 import MethodSelection from '../molecules/MethodSelection'
 import LogsList from '../molecules/LogsList'
 import CSVUploadSection from '../organisms/CSVUploadSection'
@@ -11,6 +11,7 @@ import '../../../../../assets/styles/results/load_results/exam-score-management-
 
 const ExamScoreManagementView = () => {
   const [loading, setLoading] = useState(false)
+  const [englishScores, setEnglishScores] = useState({})
   const [uploadMethod, setUploadMethod] = useState('csv')
   const [logs, setLogs] = useState([])
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
@@ -29,14 +30,6 @@ const ExamScoreManagementView = () => {
     }
   }
 
-  const handleCSVLoad = (file) => {
-    setLoading(true)
-    setLogs((prevLogs) => [...prevLogs, 'Iniciando carga desde CSV...'])
-    // Procesa el archivo CSV aquí
-    setLoading(false)
-    setLogs((prevLogs) => [...prevLogs, 'Carga desde CSV completada.'])
-  }
-
   return (
     <SectionLayout title='Cargar Notas de Ingles'>
       <div className='container'>
@@ -48,7 +41,7 @@ const ExamScoreManagementView = () => {
         {
           uploadMethod === 'csv' &&
             <CSVUploadSection
-              handleCSVLoad={handleCSVLoad}
+              handleCSVLoad={(file) => handleEnglishScoresFileUpload(file, setEnglishScores, setLoading, setErrorMessage)}
               setErrorMessage={setErrorMessage}
             />
         }
