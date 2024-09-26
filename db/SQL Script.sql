@@ -388,8 +388,8 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_users` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
-  `email` VARCHAR(25) NOT NULL,
-  `user_password` VARCHAR(100) NOT NULL,
+  `email` VARCHAR(128) NOT NULL,
+  `user_password` VARCHAR(128) NOT NULL,
   `role` ENUM('S', 'A', 'T', 'P') NOT NULL,
   PRIMARY KEY (`user_id`),
   CONSTRAINT `UQ_Users_Email` UNIQUE (`email`))
