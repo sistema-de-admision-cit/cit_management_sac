@@ -41,7 +41,7 @@ const ExamScoreManagementView = () => {
         {
           uploadMethod === 'csv' &&
             <CSVUploadSection
-              handleFileLoad={(file) => handleEnglishScoresFileUpload(file, setEnglishScores, setLoading, setErrorMessage)}
+              handleFileLoad={(file, e) => handleEnglishScoresFileUpload(file, e, setEnglishScores, setLoading, setErrorMessage)}
               processSelectedFile={() => handleEnglishScoresFileProcess(englishScores, setSuccessMessage, setErrorMessage, setLogs)}
               setErrorMessage={setErrorMessage}
             />
