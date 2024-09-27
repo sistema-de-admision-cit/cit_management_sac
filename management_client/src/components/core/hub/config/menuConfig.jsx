@@ -13,6 +13,7 @@ import EnrollmentManagementView from '../../../modules/enrollments/management/vi
 // configurations views
 import ConfigurationMenuPageView from '../../../modules/system_configuration/menu/views/ConfigurationMenuPageView.jsx'
 import ExamScheduleConfiguratorView from '../../../modules/system_configuration/exam_schedule/view/ExamScheduleConfiguratorView.jsx'
+import NotificationConfiguratosView from '../../../modules/system_configuration/notifications/view/NotificationsConfiguratorView.jsx'
 
 // results views
 import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenuPageView.jsx'
@@ -91,7 +92,7 @@ const menuConfig = [
             key: 'notifications-settings',
             label: 'Configurar Notificaciones',
             path: '/configuracion/notificaciones',
-            component: DefaultComponent,
+            component: NotificationConfiguratosView,
             description: 'Configurar las notificaciones automáticas del sistema.'
           },
           {
