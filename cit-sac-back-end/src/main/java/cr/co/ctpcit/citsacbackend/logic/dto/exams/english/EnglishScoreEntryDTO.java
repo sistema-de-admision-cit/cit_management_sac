@@ -15,7 +15,7 @@ import java.time.Instant;
  * @param core      score in percentage
  */
 public record EnglishScoreEntryDTO(@NotNull Long id, @NotNull String names,
-                                   @NotNull String lastNames, @NotNull Instant lastTest,
+                                   @NotNull String lastNames, @NotNull String lastTest,
                                    @NotNull String level, @NotNull String core) {
 
     /*
