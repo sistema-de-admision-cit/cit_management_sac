@@ -3,6 +3,7 @@ package cr.co.ctpcit.citsacbackend.rest.exams.english;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.english.EnglishExamEntity;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishScoreEntryDTO;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.english.EnglishExamServiceImplementation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import java.util.List;
 public class EnglishExamController {
   private final EnglishExamServiceImplementation englishExamService;
 
+  @Autowired
   public EnglishExamController(EnglishExamServiceImplementation englishExamService) {
     this.englishExamService = englishExamService;
   }
