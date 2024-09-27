@@ -26,4 +26,11 @@ public class EnglishExamController {
   public ResponseEntity<List<EnglishExamEntity>> getEnglishExamScores() {
     return ResponseEntity.ok(englishExamService.getAll());
   }
+
+  @PostMapping("/update-scores")
+  public ResponseEntity<String> uploadEnglishScores(
+      @RequestBody List<EnglishScoreEntryDTO> englishScores) {
+    englishExamService.processEnglishScores(englishScores);
+    return ResponseEntity.ok("Scores updated successfully!");
+  }
 }
