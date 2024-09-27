@@ -8,11 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-
+import java.math.BigInteger;
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @Getter
@@ -22,24 +21,29 @@ import java.time.Instant;
 @Table(name = "tbl_englishexams")
 public class EnglishExamEntity {
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "exam_id", nullable = false)
   private Integer id;
 
-  @NotNull
+  @NotNull(message = "Es obligatorio indicar el id del tracktest")
+  @Column(name = "tracktest_id", nullable = false)
+  private BigInteger tracktestId;
+
+  @NotNull(message = "Es obligatorio agregar el enrollment")
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "enrollment_id", nullable = false)
   private EnrollmentEntity enrollment;
 
-  @ColumnDefault("CURRENT_TIMESTAMP")
-  @Column(name = "exam_date")
-  private Instant examDate;
+  @NotNull(message = "Es obligatorio agregar la fecha del examen")
+  @Column(name = "exam_date", nullable = false)
+  private LocalDate examDate;
 
-  @NotNull
+  @NotNull(message = "Es obligatorio agregar el nivel de inglés")
   @Enumerated(EnumType.STRING)
   @Column(name = "level", nullable = false)
   private EnglishLevel level;
 
-  @NotNull
+  @NotNull(message = "Es obligatorio agregar la nota del examen")
   @Column(name = "grade", nullable = false, precision = 5, scale = 2)
   private BigDecimal grade;
 
