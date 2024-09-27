@@ -2,7 +2,6 @@ package cr.co.ctpcit.citsacbackend.logic.services.exams.english;
 
 import cr.co.ctpcit.citsacbackend.data.entities.exams.english.EnglishExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscription.EnrollmentEntity;
-import cr.co.ctpcit.citsacbackend.data.enums.EnglishLevel;
 import cr.co.ctpcit.citsacbackend.data.repositories.exam.english.EnglishExamRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.EnrollmentRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishScoreEntryDTO;
@@ -10,8 +9,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.Normalizer;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +48,9 @@ public class EnglishExamServiceImplementation implements EnglishExamService {
   @Override
   @Transactional
   public void processEnglishScores(List<EnglishScoreEntryDTO> englishScores) {
+    Instant now = Instant.now(); // process id for the stored procedure (tbl_logsscore)
+    Integer processId = now.getNano();
+
     for (EnglishScoreEntryDTO score : englishScores) {
       // Normalizar nombres y apellidos
       String normalizedNames = normalizeString(score.names());
@@ -73,15 +75,10 @@ public class EnglishExamServiceImplementation implements EnglishExamService {
         // instant instead of date
 
         EnglishExamEntity exam = new EnglishExamEntity();
-        exam.setEnrollment(enrollment);
-        // string to biginteger -> set
-        exam.setTracktestId(BigInteger.valueOf(score.id()));
-        exam.setExamDate(enrollment.getExamDate()); // exam date from enrollment
-        exam.setLevel(EnglishLevel.valueOf(score.level()));
-        // remove % -> convert to double -> convert to bigdecimal -> set
-        exam.setGrade(BigDecimal.valueOf(Double.parseDouble(score.core().replace("%", ""))));
 
-        englishExamRepository.save(exam);
+        englishExamRepository.usp_process_english_exam(enrollment.getId(), score.id(),
+            BigDecimal.valueOf(Double.parseDouble(score.core().replace("%", ""))),
+            enrollment.getExamDate(), score.level(), processId);
       } else {
         // enrollment not found
         System.out.println(
