@@ -26,7 +26,7 @@ import java.util.Objects;
 @Getter
 @Entity
 @Table(name = "tbl_users")
-public class UserEntity implements UserDetails {
+public class UserEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "user_id", nullable = false)
@@ -76,20 +76,5 @@ public class UserEntity implements UserDetails {
     return this instanceof HibernateProxy ?
         ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() :
         getClass().hashCode();
-  }
-
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority(role.name()));
-  }
-
-  @Override
-  public String getPassword() {
-    return userPassword;
-  }
-
-  @Override
-  public String getUsername() {
-    return email;
   }
 }

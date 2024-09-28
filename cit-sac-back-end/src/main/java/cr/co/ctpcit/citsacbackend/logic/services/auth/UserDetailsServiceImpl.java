@@ -2,11 +2,10 @@ package cr.co.ctpcit.citsacbackend.logic.services.auth;
 
 import cr.co.ctpcit.citsacbackend.data.entities.users.UserEntity;
 import cr.co.ctpcit.citsacbackend.data.repositories.users.UserRepository;
+import cr.co.ctpcit.citsacbackend.logic.dto.auth.UserDto;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -15,17 +14,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
+@AllArgsConstructor
 @Service
 public class UserDetailsServiceImpl implements UserDetailsManager {
-  @Value("${cit.app.default-password}")
-  private String defaultPassword;
 
   private final UserRepository userRepository;
-
-  @Autowired
-  public UserDetailsServiceImpl(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
 
   @Override
   public void createUser(UserDetails userDetails) {
@@ -61,11 +54,12 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
       throw new UsernameNotFoundException("Usuario no encontrado");
     }
 
-    if (user.get().getUserPassword().equals(defaultPassword)) {
+    UserDto userDto = new UserDto(user.get());
+    if (!userDto.isEnabled()) {
       throw new ResponseStatusException(HttpStatus.CONFLICT,
-          "Debe cambiar la contraseña para poder acceder al sistema");
+          "Debe cambiar la contraseña la primera vez que inicia sesión");
     }
 
-    return user.get();
+    return userDto;
   }
 }
