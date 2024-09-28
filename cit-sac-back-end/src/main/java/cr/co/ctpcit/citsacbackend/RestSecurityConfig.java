@@ -51,9 +51,13 @@ public class RestSecurityConfig {
         .authorizeHttpRequests((authorize) -> authorize
             .requestMatchers("/").permitAll()
             .requestMatchers("/assets/**").permitAll()
+            .requestMatchers("/api/inscription/add").permitAll()
             .anyRequest().authenticated()
         )
-        .csrf((csrf) -> csrf.ignoringRequestMatchers("/api/auth/login"))
+        .csrf((csrf) -> {
+          csrf.ignoringRequestMatchers("/api/auth/login");
+          csrf.ignoringRequestMatchers("/api/inscription/add");
+        })
         .httpBasic(Customizer.withDefaults())
         .oauth2ResourceServer(auth -> auth.jwt(Customizer.withDefaults()))
         .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

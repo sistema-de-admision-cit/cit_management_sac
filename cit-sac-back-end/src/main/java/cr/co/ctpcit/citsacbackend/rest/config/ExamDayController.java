@@ -23,6 +23,7 @@ public class ExamDayController {
   }
 
   // Obtener todos los días de examen
+  @PreAuthorize("hasAuthority('SCOPE_S')")
   @GetMapping
   public ResponseEntity<List<ExamDayDto>> getAllExamDays() {
     List<ExamDayDto> examDays = examDayService.getAllExamDays();
@@ -30,6 +31,7 @@ public class ExamDayController {
   }
 
   // Crear un nuevo día de examen
+  @PreAuthorize("hasAuthority('SCOPE_S')")
   @PostMapping
   public ResponseEntity<ExamDayDto> createExamDay(@RequestBody ExamDayDto dto) {
     ExamDayDto createdDay = examDayService.createExamDay(dto);
@@ -37,6 +39,7 @@ public class ExamDayController {
   }
 
   // Modificar un día de examen por ID
+  @PreAuthorize("hasAuthority('SCOPE_S')")
   @PutMapping("/{id}")
   public ResponseEntity<ExamDayDto> updateExamDay(@PathVariable Integer id,
       @RequestBody ExamDayDto dto) {
