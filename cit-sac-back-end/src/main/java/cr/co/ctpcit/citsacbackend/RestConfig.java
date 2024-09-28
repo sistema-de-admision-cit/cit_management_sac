@@ -24,11 +24,6 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthen
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 
-/**
- * Security configuration for the main application.
- *
- * @author Josh Cummings
- */
 @Configuration
 public class RestConfig {
 
