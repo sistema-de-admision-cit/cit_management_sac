@@ -7,6 +7,7 @@ import cr.co.ctpcit.citsacbackend.logic.mappers.config.SystemConfigMapper;
 import cr.co.ctpcit.citsacbackend.logic.services.config.SystemConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -35,6 +36,25 @@ public class SystemConfigServiceImplementation implements SystemConfigService {
       systemConfigRepository.updateExamsPercentages(academicWeight, daiWeight, englishWeight);
     } catch (Exception e) {
       throw new RuntimeException("Error al actualizar los porcentajes de los exámenes");
+    }
+  }
+
+  @Override
+  public List<SystemConfigEntity> getNotifications(String configName) {
+    return systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
+  }
+
+  @Override
+  public void updateNotifications( String emailContact,
+                                   String emailNotificationsContact,
+                                   String whatsappContact,
+                                   String officeContact,
+                                   String instagramContact,
+                                   String facebookContact) {
+    try {
+      systemConfigRepository.updateNotifications(emailContact,emailNotificationsContact,whatsappContact,officeContact,instagramContact,facebookContact);
+    } catch (Exception e) {
+      throw new RuntimeException("Error al actualizar las notificaciones");
     }
   }
 
