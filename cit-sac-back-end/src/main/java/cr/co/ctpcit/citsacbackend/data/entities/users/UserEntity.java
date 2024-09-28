@@ -33,17 +33,9 @@ public class UserEntity {
   @JdbcTypeCode(SqlTypes.INTEGER)
   private Long id;
 
-  @Size(max = 128)
-  @NotNull
-  @NotBlank(message = "El correo electrónico no puede estar vacío")
   @Column(name = "email", nullable = false, length = 25)
   private String email;
 
-  @Size(max = 128, min = 8)
-  @NotNull
-  @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
-      message = "La contraseña debe tener al menos 8 caracteres, una letra y un número")
-  @NotBlank(message = "La contraseña no puede estar vacía")
   @Column(name = "user_password", nullable = false, length = 100)
   @JsonIgnore
   private String userPassword;

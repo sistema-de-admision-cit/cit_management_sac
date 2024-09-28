@@ -10,12 +10,19 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import cr.co.ctpcit.citsacbackend.logic.services.auth.UserDetailsServiceImpl;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
@@ -24,8 +31,10 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthen
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 
+@RequiredArgsConstructor
 @Configuration
-public class RestConfig {
+@EnableMethodSecurity
+public class RestSecurityConfig {
 
   @Value("${jwt.public.key}")
   RSAPublicKey key;
@@ -33,14 +42,18 @@ public class RestConfig {
   @Value("${jwt.private.key}")
   RSAPrivateKey priv;
 
+  private final UserDetailsServiceImpl userDetailsService;
+
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     // @formatter:off
     http
         .authorizeHttpRequests((authorize) -> authorize
+            .requestMatchers("/").permitAll()
+            .requestMatchers("/assets/**").permitAll()
             .anyRequest().authenticated()
         )
-        .csrf((csrf) -> csrf.ignoringRequestMatchers("/login"))
+        .csrf((csrf) -> csrf.ignoringRequestMatchers("/api/auth/login"))
         .httpBasic(Customizer.withDefaults())
         .oauth2ResourceServer(auth -> auth.jwt(Customizer.withDefaults()))
         .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -64,5 +77,17 @@ public class RestConfig {
     return new NimbusJwtEncoder(jwks);
   }
 
+  @Bean
+  public PasswordEncoder encoder() {
+    return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public DaoAuthenticationProvider authProvider() {
+    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+    authProvider.setUserDetailsService(userDetailsService);
+    authProvider.setPasswordEncoder(encoder());
+    return authProvider;
+  }
 }
 

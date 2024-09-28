@@ -3,6 +3,9 @@ package cr.co.ctpcit.citsacbackend.logic.dto.auth;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import cr.co.ctpcit.citsacbackend.data.entities.users.UserEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Role;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,25 +14,24 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
 public class UserDto implements UserDetails {
   @Value("${cit.app.default-password}")
   private String defaultPassword;
 
+  private Long id;
   @JsonIgnore
   private String password;
   private String username;
   private Role role;
 
-  public UserDto(String username, String password, Role role) {
-    this.username = username;
-    this.password = password;
-    this.role = role;
-  }
-
-  public UserDto(UserEntity user) {
-    this.username = user.getEmail();
-    this.password = user.getUserPassword();
-    this.role = user.getRole();
+  public UserDto(UserEntity userEntity) {
+    this.id = userEntity.getId();
+    this.password = userEntity.getUserPassword();
+    this.username = userEntity.getEmail();
+    this.role = userEntity.getRole();
   }
 
   @Override
@@ -49,6 +51,6 @@ public class UserDto implements UserDetails {
 
   @Override
   public boolean isEnabled() {
-    return password.equals(defaultPassword);
+    return !password.equals(defaultPassword);
   }
 }
