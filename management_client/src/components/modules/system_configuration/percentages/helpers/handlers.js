@@ -31,7 +31,7 @@ export const getSaveButtonState = (formValues) => {
   // compare formValues with initValues
   const isSame = Object.keys(formValues).every(key => formValues[key] === initValues[key])
 
-  return total === 100 && !isSame
+  return total === 200 && !isSame
 }
 
 const getExamPercentagesUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_EXAM_PERCENTAGES_ENDPOINT}`

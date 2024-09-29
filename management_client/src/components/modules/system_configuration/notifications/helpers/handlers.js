@@ -1,22 +1,25 @@
 import axios from 'axios'
 
 let initValues = {
-  academicExam: 0,
-  daiExam: 0,
-  englishExam: 0
+  email_contact: "ejemplo@ctpcit.co.cr",
+  email_notification_contact: "ejemplo@ctpcit.co.cr",
+  whatsapp_contact: 88887777,
+  office_contact: 88886666,
+  instagram_contact: "complejoeducativocit",
+  facebook_contact: "complejoeducativocit"
 }
 
 const getErrorMessage = (error) => {
   if (error.response) {
     if (error.response.status === 400) {
-      return 'Porcentajes inválidos. La suma de los porcentajes debe ser 100.'
+      return 'Configuraciones no validas inválidos.'
     } else if (error.response.status === 500) {
       return 'Error al guardar los cambios.'
     } else if (error.response.status === 404) {
       return 'Parece que no se pudo resolver la solicitud. Inténtalo de nuevo.'
     }
   }
-  return 'Error al cargar los porcentajes.'
+  return 'Error al cargar las configuraciones prestablecidas.'
 }
 
 /**
@@ -26,67 +29,82 @@ const getErrorMessage = (error) => {
  * @returns
  */
 export const getSaveButtonState = (formValues) => {
-  // sum all values in formValues object
-  const total = Object.values(formValues).reduce((acc, value) => acc + Number(value), 0)
-  // compare formValues with initValues
   const isSame = Object.keys(formValues).every(key => formValues[key] === initValues[key])
 
-  return total === 100 && !isSame
-}
+  const validationError = validateForm(formValues);
 
-const getExamPercentagesUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_EXAM_PERCENTAGES_ENDPOINT}`
+  return !isSame && !validationError;
+};
+
+const validateForm = (formValues) => {
+  const { email_contact, email_notification_contact, whatsapp_contact, office_contact } = formValues;
+
+  // Validación Dominio específico
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@ctpcit\.co\.cr$/;
+  const isEmailValid = emailRegex.test(email_contact) && emailRegex.test(email_notification_contact);
+
+  // Validación de números de contacto (8 dígitos)
+  const contactRegex = /^[0-9]{8}$/;
+  const isWhatsappValid = contactRegex.test(whatsapp_contact);
+  const isOfficeValid = contactRegex.test(office_contact);
+
+  return !(isEmailValid && isWhatsappValid && isOfficeValid);
+};
+
+const getNotificationSettingsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_EXAM_PERCENTAGES_ENDPOINT}`
 
 // mappear los datos que llegan
 const mapIncomingData = (data) => {
-  return data.reduce((acc, item) => {
-    if (item.configName === 'dai_weight') {
-      acc.daiExam = item.configValue * 100
-    } else if (item.configName === 'academic_weight') {
-      acc.academicExam = item.configValue * 100
-    } else if (item.configName === 'english_weight') {
-      acc.englishExam = item.configValue * 100
-    }
-    return acc
-  }, { academicExam: 0, daiExam: 0, englishExam: 0 })
+  return {
+    email_contact: data.email_contact,
+    email_notification_contact: data.email_notification_contact,
+    whatsapp_contact: data.whatsapp_contact,
+    office_contact: data.office_contact,
+    instagram_contact: data.instagram_contact || "", // Asume que podrían llegar vacíos
+    facebook_contact: data.facebook_contact || ""
+  };
 }
 
 // mappear los datos antes de enviarlos
 const mapOutgoingData = (data) => {
   return {
-    academic_weight: data.academicExam / 100,
-    dai_weight: data.daiExam / 100,
-    english_weight: data.englishExam / 100
+    email_contact: data.email_contact,
+    email_notification_contact: data.email_notification_contact,
+    whatsapp_contact: data.whatsapp_contact,
+    office_contact: data.office_contact,
+    instagram_contact: data.instagram_contact,
+    facebook_contact: data.facebook_contact
+  };
+}
+
+export const getCurrentSettings = async () => {
+  try {
+    const response = await axios.get(getNotificationSettingsUrl, { timeout: 5000 });
+    const data = mapIncomingData(response.data);
+
+    initValues = { ...data };
+    return data;
+  } catch (error) {
+    throw new Error('Error al cargar las configuraciones ya establecidas.');
   }
 }
 
-export const getCurrentConfigurations = async () => {
-  try {
-    const response = await axios.get(getExamPercentagesUrl, { timeout: 5000 })
-    const data = mapIncomingData(response.data)
+const saveNotificationSettingsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_NOTIFICATION_SETTINGS_ENDPOINT}`
 
-    initValues = { ...data }
-    return data
-  } catch (error) {
-    throw new Error('Error al cargar las configuraciones ya establecidas.')
-  }
-}
-
-const saveNotificationsConfigurationUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_EXAM_PERCENTAGES_ENDPOINT}`
-
-export const updateExamPercentages = async (formValues, setFormValues, setLoading, setSuccessMessage, setErrorMessage) => {
-  setLoading(true)
+export const updateNotificationSettings = async (formValues, setFormValues, setLoading, setSuccessMessage, setErrorMessage) => {
+  setLoading(true);
 
   try {
-    const dataToSend = mapOutgoingData(formValues)
-    const response = await axios.put(`${saveExamPercentagesUrl}?${new URLSearchParams(dataToSend)}`, {}, { timeout: 5000 })
-    setSuccessMessage('Porcentajes actualizados correctamente.')
+    const dataToSend = mapOutgoingData(formValues);
+    const response = await axios.put(`${saveNotificationSettingsUrl}?${new URLSearchParams(dataToSend)}`, {}, { timeout: 5000 });
+    setSuccessMessage('Configuraciones actualizadas correctamente.');
 
-    const data = mapIncomingData(response.data)
-    initValues = { ...data }
-    setFormValues(data)
+    const data = mapIncomingData(response.data);
+    initValues = { ...data };
+    setFormValues(data);
   } catch (error) {
-    setErrorMessage(getErrorMessage(error))
+    setErrorMessage(getErrorMessage(error));
   } finally {
-    setLoading(false)
+    setLoading(false);
   }
 }

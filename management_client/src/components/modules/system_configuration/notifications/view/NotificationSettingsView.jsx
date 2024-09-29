@@ -2,25 +2,26 @@ import { useState, useEffect } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import NotificacionsForm from '../molecules/NotificacionsForm'
 import useMessages from '../../../../core/global/hooks/useMessages'
-import { getCurrentPercentages, updateExamPercentages } from '../helpers/handlers'
+import { getCurrentSettings, updateNotificationSettings } from '../helpers/handlers'
 
-const PercentagesConfiguratorView = () => {
+const NotificationsConfiguratorView = () => {
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
   const [loading, setLoading] = useState(false)
+
   const [formValues, setFormValues] = useState({
-    queryEmail: "ejemplo@ctpcit.com",
-    notificationsEmail: "ejemplo@ctpcit.com",
-    whatsapp: 88887777,
-    contactPhoneNumber: 88886666,
-    instagram: "complejoeducativocit",
-    facebook: 'complejoeducativocit'
+    email_contact: "ejemplo@ctpcit.co.cr",
+    email_notification_contact: "ejemplo@ctpcit.co.cr",
+    whatsapp_contact: 88887777,
+    office_contact: 88886666,
+    instagram_contact: "complejoeducativocit",
+    facebook_contact: "complejoeducativocit"
   })
 
   useEffect(() => {
     const fetchInitialData = async () => {
       setLoading(true)
       try {
-        const data = await getCurrentPercentages()
+        const data = await getCurrentSettings()
         setFormValues(data)
       } catch (error) {
         setErrorMessage(error.message)
@@ -41,7 +42,7 @@ const PercentagesConfiguratorView = () => {
 
   return (
     <SectionLayout title='Configurar Porcentajes'>
-      <div className='container percentages-configurator'>
+      <div className='container'>
         {renderMessages()}
         <h1>Configuración de notificaciones</h1>
         <p className='description'>Configurar los elementos necesarios para las notificaciones en el sistema.</p>
@@ -49,7 +50,7 @@ const PercentagesConfiguratorView = () => {
         <NotificacionsForm
             formValues={formValues}
             handleChange={handleChange}
-            onSave={() => updateExamPercentages(formValues, setFormValues, setLoading, setSuccessMessage, setErrorMessage)}
+            onSave={() => updateNotificationSettings(formValues, setFormValues, setLoading, setSuccessMessage, setErrorMessage)}
             loading={loading}
           />
         </div>
@@ -58,4 +59,4 @@ const PercentagesConfiguratorView = () => {
   )
 }
 
-export default PercentagesConfiguratorView
+export default NotificationsConfiguratorView
