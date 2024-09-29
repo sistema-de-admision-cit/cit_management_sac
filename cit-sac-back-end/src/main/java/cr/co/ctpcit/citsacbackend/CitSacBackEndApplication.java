@@ -36,7 +36,7 @@ public class CitSacBackEndApplication {
     try {
       return (args) -> {
         UserEntity user =
-            new UserEntity(null, "marta@cit.co.cr", encoder.encode("campus").toString(), Role.S);
+            new UserEntity(null, "rocio@cit.co.cr", encoder.encode("Mate8520").toString(), Role.T);
         userRepository.save(user);
       };
     } catch (Exception e) {
