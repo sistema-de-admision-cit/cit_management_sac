@@ -11,7 +11,6 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
 import cr.co.ctpcit.citsacbackend.logic.services.auth.UserDetailsServiceImpl;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -49,14 +48,17 @@ public class RestSecurityConfig {
     // @formatter:off
     http
         .authorizeHttpRequests((authorize) -> authorize
-            .requestMatchers("/").permitAll()
-            .requestMatchers("/assets/**").permitAll()
-            .requestMatchers("/api/inscription/add").permitAll()
+            .requestMatchers("/**").permitAll()
+            .requestMatchers("/api/**").permitAll()
+            //.requestMatchers("/").permitAll()
+            //.requestMatchers("/assets/**").permitAll()
+            //.requestMatchers("/api/inscription/add").permitAll()
             .anyRequest().authenticated()
         )
         .csrf((csrf) -> {
-          csrf.ignoringRequestMatchers("/api/auth/login");
-          csrf.ignoringRequestMatchers("/api/inscription/add");
+          csrf.ignoringRequestMatchers("/api/**");
+          //csrf.ignoringRequestMatchers("/api/auth/login");
+          //csrf.ignoringRequestMatchers("/api/inscription/add");
         })
         .httpBasic(Customizer.withDefaults())
         .oauth2ResourceServer(auth -> auth.jwt(Customizer.withDefaults()))
@@ -87,10 +89,8 @@ public class RestSecurityConfig {
   }
 
   @Bean
-  public DaoAuthenticationProvider authProvider() {
-    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-    authProvider.setUserDetailsService(userDetailsService);
-    authProvider.setPasswordEncoder(encoder());
+  public DaoAuthenticationProviderCstm daoProvider() {
+    DaoAuthenticationProviderCstm authProvider = new DaoAuthenticationProviderCstm(encoder(), userDetailsService);
     return authProvider;
   }
 }

@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import cr.co.ctpcit.citsacbackend.data.entities.users.UserEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Role;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,15 +18,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
+@Component
 public class UserDto implements UserDetails {
-  @Value("${cit.app.default-password}")
-  private String defaultPassword;
-
   private Long id;
   @JsonIgnore
   private String password;
   private String username;
   private Role role;
+
+  @Getter
+  private Boolean isDefaultPassword = false;
 
   public UserDto(UserEntity userEntity) {
     this.id = userEntity.getId();
@@ -47,10 +49,5 @@ public class UserDto implements UserDetails {
   @Override
   public String getUsername() {
     return username;
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return !password.equals(defaultPassword);
   }
 }

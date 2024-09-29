@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
@@ -35,7 +36,7 @@ public class CitSacBackEndApplication {
     try {
       return (args) -> {
         UserEntity user =
-            new UserEntity(null, "jaison@cit.co.cr", encoder.encode("campus12").toString(), Role.S);
+            new UserEntity(null, "marta@cit.co.cr", encoder.encode("campus").toString(), Role.S);
         userRepository.save(user);
       };
     } catch (Exception e) {
