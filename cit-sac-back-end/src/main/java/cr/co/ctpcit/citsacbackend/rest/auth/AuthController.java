@@ -1,6 +1,9 @@
 package cr.co.ctpcit.citsacbackend.rest.auth;
 
+import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.auth.UserDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -20,9 +23,11 @@ public class AuthController {
   private final JwtEncoder encoder;
 
   @PostMapping("/login")
-  public String token(Authentication authentication) {
+  public ResponseEntity<AuthResponseDto> token(Authentication authentication) {
     Instant now = Instant.now();
     long expiry = 36000L;
+
+    UserDto userDetails = (UserDto) authentication.getPrincipal();
     // @formatter:off
     String scope = authentication.getAuthorities().stream()
         .map(GrantedAuthority::getAuthority)
@@ -35,6 +40,11 @@ public class AuthController {
         .claim("scope", scope)
         .build();
     // @formatter:on
-    return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+
+    return ResponseEntity.ok(AuthResponseDto.builder()
+        .type("Bearer")
+        .token(this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue())
+        .isDefaultPassword(userDetails.getIsDefaultPassword())
+        .build());
   }
 }
