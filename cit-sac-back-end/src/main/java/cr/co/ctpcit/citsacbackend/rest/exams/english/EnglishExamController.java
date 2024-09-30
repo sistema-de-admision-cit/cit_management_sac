@@ -2,6 +2,7 @@ package cr.co.ctpcit.citsacbackend.rest.exams.english;
 
 import cr.co.ctpcit.citsacbackend.data.entities.exams.english.EnglishExamEntity;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishScoreEntryDTO;
+import cr.co.ctpcit.citsacbackend.logic.dto.logs.englishExams.EnglishExamLogDto;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.english.EnglishExamServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +31,14 @@ public class EnglishExamController {
   }
 
   @PostMapping("/update-scores")
-  public ResponseEntity<String> uploadEnglishScores(
+  public ResponseEntity<List<EnglishExamLogDto>> uploadEnglishScores(
       @RequestBody List<EnglishScoreEntryDTO> englishScores) {
-    englishExamService.processEnglishScores(englishScores);
-    return ResponseEntity.ok("Scores updated successfully!");
+    List<EnglishExamLogDto> logs = englishExamService.processEnglishScores(englishScores);
+
+    if (logs.isEmpty()) {
+      return ResponseEntity.badRequest().body(logs);
+    }
+
+    return ResponseEntity.ok(logs);
   }
 }
