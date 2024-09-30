@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { convertToJson, parseCsvToArray, parseXlsxToArray } from './helpers'
+import { convertToJson, formatLogMessage, parseCsvToArray, parseXlsxToArray } from './helpers'
 
 export const fetchTrackTestScores = async (setSuccessMessage, setErrorMessage) => {
   // todo: fetch track test scores from the API
@@ -94,11 +94,25 @@ export const handleEnglishScoresFileProcess = (englishScores, setSuccessMessage,
     return
   }
 
+  const logs = [{ message: 'Procesando notas...', status: 'info' }]
+
   // Send the scores to the API
   axios.post(sendEnglishExamsResultsUrl, englishScores)
     .then((response) => {
+      // Agregar mensaje de éxito y procesar los logs de la respuesta
       setSuccessMessage('Notas procesadas correctamente.')
-      console.log(response.data)
+
+      // Procesar los logs y contar
+      const responseLogs = response.data.map(formatLogMessage)
+      const logCount = responseLogs.length
+
+      // Agregar los logs procesados y mensaje final
+      const completionMessage = {
+        message: `Proceso completado. ${logCount} ${logCount === 1 ? 'registro' : 'registros'} procesado${logCount === 1 ? '' : 's'}.`,
+        status: 'info'
+      }
+
+      setLogs([...logs, ...responseLogs, completionMessage]) // Combinar todos los logs
     })
     .catch((error) => {
       console.error(error)
