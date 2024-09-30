@@ -5,7 +5,10 @@ import cr.co.ctpcit.citsacbackend.data.entities.inscription.EnrollmentEntity;
 import cr.co.ctpcit.citsacbackend.data.repositories.exam.english.EnglishExamRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.EnrollmentRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishScoreEntryDTO;
+import cr.co.ctpcit.citsacbackend.logic.dto.logs.englishExams.EnglishExamLogDto;
+import cr.co.ctpcit.citsacbackend.logic.services.logs.englishExams.implementation.LogsScoreServiceImplementation;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,11 +21,14 @@ import java.util.Optional;
 public class EnglishExamServiceImplementation implements EnglishExamService {
   private final EnglishExamRepository englishExamRepository;
   private final EnrollmentRepository enrollmentRepository;
+  private final LogsScoreServiceImplementation logsScoreService;
 
+  @Autowired  // Constructor injection
   public EnglishExamServiceImplementation(EnglishExamRepository englishExamRepository,
-      EnrollmentRepository enrollmentRepository) {
+      EnrollmentRepository enrollmentRepository, LogsScoreServiceImplementation logsScoreService) {
     this.englishExamRepository = englishExamRepository;
     this.enrollmentRepository = enrollmentRepository;
+    this.logsScoreService = logsScoreService;
   }
 
   @Override
@@ -47,7 +53,7 @@ public class EnglishExamServiceImplementation implements EnglishExamService {
 
   @Override
   @Transactional
-  public void processEnglishScores(List<EnglishScoreEntryDTO> englishScores) {
+  public List<EnglishExamLogDto> processEnglishScores(List<EnglishScoreEntryDTO> englishScores) {
     Instant now = Instant.now(); // process id for the stored procedure (tbl_logsscore)
     Integer processId = now.getNano();
 
@@ -85,6 +91,8 @@ public class EnglishExamServiceImplementation implements EnglishExamService {
             "Enrollment not found for student: " + score.names() + " " + score.lastNames());
       }
     }
+
+    return logsScoreService.getLogsScoresByProcessId(processId);
   }
 
   // Método para normalizar cadenas (eliminar tildes, convertir a minúsculas)
