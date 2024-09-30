@@ -29,12 +29,15 @@ const getErrorMessage = (error) => {
  * @returns
  */
 export const getSaveButtonState = (formValues) => {
-  const isSame = Object.keys(formValues).every(key => formValues[key] === initValues[key])
+  const fieldsToCheck = ["email_contact", "email_notification_contact", "whatsapp_contact", "office_contact"];
+
+  const isSame = fieldsToCheck.every(key => formValues[key] === initValues[key]);
 
   const validationError = validateForm(formValues);
 
   return !isSame && !validationError;
 };
+
 
 const validateForm = (formValues) => {
   const { email_contact, email_notification_contact, whatsapp_contact, office_contact } = formValues;
@@ -60,8 +63,8 @@ const mapIncomingData = (data) => {
     email_notification_contact: data.email_notification_contact,
     whatsapp_contact: data.whatsapp_contact,
     office_contact: data.office_contact,
-    instagram_contact: data.instagram_contact || "", // Asume que podrían llegar vacíos
-    facebook_contact: data.facebook_contact || ""
+    instagram_contact: data.instagram_contact,
+    facebook_contact: data.facebook_contact
   };
 }
 
