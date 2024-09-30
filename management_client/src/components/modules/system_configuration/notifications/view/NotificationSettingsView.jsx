@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import NotificacionsForm from '../molecules/NotificacionsForm'
+import SendNotificacions from '../molecules/SendNotifications'
 import useMessages from '../../../../core/global/hooks/useMessages'
 import { getCurrentSettings, updateNotificationSettings } from '../helpers/handlers'
 
-const NotificationsConfiguratorView = () => {
+const NotificationsSettingsView = () => {
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
   const [loading, setLoading] = useState(false)
 
@@ -47,6 +48,7 @@ const NotificationsConfiguratorView = () => {
         <h1>Configuración de notificaciones</h1>
         <p className='description'>Configurar los elementos necesarios para las notificaciones en el sistema.</p>
         <div className='notifications-configurator'>
+        <p className='description'><b>Puntos de control.</b></p>
         <NotificacionsForm
             formValues={formValues}
             handleChange={handleChange}
@@ -54,9 +56,18 @@ const NotificationsConfiguratorView = () => {
             loading={loading}
           />
         </div>
+        <div className='notifications-configurator'>
+        <p className='description'><b>Notificaciones.</b></p>
+        <SendNotificacions
+          handleChange={handleChange}
+          
+          loading={loading}
+        />
+        </div>
       </div>
+      
     </SectionLayout>
   )
 }
 
-export default NotificationsConfiguratorView
+export default NotificationsSettingsView

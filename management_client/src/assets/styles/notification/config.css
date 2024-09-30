@@ -12,3 +12,27 @@
 .form-group:last-child {
   margin-right: 0;
 }
+
+.form-group textarea {
+  width: 105%;
+  height: 200px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.4rem;
+  box-sizing: border-box;
+  resize: vertical;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  vertical-align: top;
+}
+
+.form-group textarea:focus {
+  border-color: #66afe9;
+  box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+}
+
+
+
