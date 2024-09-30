@@ -32,11 +32,4 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
       @Param("p_new_status") String newStatus, @Param("p_new_exam_date") Date newExamDate,
       @Param("p_new_whatsapp_permission") Boolean newWhatsappPermission,
       @Param("p_comment") String comment, @Param("p_changed_by") Integer changedBy);
-
-  @Modifying
-  @Transactional
-  @Procedure(name = "usp_get_enrollment_id_for_english_test")
-  Optional<EnrollmentEntity> usp_get_enrollment_id_for_english_test(
-      @Param("p_first_name") String firstName, @Param("p_last_names") String lastNames,
-      @Param("p_exam_date") String examDate);
 }
