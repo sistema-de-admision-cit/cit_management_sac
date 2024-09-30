@@ -18,13 +18,23 @@ const ExamScoreManagementView = () => {
 
   const handleAPILoad = async () => {
     setLoading(true)
-    setLogs((prevLogs) => [...prevLogs, 'Iniciando carga desde API...'])
+    setLogs([])
+    setLogs((prevLogs) => [...prevLogs, {
+      status: 'info',
+      message: 'Iniciando carga desde API...'
+    }])
     try {
       await fetchTrackTestScores(setSuccessMessage, setErrorMessage)
-      setLogs((prevLogs) => [...prevLogs, 'Carga desde API completada exitosamente.'])
+      setLogs((prevLogs) => [...prevLogs, {
+        status: 'info',
+        message: 'Carga desde API completada exitosamente.'
+      }])
     } catch (error) {
       setErrorMessage('Error al cargar las notas desde la API.')
-      setLogs((prevLogs) => [...prevLogs, 'Error al cargar desde API.'])
+      setLogs((prevLogs) => [...prevLogs, {
+        status: 'error',
+        message: error.message
+      }])
     } finally {
       setLoading(false)
     }
