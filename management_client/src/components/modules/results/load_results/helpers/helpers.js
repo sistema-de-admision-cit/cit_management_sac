@@ -75,3 +75,57 @@ const formatDateForJava = (dateString) => {
   const [day, month, year] = dateString?.split('.')
   return `${year}-${month}-${day}`.replace(/undefined/g, '').replace(/ /g, '')
 }
+
+export const formatLogMessage = (log) => {
+  // Desestructuración del objeto log
+  let {
+    processId,
+    enrollmentId,
+    trackTestExamId,
+    previousScore,
+    newScore,
+    examDate,
+    status,
+    errorMessage
+  } = log
+
+  // init message
+  let message = ''
+
+  // formatear segun el estado
+  switch (status) {
+    case 'success':
+      if (previousScore !== newScore) {
+        message = `La nota del estudiante con ID de inscripción ${enrollmentId}`
+        message += previousScore ? ` se actualizó de ${previousScore} a ${newScore}.` : ` se creó con una nota de ${newScore}.`
+      } else {
+        message = `Advertencia: La nota del estudiante con ID de inscripción ${enrollmentId} es idéntica a la registrada anteriormente (${previousScore}). No se realizaron cambios.`
+        status = 'warning'
+      }
+      break
+
+    case 'error':
+      if (enrollmentId) {
+        message = `Error al actualizar la nota del estudiante con ID de inscripción ${enrollmentId}. Motivo: ${errorMessage}.`
+      } else {
+        message = errorMessage
+      }
+      break
+
+    case 'warning':
+      if (new Date(examDate) > new Date()) {
+        message = `Advertencia: El examen con ID ${trackTestExamId} tiene una fecha de examen futura (${examDate}), por lo que no se actualizó la nota.`
+        status = 'warning'
+      }
+      break
+
+    default:
+      message = `El proceso ${processId} actualizó la nota del estudiante con ID de inscripción ${enrollmentId}, pero se encontró un error: ${errorMessage}.`
+  }
+
+  // json with the formatted message and status
+  return {
+    status,
+    message
+  }
+}
