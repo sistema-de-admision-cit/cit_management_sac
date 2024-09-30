@@ -73,5 +73,5 @@ export const convertToJson = (headers, data) => {
 // Helper function to format dates to 'yyyy-MM-dd' (compatible with Instant in Java)
 const formatDateForJava = (dateString) => {
   const [day, month, year] = dateString?.split('.')
-  return `${year}-${month}-${day}`
+  return `${year}-${month}-${day}`.replace(/undefined/g, '').replace(/ /g, '')
 }
