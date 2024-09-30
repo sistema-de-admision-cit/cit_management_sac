@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { convertToJson, parseCsvToArray, parseXlsxToArray } from './helpers'
 
 export const fetchTrackTestScores = async (setSuccessMessage, setErrorMessage) => {
@@ -68,4 +69,39 @@ export const handleEnglishScoresFileUpload = (file, e, setEnglishScores, setLoad
     setErrorMessage('Formato de archivo no soportado.')
     setLoading(false)
   }
+}
+
+// Validate the English scores
+const validateEnglishScores = (scores) => {
+  const containsAllFields = scores.every((score) => {
+    return score.id && score.names && score.lastNames && score.lastTest && score.core && score.level
+  })
+
+  const areDatesValid = scores.every((score) => {
+    return !isNaN(Date.parse(score.lastTest))
+  })
+
+  return containsAllFields && areDatesValid
+}
+
+// this function is called when the user clicks the process button
+const sendEnglishExamsResultsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEND_ENGLISH_EXAM_RESULTS_ENDPOINT}`
+export const handleEnglishScoresFileProcess = (englishScores, setSuccessMessage, setErrorMessage, setLogs) => {
+  console.log('englishScores', englishScores)
+  // Validate the scores
+  if (!validateEnglishScores(englishScores)) {
+    setErrorMessage('Notas inválidas.')
+    return
+  }
+
+  // Send the scores to the API
+  axios.post(sendEnglishExamsResultsUrl, englishScores)
+    .then((response) => {
+      setSuccessMessage('Notas procesadas correctamente.')
+      console.log(response.data)
+    })
+    .catch((error) => {
+      console.error(error)
+      setErrorMessage('Error al procesar las notas.')
+    })
 }
