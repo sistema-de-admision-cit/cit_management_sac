@@ -1,7 +1,7 @@
 import Form from '../molecules/Form'
 
-import '../../../assets/styles/auth/right-column.css'
-import '../../../assets/styles/auth/links.css'
+import '../../../../assets/styles/auth/right-column.css'
+import '../../../../assets/styles/auth/links.css'
 
 const LoginContent = ({ fields, formData, handleChange, onSubmit }) => {
   return (

@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import menuConfig from '../components/core/hub/config/menuConfig'
-import LoginSection from '../components/auth/views/LoginSection'
+import LoginSection from '../components/auth/login/views/LoginSection'
 import generateRoutesFromConfig from './GenerateRoutesFromConfig'
 import UnauthorizedAccessPage from '../components/errors/pages/UnauthorizedAccessPage'
 import NotFoundPage from '../components/errors/pages/NotFoundPage'

@@ -1,5 +1,5 @@
-import InputField from '../../core/global/atoms/InputField'
-import Button from '../../core/global/atoms/Button'
+import InputField from '../../../core/global/atoms/InputField'
+import Button from '../../../core/global/atoms/Button'
 
 const Form = ({ fields, formData, handleChange, onSubmit, sectionName }) => {
   return (
