@@ -4,6 +4,9 @@ import LoginSection from '../components/auth/login/views/LoginSection'
 import generateRoutesFromConfig from './GenerateRoutesFromConfig'
 import UnauthorizedAccessPage from '../components/errors/pages/UnauthorizedAccessPage'
 import NotFoundPage from '../components/errors/pages/NotFoundPage'
+import PasswordResetSection from '../components/auth/pass_reset/view/PasswordResetSection'
+import ProtectedRoute from './ProtectedRoute'
+import { ROLE_ADMIN, ROLE_PSYCHOLOGIST, ROLE_TEACHER } from '../components/core/global/helpers/helpers'
 
 const authRoutes = [
   {
@@ -17,6 +20,14 @@ const authRoutes = [
       {
         path: '/login',
         element: <LoginSection />
+      },
+      {
+        path: '/password-reset',
+        element: (
+          <ProtectedRoute roles={[ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]}>
+            <PasswordResetSection />
+          </ProtectedRoute>
+        )
       }
     ]
   }
