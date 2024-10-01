@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend;
+package cr.co.ctpcit.citsacbackend.rest;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
