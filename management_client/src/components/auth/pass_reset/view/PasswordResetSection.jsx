@@ -1,42 +1,35 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import '../../../../assets/styles/auth/reset-password.css'
 import useMessages from '../../../core/global/hooks/useMessages'
 import SectionLayout from '../../../core/global/molecules/SectionLayout'
 import PasswordForm from '../molecules/PasswordForm'
+import { DEFAULT_PASSWORD } from '../../../core/global/helpers/helpers'
+import { handleChangePassword } from '../helpers/handlers'
+import { useAuth } from '../../../../router/AuthProvider'
 
 const PasswordResetSection = () => {
+  // location state
   const location = useLocation()
   const isDefaultPassword = location.state?.isDefaultPassword
-  const [currentPassword, setCurrentPassword] = useState('')
+  // form states
+  const [currentPassword, setCurrentPassword] = useState(isDefaultPassword ? DEFAULT_PASSWORD : '') // if isDefaultPassword is true, set the default password
   const [newPassword, setNewPassword] = useState('')
   const [confirmNewPassword, setConfirmNewPassword] = useState('')
+  // messages
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
+  // close session
+  const { logout } = useAuth()
+  const [shouldTheSessionBeClosed, setShouldTheSessionBeClosed] = useState(false)
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-
-    if (newPassword !== confirmNewPassword) {
-      setErrorMessage('Las contraseñas no coinciden.')
-      return
+  // Logout when the password has been changed successfully
+  useEffect(() => {
+    if (shouldTheSessionBeClosed) {
+      setTimeout(() => {
+        logout()
+      }, 3000) // Wait 3 seconds before logout to give user time to read success message
     }
-
-    // Aquí puedes agregar la lógica para manejar el cambio de contraseña
-    console.log('Password actual:', currentPassword)
-    console.log('Nueva password:', newPassword)
-
-    if (isDefaultPassword) {
-      console.log('Restablecer contraseña por primera vez')
-    } else {
-      console.log('Cambio de contraseña')
-    }
-
-    setCurrentPassword('')
-    setNewPassword('')
-    setConfirmNewPassword('')
-    setErrorMessage('')
-    setSuccessMessage('Contraseña restablecida con éxito.')
-  }
+  }, [shouldTheSessionBeClosed, logout])
 
   return (
     <SectionLayout title='Restablecer Contraseña' className='reset-password-container'>
@@ -55,7 +48,14 @@ const PasswordResetSection = () => {
           setNewPassword={setNewPassword}
           confirmNewPassword={confirmNewPassword}
           setConfirmNewPassword={setConfirmNewPassword}
-          handleSubmit={handleSubmit}
+          handleSubmit={(e) => handleChangePassword(e,
+            currentPassword,
+            newPassword,
+            confirmNewPassword,
+            setErrorMessage,
+            setSuccessMessage,
+            setShouldTheSessionBeClosed
+          )}
         />
       </div>
       {renderMessages()}
