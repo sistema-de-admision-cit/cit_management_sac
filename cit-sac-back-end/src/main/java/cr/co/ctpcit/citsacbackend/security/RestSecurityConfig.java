@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -41,6 +43,7 @@ public class RestSecurityConfig {
   RSAPrivateKey priv;
 
   private final UserDetailsServiceImpl userDetailsService;
+  private final PasswordEncoder passwordEncoder;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -83,13 +86,8 @@ public class RestSecurityConfig {
   }
 
   @Bean
-  public PasswordEncoder encoder() {
-    return new BCryptPasswordEncoder();
-  }
-
-  @Bean
   public DaoAuthenticationProviderCstm daoProvider() {
-    DaoAuthenticationProviderCstm authProvider = new DaoAuthenticationProviderCstm(encoder(), userDetailsService);
+    DaoAuthenticationProviderCstm authProvider = new DaoAuthenticationProviderCstm(passwordEncoder, userDetailsService);
     return authProvider;
   }
 }

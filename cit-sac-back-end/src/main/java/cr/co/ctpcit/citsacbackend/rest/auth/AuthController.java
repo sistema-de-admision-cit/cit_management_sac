@@ -3,26 +3,36 @@ package cr.co.ctpcit.citsacbackend.rest.auth;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.ChangePasswordRequestDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.UserDto;
+import cr.co.ctpcit.citsacbackend.logic.services.auth.UserDetailsServiceImpl;
 import cr.co.ctpcit.citsacbackend.logic.services.user.UserService;
+import cr.co.ctpcit.citsacbackend.security.CurrentOwner;
+import cr.co.ctpcit.citsacbackend.security.DaoAuthenticationProviderCstm;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-  private final UserService userService;
   private final JwtEncoder encoder;
+  private final DaoAuthenticationProviderCstm daoAuthenticationProvider;
 
   @PostMapping("/login")
   public ResponseEntity<AuthResponseDto> token(Authentication authentication) {
@@ -49,17 +59,18 @@ public class AuthController {
   }
 
   @PutMapping("/change-password")
-  public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequestDTO request,
-      Authentication authentication) {
-    String userEmail = authentication.getName();
-
+  public ResponseEntity<String> changePassword(
+      @RequestBody @Valid ChangePasswordRequestDTO request) {
     // Lógica para cambiar la contraseña
-    try {
-      this.userService.updatePassword(userEmail, request);
-    } catch (IllegalArgumentException e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
-
+    daoAuthenticationProvider.updatePassword(request);
     return ResponseEntity.ok("Contraseña actualizada correctamente.");
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  ResponseEntity<String> handleConstraintViolationException(MethodArgumentNotValidException e) {
+    return new ResponseEntity<>(
+        "La contraseña debe tener al menos 8 caracteres y contener tanto letras como números.",
+        HttpStatus.BAD_REQUEST);
   }
 }
