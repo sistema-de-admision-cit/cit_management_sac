@@ -10,12 +10,12 @@ const NotificationsSettingsView = () => {
   const [loading, setLoading] = useState(false)
 
   const [formValues, setFormValues] = useState({
-    email_contact: "ejemplo@ctpcit.co.cr",
-    email_notification_contact: "ejemplo@ctpcit.co.cr",
-    whatsapp_contact: 88887777,
-    office_contact: 88886666,
-    instagram_contact: "complejoeducativocit",
-    facebook_contact: "complejoeducativocit"
+    email_contact: '',
+    email_notifications_contact: '',
+    whatsapp_contact: '',
+    office_contact: '',
+    instagram_contact: '',
+    facebook_contact: ''
   })
 
   useEffect(() => {
@@ -48,8 +48,8 @@ const NotificationsSettingsView = () => {
         <h1>Configuración de notificaciones</h1>
         <p className='description'>Configurar los elementos necesarios para las notificaciones en el sistema.</p>
         <div className='notifications-configurator'>
-        <p className='description'><b>Puntos de control.</b></p>
-        <NotificacionsForm
+          <p className='description'><b>Puntos de control.</b></p>
+          <NotificacionsForm
             formValues={formValues}
             handleChange={handleChange}
             onSave={() => updateNotificationSettings(formValues, setFormValues, setLoading, setSuccessMessage, setErrorMessage)}
@@ -57,15 +57,14 @@ const NotificationsSettingsView = () => {
           />
         </div>
         <div className='notifications-configurator'>
-        <p className='description'><b>Notificaciones.</b></p>
-        <SendNotificacions
-          handleChange={handleChange}
-          
-          loading={loading}
-        />
+          <p className='description'><b>Notificaciones.</b></p>
+          <SendNotificacions
+            handleChange={handleChange}
+            loading={loading}
+          />
         </div>
       </div>
-      
+
     </SectionLayout>
   )
 }

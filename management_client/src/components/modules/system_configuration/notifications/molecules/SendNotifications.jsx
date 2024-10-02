@@ -12,7 +12,7 @@ const SendNotifications = ({ handleChange, onSave, loading }) => (
     <InputField
       field={{ name: 'notification_text', label: 'Mensaje a enviar', type: 'textArea', placeholder: 'Escriba el mensaje a enviar', required: true }}
       handleChange={(e) => handleChange('notification_text', e.target.value)}
-      className="form-group"
+      className='form-group'
     />
     <Button
       className='btn btn-primary'
@@ -21,6 +21,6 @@ const SendNotifications = ({ handleChange, onSave, loading }) => (
       {loading ? 'Enviando...' : 'Enviar'}
     </Button>
   </form>
-);
+)
 
 export default SendNotifications

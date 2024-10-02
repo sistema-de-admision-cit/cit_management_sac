@@ -51,11 +51,11 @@ const NotificationForm = ({ formValues, handleChange, onSave, loading }) => (
     <Button
       className='btn btn-primary'
       onClick={onSave}
-      disabled={!getSaveButtonState(formValues)} 
+      disabled={!getSaveButtonState(formValues)}
     >
       {loading ? 'Guardando...' : 'Guardar'}
     </Button>
   </form>
-);
+)
 
 export default NotificationForm
