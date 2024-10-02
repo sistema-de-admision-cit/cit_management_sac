@@ -1,7 +1,9 @@
 package cr.co.ctpcit.citsacbackend.rest.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.config.SystemConfigDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -9,8 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,12 +31,27 @@ public class SystemConfigControllerIntegrationTest {
   @Autowired
   private ObjectMapper objectMapper;
 
+  AuthResponseDto authResponseDto;
+
+  @BeforeEach
+  void setUp() throws Exception {
+    // @formatter:off
+    MvcResult result = this.mockMvc.perform(post("/api/auth/login")
+            .with(httpBasic("sysadmin@cit.co.cr", "campus12")))
+        .andExpect(status().isOk())
+        .andReturn();
+
+    authResponseDto = objectMapper.readValue(result.getResponse().getContentAsString(), AuthResponseDto.class);
+  }
+
   @Test
   void addSystemConfigIntegrationTest() throws Exception {
 
     SystemConfigDto systemConfigDto = new SystemConfigDto(null, "examen_academico", "40");
 
-    mockMvc.perform(post("/api/system-config").contentType(MediaType.APPLICATION_JSON)
+    mockMvc.perform(post("/api/system-config")
+            .header("Authorization", "Bearer " + authResponseDto.token())
+            .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(systemConfigDto))).andExpect(status().isCreated())
         .andExpect(jsonPath("$.configName").value("examen_academico"))
         .andExpect(jsonPath("$.configValue").value("40"));
