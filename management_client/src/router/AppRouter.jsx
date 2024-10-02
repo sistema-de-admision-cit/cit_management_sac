@@ -22,7 +22,7 @@ const authRoutes = [
         element: <LoginSection />
       },
       {
-        path: '/password-reset',
+        path: '/change-password',
         element: (
           <ProtectedRoute roles={[ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]}>
             <PasswordResetSection />
