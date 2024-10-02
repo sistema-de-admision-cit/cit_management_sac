@@ -1,0 +1,5 @@
+export const ROLE_SUPERADMIN = 'S'
+export const ROLE_TEACHER = 'T'
+export const ROLE_PSYCHOLOGIST = 'P'
+export const ROLE_ADMIN = 'A'
+export const DEFAULT_PASSWORD = 'campus'
