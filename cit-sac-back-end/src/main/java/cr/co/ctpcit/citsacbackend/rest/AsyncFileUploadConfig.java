@@ -11,14 +11,14 @@ import java.util.concurrent.Executor;
 @EnableAsync
 public class AsyncFileUploadConfig {
 
-    @Bean
-    public Executor asyncExecutor() {
-        final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(10);
-        executor.setMaxPoolSize(10);
-        executor.setQueueCapacity(500);
-        executor.setThreadNamePrefix("AsyncFileUploader - ");
-        executor.initialize();
-        return executor;
-    }
+  @Bean
+  public Executor asyncExecutor() {
+    final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(10);
+    executor.setMaxPoolSize(10);
+    executor.setQueueCapacity(500);
+    executor.setThreadNamePrefix("AsyncFileUploader - ");
+    executor.initialize();
+    return executor;
+  }
 }

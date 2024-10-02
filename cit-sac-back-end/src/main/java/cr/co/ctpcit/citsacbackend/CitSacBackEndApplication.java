@@ -1,8 +1,5 @@
 package cr.co.ctpcit.citsacbackend;
 
-import cr.co.ctpcit.citsacbackend.data.entities.users.UserEntity;
-import cr.co.ctpcit.citsacbackend.data.enums.Role;
-import cr.co.ctpcit.citsacbackend.data.repositories.users.UserRepository;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageProperties;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import org.springframework.boot.CommandLineRunner;
@@ -10,8 +7,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
