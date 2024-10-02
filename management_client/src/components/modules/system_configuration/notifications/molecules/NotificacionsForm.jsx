@@ -14,7 +14,7 @@ const NotificationForm = ({ formValues, handleChange, onSave, loading }) => (
       />
       <InputField
         field={{ name: 'email_notification_contact', label: 'Correo Electrónico de Notificaciones', type: 'text', placeholder: 'ejemplo@ctpcit.com', required: true }}
-        value={formValues.email_notification_contact}
+        value={formValues.email_notifications_contact}
         handleChange={(e) => handleChange('email_notification_contact', e.target.value)}
         className='form-group'
       />
