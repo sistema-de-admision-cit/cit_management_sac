@@ -4,7 +4,7 @@ import '../../../../assets/styles/auth/reset-password.css'
 import useMessages from '../../../core/global/hooks/useMessages'
 import SectionLayout from '../../../core/global/molecules/SectionLayout'
 import PasswordForm from '../molecules/PasswordForm'
-import { DEFAULT_PASSWORD } from '../../../core/global/helpers/helpers'
+import { DEFAULT_PASSWORD } from '../../../core/global/helpers/constants'
 import { handleChangePassword } from '../helpers/handlers'
 import { useAuth } from '../../../../router/AuthProvider'
 
@@ -25,9 +25,10 @@ const PasswordResetSection = () => {
   // Logout when the password has been changed successfully
   useEffect(() => {
     if (shouldTheSessionBeClosed) {
+      setSuccessMessage('Contraseña cambiada exitosamente. Cerrando sesión...')
       setTimeout(() => {
         logout()
-      }, 3000) // Wait 3 seconds before logout to give user time to read success message
+      }, 5000) // Wait 3 seconds before logout to give user time to read success message
     }
   }, [shouldTheSessionBeClosed, logout])
 
@@ -53,7 +54,6 @@ const PasswordResetSection = () => {
             newPassword,
             confirmNewPassword,
             setErrorMessage,
-            setSuccessMessage,
             setShouldTheSessionBeClosed
           )}
         />
