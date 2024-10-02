@@ -11,8 +11,8 @@ const LoginSection = () => {
   const { login } = useAuth()
 
   const fields = [
-    { name: 'correo', label: 'Correo Electrónico', type: 'email', placeholder: 'Ej. name@example.com' },
-    { name: 'contrasena', label: 'Contraseña', type: 'password', placeholder: 'Ej. ********' }
+    { name: 'username', label: 'Correo Electrónico', type: 'email', placeholder: 'Ej. name@example.com' },
+    { name: 'password', label: 'Contraseña', type: 'password', placeholder: 'Ej. ********' }
   ]
 
   const handleChange = (e) => {
