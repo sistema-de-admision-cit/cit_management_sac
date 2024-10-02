@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import { handleSubmit } from './formsHandler'
 import LoginHeader from '../organisms/LoginHeader'
 import LoginContent from '../organisms/LoginContent'
 import '../../../../assets/styles/auth/wrap.css'
 import useMessages from '../../../core/global/hooks/useMessages'
+import { useAuth } from '../../../../router/AuthProvider'
 
 const LoginSection = () => {
-  const [formData, setFormData] = useState({})
+  const [credentials, setCredentials] = useState({})
   const { setErrorMessage, renderMessages } = useMessages()
+  const { login } = useAuth()
 
   const fields = [
     { name: 'correo', label: 'Correo Electrónico', type: 'email', placeholder: 'Ej. name@example.com' },
@@ -15,7 +16,7 @@ const LoginSection = () => {
   ]
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    setCredentials({ ...credentials, [e.target.name]: e.target.value })
   }
 
   return (
@@ -25,9 +26,9 @@ const LoginSection = () => {
         <LoginHeader />
         <LoginContent
           fields={fields}
-          formData={formData}
+          formData={credentials}
           handleChange={handleChange}
-          onSubmit={(e) => handleSubmit(e, formData, setErrorMessage, setFormData)}
+          onSubmit={(e) => { e.preventDefault(); login(credentials, setErrorMessage) }}
         />
         {renderMessages()}
       </div>
