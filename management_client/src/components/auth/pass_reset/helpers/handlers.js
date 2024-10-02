@@ -1,13 +1,12 @@
-import axios from 'axios'
+import axios from '../../../../config/axiosConfig'
 import { validatePassword } from './helpers'
 
-const changePasswordUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_CHANGE_PASSWORD_ENDPOINT}`
+const changePasswordUrl = `${import.meta.env.VITE_CHANGE_PASSWORD_ENDPOINT}`
 export const handleChangePassword = (e,
   currentPassword,
   newPassword,
   confirmPassword,
   setErrorMessage,
-  setSuccessMessage,
   setShouldTheSessionBeClosed) => {
   e.preventDefault()
 
@@ -25,8 +24,7 @@ export const handleChangePassword = (e,
 
   // todo: add jwt token
   axios.put(changePasswordUrl, body)
-    .then((response) => {
-      setSuccessMessage(response.data.message)
+    .then(() => {
       setShouldTheSessionBeClosed(true)
     }).catch((error) => {
       setErrorMessage(error.response.data.message)
