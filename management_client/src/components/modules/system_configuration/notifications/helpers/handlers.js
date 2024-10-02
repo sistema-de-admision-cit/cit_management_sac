@@ -1,12 +1,12 @@
 import axios from 'axios'
 
 let initValues = {
-  email_contact: "ejemplo@ctpcit.co.cr",
-  email_notification_contact: "ejemplo@ctpcit.co.cr",
+  email_contact: 'ejemplo@ctpcit.co.cr',
+  email_notifications_contact: 'ejemplo@ctpcit.co.cr',
   whatsapp_contact: 88887777,
   office_contact: 88886666,
-  instagram_contact: "complejoeducativocit",
-  facebook_contact: "complejoeducativocit"
+  instagram_contact: 'complejoeducativocit',
+  facebook_contact: 'complejoeducativocit'
 }
 
 const getErrorMessage = (error) => {
@@ -29,85 +29,84 @@ const getErrorMessage = (error) => {
  * @returns
  */
 export const getSaveButtonState = (formValues) => {
-  const fieldsToCheck = ["email_contact", "email_notification_contact", "whatsapp_contact", "office_contact"];
+  const fieldsToCheck = ['email_contact', 'email_notifications_contact', 'whatsapp_contact', 'office_contact']
 
-  const isSame = fieldsToCheck.every(key => formValues[key] === initValues[key]);
+  const isSame = fieldsToCheck.every(key => formValues[key] === initValues[key])
 
-  const validationError = validateForm(formValues);
+  const validationError = validateForm(formValues)
 
-  return !isSame && !validationError;
-};
-
+  return !isSame && !validationError
+}
 
 const validateForm = (formValues) => {
-  const { email_contact, email_notification_contact, whatsapp_contact, office_contact } = formValues;
+  const { email_contact, email_notifications_contact, whatsapp_contact, office_contact } = formValues
 
   // Validación Dominio específico
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@ctpcit\.co\.cr$/;
-  const isEmailValid = emailRegex.test(email_contact) && emailRegex.test(email_notification_contact);
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@ctpcit\.co\.cr$/
+  const isEmailValid = emailRegex.test(email_contact) && emailRegex.test(email_notifications_contact)
 
   // Validación de números de contacto (8 dígitos)
-  const contactRegex = /^[0-9]{8}$/;
-  const isWhatsappValid = contactRegex.test(whatsapp_contact);
-  const isOfficeValid = contactRegex.test(office_contact);
+  const contactRegex = /^[0-9]{8}$/
+  const isWhatsappValid = contactRegex.test(whatsapp_contact)
+  const isOfficeValid = contactRegex.test(office_contact)
 
-  return !(isEmailValid && isWhatsappValid && isOfficeValid);
-};
+  return !(isEmailValid && isWhatsappValid && isOfficeValid)
+}
 
-const getNotificationSettingsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_EXAM_PERCENTAGES_ENDPOINT}`
+const getNotificationSettingsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_CONFIGURATION_SETTINGS_ENDPOINT}`
 
 // mappear los datos que llegan
 const mapIncomingData = (data) => {
   return {
-    email_contact: data.email_contact,
-    email_notification_contact: data.email_notification_contact,
-    whatsapp_contact: data.whatsapp_contact,
-    office_contact: data.office_contact,
-    instagram_contact: data.instagram_contact,
-    facebook_contact: data.facebook_contact
-  };
+    email_contact: data[0].configValue,
+    email_notifications_contact: data[1].configValue,
+    whatsapp_contact: data[2].configValue,
+    office_contact: data[3].configValue,
+    instagram_contact: data[4].configValue,
+    facebook_contact: data[5].configValue
+  }
 }
 
 // mappear los datos antes de enviarlos
 const mapOutgoingData = (data) => {
   return {
     email_contact: data.email_contact,
-    email_notification_contact: data.email_notification_contact,
+    email_notifications_contact: data.email_notifications_contact,
     whatsapp_contact: data.whatsapp_contact,
     office_contact: data.office_contact,
     instagram_contact: data.instagram_contact,
     facebook_contact: data.facebook_contact
-  };
+  }
 }
 
 export const getCurrentSettings = async () => {
   try {
-    const response = await axios.get(getNotificationSettingsUrl, { timeout: 5000 });
-    const data = mapIncomingData(response.data);
+    const response = await axios.get(getNotificationSettingsUrl, { timeout: 5000 })
+    const data = mapIncomingData(response.data)
 
-    initValues = { ...data };
-    return data;
+    initValues = { ...data }
+    return data
   } catch (error) {
-    throw new Error('Error al cargar las configuraciones ya establecidas.');
+    throw new Error('Error al cargar las configuraciones ya establecidas.')
   }
 }
 
 const saveNotificationSettingsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_NOTIFICATION_SETTINGS_ENDPOINT}`
 
 export const updateNotificationSettings = async (formValues, setFormValues, setLoading, setSuccessMessage, setErrorMessage) => {
-  setLoading(true);
+  setLoading(true)
 
   try {
-    const dataToSend = mapOutgoingData(formValues);
-    const response = await axios.put(`${saveNotificationSettingsUrl}?${new URLSearchParams(dataToSend)}`, {}, { timeout: 5000 });
-    setSuccessMessage('Configuraciones actualizadas correctamente.');
+    const dataToSend = mapOutgoingData(formValues)
+    const response = await axios.put(`${saveNotificationSettingsUrl}?${new URLSearchParams(dataToSend)}`, {}, { timeout: 5000 })
+    setSuccessMessage('Configuraciones actualizadas correctamente.')
 
-    const data = mapIncomingData(response.data);
-    initValues = { ...data };
-    setFormValues(data);
+    const data = mapIncomingData(response.data)
+    initValues = { ...data }
+    setFormValues(data)
   } catch (error) {
-    setErrorMessage(getErrorMessage(error));
+    setErrorMessage(getErrorMessage(error))
   } finally {
-    setLoading(false);
+    setLoading(false)
   }
 }
