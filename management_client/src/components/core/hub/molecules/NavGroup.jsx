@@ -44,6 +44,9 @@ const NavGroup = ({ currentPage, logout, userRole }) => {
                 </NavItem>
               )
             ))}
+            <li className='nav-link' onClick={logout}>
+              Cerrar Sesión
+            </li>
           </ul>
         </NavItem>
       ))}

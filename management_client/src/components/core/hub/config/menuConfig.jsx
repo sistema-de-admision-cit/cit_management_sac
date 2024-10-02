@@ -211,13 +211,6 @@ const menuConfig = [
             description: 'Generar reportes en formatos PDF y CSV.'
           }
         ]
-      },
-      {
-        key: 'logout',
-        label: 'Cerrar Sesión',
-        path: '#',
-        roleRequired: [ROLE_SUPERADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
-        description: 'Cerrar sesión del sistema.'
       }
     ]
   }
