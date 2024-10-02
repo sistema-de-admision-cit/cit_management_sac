@@ -6,7 +6,7 @@ import UnauthorizedAccessPage from '../components/errors/pages/UnauthorizedAcces
 import NotFoundPage from '../components/errors/pages/NotFoundPage'
 import PasswordResetSection from '../components/auth/pass_reset/view/PasswordResetSection'
 import ProtectedRoute from './ProtectedRoute'
-import { ROLE_ADMIN, ROLE_PSYCHOLOGIST, ROLE_TEACHER } from '../components/core/global/helpers/helpers'
+import { ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_PSYCHOLOGIST, ROLE_TEACHER } from '../components/core/global/helpers/constants'
 
 const authRoutes = [
   {
@@ -24,7 +24,7 @@ const authRoutes = [
       {
         path: '/change-password',
         element: (
-          <ProtectedRoute roles={[ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]}>
+          <ProtectedRoute roles={[ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST]}>
             <PasswordResetSection />
           </ProtectedRoute>
         )
