@@ -12,5 +12,5 @@ export const validatePassword = (currentPassword, newPassword, confirmNewPasswor
     return 'Las contraseñas no coinciden.'
   }
 
-  return true
+  return null
 }
