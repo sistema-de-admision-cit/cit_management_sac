@@ -15,7 +15,7 @@ export default function AuthProvider ({ children }) {
     token: Cookies.get('token') || null // Recupera el token desde la cookie, si existe
   })
 
-  const login = (credentials, setErrorMessage, setIsDefaultPassword) => {
+  const login = (credentials, setErrorMessage, setIsDefaultPassword, setIsLoginSuccessful) => {
     const loginUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_LOGIN_ENDPOINT}` // URL de la API de login
     // basic auth
     const username = credentials.username
@@ -42,9 +42,8 @@ export default function AuthProvider ({ children }) {
         Cookies.set('username', decodedToken.sub, { expires: 1 / 24 }) // Guarda el username
         Cookies.set('role', decodedToken.scope, { expires: 1 / 24 }) // Guarda el rol
 
-        if (isDefaultPassword) {
-          setIsDefaultPassword(true)
-        }
+        setIsDefaultPassword(isDefaultPassword)
+        setIsLoginSuccessful(true)
       })
       .catch(error => {
         console.error('Error en la autenticación:', error)
