@@ -10,6 +10,7 @@ const Form = ({ fields, formData, handleChange, onSubmit, sectionName }) => {
           field={field}
           value={formData[field.name] || ''}
           handleChange={handleChange}
+          autoComplete='on'
         />
       ))}
       <Button type='submit' className='btn btn-primary'>{sectionName}</Button>
