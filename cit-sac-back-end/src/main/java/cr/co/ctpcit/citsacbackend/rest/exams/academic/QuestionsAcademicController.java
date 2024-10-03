@@ -3,7 +3,6 @@ package cr.co.ctpcit.citsacbackend.rest.exams.academic;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.examsImplementations.AcademicQuestionsServiceImplementation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
