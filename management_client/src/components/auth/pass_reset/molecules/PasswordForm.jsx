@@ -1,7 +1,7 @@
 import InputField from '../../../core/global/atoms/InputField'
 import Button from '../../../core/global/atoms/Button'
 
-const PasswordForm = ({ isDefaultPassword, currentPassword, setCurrentPassword, newPassword, setNewPassword, confirmNewPassword, setConfirmNewPassword, handleSubmit }) => (
+const PasswordForm = ({ isDefaultPassword, currentPassword, setCurrentPassword, newPassword, setNewPassword, confirmNewPassword, setConfirmNewPassword, handleSubmit, shouldTheSessionBeClosed }) => (
   <form className='reset-password-form' onSubmit={handleSubmit}>
     {!isDefaultPassword && (
       <InputField
@@ -23,8 +23,8 @@ const PasswordForm = ({ isDefaultPassword, currentPassword, setCurrentPassword, 
       handleChange={(e) => setConfirmNewPassword(e.target.value)}
       className='form-group'
     />
-    <Button type='submit' className='btn btn-primary'>
-      {isDefaultPassword ? 'Cambiar Contraseña' : 'Guardar Cambios'}
+    <Button type='submit' className='btn btn-primary' disabled={shouldTheSessionBeClosed}>
+      {shouldTheSessionBeClosed ? 'Cambiando Contraseña...' : 'Cambiar Contraseña'}
     </Button>
   </form>
 )

@@ -56,6 +56,7 @@ const PasswordResetSection = () => {
             setErrorMessage,
             setShouldTheSessionBeClosed
           )}
+          shouldTheSessionBeClosed={shouldTheSessionBeClosed}
         />
       </div>
       {renderMessages()}
