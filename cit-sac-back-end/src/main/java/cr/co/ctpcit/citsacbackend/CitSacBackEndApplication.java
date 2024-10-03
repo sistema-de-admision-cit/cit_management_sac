@@ -1,8 +1,5 @@
 package cr.co.ctpcit.citsacbackend;
 
-import cr.co.ctpcit.citsacbackend.data.entities.users.UserEntity;
-import cr.co.ctpcit.citsacbackend.data.enums.Role;
-import cr.co.ctpcit.citsacbackend.data.repositories.users.UserRepository;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageProperties;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import org.springframework.boot.CommandLineRunner;
@@ -29,6 +26,11 @@ public class CitSacBackEndApplication {
       // storageService.deleteAll();
       storageService.init();
     };
+  }
+
+  @Bean
+  public PasswordEncoder encoder() {
+    return new BCryptPasswordEncoder();
   }
 
   /*@Bean

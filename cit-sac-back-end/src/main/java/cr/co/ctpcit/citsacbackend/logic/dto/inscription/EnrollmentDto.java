@@ -3,7 +3,6 @@ package cr.co.ctpcit.citsacbackend.logic.dto.inscription;
 import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import cr.co.ctpcit.citsacbackend.data.enums.KnownThrough;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 

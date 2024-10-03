@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '../../../../../config/axiosConfig'
 
 let initValues = {
   academicExam: 0,
@@ -34,7 +34,7 @@ export const getSaveButtonState = (formValues) => {
   return total === 200 && !isSame
 }
 
-const getExamPercentagesUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_EXAM_PERCENTAGES_ENDPOINT}`
+const getExamPercentagesUrl = import.meta.env.VITE_GET_EXAM_PERCENTAGES_ENDPOINT
 
 // mappear los datos que llegan
 const mapIncomingData = (data) => {
@@ -71,7 +71,7 @@ export const getCurrentPercentages = async () => {
   }
 }
 
-const saveExamPercentagesUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_EXAM_PERCENTAGES_ENDPOINT}`
+const saveExamPercentagesUrl = import.meta.env.VITE_UPDATE_EXAM_PERCENTAGES_ENDPOINT
 
 export const updateExamPercentages = async (formValues, setFormValues, setLoading, setSuccessMessage, setErrorMessage) => {
   setLoading(true)

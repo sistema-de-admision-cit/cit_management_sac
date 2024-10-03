@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios from '../../../../../config/axiosConfig'
 
-const deleteQuestionUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_DELETE_QUESTION_ENDPOINT}`
+const deleteQuestionUrl = import.meta.env.VITE_DELETE_QUESTION_ENDPOINT
 export const handleDeleteFromList = (code, questions, setQuestions, setErrorMessage, setSuccessMessage) => {
   setErrorMessage('')
   setSuccessMessage('')
@@ -17,7 +17,7 @@ export const handleDeleteFromList = (code, questions, setQuestions, setErrorMess
   })
 }
 
-const getAllQuestionsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_ALL_QUESTIONS_ENDPOINT}`
+const getAllQuestionsUrl = import.meta.env.VITE_GET_ALL_QUESTIONS_ENDPOINT
 export const handleGetAllQuestions = (setQuestions, setLoading, setErrorMessage) => {
   setLoading(true)
 

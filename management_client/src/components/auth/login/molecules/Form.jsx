@@ -1,5 +1,5 @@
-import InputField from '../../core/global/atoms/InputField'
-import Button from '../../core/global/atoms/Button'
+import InputField from '../../../core/global/atoms/InputField'
+import Button from '../../../core/global/atoms/Button'
 
 const Form = ({ fields, formData, handleChange, onSubmit, sectionName }) => {
   return (
@@ -10,6 +10,7 @@ const Form = ({ fields, formData, handleChange, onSubmit, sectionName }) => {
           field={field}
           value={formData[field.name] || ''}
           handleChange={handleChange}
+          autoComplete='on'
         />
       ))}
       <Button type='submit' className='btn btn-primary'>{sectionName}</Button>

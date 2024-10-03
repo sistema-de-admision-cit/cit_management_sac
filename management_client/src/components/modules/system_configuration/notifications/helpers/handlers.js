@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '../../../../../config/axiosConfig'
 
 let initValues = {
   email_contact: 'ejemplo@ctpcit.co.cr',
@@ -29,13 +29,9 @@ const getErrorMessage = (error) => {
  * @returns
  */
 export const getSaveButtonState = (formValues) => {
-  const fieldsToCheck = ['email_contact', 'email_notifications_contact', 'whatsapp_contact', 'office_contact']
-
-  const isSame = fieldsToCheck.every(key => formValues[key] === initValues[key])
-
   const validationError = validateForm(formValues)
 
-  return !isSame && !validationError
+  return !validationError
 }
 
 const validateForm = (formValues) => {
@@ -53,7 +49,7 @@ const validateForm = (formValues) => {
   return !(isEmailValid && isWhatsappValid && isOfficeValid)
 }
 
-const getNotificationSettingsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_CONFIGURATION_SETTINGS_ENDPOINT}`
+const getNotificationSettingsUrl = `${import.meta.env.VITE_GET_CONFIGURATION_SETTINGS_ENDPOINT}`
 
 // mappear los datos que llegan
 const mapIncomingData = (data) => {
@@ -91,7 +87,7 @@ export const getCurrentSettings = async () => {
   }
 }
 
-const saveNotificationSettingsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_NOTIFICATION_SETTINGS_ENDPOINT}`
+const saveNotificationSettingsUrl = `${import.meta.env.VITE_UPDATE_NOTIFICATION_SETTINGS_ENDPOINT}`
 
 export const updateNotificationSettings = async (formValues, setFormValues, setLoading, setSuccessMessage, setErrorMessage) => {
   setLoading(true)

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '../../../../config/axiosConfig'
 import { validateFields } from './helpers'
 
 export const handleChange = (e, setQuestionData, isFile = false) => {
@@ -48,7 +48,7 @@ export const clearForm = (setQuestionData) => {
   })
 }
 
-const createQuestionUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_CREATE_QUESTION_ENDPOINT}`
+const createQuestionUrl = import.meta.env.VITE_CREATE_QUESTION_ENDPOINT
 export const handleCreateQuestionSubmit = (e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData) => {
   e.preventDefault()
   setErrorMessage('')
@@ -118,7 +118,7 @@ export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessM
  * @param {string} searchExamType - exam type to search (both, dai or academic)
  * @param {string} setSearchCode - setter function for the search code
 */
-const searchQuestionByTitleUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_QUESTIONS_ENDPOINT}`
+const searchQuestionByTitleUrl = import.meta.env.VITE_SEARCH_QUESTIONS_ENDPOINT
 export const handleSearch = (query, setQuestions, searchExamType, setSearchCode) => {
   setSearchCode('')
   const searchParams = new URLSearchParams()
@@ -138,7 +138,7 @@ export const handleSearch = (query, setQuestions, searchExamType, setSearchCode)
     })
 }
 
-const searchQuestionByCodeUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_QUESTION_BY_CODE_ENDPOINT}`
+const searchQuestionByCodeUrl = import.meta.env.VITE_SEARCH_QUESTION_BY_CODE_ENDPOINT
 export const handleSearchByCode = (e, setQuery, setSearchCode, setQuestions, searchExamType) => {
   e.preventDefault()
   setQuery('')

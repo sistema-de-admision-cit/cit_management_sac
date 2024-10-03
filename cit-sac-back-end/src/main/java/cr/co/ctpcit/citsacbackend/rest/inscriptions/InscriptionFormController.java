@@ -5,14 +5,11 @@ import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageFileNotFoundException;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
-import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -92,9 +89,10 @@ public class InscriptionFormController {
    * @param e the exception
    * @return a response entity with the error message
    */
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
-    ResponseEntity<String> handleMaxSizeException(MaxUploadSizeExceededException e) {
-        return new ResponseEntity<>("El archivo no puede ser mayor a 5MB", HttpStatus.PAYLOAD_TOO_LARGE);
-    }
+  @ExceptionHandler(MaxUploadSizeExceededException.class)
+  @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+  ResponseEntity<String> handleMaxSizeException(MaxUploadSizeExceededException e) {
+    return new ResponseEntity<>("El archivo no puede ser mayor a 5MB",
+        HttpStatus.PAYLOAD_TOO_LARGE);
+  }
 }
