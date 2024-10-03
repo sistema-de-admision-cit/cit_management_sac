@@ -24,3 +24,14 @@ const SendNotifications = ({ handleChange, onSave, loading }) => (
 )
 
 export default SendNotifications
+
+
+/* div agregar en el view.
+<div className='notifications-configurator'>
+          <p className='description'><b>Notificaciones.</b></p>
+          <SendNotificacions
+            handleChange={handleChange}
+            loading={loading}
+          />
+        </div>
+*/

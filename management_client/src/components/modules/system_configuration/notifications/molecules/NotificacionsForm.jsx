@@ -7,15 +7,15 @@ const NotificationForm = ({ formValues, handleChange, onSave, loading }) => (
   <form onSubmit={(e) => e.preventDefault()}>
     <div className='form-row'>
       <InputField
-        field={{ name: 'email_contact', label: 'Correo Electrónico de Consultas', type: 'text', placeholder: 'ejemplo@ctpcit.com', required: true }}
+        field={{ name: 'email_contact', label: 'Correo de Consultas', type: 'text', placeholder: 'ejemplo@ctpcit.com', required: true }}
         value={formValues.email_contact}
         handleChange={(e) => handleChange('email_contact', e.target.value)}
         className='form-group'
       />
       <InputField
-        field={{ name: 'email_notification_contact', label: 'Correo Electrónico de Notificaciones', type: 'text', placeholder: 'ejemplo@ctpcit.com', required: true }}
+        field={{ name: 'email_notifications_contact', label: 'Correo de Notificaciones', type: 'text', placeholder: 'ejemplo@ctpcit.com', required: true }}
         value={formValues.email_notifications_contact}
-        handleChange={(e) => handleChange('email_notification_contact', e.target.value)}
+        handleChange={(e) => handleChange('email_notifications_contact', e.target.value)}
         className='form-group'
       />
     </div>
@@ -47,7 +47,6 @@ const NotificationForm = ({ formValues, handleChange, onSave, loading }) => (
         className='form-group'
       />
     </div>
-
     <Button
       className='btn btn-primary'
       onClick={onSave}
