@@ -1,4 +1,4 @@
-import axios from '../../../../../config/axstiosConfig'
+import axios from '../../../../../config/axiosConfig'
 
 let initValues = {
   email_contact: 'ejemplo@ctpcit.co.cr',
