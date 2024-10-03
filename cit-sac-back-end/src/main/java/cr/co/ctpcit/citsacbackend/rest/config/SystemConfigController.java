@@ -47,12 +47,14 @@ public class SystemConfigController {
     return new ResponseEntity<>(getExamsPercentages().getBody(), HttpStatus.OK);
   }
 
+  @PreAuthorize("hasAuthority('SCOPE_S')")
   @GetMapping("/get-notifications")
   public ResponseEntity<List<SystemConfigEntity>> getNotifications() {
     List<SystemConfigEntity> notifications = systemConfigService.getNotifications("contact");
     return new ResponseEntity<>(notifications, HttpStatus.OK);
   }
 
+  @PreAuthorize("hasAuthority('SCOPE_S')")
   @PutMapping("/update-notifications")
   public ResponseEntity<List<SystemConfigEntity>> updateNotifications(
           @RequestParam("email_contact") String emailContact,
