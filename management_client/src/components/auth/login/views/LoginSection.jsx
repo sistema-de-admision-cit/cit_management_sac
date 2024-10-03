@@ -18,9 +18,9 @@ const LoginSection = () => {
     if (!isLoginSuccessful) return
     if (isDefaultPassword) {
       navigate('/change-password', { state: { isDefaultPassword } })
+    } else {
+      navigate('/dashboard')
     }
-
-    navigate('/dashboard')
   }, [isLoginSuccessful, isDefaultPassword, navigate])
 
   const fields = [
