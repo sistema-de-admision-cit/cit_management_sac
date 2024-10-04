@@ -11,6 +11,7 @@ const AccessManagementSection = ({ email, role, onEmailChange, onRoleChange }) =
       />
     </div>
     <div className="form-group">
+      <h1>Hola</h1>
       <EmailInput
         field={{ type: 'email', name: 'email', label: 'Correo Electrónico' }}
         value={email}
@@ -19,6 +20,7 @@ const AccessManagementSection = ({ email, role, onEmailChange, onRoleChange }) =
     </div>
   </div>
 );
+
 
 export default AccessManagementSection;
 
