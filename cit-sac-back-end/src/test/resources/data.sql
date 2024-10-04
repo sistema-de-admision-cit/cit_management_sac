@@ -127,3 +127,19 @@ INSERT INTO `tbl_systemconfig` (`config_name`, `config_value`)
 VALUES ('dai_weight', 0.4),
        ('academic_weight', 0.4),
        ('english_weight', 0.2);
+
+-- Password: 'campus12' test sysadmin
+INSERT INTO `tbl_users` (`email`, `user_password`, `role`)
+VALUES ('sysadmin@cit.co.cr', '$2a$10$x2PgQcVgktD6SS6wtJonwOlWpnLj24aH9c5aVC561vDqTO8PzUY4S', 'S');
+
+-- Password: 'campus' test admin
+INSERT INTO `tbl_users` (`email`, `user_password`, `role`)
+VALUES ('marta@cit.co.cr','$2a$10$15bZTAy6CG3OlPgl3glJxuROyEajUOTdKX9qx43Pa0JkTPR2ga2He','A');
+
+-- Password: 'Omera32' test psico
+INSERT INTO `tbl_users` (`email`, `user_password`, `role`)
+VALUES ('jorge@cit.co.cr', '$2a$10$RFPObfy6ro87gLXQalrEiuGehgDsyWfETW4h9h51eg1ZUWlpMnrIG', 'P');
+
+-- Password: 'Mate8520' test teacher
+INSERT INTO `tbl_users` (`email`, `user_password`, `role`)
+VALUES ('rocio@cit.co.cr', '$2a$10$yNXsgRdu2T72V6xznUni7e6PDtcx4ZYq3XvNVAbIcRnhWBoIgGMTO', 'T');

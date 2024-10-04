@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '../../../../../config/axiosConfig'
 import { formatDateForApi, formatDateToObj, isCommentRequired } from './helpers'
 
 // Manejo de errores
@@ -47,7 +47,7 @@ const updateEnrollmentLocal = (enrollment, formData) => {
   enrollment.whatsappNotification = formData.whatsappNotification
 }
 
-const updateEnrollmentUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPDATE_ENROLLMENT_INFORMATION_ENDPOINT}`
+const updateEnrollmentUrl = import.meta.env.VITE_UPDATE_ENROLLMENT_INFORMATION_ENDPOINT
 export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setErrorMessage, setSuccessMessage) => {
   e.preventDefault()
 
@@ -75,7 +75,7 @@ export const handleDocClick = (file, setSelectedFile, setIsDocModalOpen) => {
   setIsDocModalOpen(true)
 }
 
-const downloadFileUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_DOWNLOAD_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT}`
+const downloadFileUrl = import.meta.env.VITE_DOWNLOAD_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT
 export const handleFileDownload = (filename, setErrorMessage) => {
   axios.get(`${downloadFileUrl}/${filename}`,
     {
@@ -96,7 +96,7 @@ export const handleFileDownload = (filename, setErrorMessage) => {
     })
 }
 
-const deleteFileUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_DELETE_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT}`
+const deleteFileUrl = import.meta.env.VITE_DELETE_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT
 export const handleFileDelete = (selectedFile, setSelectedFile, setErrorMessage, setSuccessMessage, setEnrollments, enrollmentId, studentId) => {
   axios.delete(`${deleteFileUrl}/${selectedFile.id}?filename=${selectedFile.documentUrl}`, { timeout: 10000 }) // 10 segundos
     .then(response => {
@@ -127,7 +127,7 @@ export const handleFileDelete = (selectedFile, setSelectedFile, setErrorMessage,
     })
 }
 
-const uploadFileUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_UPLOAD_DOCUMENT_ENDPOINT}`
+const uploadFileUrl = import.meta.env.VITE_UPLOAD_DOCUMENT_ENDPOINT
 export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollment, studentId, setErrorMessage, setSuccessMessage) => {
   e.preventDefault()
 
@@ -169,7 +169,7 @@ export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollmen
     })
 }
 
-const searchEnrollmentUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT}`
+const searchEnrollmentUrl = import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT
 export const handleSearch = (search, setEnrollments) => {
   axios.get(`${searchEnrollmentUrl}?value=${search}`, { timeout: 10000 })
     .then(response => {
@@ -181,7 +181,7 @@ export const handleSearch = (search, setEnrollments) => {
     })
 }
 
-const getAllEnrollmentsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_ALL_ENROLLMENTS_ENDPOINT}`
+const getAllEnrollmentsUrl = import.meta.env.VITE_GET_ALL_ENROLLMENTS_ENDPOINT
 export const handleGetAllEnrollments = (setEnrollments, setLoading, setErrorMessage) => {
   setLoading(true)
 

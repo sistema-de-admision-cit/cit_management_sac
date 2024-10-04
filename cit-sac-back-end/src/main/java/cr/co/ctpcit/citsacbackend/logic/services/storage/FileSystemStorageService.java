@@ -1,7 +1,5 @@
 package cr.co.ctpcit.citsacbackend.logic.services.storage;
 
-import cr.co.ctpcit.citsacbackend.data.enums.DocType;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageFileNotFoundException;
 import lombok.Getter;
@@ -21,7 +19,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 @Service
@@ -46,7 +43,8 @@ public class FileSystemStorageService implements StorageService {
       if (file.isEmpty()) {
         throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
       }
-      Files.copy(file.getInputStream(), this.rootLocation.resolve(Objects.requireNonNull(file.getOriginalFilename())));
+      Files.copy(file.getInputStream(),
+          this.rootLocation.resolve(Objects.requireNonNull(file.getOriginalFilename())));
     } catch (IOException e) {
       throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
     }

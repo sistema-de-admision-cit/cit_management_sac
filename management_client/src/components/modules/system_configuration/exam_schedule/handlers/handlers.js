@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from '../../../../../config/axiosConfig'
 
 const mapDays = (days) => {
   const daysMap = {
@@ -12,7 +12,7 @@ const mapDays = (days) => {
   return days.map(day => daysMap[day])
 }
 
-const saveExamScheduleUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SAVE_EXAM_SCHEDULE_ENDPOINT}`
+const saveExamScheduleUrl = import.meta.env.VITE_SAVE_EXAM_SCHEDULE_ENDPOINT
 
 const possibleErrors = {
   startDate: 'La fecha inicial no puede ser mayor a la fecha final',

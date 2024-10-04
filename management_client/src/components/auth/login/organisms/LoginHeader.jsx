@@ -1,4 +1,4 @@
-import '../../../assets/styles/auth/left-column.css'
+import '../../../../assets/styles/auth/left-column.css'
 
 const LoginHeader = () => {
   return (

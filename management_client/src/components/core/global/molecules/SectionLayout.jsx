@@ -1,5 +1,5 @@
-const SectionLayout = ({ title, children }) => (
-  <div className='section-container'>
+const SectionLayout = ({ title, children, className }) => (
+  <div className={`section-container ${className}`}>
     <title>{title}</title>
     {children}
   </div>
