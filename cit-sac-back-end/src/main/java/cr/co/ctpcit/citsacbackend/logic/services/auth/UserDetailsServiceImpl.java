@@ -55,15 +55,15 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
         this.securityContextHolderStrategy.getContext().getAuthentication();
     if (currentUser == null) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-          "Can't change password as no Authentication object found in context for current user.");
+          "No se pudo cambiar la contraseña, usuario no autenticado.");
     }
 
     Optional<UserEntity> entity = userRepository.findByEmail(currentUser.getName());
     if (entity.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario no encontrado");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario no encontrado.");
     }
     if (!passwordEncoder.matches(oldPassword, entity.get().getUserPassword())) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Contraseña incorrecta");
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Contraseña actual incorrecta.");
     }
 
     entity.get().setUserPassword(passwordEncoder.encode(newPassword));
