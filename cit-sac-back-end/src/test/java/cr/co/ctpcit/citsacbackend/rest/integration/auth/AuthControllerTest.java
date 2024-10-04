@@ -1,8 +1,10 @@
-package cr.co.ctpcit.citsacbackend.rest.auth;
+package cr.co.ctpcit.citsacbackend.rest.integration.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.auth.ChangePasswordRequestDTO;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
+import cr.co.ctpcit.citsacbackend.security.DaoAuthenticationProviderCstm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,10 +13,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
+@Rollback
 class AuthControllerTest {
 
   @Autowired
@@ -52,7 +57,7 @@ class AuthControllerTest {
   }
 
   @Test
-  void rootWhenAuthenticatedThenSaysHelloUser() throws Exception {
+  void returnDataFromEndpointWhenUserIsAuthenticated() throws Exception {
     this.mvc.perform(get("/api/questions-academic")
             .header("Authorization", "Bearer " + authResponseDto.token()))
         .andExpect(status().isOk())
@@ -73,8 +78,24 @@ class AuthControllerTest {
   }
 
   @Test
-    void rootWhenNotAuthenticatedThenSaysHelloGuest() throws Exception {
-        this.mvc.perform(get("/api/questions-academic"))
-            .andExpect(status().isUnauthorized());
-    }
+  void returnUnauthorizedExceptionWhenUserIsNotAuthenticated() throws Exception {
+    this.mvc.perform(get("/api/questions-academic")).andExpect(status().isUnauthorized());
+  }
+
+  /*@Test
+  void returnOkWhenUserChangePasswordCorrectly() throws Exception {
+    ChangePasswordRequestDTO request =
+        new ChangePasswordRequestDTO("campus12", "campus123", "campus123");
+    doNothing().when(daoAuthenticationProvider).updatePassword(request);
+
+
+    // @formatter:off
+    this.mvc.perform(post("/api/auth/change-password")
+            .header("Authorization", "Bearer " + authResponseDto.token())
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(content().string("Contraseña actualizada correctamente."));
+    // @formatter:on
+  }*/
 }
