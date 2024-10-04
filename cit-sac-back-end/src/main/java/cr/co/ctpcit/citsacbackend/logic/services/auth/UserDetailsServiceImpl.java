@@ -102,4 +102,9 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
     Optional<UserEntity> user = userRepository.findById(id);
     return user.map(UserDto::new).orElse(null);
   }
+
+  public UserDto getUserByEmail(String email) {
+    Optional<UserEntity> user = userRepository.findByEmail(email);
+    return user.map(UserDto::new).orElse(null);
+  }
 }

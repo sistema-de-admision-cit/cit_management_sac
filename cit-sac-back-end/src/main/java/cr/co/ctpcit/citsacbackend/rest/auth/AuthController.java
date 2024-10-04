@@ -98,6 +98,7 @@ public class AuthController {
 
   /**
    * Obtener la lista de usuarios paginada y ordenada por email de 25 en 25 por defecto
+   *
    * @param pageable la paginación
    * @return la lista de usuarios
    */
@@ -109,11 +110,31 @@ public class AuthController {
     return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
   }
 
+  /**
+   * Obtener un usuario por su id
+   *
+   * @param id el id del usuario
+   * @return el usuario
+   */
+  @PreAuthorize("hasAuthority('SCOPE_S')")
   @GetMapping("/user/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
-        UserDto user = userDetailsServiceImpl.getUser(id);
-        return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(user);
-    }
+  public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
+    UserDto user = userDetailsServiceImpl.getUser(id);
+    return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(user);
+  }
+
+  /**
+   * Obtener un usuario por su email
+   * @param email el email del usuario
+   * @return el usuario
+   */
+  @PreAuthorize("hasAuthority('SCOPE_S')")
+  @GetMapping("/user")
+  public ResponseEntity<UserDto> getUserByEmail(@RequestParam String email) {
+    UserDto user = userDetailsServiceImpl.getUserByEmail(email);
+    return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(user);
+  }
+
 
   /**
    * Manejar excepciones de validación de argumentos
