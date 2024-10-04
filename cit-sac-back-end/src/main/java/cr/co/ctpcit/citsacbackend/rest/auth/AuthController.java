@@ -3,7 +3,6 @@ package cr.co.ctpcit.citsacbackend.rest.auth;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.ChangePasswordRequestDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.UserDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.services.auth.UserDetailsServiceImpl;
 import cr.co.ctpcit.citsacbackend.security.DaoAuthenticationProviderCstm;
 import jakarta.validation.Valid;
@@ -135,6 +134,17 @@ public class AuthController {
     return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(user);
   }
 
+  /**
+   * Eliminar un usuario por su email
+   * @param email el email del usuario
+   * @return una respuesta sin contenido
+   */
+  @PreAuthorize("hasAuthority('SCOPE_S')")
+  @DeleteMapping("/delete-user")
+    public ResponseEntity<Void> deleteUser(@RequestParam String email) {
+        userDetailsServiceImpl.deleteUser(email);
+        return ResponseEntity.noContent().build();
+    }
 
   /**
    * Manejar excepciones de validación de argumentos

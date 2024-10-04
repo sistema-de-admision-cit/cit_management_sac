@@ -62,7 +62,12 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
 
   @Override
   public void deleteUser(String username) {
+    Optional<UserEntity> entity = userRepository.findByEmail(username);
+    if (entity.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario no encontrado");
+    }
 
+    userRepository.delete(entity.get());
   }
 
   @Override
