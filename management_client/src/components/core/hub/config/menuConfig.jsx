@@ -20,6 +20,7 @@ import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenu
 // reports views
 import ReportsMenuPageView from '../../../modules/reports/menu/views/ReportsMenuPageView.jsx'
 import PercentagesConfiguratorView from '../../../modules/system_configuration/percentages/view/PercentagesConfiguratorView.jsx'
+import AccessManegementView from '../../../modules/system_configuration/access_management/view/AccessManegementView.jsx'
 
 // componente por defecto para las rutas padre
 // feature temporal
@@ -98,7 +99,7 @@ const menuConfig = [
             key: 'manage-access',
             label: 'Gestionar Accesos',
             path: '/configuracion/accesos',
-            component: DefaultComponent,
+            component: AccessManegementView,
             description: 'Gestionar accesos y permisos de los usuarios en el sistema.'
           },
           {

@@ -24,3 +24,77 @@
   justify-content: center;
   align-items: center;
 }
+
+/* Estilos adicionales para acees manegement section*/
+.access-management-section {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px; /* Espaciado entre los campos */
+}
+
+.input-group {
+  flex: 1;
+}
+
+.email-input input,
+.role-select select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.email-input label,
+.role-select label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.email-input input:focus,
+.role-select select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+.search-bar-container {
+  display: flex;
+  justify-content: flex-end; /* Alinea la barra de búsqueda a la derecha */
+  margin-bottom: 20px; /* Agrega margen inferior para separarla de la tabla */
+}
+
+.search-bar {
+  position: relative;
+  width: 300px; /* Ajusta el ancho de la barra de búsqueda */
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 40px 10px 10px; /* Deja espacio a la derecha para el ícono */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  pointer-events: none; /* Evita que el ícono sea interactivo */
+}
+
