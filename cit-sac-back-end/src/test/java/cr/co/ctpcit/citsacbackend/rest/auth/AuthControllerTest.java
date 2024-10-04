@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
+@Rollback
 class AuthControllerTest {
 
   @Autowired
@@ -52,7 +54,7 @@ class AuthControllerTest {
   }
 
   @Test
-  void rootWhenAuthenticatedThenSaysHelloUser() throws Exception {
+  void whenAuthenticated_receiveInformationFromServer() throws Exception {
     this.mvc.perform(get("/api/questions-academic")
             .header("Authorization", "Bearer " + authResponseDto.token()))
         .andExpect(status().isOk())
@@ -73,8 +75,7 @@ class AuthControllerTest {
   }
 
   @Test
-    void rootWhenNotAuthenticatedThenSaysHelloGuest() throws Exception {
-        this.mvc.perform(get("/api/questions-academic"))
-            .andExpect(status().isUnauthorized());
-    }
+  void whenUnauthenticated_receiveErrorUnauthorizedFromServer() throws Exception {
+    this.mvc.perform(get("/api/questions-academic")).andExpect(status().isUnauthorized());
+  }
 }
