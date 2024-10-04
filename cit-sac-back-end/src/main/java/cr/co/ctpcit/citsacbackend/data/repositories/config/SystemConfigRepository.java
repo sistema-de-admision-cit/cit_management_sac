@@ -22,16 +22,9 @@ public interface SystemConfigRepository extends JpaRepository<SystemConfigEntity
 
   @Transactional
   @Modifying
-  @Query("UPDATE SystemConfigEntity s SET s.configValue = CASE s.configName " +
-          "WHEN 'email_contact' THEN :emailContact " +
-          "WHEN 'email_notifications_contact' THEN :emailNotificationContact " +
-          "WHEN 'whatsapp_contact' THEN :whatsappContact " +
-          "WHEN 'office_contact' THEN :officeContact " +
-          "WHEN 'instagram_contact' THEN :instagramContact " +
-          "WHEN 'facebook_contact' THEN :facebookContact " +
-          "END WHERE s.configName IN ('email_contact', 'email_notifications_contact', 'whatsapp_contact', 'office_contact', 'instagram_contact', 'facebook_contact')")
+  @Query(value = "CALL usp_SystemConfig_Notifications_Update(:emailContact, :emailNotificationsContact, :whatsappContact, :officeContact, :instagramContact, :facebookContact)", nativeQuery = true)
   void updateNotifications(@Param("emailContact") String emailContact,
-                           @Param("emailNotificationContact") String emailNotificationContact,
+                           @Param("emailNotificationsContact") String emailNotificationsContact,
                            @Param("whatsappContact") String whatsappContact,
                            @Param("officeContact") String officeContact,
                            @Param("instagramContact") String instagramContact,
