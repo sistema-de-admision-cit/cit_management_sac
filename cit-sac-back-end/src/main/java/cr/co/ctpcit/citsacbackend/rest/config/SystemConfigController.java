@@ -50,6 +50,7 @@ public class SystemConfigController {
   @PreAuthorize("hasAuthority('SCOPE_S')")
   @GetMapping("/get-notifications")
   public ResponseEntity<List<SystemConfigEntity>> getNotifications() {
+
     List<SystemConfigEntity> notifications = systemConfigService.getNotifications("contact");
     return new ResponseEntity<>(notifications, HttpStatus.OK);
   }

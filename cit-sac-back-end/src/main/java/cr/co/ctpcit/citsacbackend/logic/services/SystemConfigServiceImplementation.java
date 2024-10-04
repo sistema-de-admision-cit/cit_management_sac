@@ -41,7 +41,14 @@ public class SystemConfigServiceImplementation implements SystemConfigService {
 
   @Override
   public List<SystemConfigEntity> getNotifications(String configName) {
-    return systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
+    List<SystemConfigEntity> notifications = systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
+
+    if (notifications.isEmpty()) {
+      systemConfigRepository.updateNotifications("", "", "", "", "", "");
+      notifications = systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
+    }
+
+    return notifications;
   }
 
   @Override
