@@ -3,11 +3,17 @@ package cr.co.ctpcit.citsacbackend.rest.auth;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.ChangePasswordRequestDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.UserDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
+import cr.co.ctpcit.citsacbackend.logic.services.auth.UserDetailsServiceImpl;
 import cr.co.ctpcit.citsacbackend.security.DaoAuthenticationProviderCstm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -15,8 +21,10 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -25,7 +33,14 @@ import java.util.stream.Collectors;
 public class AuthController {
   private final JwtEncoder encoder;
   private final DaoAuthenticationProviderCstm daoAuthenticationProvider;
+  private final UserDetailsServiceImpl userDetailsServiceImpl;
 
+  /**
+   * Obtener el token de autenticación
+   *
+   * @param authentication la autenticación
+   * @return el token de autenticación
+   */
   @PostMapping("/login")
   public ResponseEntity<AuthResponseDto> token(Authentication authentication) {
     Instant now = Instant.now();
@@ -50,6 +65,12 @@ public class AuthController {
         .isDefaultPassword(userDetails.getIsDefaultPassword()).build());
   }
 
+  /**
+   * Cambiar la contraseña
+   *
+   * @param request la solicitud de cambio de contraseña
+   * @return la respuesta de la solicitud o el error que se encuentre
+   */
   @PutMapping("/change-password")
   public ResponseEntity<String> changePassword(
       @RequestBody @Valid ChangePasswordRequestDTO request) {
@@ -58,11 +79,53 @@ public class AuthController {
     return ResponseEntity.ok("Contraseña actualizada correctamente.");
   }
 
+  /**
+   * Crear un usuario
+   *
+   * @param user                 el usuario a crear según el DTO @see UserDto
+   * @param uriComponentsBuilder el constructor de URI
+   * @return la respuesta de la solicitud o el error que se encuentre
+   */
+  @PreAuthorize("hasAuthority('SCOPE_S')")
+  @PostMapping("/create-user")
+  public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto user,
+      UriComponentsBuilder uriComponentsBuilder) {
+    // Lógica para crear un usuario
+    daoAuthenticationProvider.createUser(user);
+    return ResponseEntity.created(
+        uriComponentsBuilder.path("/api/auth/{id}").buildAndExpand(user.getId()).toUri()).build();
+  }
+
+  /**
+   * Obtener la lista de usuarios paginada y ordenada por email de 25 en 25 por defecto
+   * @param pageable la paginación
+   * @return la lista de usuarios
+   */
+  @PreAuthorize("hasAuthority('SCOPE_S')")
+  @GetMapping("/users")
+  public ResponseEntity<Iterable<UserDto>> getUsers(
+      @PageableDefault(page = 0, size = 25) Pageable pageable) {
+    List<UserDto> users = userDetailsServiceImpl.getUsers(pageable);
+    return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
+  }
+
+  @GetMapping("/user/{id}")
+    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
+        UserDto user = userDetailsServiceImpl.getUser(id);
+        return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(user);
+    }
+
+  /**
+   * Manejar excepciones de validación de argumentos
+   *
+   * @param e la excepción
+   * @return una respuesta con el mensaje de error
+   */
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   ResponseEntity<String> handleConstraintViolationException(MethodArgumentNotValidException e) {
-    return new ResponseEntity<>(
-        "La contraseña debe tener al menos 8 caracteres y contener tanto letras como números.",
+    return new ResponseEntity<>(e.getBindingResult().getFieldErrors().stream()
+        .map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.joining(", ")),
         HttpStatus.BAD_REQUEST);
   }
 }

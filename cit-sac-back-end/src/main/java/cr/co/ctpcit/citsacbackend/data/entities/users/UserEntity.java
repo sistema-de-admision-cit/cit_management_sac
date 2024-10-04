@@ -25,7 +25,7 @@ public class UserEntity {
   @JdbcTypeCode(SqlTypes.INTEGER)
   private Long id;
 
-  @Column(name = "email", nullable = false, length = 25)
+  @Column(name = "email", nullable = false)
   private String email;
 
   @Column(name = "user_password", nullable = false, length = 100)
