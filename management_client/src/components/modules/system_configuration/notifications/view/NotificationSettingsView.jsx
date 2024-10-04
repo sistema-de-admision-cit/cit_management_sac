@@ -46,20 +46,12 @@ const NotificationsSettingsView = () => {
       <div className='container'>
         {renderMessages()}
         <h1>Configuración de notificaciones</h1>
-        <p className='description'>Configurar los elementos necesarios para las notificaciones en el sistema.</p>
         <div className='notifications-configurator'>
           <p className='description'><b>Puntos de control.</b></p>
           <NotificacionsForm
             formValues={formValues}
             handleChange={handleChange}
             onSave={() => updateNotificationSettings(formValues, setFormValues, setLoading, setSuccessMessage, setErrorMessage)}
-            loading={loading}
-          />
-        </div>
-        <div className='notifications-configurator'>
-          <p className='description'><b>Notificaciones.</b></p>
-          <SendNotificacions
-            handleChange={handleChange}
             loading={loading}
           />
         </div>
