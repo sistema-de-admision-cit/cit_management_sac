@@ -3,10 +3,8 @@ package cr.co.ctpcit.citsacbackend.logic.dto.auth;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import cr.co.ctpcit.citsacbackend.data.entities.users.UserEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Role;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.Pattern;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,15 +16,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
+@Getter
+@Builder
 @Component
 public class UserDto implements UserDetails {
   private Long id;
   @JsonIgnore
   private String password;
+  @Pattern(regexp = "^[\\w.-]+@cit\\.co\\.cr$",
+      message = "El correo debe pertenecer al dominio cit.co.cr")
   private String username;
   private Role role;
-
-  @Getter
   private Boolean isDefaultPassword = false;
 
   public UserDto(UserEntity userEntity) {

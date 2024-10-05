@@ -3,11 +3,18 @@ package cr.co.ctpcit.citsacbackend.logic.services.auth;
 import cr.co.ctpcit.citsacbackend.data.entities.users.UserEntity;
 import cr.co.ctpcit.citsacbackend.data.repositories.users.UserRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.UserDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
+import cr.co.ctpcit.citsacbackend.logic.mappers.auth.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +22,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -36,7 +44,15 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
 
   @Override
   public void createUser(UserDetails user) {
+    //Validar que el usuario no exista con base al email
+    if (userRepository.existsByEmail(user.getUsername())) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario ya existe");
+    }
 
+    UserEntity entity = UserMapper.toEntity((UserDto) user);
+
+    entity = userRepository.save(entity);
+    ((UserDto) user).setId(entity.getId());
   }
 
   @Override
@@ -46,7 +62,12 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
 
   @Override
   public void deleteUser(String username) {
+    Optional<UserEntity> entity = userRepository.findByEmail(username);
+    if (entity.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario no encontrado");
+    }
 
+    userRepository.delete(entity.get());
   }
 
   @Override
@@ -55,15 +76,15 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
         this.securityContextHolderStrategy.getContext().getAuthentication();
     if (currentUser == null) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-          "Can't change password as no Authentication object found in context for current user.");
+          "No se pudo cambiar la contraseña, usuario no autenticado.");
     }
 
     Optional<UserEntity> entity = userRepository.findByEmail(currentUser.getName());
     if (entity.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario no encontrado");
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario no encontrado.");
     }
     if (!passwordEncoder.matches(oldPassword, entity.get().getUserPassword())) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Contraseña incorrecta");
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Contraseña actual incorrecta.");
     }
 
     entity.get().setUserPassword(passwordEncoder.encode(newPassword));
@@ -73,5 +94,22 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
   @Override
   public boolean userExists(String username) {
     return userRepository.existsByEmail(username);
+  }
+
+  public List<UserDto> getUsers(Pageable pageable) {
+    Page<UserEntity> users = userRepository.findAll(
+        PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+            pageable.getSortOr(Sort.by(Sort.Direction.ASC, "email"))));
+    return UserMapper.convertToDtoList(users.getContent());
+  }
+
+  public UserDto getUser(Long id) {
+    Optional<UserEntity> user = userRepository.findById(id);
+    return user.map(UserDto::new).orElse(null);
+  }
+
+  public UserDto getUserByEmail(String email) {
+    Optional<UserEntity> user = userRepository.findByEmail(email);
+    return user.map(UserDto::new).orElse(null);
   }
 }
