@@ -100,6 +100,7 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
     Page<UserEntity> users = userRepository.findAll(
         PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
             pageable.getSortOr(Sort.by(Sort.Direction.ASC, "email"))));
+
     return UserMapper.convertToDtoList(users.getContent());
   }
 

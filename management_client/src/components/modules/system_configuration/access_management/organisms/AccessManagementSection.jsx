@@ -6,16 +6,15 @@ const AccessManagementSection = ({ email, role, onEmailChange, onRoleChange }) =
   <div className="access-management-section">
      <div className="form-group">
       <RoleSelector
-        value={role}
-        onChange={onRoleChange}
+        role={role}
+        onRoleChange={onRoleChange}
       />
     </div>
     <div className="form-group">
-      <h1>Hola</h1>
       <EmailInput
         field={{ type: 'email', name: 'email', label: 'Correo Electrónico' }}
-        value={email}
-        handleChange={onEmailChange}
+        email={email}
+        onEmailChange={onEmailChange}
       />
     </div>
   </div>

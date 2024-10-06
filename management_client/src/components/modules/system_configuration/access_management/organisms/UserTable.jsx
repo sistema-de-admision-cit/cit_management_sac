@@ -15,7 +15,7 @@ const UserTable = ({ deletedUsers, onDeleteClick, loading }) => {
   
 
   const filteredUsers = deletedUsers?.filter(user =>
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const currentUsers = filteredUsers?.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage);
@@ -59,7 +59,7 @@ const UserTable = ({ deletedUsers, onDeleteClick, loading }) => {
                 ? (
                   currentUsers.map((user) => (
                     <UserRow
-                      key={user.email}
+                      key={user.id}
                       user={user}
                       onDeleteClick={onDeleteClick}
                     />

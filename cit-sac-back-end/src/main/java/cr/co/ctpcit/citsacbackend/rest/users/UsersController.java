@@ -1,6 +1,7 @@
 package cr.co.ctpcit.citsacbackend.rest.users;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.UserDto;
+import cr.co.ctpcit.citsacbackend.logic.services.SystemConfigServiceImplementation;
 import cr.co.ctpcit.citsacbackend.logic.services.auth.UserDetailsServiceImpl;
 import cr.co.ctpcit.citsacbackend.security.DaoAuthenticationProviderCstm;
 import jakarta.validation.Valid;
@@ -26,6 +27,7 @@ public class UsersController {
 
   private final UserDetailsServiceImpl userDetailsServiceImpl;
   private final DaoAuthenticationProviderCstm daoAuthenticationProvider;
+  private final SystemConfigServiceImplementation systemConfigServiceImplementation;
 
   /**
    * Crear un usuario
@@ -39,6 +41,7 @@ public class UsersController {
   public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto user,
       UriComponentsBuilder uriComponentsBuilder) {
     // Lógica para crear un usuario
+    System.out.println(user.toString());
     daoAuthenticationProvider.createUser(user);
     return ResponseEntity.created(
         uriComponentsBuilder.path("/api/auth/{id}").buildAndExpand(user.getId()).toUri()).build();

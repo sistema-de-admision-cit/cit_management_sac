@@ -14,7 +14,7 @@ const EmailInput = ({ email, onEmailChange }) => {
       <InputField
         field={{type:'email', name: 'email', label:'Correo Electrónico', placeholder:'ejemplo@ctpcit.co.cr', required: true}}
         value={email}
-        handleChange={(e) => onEmailChange(e.target.value)}
+        handleChange={(e) => onEmailChange(e.target.value)} 
         className='email-input' 
         autoComplete='email'
       />

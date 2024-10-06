@@ -8,7 +8,7 @@ import java.util.List;
 public class UserMapper {
   public static UserEntity toEntity(UserDto dto) {
     return UserEntity.builder().email(dto.getUsername()).userPassword(dto.getPassword())
-        .role(dto.getRole()).build();
+        .role(dto.getRole()).id(dto.getId()).build();
   }
 
   public static List<UserDto> convertToDtoList(List<UserEntity> content) {
@@ -17,6 +17,6 @@ public class UserMapper {
 
   private static UserDto toDto(UserEntity userEntity) {
     return UserDto.builder().username(userEntity.getEmail()).password(userEntity.getUserPassword())
-        .role(userEntity.getRole()).build();
+        .role(userEntity.getRole()).id(userEntity.getId()).build();
   }
 }

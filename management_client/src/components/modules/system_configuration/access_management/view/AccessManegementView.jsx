@@ -1,30 +1,44 @@
-import { useState } from 'react'
-import SectionLayout from '../../../../core/global/molecules/SectionLayout'
-import '../../../../../assets/styles/global/input-fields.css'
-import '../../../../../assets/styles/global/view.css'
-import Button from '../../../../core/global/atoms/Button'
-import AccessManegementSection from '../organisms/AccessManagementSection'
-import DeletedUsersTable from '../organisms/UserTable'
+import { useEffect, useState } from 'react';
+import SectionLayout from '../../../../core/global/molecules/SectionLayout';
+import '../../../../../assets/styles/global/input-fields.css';
+import '../../../../../assets/styles/global/view.css';
+import Button from '../../../../core/global/atoms/Button';
+import AccessManegementSection from '../organisms/AccessManagementSection';
+import DeletedUsersTable from '../organisms/UserTable';
 import AccessManegementSearchBar from '../molecules/AccessManegementSearchBar'
-import useMessages from '../../../../core/global/hooks/useMessages'
-import useFormState from '../../../../core/global/hooks/useFormState'
-import { handleSubmit } from '../handlers/handler'
+import useMessages from '../../../../core/global/hooks/useMessages';
+import useFormState from '../../../../core/global/hooks/useFormState';
+import { handleSubmit } from '../handlers/handler';
+import axios from '../../../../../config/axiosConfig'; 
 
 const AccessManagementView = () => {
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
   const [loading, setLoading] = useState(false)
+  const [users, setUsers] = useState([]);
 
   const { formData: formValues, setFormData: setFormValues } = useFormState({
     email: '',
     role: ''
   })
 
-  const [deletedUsers, setDeletedUsers] = useState([
-    { email: 'test1@ctpcit.co.cr', role: 'admin' },
-    { email: 'test2@ctpcit.co.cr', role: 'user' },
-    { email: 'test3@ctpcit.co.cr', role: 'user' },
-    { email: 'test4@ctpcit.co.cr', role: 'admin' }
-  ])
+  const getUsersUrl = import.meta.env.VITE_GET_USERS_ENDPOINT;
+  const deleteUserUrl = import.meta.env.VITE_DELETE_USER_ENDPOINT;
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(getUsersUrl);
+      setUsers(response.data);
+    } catch (error) {
+      setErrorMessage('Error al cargar la lista de usuarios.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const handleChange = (field, value) => {
     setFormValues({
@@ -33,11 +47,15 @@ const AccessManagementView = () => {
     })
   }
 
-  const handleDeleteUser = (email) => {
-    // Lógica para eliminar usuario por correo
-    setDeletedUsers(deletedUsers.filter((user) => user.email !== email))
-    setSuccessMessage(`Usuario con correo ${email} eliminado`)
-  }
+  const handleDeleteUser = async (email) => {
+    try {
+      await axios.delete(`${deleteUserUrl}?email=${encodeURIComponent(email)}`);
+      setSuccessMessage(`Usuario con correo ${email} eliminado`);
+      fetchUsers(); 
+    } catch (error) {
+      setErrorMessage('Error al eliminar el usuario. Intente de nuevo.');
+    }
+  };
 
   return (
     <SectionLayout title='Gestión de Acceso'>
@@ -50,13 +68,13 @@ const AccessManagementView = () => {
           <AccessManegementSection
             email={formValues.email}
             role={formValues.role}
-            onEmailChange={(e) => handleChange('email', e.target.value)}
-            onRoleChange={(e) => handleChange('role', e.target.value)}
+            onEmailChange={(value) => { handleChange('email', value)}}
+            onRoleChange={(value) => {handleChange('role', value);}}
           />
           <div className='buttons'>
             <Button
               className='btn btn-primary'
-              onClick={() => handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage)}
+              onClick={() => handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage,fetchUsers,() =>  setFormValues({ email: '', role: '' }))}
               disabled={loading}
             >
               {loading ? 'Creando...' : 'Crear Usuario'}
@@ -64,7 +82,7 @@ const AccessManagementView = () => {
           </div>
         </div>
         {/* Tabla de usuarios*/}
-        <DeletedUsersTable deletedUsers={deletedUsers} onDeleteUser={handleDeleteUser} />
+        <DeletedUsersTable deletedUsers={users} onDeleteClick={handleDeleteUser} />
       </div>
       {renderMessages()}
     </SectionLayout>
