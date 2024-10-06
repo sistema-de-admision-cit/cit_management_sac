@@ -11,40 +11,40 @@ CREATE PROCEDURE usp_SystemConfig_Notifications_Update(
     IN p_facebook_contact VARCHAR(255)
 )
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM tbl_systemconfig WHERE config_name = 'email_contact') THEN
-        INSERT INTO tbl_systemconfig (config_name, config_value) VALUES ('email_contact', p_email_contact);
-    ELSE
-        UPDATE tbl_systemconfig SET config_value = p_email_contact WHERE config_name = 'email_contact';
-    END IF;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+    BEGIN
+        -- rollback the transaction
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error en la transacción';
+    END;
 
-    IF NOT EXISTS (SELECT 1 FROM tbl_systemconfig WHERE config_name = 'email_notifications_contact') THEN
-        INSERT INTO tbl_systemconfig (config_name, config_value) VALUES ('email_notifications_contact', p_email_notifications_contact);
-    ELSE
-        UPDATE tbl_systemconfig SET config_value = p_email_notifications_contact WHERE config_name = 'email_notifications_contact';
-    END IF;
+    START TRANSACTION;
 
-    IF NOT EXISTS (SELECT 1 FROM tbl_systemconfig WHERE config_name = 'whatsapp_contact') THEN
-        INSERT INTO tbl_systemconfig (config_name, config_value) VALUES ('whatsapp_contact', p_whatsapp_contact);
-    ELSE
-        UPDATE tbl_systemconfig SET config_value = p_whatsapp_contact WHERE config_name = 'whatsapp_contact';
-    END IF;
+    -- call the procedure to update or insert
+    CALL usp_UpdateOrInsertConfig('email_contact', p_email_contact);
+    CALL usp_UpdateOrInsertConfig('email_notifications_contact', p_email_notifications_contact);
+    CALL usp_UpdateOrInsertConfig('whatsapp_contact', p_whatsapp_contact);
+    CALL usp_UpdateOrInsertConfig('office_contact', p_office_contact);
+    CALL usp_UpdateOrInsertConfig('instagram_contact', p_instagram_contact);
+    CALL usp_UpdateOrInsertConfig('facebook_contact', p_facebook_contact);
 
-    IF NOT EXISTS (SELECT 1 FROM tbl_systemconfig WHERE config_name = 'office_contact') THEN
-        INSERT INTO tbl_systemconfig (config_name, config_value) VALUES ('office_contact', p_office_contact);
-    ELSE
-        UPDATE tbl_systemconfig SET config_value = p_office_contact WHERE config_name = 'office_contact';
-    END IF;
+    COMMIT;
+END //
 
-    IF NOT EXISTS (SELECT 1 FROM tbl_systemconfig WHERE config_name = 'instagram_contact') THEN
-        INSERT INTO tbl_systemconfig (config_name, config_value) VALUES ('instagram_contact', p_instagram_contact);
-    ELSE
-        UPDATE tbl_systemconfig SET config_value = p_instagram_contact WHERE config_name = 'instagram_contact';
-    END IF;
+DELIMITER ;
 
-    IF NOT EXISTS (SELECT 1 FROM tbl_systemconfig WHERE config_name = 'facebook_contact') THEN
-        INSERT INTO tbl_systemconfig (config_name, config_value) VALUES ('facebook_contact', p_facebook_contact);
+DELIMITER //
+
+-- procedure to update or insert a system config
+CREATE PROCEDURE usp_UpdateOrInsertConfig(
+    IN p_config_name VARCHAR(255),
+    IN p_config_value VARCHAR(255)
+)
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM tbl_systemconfig WHERE config_name = p_config_name) THEN
+        INSERT INTO tbl_systemconfig (config_name, config_value) VALUES (p_config_name, p_config_value);
     ELSE
-        UPDATE tbl_systemconfig SET config_value = p_facebook_contact WHERE config_name = 'facebook_contact';
+        UPDATE tbl_systemconfig SET config_value = p_config_value WHERE config_name = p_config_name;
     END IF;
 END //
 
