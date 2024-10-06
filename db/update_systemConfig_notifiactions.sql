@@ -11,7 +11,6 @@ CREATE PROCEDURE usp_SystemConfig_Notifications_Update(
     IN p_facebook_contact VARCHAR(255)
 )
 BEGIN
-    -- Verificar si los registros existen y si no, insertarlos
     IF NOT EXISTS (SELECT 1 FROM tbl_systemconfig WHERE config_name = 'email_contact') THEN
         INSERT INTO tbl_systemconfig (config_name, config_value) VALUES ('email_contact', p_email_contact);
     ELSE
