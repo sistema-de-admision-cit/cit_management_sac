@@ -35,6 +35,7 @@ export const getSaveButtonState = (formValues) => {
 }
 
 const validateForm = (formValues) => {
+  // eslint-disable-next-line camelcase
   const { email_contact, email_notifications_contact, whatsapp_contact, office_contact } = formValues
 
   // Validación Dominio específico
