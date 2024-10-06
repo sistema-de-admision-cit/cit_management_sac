@@ -117,10 +117,10 @@ INSERT INTO `tbl_examdays` (exam_period_id, exam_day, start_time)
 VALUES (1, 'M', '08:00:00'); -- Lunes del primer periodo
 
 INSERT INTO `tbl_daiquestions` (question_grade, question_text, image_url)
-VALUES
-    ('2', '¿Como te sientes el dia de hoy?',NULL);
+VALUES ('2', '¿Como te sientes el dia de hoy?', NULL);
 
-INSERT INTO `tbl_academicquestions` (question_grade, option_a, option_b, option_c, option_d, correct_option, question_text)
+INSERT INTO `tbl_academicquestions` (question_grade, option_a, option_b, option_c, option_d, correct_option,
+                                     question_text)
 VALUES ('2', 'Paris', 'Madrid', 'Londres', 'San Jose', 'A', '¿Cual es la capital de Francia?');
 
 INSERT INTO `tbl_systemconfig` (`config_name`, `config_value`)
@@ -134,7 +134,7 @@ VALUES ('sysadmin@cit.co.cr', '$2a$10$x2PgQcVgktD6SS6wtJonwOlWpnLj24aH9c5aVC561v
 
 -- Password: 'campus' test admin
 INSERT INTO `tbl_users` (`email`, `user_password`, `role`)
-VALUES ('marta@cit.co.cr','$2a$10$15bZTAy6CG3OlPgl3glJxuROyEajUOTdKX9qx43Pa0JkTPR2ga2He','A');
+VALUES ('marta@cit.co.cr', '$2a$10$15bZTAy6CG3OlPgl3glJxuROyEajUOTdKX9qx43Pa0JkTPR2ga2He', 'A');
 
 -- Password: 'Omera32' test psico
 INSERT INTO `tbl_users` (`email`, `user_password`, `role`)

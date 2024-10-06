@@ -9,7 +9,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
         type={type}
         name={field.name}
         placeholder={field.placeholder}
-        value={value}
+        value={value || ''}
         onChange={handleChange}
         required={field.required || false}
         autoComplete={autoComplete || 'off'}
@@ -119,13 +119,27 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     )
   }
 
+  const textAreaInput = () => {
+    return (
+      <textarea
+        name={field.name}
+        placeholder={field.placeholder}
+        value={value}
+        onChange={handleChange}
+        required={field.required || false}
+        autoComplete={autoComplete || 'off'}
+        className={`${className}`}
+      />
+    )
+  }
+
   // map
   const inputRenderers = {
     text: () => textRelatedInput('text'),
     password: () => textRelatedInput('password'),
     email: () => textRelatedInput('email'),
     tel: () => textRelatedInput('tel'),
-    textArea: () => textRelatedInput('textArea'),
+    textArea: () => textAreaInput(),
     select: () => selectInput(),
     'radio-group': () => radioGroupInput(),
     file: () => fileInput(),

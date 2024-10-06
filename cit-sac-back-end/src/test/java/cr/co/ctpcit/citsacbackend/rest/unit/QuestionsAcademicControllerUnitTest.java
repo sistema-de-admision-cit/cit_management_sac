@@ -6,14 +6,12 @@ import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.examsImplementations.AcademicQuestionsServiceImplementation;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.FileSystemStorageService;
-import cr.co.ctpcit.citsacbackend.rest.exams.academic.QuestionsAcademicController;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -38,22 +36,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Rollback
 public class QuestionsAcademicControllerUnitTest {
 
+  AuthResponseDto authResponseDto;
   @Autowired
   private MockMvc mockMvc;
-
   @Autowired
   private ObjectMapper objectMapper;
-
   @MockBean
   private AcademicQuestionsServiceImplementation academicQuestionsService;
-
   @MockBean
   private FileSystemStorageService serviceStorage;
-
   private AcademicQuestionsDto question1;
   private AcademicQuestionsDto question2;
-
-  AuthResponseDto authResponseDto;
 
   @BeforeEach
   void setUp() throws Exception {
