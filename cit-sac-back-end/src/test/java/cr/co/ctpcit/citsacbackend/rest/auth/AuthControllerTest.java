@@ -5,7 +5,6 @@ import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -27,18 +26,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuthControllerTest {
 
   @Autowired
-  private TestRestTemplate testRestTemplate;
-
-  @Autowired
   MockMvc mvc;
-
   @Autowired
   ObjectMapper objectMapper;
-
   @MockBean
   StorageService storageService;
-
   AuthResponseDto authResponseDto;
+  @Autowired
+  private TestRestTemplate testRestTemplate;
 
   @BeforeEach
   void setUp() throws Exception {
@@ -73,8 +68,7 @@ class AuthControllerTest {
   }
 
   @Test
-    void rootWhenNotAuthenticatedThenSaysHelloGuest() throws Exception {
-        this.mvc.perform(get("/api/questions-academic"))
-            .andExpect(status().isUnauthorized());
-    }
+  void rootWhenNotAuthenticatedThenSaysHelloGuest() throws Exception {
+    this.mvc.perform(get("/api/questions-academic")).andExpect(status().isUnauthorized());
+  }
 }

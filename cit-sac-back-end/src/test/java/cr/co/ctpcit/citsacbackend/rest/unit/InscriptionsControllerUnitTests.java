@@ -32,16 +32,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 class InscriptionsControllerUnitTests {
+  AuthResponseDto authResponseDto;
   @Autowired
   private TestRestTemplate testRestTemplate;
-
   @Autowired
   private MockMvc mockMvc;
-
   @Autowired
   private ObjectMapper objectMapper;
-
-  AuthResponseDto authResponseDto;
 
   @BeforeEach
   void setUp() throws Exception {

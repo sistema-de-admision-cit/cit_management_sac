@@ -25,13 +25,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Rollback
 public class QuestionsDaiControllerIntegrationTest {
 
+  AuthResponseDto authResponseDto;
   @Autowired
   private MockMvc mockMvc;
-
   @Autowired
   private ObjectMapper objectMapper;
-
-  AuthResponseDto authResponseDto;
 
   @BeforeEach
   void setUp() throws Exception {

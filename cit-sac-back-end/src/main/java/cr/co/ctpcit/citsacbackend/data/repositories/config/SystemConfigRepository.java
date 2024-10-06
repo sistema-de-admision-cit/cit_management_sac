@@ -22,12 +22,14 @@ public interface SystemConfigRepository extends JpaRepository<SystemConfigEntity
 
   @Transactional
   @Modifying
-  @Query(value = "CALL usp_SystemConfig_Notifications_Update(:emailContact, :emailNotificationsContact, :whatsappContact, :officeContact, :instagramContact, :facebookContact)", nativeQuery = true)
+  @Query(
+      value = "CALL usp_SystemConfig_Notifications_Update(:emailContact, :emailNotificationsContact, :whatsappContact, :officeContact, :instagramContact, :facebookContact)",
+      nativeQuery = true)
   void updateNotifications(@Param("emailContact") String emailContact,
-                           @Param("emailNotificationsContact") String emailNotificationsContact,
-                           @Param("whatsappContact") String whatsappContact,
-                           @Param("officeContact") String officeContact,
-                           @Param("instagramContact") String instagramContact,
-                           @Param("facebookContact") String facebookContact);
+      @Param("emailNotificationsContact") String emailNotificationsContact,
+      @Param("whatsappContact") String whatsappContact,
+      @Param("officeContact") String officeContact,
+      @Param("instagramContact") String instagramContact,
+      @Param("facebookContact") String facebookContact);
 
 }

@@ -7,7 +7,6 @@ import cr.co.ctpcit.citsacbackend.logic.mappers.config.SystemConfigMapper;
 import cr.co.ctpcit.citsacbackend.logic.services.config.SystemConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -41,25 +40,25 @@ public class SystemConfigServiceImplementation implements SystemConfigService {
 
   @Override
   public List<SystemConfigEntity> getNotifications(String configName) {
-    List<SystemConfigEntity> notifications = systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
+    List<SystemConfigEntity> notifications =
+        systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
 
     if (notifications.isEmpty()) {
       systemConfigRepository.updateNotifications("", "", "", "", "", "");
-      notifications = systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
+      notifications =
+          systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
     }
 
     return notifications;
   }
 
   @Override
-  public void updateNotifications( String emailContact,
-                                   String emailNotificationsContact,
-                                   String whatsappContact,
-                                   String officeContact,
-                                   String instagramContact,
-                                   String facebookContact) {
+  public void updateNotifications(String emailContact, String emailNotificationsContact,
+      String whatsappContact, String officeContact, String instagramContact,
+      String facebookContact) {
     try {
-      systemConfigRepository.updateNotifications(emailContact, emailNotificationsContact, whatsappContact, officeContact, instagramContact, facebookContact);
+      systemConfigRepository.updateNotifications(emailContact, emailNotificationsContact,
+          whatsappContact, officeContact, instagramContact, facebookContact);
     } catch (Exception e) {
       throw new RuntimeException("Error al actualizar las notificaciones", e);
     }

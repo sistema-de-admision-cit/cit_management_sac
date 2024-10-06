@@ -14,10 +14,7 @@ public interface SystemConfigService {
 
   List<SystemConfigEntity> getNotifications(String configName);
 
-  void updateNotifications(String emailContact,
-                           String emailNotificationsContact,
-                           String whatsappContact,
-                           String officeContact,
-                           String instagramContact,
-                           String facebookContact);
+  void updateNotifications(String emailContact, String emailNotificationsContact,
+      String whatsappContact, String officeContact, String instagramContact,
+      String facebookContact);
 }
