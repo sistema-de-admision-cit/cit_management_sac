@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-class UsersControllerTest {
+class UsersControllerIntegrationTest {
 
   @Autowired
   MockMvc mvc;
@@ -55,7 +54,7 @@ class UsersControllerTest {
     this.mvc.perform(
             post("/api/users/create-user").header("Authorization", "Bearer " + authResponseDto.token())
                 .contentType("application/json")
-                .content("{\"username\":\"machillo@cit.co.cr\",\"role\":\"A\"}"))
+                .content("{\"username\":\"manuel@ctpcit.co.cr\",\"role\":\"A\"}"))
         .andExpect(status().isCreated());
   }
 

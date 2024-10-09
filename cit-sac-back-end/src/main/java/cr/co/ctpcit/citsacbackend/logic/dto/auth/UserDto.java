@@ -23,8 +23,8 @@ public class UserDto implements UserDetails {
   private Long id;
   @JsonIgnore
   private String password;
-  @Pattern(regexp = "^[\\w.-]+@cit\\.co\\.cr$",
-      message = "El correo debe pertenecer al dominio cit.co.cr")
+  @Pattern(regexp = "^[\\w.-]+@ctpcit\\.co\\.cr$",
+      message = "El correo debe pertenecer al dominio ctpcit.co.cr")
   private String username;
   private Role role;
   private Boolean isDefaultPassword = false;
