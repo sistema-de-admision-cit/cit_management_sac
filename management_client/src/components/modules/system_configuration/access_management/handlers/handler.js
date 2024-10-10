@@ -1,7 +1,7 @@
 import axios from '../../../../../config/axiosConfig';
 
 export const isEmailValid = (email) => {
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@cit\.co\.cr$/;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@ctpcit\.co\.cr$/;
   return emailRegex.test(email);
 };
 
@@ -19,7 +19,7 @@ export const handleSubmit = (formValues, setLoading, setErrorMessage, setSuccess
   }
 
   if (!isEmailValid(email)) {
-    setErrorMessage('El correo electrónico debe terminar en "@cit.co.cr".');
+    setErrorMessage('El correo electrónico debe terminar en "@ctpcit.co.cr".');
     return;
   }
 
