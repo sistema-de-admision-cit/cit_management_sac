@@ -5,24 +5,23 @@ import '../../../../../assets/styles/global/view.css'
 import Button from '../../../../core/global/atoms/Button'
 import AccessManegementSection from '../organisms/AccessManagementSection'
 import DeletedUsersTable from '../organisms/UserTable'
-import AccessManegementSearchBar from '../molecules/AccessManegementSearchBar'
 import useMessages from '../../../../core/global/hooks/useMessages'
 import useFormState from '../../../../core/global/hooks/useFormState'
 import { handleSubmit, handleChange, fetchUsers, handleDeleteUser, isFormValid } from '../handlers/handler'
 
 const AccessManagementView = () => {
-  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages();
-  const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState([]);
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
+  const [loading, setLoading] = useState(false)
+  const [users, setUsers] = useState([])
 
   const { formData: formValues, setFormData: setFormValues } = useFormState({
     email: '',
     role: ''
-  });
+  })
 
   useEffect(() => {
-    fetchUsers(setUsers, setLoading, setErrorMessage);
-  }, []);
+    fetchUsers(setUsers, setLoading, setErrorMessage)
+  }, [])
 
   return (
     <SectionLayout title='Gestión de Acceso'>
@@ -55,16 +54,18 @@ const AccessManagementView = () => {
             </Button>
           </div>
         </div>
-        <DeletedUsersTable deletedUsers={users} onDeleteClick={(email) => handleDeleteUser(
-          email,
-          () => fetchUsers(setUsers, setLoading, setErrorMessage),
-          setSuccessMessage,
-          setErrorMessage
-        )} />
+        <DeletedUsersTable
+          deletedUsers={users} onDeleteClick={(email) => handleDeleteUser(
+            email,
+            () => fetchUsers(setUsers, setLoading, setErrorMessage),
+            setSuccessMessage,
+            setErrorMessage
+          )}
+        />
       </div>
       {renderMessages()}
     </SectionLayout>
-  );
-};
+  )
+}
 
-export default AccessManagementView;
+export default AccessManagementView

@@ -3,14 +3,14 @@ import RoleSelector from '../molecules/RoleSelector'
 import EmailInput from '../molecules/EmailInput'
 
 const AccessManagementSection = ({ email, role, onEmailChange, onRoleChange }) => (
-  <div className="access-management-section">
-     <div className="form-group">
+  <div className='access-management-section'>
+    <div className='form-group'>
       <RoleSelector
         role={role}
         onRoleChange={onRoleChange}
       />
     </div>
-    <div className="form-group">
+    <div className='form-group'>
       <EmailInput
         field={{ type: 'email', name: 'email', label: 'Correo Electrónico' }}
         email={email}
@@ -18,8 +18,6 @@ const AccessManagementSection = ({ email, role, onEmailChange, onRoleChange }) =
       />
     </div>
   </div>
-);
+)
 
-
-export default AccessManagementSection;
-
+export default AccessManagementSection
