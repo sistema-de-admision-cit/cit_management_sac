@@ -4,13 +4,14 @@ import cr.co.ctpcit.citsacbackend.data.entities.inscription.*;
 import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.*;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscription.DocumentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscription.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
-import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.AddressMapper;
-import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.EnrollmentMapper;
-import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.ParentGuardianMapper;
-import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.StudentMapper;
+import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
+import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageProperties;
+import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,11 +19,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
@@ -37,17 +41,23 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
   private final ParentGuardianStudentRepository parentGuardianStudentRepository;
   private final EnrollmentRepository enrollmentRepository;
   private final DocumentRepository documentRepository;
+  private final StorageService storageService;
+  private final String rootLocation;
+
 
   @Autowired
   public InscriptionsServiceImplementation(StudentRepository studentRepository,
       ParentsGuardianRepository parentsGuardianRepository,
       ParentGuardianStudentRepository parentGuardianStudentRepository,
-      EnrollmentRepository enrollmentRepository, DocumentRepository documentRepository) {
+      EnrollmentRepository enrollmentRepository, DocumentRepository documentRepository,
+      StorageProperties properties, StorageService storageService) {
     this.studentRepository = studentRepository;
     this.parentsGuardianRepository = parentsGuardianRepository;
     this.parentGuardianStudentRepository = parentGuardianStudentRepository;
     this.enrollmentRepository = enrollmentRepository;
     this.documentRepository = documentRepository;
+    this.storageService = storageService;
+    this.rootLocation = properties.getLocation();
   }
 
   /**
@@ -108,11 +118,37 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
    * Add an inscription
    *
    * @param inscriptionDto the inscription to add
+   * @param grades         the grades document
+   * @param letter         the letter document
    * @return the added inscription
    * @throws EnrollmentException if the student is already enrolled for the selected date
    */
   @Override
-  public StudentDto addInscription(StudentDto inscriptionDto) {
+  @Transactional(rollbackFor = {EnrollmentException.class, NoSuchElementException.class})
+  public EnrollmentDto addInscription(StudentDto inscriptionDto, MultipartFile grades,
+      MultipartFile letter) {
+
+    //Save inscription
+    EnrollmentDto enrollment = createInscription(inscriptionDto);
+    String documentName = "notas_" + enrollment.id() + "_" + inscriptionDto.idNumber() + ".pdf";
+
+    // Save the grades document related to the enrollment
+    saveDocument(documentName, "OT", enrollment.id());
+
+    //Save the letter document related to the enrollment
+    if (letter != null) {
+      documentName = "carta_" + enrollment.id() + "_" + inscriptionDto.idNumber() + ".pdf";
+      saveDocument(documentName, "HC", enrollment.id());
+      storageService.store(letter, documentName);
+    }
+
+    // Save the grades document
+    storageService.store(grades, documentName);
+
+    return enrollment;
+  }
+
+  private EnrollmentDto createInscription(StudentDto inscriptionDto) {
     // Validate if the student already exists
     Optional<StudentEntity> student =
         studentRepository.findStudentByIdNumber(inscriptionDto.idNumber());
@@ -125,19 +161,18 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
     EnrollmentEntity enrollmentEntity =
         EnrollmentMapper.convertToEntity(inscriptionDto.enrollments().getFirst());
 
-    // Set pending status to the enrollment
-    enrollmentEntity.setStatus(ProcessStatus.P);
-
     // Verify if the student is already enrolled
     if (student.isPresent()) {
       if (student.get().getEnrollments().stream().anyMatch(
           enrollment -> enrollment.getExamDate().equals(enrollmentEntity.getExamDate()))) {
         throw new EnrollmentException(
-            "El estudiante ya tiene una inscripción para la fecha seleccionada. " +
-            "Debe seleccionar otra fecha o comunicarse con el área de Servicio al Cliente.");
+            "El estudiante ya tiene una inscripción para la fecha seleccionada. " + "Debe seleccionar otra fecha o comunicarse con el área de Servicio al Cliente.");
       }
 
     }
+
+    // Set pending status to the enrollment
+    enrollmentEntity.setStatus(ProcessStatus.P);
 
     // Save the enrollment
     studentEntity.addEnrollment(enrollmentEntity);
@@ -182,10 +217,10 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
       }
     }
     // Save the student
-    studentEntity = studentRepository.save(studentEntity);
+    studentRepository.save(studentEntity);
 
     // Return
-    return StudentMapper.convertToDto(studentEntity);
+    return EnrollmentMapper.convertToDto(enrollmentEntity);
   }
 
   /**
@@ -248,6 +283,18 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
     return true;
   }
 
+
+  /**
+   * Update the enrollment
+   *
+   * @param enrollmentId       the id of the enrollment
+   * @param status             the new status
+   * @param examDate           the new exam date
+   * @param whatsappPermission the new whatsapp permission
+   * @param comment            the comment
+   * @param changedBy          the user that changed the enrollment
+   * @return true if the enrollment was updated
+   */
   @Override
   public Boolean updateEnrollment(Long enrollmentId, ProcessStatus status, String examDate,
       String whatsappPermission, String comment, Integer changedBy) {
@@ -286,23 +333,27 @@ public class InscriptionsServiceImplementation implements InscriptionsService {
     return true;
   }
 
+
+  /**
+   * Save a document
+   *
+   * @param documentName the name of the document
+   * @param documentType the type of the document
+   * @param enrollmentId the id of the enrollment to save the document
+   * @return the saved document
+   */
   @Override
-  public DocumentEntity saveDocument(String documentUrl, String documentType, Long enrollmentId) {
+  public DocumentDto saveDocument(String documentName, String documentType, Long enrollmentId) {
     EnrollmentEntity enrollment = enrollmentRepository.findById(enrollmentId).get();
 
-    if (enrollment == null) {
-      throw new EnrollmentException("No hay una inscripción con el id " + enrollmentId);
-    }
 
     // Create the document
-    DocumentEntity document = new DocumentEntity();
-    document.setDocumentName(documentUrl.split("\\.")[0]);
-    document.setDocumentType(DocType.valueOf(documentType));
-    document.setDocumentUrl(documentUrl);
-    document.setEnrollment(enrollment);
+    DocumentEntity document = DocumentEntity.builder().documentName(documentName)
+        .documentType(DocType.valueOf(documentType)).documentUrl(documentName)
+        .enrollment(enrollment).build();
 
     // Save the document
-    return documentRepository.save(document);
+    return DocumentMapper.convertToDto(documentRepository.save(document));
   }
 
   private boolean existsEnrollment(Long enrollmentId) {

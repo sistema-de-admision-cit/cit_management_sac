@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios from '../../../../../config/axiosConfig'
 
-const getQuestionByCodeUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_GET_QUESTION_BY_CODE_ENDPOINT}`
+const getQuestionByCodeUrl = import.meta.env.VITE_GET_QUESTION_BY_CODE_ENDPOINT
 // router.get('/get-by-code/:code', (req, res) =>
 export const getQuestionByCode = (code, setIncomingData, setErrorMessage, setLoading) => {
   setLoading(true)

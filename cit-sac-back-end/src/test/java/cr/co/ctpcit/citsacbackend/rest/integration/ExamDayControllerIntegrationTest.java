@@ -2,7 +2,9 @@ package cr.co.ctpcit.citsacbackend.rest.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.co.ctpcit.citsacbackend.data.enums.WeekDays;
+import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.dates.ExamDayDto;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,8 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -21,15 +25,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Rollback
 public class ExamDayControllerIntegrationTest {
 
+  AuthResponseDto authResponseDto;
   @Autowired
   private MockMvc mockMvc;
-
   @Autowired
   private ObjectMapper objectMapper;
 
+  @BeforeEach
+  void setUp() throws Exception {
+    // @formatter:off
+    MvcResult result = this.mockMvc.perform(post("/api/auth/login")
+            .with(httpBasic("sysadmin@cit.co.cr", "campus12")))
+        .andExpect(status().isOk())
+        .andReturn();
+
+    authResponseDto = objectMapper.readValue(result.getResponse().getContentAsString(), AuthResponseDto.class);
+  }
+
   @Test
   public void testGetAllExamDays() throws Exception {
-    mockMvc.perform(get("/api/ExamDays")).andExpect(status().isOk())
+    mockMvc.perform(get("/api/exam-days")
+        .header("Authorization", "Bearer " + authResponseDto.token())).andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray());
   }
@@ -39,7 +55,9 @@ public class ExamDayControllerIntegrationTest {
     int testId = 1;
     ExamDayDto examDayDto = new ExamDayDto(testId, 1, WeekDays.M, "08:00");
 
-    mockMvc.perform(put("/api/ExamDays/{id}", testId).contentType(MediaType.APPLICATION_JSON)
+    mockMvc.perform(put("/api/exam-days/{id}", testId)
+            .header("Authorization", "Bearer " + authResponseDto.token())
+            .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(examDayDto))).andExpect(status().isOk())
         .andExpect(jsonPath("$.startTime").value("08:00"));
   }
@@ -48,7 +66,9 @@ public class ExamDayControllerIntegrationTest {
   public void testCreateExamDay() throws Exception {
     ExamDayDto examDayDto = new ExamDayDto(3, 1, WeekDays.M, "09:00");
 
-    mockMvc.perform(post("/api/ExamDays").contentType(MediaType.APPLICATION_JSON)
+    mockMvc.perform(post("/api/exam-days")
+            .header("Authorization", "Bearer " + authResponseDto.token())
+            .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(examDayDto))).andExpect(status().isCreated())
         .andExpect(jsonPath("$.examDay").value("M"))
         .andExpect(jsonPath("$.startTime").value("09:00"));

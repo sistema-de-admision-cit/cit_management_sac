@@ -1,11 +1,13 @@
 package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.data.entities.inscription.DocumentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscription.DocumentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscription.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,7 +19,8 @@ public interface InscriptionsService {
 
   List<StudentDto> findStudentByValue(String value);
 
-  StudentDto addInscription(StudentDto inscriptionDto);
+  EnrollmentDto addInscription(StudentDto inscriptionDto, MultipartFile grades,
+      MultipartFile letter);
 
   StudentDto updateExamDate(String id, String date);
 
@@ -30,5 +33,5 @@ public interface InscriptionsService {
 
   boolean deleteDocument(Long documentId);
 
-  DocumentEntity saveDocument(String documentName, String documentType, Long enrollmentId);
+  DocumentDto saveDocument(String documentName, String documentType, Long enrollmentId);
 }

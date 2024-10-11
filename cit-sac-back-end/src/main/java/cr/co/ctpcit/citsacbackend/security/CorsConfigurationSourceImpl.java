@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend;
+package cr.co.ctpcit.citsacbackend.security;
 
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,10 +8,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.List;
 
-/**
- * Configuration source for CORS.
- * TODO: Secure this configuration.
- */
 @Configuration
 public class CorsConfigurationSourceImpl implements CorsConfigurationSource {
   @Override

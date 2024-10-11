@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_students` (
   `previous_school` VARCHAR(100) NULL DEFAULT NULL,
   `has_accommodations` BOOLEAN NOT NULL,
   PRIMARY KEY (`student_id`),
-  UNIQUE INDEX `UQ_Students_IdNumber` (`id_number` ASC) VISIBLE)
+  CONSTRAINT `UQ_Students_IdNumber` UNIQUE (`id_number`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -108,7 +108,8 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_academicquestions` (
   `option_c` VARCHAR(255) NOT NULL,
   `option_d` VARCHAR(255) NOT NULL,
   `correct_option` CHAR(1) NOT NULL,
-  PRIMARY KEY (`question_id`))
+  PRIMARY KEY (`question_id`),
+  CONSTRAINT `UQ_AcademicQuestions_QuestionText` UNIQUE (`question_text`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -181,7 +182,8 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_daiquestions` (
   `question_grade` ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', '10') NOT NULL,
   `question_text` VARCHAR(255) NOT NULL,
   `image_url` VARCHAR(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`question_id`))
+  PRIMARY KEY (`question_id`),
+  CONSTRAINT `UQ_DAIQuestions_QuestionText` UNIQUE (`question_text`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -357,9 +359,9 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_parentsguardians` (
   `email` VARCHAR(100) NOT NULL,
   `relationship` ENUM('M', 'F', 'G') NOT NULL,
   PRIMARY KEY (`parent_guardian_id`),
-  UNIQUE INDEX `UQ_ParentsGuardians_IdNumber` (`id_number` ASC) VISIBLE,
-  UNIQUE INDEX `UQ_ParentsGuardians_PhoneNumber` (`phone_number` ASC) VISIBLE,
-  UNIQUE INDEX `UQ_ParentsGuardians_Email` (`email` ASC) VISIBLE)
+  CONSTRAINT `UQ_ParentsGuardians_IdNumber` UNIQUE (`id_number`),
+  CONSTRAINT `UQ_ParentsGuardians_PhoneNumber` UNIQUE (`phone_number`),
+  CONSTRAINT `UQ_ParentsGuardians_Email` UNIQUE (`email`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -373,7 +375,7 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_systemconfig` (
   `config_name` VARCHAR(100) NOT NULL,
   `config_value` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`config_id`),
-  CONSTRAINT `uq_config_name` UNIQUE (`config_name`)
+  CONSTRAINT `UQ_Config_Name` UNIQUE (`config_name`)
 ) ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -388,11 +390,11 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_users` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
-  `email` VARCHAR(25) NOT NULL,
-  `user_password` VARCHAR(100) NOT NULL,
+  `email` VARCHAR(128) NOT NULL,
+  `user_password` VARCHAR(128) NOT NULL,
   `role` ENUM('S', 'A', 'T', 'P') NOT NULL,
   PRIMARY KEY (`user_id`),
-  UNIQUE INDEX `UQ_Users_Email` (`email` ASC) VISIBLE)
+  CONSTRAINT `UQ_Users_Email` UNIQUE (`email`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;

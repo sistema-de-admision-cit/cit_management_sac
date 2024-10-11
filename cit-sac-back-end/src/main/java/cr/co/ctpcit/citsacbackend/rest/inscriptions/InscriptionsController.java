@@ -1,27 +1,33 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.data.entities.inscription.DocumentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscription.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
+import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.CompletableFuture;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/inscriptions")
 @Validated
@@ -29,19 +35,13 @@ public class InscriptionsController {
   private final InscriptionsService inscriptionsService;
   private final StorageService storageService;
 
-  @Autowired
-  public InscriptionsController(InscriptionsService inscriptionsService,
-      StorageService storageService) {
-    this.inscriptionsService = inscriptionsService;
-    this.storageService = storageService;
-  }
-
   /**
    * Get an inscription by id
    *
    * @param id the id of the student
    * @return the inscription with the given id
    */
+  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @GetMapping("/{id}")
   public ResponseEntity<StudentDto> getInscriptionById(@PathVariable("id") Long id) {
     StudentDto student = inscriptionsService.findStudentById(id);
@@ -54,6 +54,7 @@ public class InscriptionsController {
    * @param value the name of the student
    * @return the inscription with the given name
    */
+  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @GetMapping("/search")
   public ResponseEntity<Iterable<StudentDto>> getInscriptionsByValue(
       @NotNull @RequestParam String value) {
@@ -66,6 +67,7 @@ public class InscriptionsController {
    *
    * @return a list of all inscriptions
    */
+  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @GetMapping
   public ResponseEntity<Iterable<StudentDto>> getInscriptions(
       @PageableDefault(page = 0, size = 25) Pageable pageable) {
@@ -82,6 +84,7 @@ public class InscriptionsController {
    * @param date the new date of the exam
    * @return the updated enrollment
    */
+  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @PutMapping("/{id}/exam")
   public ResponseEntity<StudentDto> updateExamDate(@PathVariable("id") String id, @NotNull @NotEmpty
   @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",
@@ -95,6 +98,7 @@ public class InscriptionsController {
    * @param status the new status of the enrollment
    * @return ok if the status was updated, not found otherwise
    */
+  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @PutMapping("/update-status/{id}")
   public ResponseEntity<StudentDto> updateStatus(@PathVariable("id") Long id,
       @RequestParam @NotNull ProcessStatus status) {
@@ -109,6 +113,7 @@ public class InscriptionsController {
    * @param permission the new permission
    * @return ok if the permission was updated, not found otherwise
    */
+  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @PutMapping("/update-whatsapp/{id}")
   public ResponseEntity<StudentDto> changeWhatsappPermission(@PathVariable("id") Long id,
       @RequestParam @NotNull Boolean permission) {
@@ -116,6 +121,18 @@ public class InscriptionsController {
     return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
   }
 
+  /**
+   * Update enrollment
+   *
+   * @param enrollmentId       the id of the enrollment
+   * @param status             the new status of the enrollment
+   * @param examDate           the new date of the exam
+   * @param whatsappPermission the new permission for whatsapp notifications
+   * @param comment            a comment about the enrollment
+   * @param changedBy          the id of the user who changed the enrollment
+   * @return ok if the enrollment was updated, not found otherwise
+   */
+  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @PutMapping("/update-enrollment/{enrollmentId}")
   public ResponseEntity<String> updateEnrollment(@PathVariable("enrollmentId") Long enrollmentId,
       @RequestParam @NotNull ProcessStatus status, @RequestParam @NotNull String examDate,
@@ -134,6 +151,7 @@ public class InscriptionsController {
    * @param filename the name of the document
    * @return the document as a resource
    */
+  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @GetMapping("/documents/download/{filename}")
   public ResponseEntity<Resource> downloadDocuments(@PathVariable String filename) {
     Resource resource;
@@ -155,6 +173,7 @@ public class InscriptionsController {
    * @param filename the path of the document in the static/files document folder
    * @return ok if the document was deleted, not found otherwise
    */
+  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @DeleteMapping("/documents/delete/{id}")
   public ResponseEntity<String> deleteDocument(@PathVariable Long id,
       @RequestParam String filename) {
@@ -170,26 +189,28 @@ public class InscriptionsController {
   /**
    * Upload a document
    *
-   * @param file
-   * @param documentName
-   * @param documentType
-   * @param enrollmentId
-   * @return
+   * @param file         the file to upload
+   * @param documentName the name of the document
+   * @param documentType the type of the document
+   * @param enrollmentId the id of the enrollment
+   * @return the document
    */
+  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @PostMapping("/documents/upload")
-  public ResponseEntity<DocumentEntity> uploadDocument(@RequestParam("file") MultipartFile file,
-      @RequestParam("documentName") String documentName,
+  @Async
+  public CompletableFuture<ResponseEntity<DocumentDto>> uploadDocument(
+      @RequestParam("file") MultipartFile file, @RequestParam("documentName") String documentName,
       @RequestParam("documentType") String documentType,
       @RequestParam("enrollmentId") Long enrollmentId) {
     if (file.isEmpty()) {
-      return ResponseEntity.badRequest().build();
+      return CompletableFuture.completedFuture(ResponseEntity.badRequest().build());
     }
-    storageService.store(file, documentName);
-
-    DocumentEntity document =
+    DocumentDto document =
         inscriptionsService.saveDocument(documentName, documentType, enrollmentId);
 
-    return document == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(document);
+    storageService.store(file, documentName);
+
+    return CompletableFuture.completedFuture(ResponseEntity.ok(document));
   }
 
   /**
@@ -202,5 +223,16 @@ public class InscriptionsController {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
     return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Handle not found exceptions
+   *
+   * @param exc the exception
+   * @return a response entity with the status code
+   */
+  @ExceptionHandler({NoSuchElementException.class, StorageException.class})
+  ResponseEntity<?> handleNoSuchElementException(NoSuchElementException exc) {
+    return ResponseEntity.notFound().build();
   }
 }

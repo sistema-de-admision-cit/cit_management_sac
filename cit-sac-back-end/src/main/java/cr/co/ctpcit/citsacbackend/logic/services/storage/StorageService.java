@@ -1,6 +1,5 @@
 package cr.co.ctpcit.citsacbackend.logic.services.storage;
 
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.DocumentDto;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +14,7 @@ public interface StorageService {
 
   void store(MultipartFile file);
 
-  DocumentDto store(MultipartFile file, String filename);
+  void store(MultipartFile file, String filename);
 
   Stream<Path> loadAll();
 

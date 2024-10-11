@@ -3,7 +3,6 @@ package cr.co.ctpcit.citsacbackend.logic.dto.inscription;
 import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import cr.co.ctpcit.citsacbackend.data.enums.KnownThrough;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
@@ -25,5 +24,5 @@ public record EnrollmentDto(Long id, ProcessStatus status, @NotNull(
                                 message = "Es obligatorio que se indique si se dio el consentimiento") Boolean consentGiven,
                             @NotNull(
                                 message = "Es obligatorio que se indique si se dio el consentimiento para notificaciones por WhatsApp") Boolean whatsappNotification,
-                            @NotEmpty List<DocumentDto> document) implements Serializable {
+                            List<DocumentDto> document) implements Serializable {
 }

@@ -38,4 +38,29 @@ public class SystemConfigServiceImplementation implements SystemConfigService {
     }
   }
 
+  @Override
+  public List<SystemConfigEntity> getNotifications(String configName) {
+    List<SystemConfigEntity> notifications =
+        systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
+
+    if (notifications.isEmpty()) {
+      systemConfigRepository.updateNotifications("", "", "", "", "", "");
+      notifications =
+          systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
+    }
+
+    return notifications;
+  }
+
+  @Override
+  public void updateNotifications(String emailContact, String emailNotificationsContact,
+      String whatsappContact, String officeContact, String instagramContact,
+      String facebookContact) {
+    try {
+      systemConfigRepository.updateNotifications(emailContact, emailNotificationsContact,
+          whatsappContact, officeContact, instagramContact, facebookContact);
+    } catch (Exception e) {
+      throw new RuntimeException("Error al actualizar las notificaciones", e);
+    }
+  }
 }

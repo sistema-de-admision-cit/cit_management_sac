@@ -1,3 +1,5 @@
+//
+import { ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST } from '../../global/helpers/constants.js'
 // Question views
 import AddQuestionView from '../../../modules/questions/add_questions/view/AddQuestionView.jsx'
 import ModifyQuestionView from '../../../modules/questions/modify_questions/view/ModifyQuestionView.jsx'
@@ -13,6 +15,7 @@ import EnrollmentManagementView from '../../../modules/enrollments/management/vi
 // configurations views
 import ConfigurationMenuPageView from '../../../modules/system_configuration/menu/views/ConfigurationMenuPageView.jsx'
 import ExamScheduleConfiguratorView from '../../../modules/system_configuration/exam_schedule/view/ExamScheduleConfiguratorView.jsx'
+import NotificationSettingsView from '../../../modules/system_configuration/notifications/view/NotificationSettingsView.jsx'
 
 // results views
 import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenuPageView.jsx'
@@ -21,6 +24,7 @@ import ExamScoreManagementView from '../../../modules/results/load_results/view/
 // reports views
 import ReportsMenuPageView from '../../../modules/reports/menu/views/ReportsMenuPageView.jsx'
 import PercentagesConfiguratorView from '../../../modules/system_configuration/percentages/view/PercentagesConfiguratorView.jsx'
+import AccessManegementView from '../../../modules/system_configuration/access_management/view/AccessManegementView.jsx'
 
 // componente por defecto para las rutas padre
 // feature temporal
@@ -31,10 +35,6 @@ const DefaultComponent = ({ label }) => (
   </div>
 )
 
-const ROLE_ADMIN = 'admin'
-const ROLE_TEACHER = 'teacher'
-const ROLE_PSYCHOLOGIST = 'psychologist'
-
 const menuConfig = [
   {
     title: 'Sistema de Admisión CIT',
@@ -44,7 +44,7 @@ const menuConfig = [
         key: 'dashboard',
         label: 'Dashboard',
         path: '/dashboard',
-        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
+        roleRequired: [ROLE_SUPERADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Vista general del sistema con estadísticas y accesos rápidos.',
         parentComponent: DefaultComponent
       },
@@ -53,7 +53,7 @@ const menuConfig = [
         label: 'Gestión de Inscripciones',
         path: '/inscripciones',
         parentComponent: EnrollmentsMenuPageView,
-        roleRequired: [ROLE_ADMIN],
+        roleRequired: [ROLE_SUPERADMIN],
         description: 'Módulo para gestionar el proceso de inscripción de estudiantes.',
         subItems: [
           {
@@ -71,7 +71,7 @@ const menuConfig = [
         label: 'Configuración del Sistema',
         path: '/configuracion',
         parentComponent: ConfigurationMenuPageView,
-        roleRequired: [ROLE_ADMIN],
+        roleRequired: [ROLE_SUPERADMIN],
         description: 'Configuraciones generales del sistema.',
         subItems: [
           {
@@ -92,14 +92,14 @@ const menuConfig = [
             key: 'notifications-settings',
             label: 'Configurar Notificaciones',
             path: '/configuracion/notificaciones',
-            component: DefaultComponent,
+            component: NotificationSettingsView,
             description: 'Configurar las notificaciones automáticas del sistema.'
           },
           {
             key: 'manage-access',
             label: 'Gestionar Accesos',
             path: '/configuracion/accesos',
-            component: DefaultComponent,
+            component: AccessManegementView,
             description: 'Gestionar accesos y permisos de los usuarios en el sistema.'
           },
           {
@@ -116,7 +116,7 @@ const menuConfig = [
         label: 'Gestión de Exámenes',
         path: '/examenes',
         parentComponent: ExamMenuPageView,
-        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
+        roleRequired: [ROLE_SUPERADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Gestión y configuración de exámenes y preguntas.',
         subItems: [
           {
@@ -158,7 +158,7 @@ const menuConfig = [
         label: 'Gestión de Resultados',
         path: '/resultados',
         parentComponent: ResultsMenuPageView,
-        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
+        roleRequired: [ROLE_SUPERADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Gestión y análisis de los resultados de los exámenes.',
         subItems: [
           {
@@ -196,7 +196,7 @@ const menuConfig = [
         label: 'Reportes y Análisis',
         path: '/reportes',
         parentComponent: ReportsMenuPageView,
-        roleRequired: [ROLE_ADMIN],
+        roleRequired: [ROLE_SUPERADMIN],
         description: 'Generar y visualizar reportes del sistema.',
         subItems: [
           {
@@ -214,13 +214,6 @@ const menuConfig = [
             description: 'Generar reportes en formatos PDF y CSV.'
           }
         ]
-      },
-      {
-        key: 'logout',
-        label: 'Cerrar Sesión',
-        path: '#',
-        roleRequired: [ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
-        description: 'Cerrar sesión del sistema.'
       }
     ]
   }
