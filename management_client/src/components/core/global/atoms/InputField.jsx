@@ -2,7 +2,7 @@ import '../../../../assets/styles/global/input-fields.css'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
-const InputField = ({ field, value, handleChange, children, className, autoComplete, availableDates, showLabel = true }) => {
+const InputField = ({ field, value, handleChange, children, className, autoComplete, availableDates, showLabel = true, accept }) => {
   const textRelatedInput = (type) => {
     return (
       <input
@@ -70,6 +70,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
         onChange={handleChange}
         required={field.required || false}
         multiple={field.multiple}
+        accept={accept || ''}
       />
     )
   }

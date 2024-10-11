@@ -259,9 +259,11 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- Table `db_cit_test`.`tbl_englishexams`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_englishexams` (
-  `exam_id` INT NOT NULL,
+  `exam_id` INT NOT NULL AUTO_INCREMENT,
+  `tracktest_id` INT NOT NULL,
   `enrollment_id` INT NOT NULL,
-  `exam_date` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `exam_date` DATE NOT NULL,
+  `level` ENUM('A1', 'A2', 'B1', 'B2', 'C1', 'C2') NOT NULL,
   `grade` DECIMAL(5,2) NOT NULL,
   PRIMARY KEY (`exam_id`),
   INDEX `FK_EnglishExams_Enrollments` (`enrollment_id` ASC) VISIBLE,

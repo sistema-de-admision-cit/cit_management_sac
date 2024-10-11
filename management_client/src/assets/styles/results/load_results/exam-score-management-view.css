@@ -1,0 +1,57 @@
+.method-selection .radio-group {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.method-selection .radio-group label {
+  display: flex;
+  align-items: center;
+}
+
+
+/* logs */
+.logs-section {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  margin-top: 20px;
+  max-height: 21rem;
+  overflow-y: auto;
+}
+
+.logs-section h3 {
+  margin: 0 0 1rem;
+}
+
+.logs-section ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.logs-section li {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  padding: 10px;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.logs-section .log-success {
+  color: var(--success-color);
+}
+
+.logs-section .log-error {
+  color: var(--danger-color);
+}
+
+.logs-section .log-warning {
+  color: var(--accent-color);
+}
+
+.logs-section .log-info {
+  color: var(--info-color);
+}
