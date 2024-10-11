@@ -46,9 +46,15 @@ const ExamScoreManagementView = () => {
         <h1>Cargar Notas de Ingles</h1>
         {loading && <Spinner />}
         {renderMessages()}
-        <MethodSelection uploadMethod={uploadMethod} handleChange={(e) => setUploadMethod(e.target.value)} />
+        {/* <MethodSelection uploadMethod={uploadMethod} handleChange={(e) => setUploadMethod(e.target.value)} /> */}
 
-        {
+        <CSVUploadSection
+          handleFileLoad={(file, e) => handleEnglishScoresFileUpload(file, e, setEnglishScores, setLoading, setErrorMessage)}
+          processSelectedFile={() => handleEnglishScoresFileProcess(englishScores, setSuccessMessage, setErrorMessage, setLogs)}
+          setErrorMessage={setErrorMessage}
+        />
+
+        {/* {
           uploadMethod === 'csv' &&
             <CSVUploadSection
               handleFileLoad={(file, e) => handleEnglishScoresFileUpload(file, e, setEnglishScores, setLoading, setErrorMessage)}
@@ -59,7 +65,7 @@ const ExamScoreManagementView = () => {
         {
           uploadMethod === 'api' &&
             <APILoadSection handleAPILoad={handleAPILoad} loading={loading} />
-        }
+        } */}
 
         <LogsList logs={logs} />
       </div>
