@@ -6,7 +6,8 @@ const mapDays = (days) => {
     Martes: 'K',
     Miércoles: 'W',
     Jueves: 'T',
-    Viernes: 'F'
+    Viernes: 'F',
+    Sábado: 'S'
   }
 
   return days.map(day => daysMap[day])
