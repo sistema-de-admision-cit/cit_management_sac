@@ -399,8 +399,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-
-
 -- -----------------------------------------------------
 -- Table `db_cit_test`.`tbl_parentguardianstudents`
 -- -----------------------------------------------------
@@ -442,6 +440,20 @@ CREATE TABLE IF NOT EXISTS `db_cit_test`.`tbl_address` (
     REFERENCES `db_cit_test`.`tbl_parentsguardians` (`parent_guardian_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS  `db_cit_test`.`tbl_logsscore` (
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `process_id` INT,
+  `tracktest_id` INT,
+  `enrollment_id` INT,
+  `previous_score` INT,
+  `new_score` INT,
+  `exam_date` DATE,
+  timestamp TIMESTAMP,
+  status ENUM('success', 'error', 'warning'),
+  `error_message` TEXT DEFAULT NULL
+)
 ENGINE = InnoDB;
 
 
