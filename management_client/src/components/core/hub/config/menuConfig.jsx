@@ -53,7 +53,7 @@ const menuConfig = [
         label: 'Gestión de Inscripciones',
         path: '/inscripciones',
         parentComponent: EnrollmentsMenuPageView,
-        roleRequired: [ROLE_SUPERADMIN],
+        roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN],
         description: 'Módulo para gestionar el proceso de inscripción de estudiantes.',
         subItems: [
           {
@@ -101,13 +101,6 @@ const menuConfig = [
             path: '/configuracion/accesos',
             component: AccessManegementView,
             description: 'Gestionar accesos y permisos de los usuarios en el sistema.'
-          },
-          {
-            key: 'manage-roles',
-            label: 'Gestionar Roles',
-            path: '/configuracion/roles',
-            component: DefaultComponent,
-            description: 'Gestionar los roles y permisos de los usuarios.'
           }
         ]
       },
