@@ -40,6 +40,31 @@
   color: var(--danger-color-hover);
 }
 
+.modal-actions {
+  display: flex;
+  flex-direction: column; 
+  margin-top: 20px;
+}
+
+.modal-actions .btn {
+  width: 100%; 
+  padding: 10px; 
+  margin-bottom: 10px; 
+}
+
+.modal-actions .btn:last-child {
+  margin-bottom: 0; 
+}
+
+.modal-actions .btn-secondary {
+  background-color: #ccc;
+}
+
+.modal-actions .btn-danger {
+  background-color: #e74c3c;
+  color: white;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

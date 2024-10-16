@@ -1,27 +1,53 @@
-import { useEffect, useState } from 'react'
-import SectionLayout from '../../../../core/global/molecules/SectionLayout'
-import '../../../../../assets/styles/global/input-fields.css'
-import '../../../../../assets/styles/global/view.css'
-import Button from '../../../../core/global/atoms/Button'
-import AccessManegementSection from '../organisms/AccessManagementSection'
-import DeletedUsersTable from '../organisms/UserTable'
-import useMessages from '../../../../core/global/hooks/useMessages'
-import useFormState from '../../../../core/global/hooks/useFormState'
-import { handleSubmit, handleChange, fetchUsers, handleDeleteUser, isFormValid } from '../handlers/handler'
+import { useEffect, useState } from 'react';
+import SectionLayout from '../../../../core/global/molecules/SectionLayout';
+import '../../../../../assets/styles/global/input-fields.css';
+import '../../../../../assets/styles/global/view.css';
+import Button from '../../../../core/global/atoms/Button';
+import AccessManegementSection from '../organisms/AccessManagementSection';
+import DeletedUsersTable from '../organisms/UserTable';
+import useMessages from '../../../../core/global/hooks/useMessages';
+import useFormState from '../../../../core/global/hooks/useFormState';
+import { handleSubmit, fetchUsers, isFormValid, handleDeleteUser, confirmDeleteUser } from '../handlers/handler';
+import { useAuth } from '../../../../../router/AuthProvider'; // Importa el contexto de autenticación
 
 const AccessManagementView = () => {
-  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
-  const [loading, setLoading] = useState(false)
-  const [users, setUsers] = useState([])
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages();
+  const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false); // Estado para mostrar/ocultar modal de confirmación
+  const [pendingDeleteEmail, setPendingDeleteEmail] = useState(''); // Email del usuario a eliminar
+
 
   const { formData: formValues, setFormData: setFormValues } = useFormState({
     email: '',
     role: ''
   })
 
+  const { user } = useAuth(); // Accede al contexto de autenticación
+  const currentUserEmail = user.name; // Obtén el correo electrónico del usuario en sesión
+
   useEffect(() => {
     fetchUsers(setUsers, setLoading, setErrorMessage)
   }, [])
+
+  const handleChange = (field, value) => {
+    setFormValues({
+      ...formValues,
+      [field]: value
+    });
+  };
+
+  const handleConfirmDelete = () => {
+    confirmDeleteUser(
+      pendingDeleteEmail, 
+      fetchUsers, 
+      setSuccessMessage, 
+      setErrorMessage, 
+      setShowConfirmationModal, 
+      setUsers, // Pasamos setUsers para actualizar la lista
+      setLoading // Pasamos setLoading para manejar el estado de cargando
+    );
+  };
 
   return (
     <SectionLayout title='Gestión de Acceso'>
@@ -34,36 +60,46 @@ const AccessManagementView = () => {
           <AccessManegementSection
             email={formValues.email}
             role={formValues.role}
-            onEmailChange={(value) => handleChange(formValues, setFormValues, 'email', value)}
-            onRoleChange={(value) => handleChange(formValues, setFormValues, 'role', value)}
+            onEmailChange={(value) => handleChange('email', value)}
+            onRoleChange={(value) => handleChange('role', value)}
           />
           <div className='buttons'>
             <Button
               className='btn btn-primary'
-              onClick={() => handleSubmit(
-                formValues,
-                setLoading,
-                setErrorMessage,
-                setSuccessMessage,
-                () => fetchUsers(setUsers, setLoading, setErrorMessage),
-                () => setFormValues({ email: '', role: '' })
-              )}
+              onClick={() => handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage, fetchUsers, setUsers, () => setFormValues({ email: '', role: '' }))} // Pasamos setUsers aquí
               disabled={loading || !isFormValid(formValues)}
             >
               {loading ? 'Creando...' : 'Crear Usuario'}
             </Button>
           </div>
         </div>
+        {/* Tabla de usuarios */}
         <DeletedUsersTable
-          deletedUsers={users} onDeleteClick={(email) => handleDeleteUser(
-            email,
-            () => fetchUsers(setUsers, setLoading, setErrorMessage),
-            setSuccessMessage,
-            setErrorMessage
-          )}
+          deletedUsers={users}
+          onDeleteClick={(email) => handleDeleteUser(email, fetchUsers, setSuccessMessage, setErrorMessage, currentUserEmail, setShowConfirmationModal, setPendingDeleteEmail)} // Pasa el email del usuario en sesión
+          currentUserEmail={currentUserEmail} // Pasa también el email para evitar borrar el usuario en sesión
+
         />
       </div>
       {renderMessages()}
+
+      {/* Modal de confirmación */}
+      {showConfirmationModal && (
+        <div className='modal'>
+          <div className='modal-content'>
+            <h3>¿Estás seguro?</h3>
+            <p>¿Deseas eliminar al usuario con correo {pendingDeleteEmail}?</p>
+            <div className='modal-actions'>
+              <Button className='btn btn-secondary' onClick={() => setShowConfirmationModal(false)}>
+                Cancelar
+              </Button>
+              <Button className='btn btn-danger' onClick={handleConfirmDelete}>
+                Eliminar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </SectionLayout>
   )
 }
