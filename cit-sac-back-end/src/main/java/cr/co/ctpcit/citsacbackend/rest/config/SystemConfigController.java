@@ -46,5 +46,31 @@ public class SystemConfigController {
     // return the updated exams percentages
     return new ResponseEntity<>(getExamsPercentages().getBody(), HttpStatus.OK);
   }
+
+  @PreAuthorize("hasAuthority('SCOPE_S')")
+  @GetMapping("/get-notifications")
+  public ResponseEntity<List<SystemConfigEntity>> getNotifications() {
+
+    List<SystemConfigEntity> notifications = systemConfigService.getNotifications("contact");
+    return new ResponseEntity<>(notifications, HttpStatus.OK);
+  }
+
+  @PreAuthorize("hasAuthority('SCOPE_S')")
+  @PutMapping("/update-notifications")
+  public ResponseEntity<List<SystemConfigEntity>> updateNotifications(
+      @RequestParam("email_contact") String emailContact,
+      @RequestParam("email_notifications_contact") String emailNotificationsContact,
+      @RequestParam("whatsapp_contact") String whatsappContact,
+      @RequestParam("office_contact") String officeContact,
+      @RequestParam("instagram_contact") String instagramContact,
+      @RequestParam("facebook_contact") String facebookContact) {
+
+    systemConfigService.updateNotifications(emailContact, emailNotificationsContact,
+        whatsappContact, officeContact, instagramContact, facebookContact);
+
+    return new ResponseEntity<>(getNotifications().getBody(), HttpStatus.OK);
+  }
+
+
 }
 

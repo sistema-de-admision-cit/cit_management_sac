@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import '../../../../../assets/styles/global/view.css'
 import InputField from '../../../../core/global/atoms/InputField'
-import searchIcon from '../../../../../assets/icons/search-alt-2-svgrepo-com.svg' 
+import searchIcon from '../../../../../assets/icons/search-alt-2-svgrepo-com.svg'
 
 const AccessManegementSearchBar = ({ onSearch }) => {
   const [search, setSearch] = useState('')

@@ -15,9 +15,11 @@ import EnrollmentManagementView from '../../../modules/enrollments/management/vi
 // configurations views
 import ConfigurationMenuPageView from '../../../modules/system_configuration/menu/views/ConfigurationMenuPageView.jsx'
 import ExamScheduleConfiguratorView from '../../../modules/system_configuration/exam_schedule/view/ExamScheduleConfiguratorView.jsx'
+import NotificationSettingsView from '../../../modules/system_configuration/notifications/view/NotificationSettingsView.jsx'
 
 // results views
 import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenuPageView.jsx'
+import ExamScoreManagementView from '../../../modules/results/load_results/view/ExamScoreManagementView.jsx'
 
 // reports views
 import ReportsMenuPageView from '../../../modules/reports/menu/views/ReportsMenuPageView.jsx'
@@ -51,7 +53,7 @@ const menuConfig = [
         label: 'Gestión de Inscripciones',
         path: '/inscripciones',
         parentComponent: EnrollmentsMenuPageView,
-        roleRequired: [ROLE_SUPERADMIN],
+        roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN],
         description: 'Módulo para gestionar el proceso de inscripción de estudiantes.',
         subItems: [
           {
@@ -90,7 +92,7 @@ const menuConfig = [
             key: 'notifications-settings',
             label: 'Configurar Notificaciones',
             path: '/configuracion/notificaciones',
-            component: DefaultComponent,
+            component: NotificationSettingsView,
             description: 'Configurar las notificaciones automáticas del sistema.'
           },
           {
@@ -99,13 +101,6 @@ const menuConfig = [
             path: '/configuracion/accesos',
             component: AccessManegementView,
             description: 'Gestionar accesos y permisos de los usuarios en el sistema.'
-          },
-          {
-            key: 'manage-roles',
-            label: 'Gestionar Roles',
-            path: '/configuracion/roles',
-            component: DefaultComponent,
-            description: 'Gestionar los roles y permisos de los usuarios.'
           }
         ]
       },
@@ -170,7 +165,7 @@ const menuConfig = [
             key: 'load-results',
             label: 'Cargar Notas',
             path: '/resultados/cargar',
-            component: DefaultComponent,
+            component: ExamScoreManagementView,
             description: 'Cargar y registrar las notas obtenidas.'
           },
           {

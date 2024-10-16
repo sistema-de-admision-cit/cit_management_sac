@@ -11,4 +11,10 @@ public interface SystemConfigService {
   List<SystemConfigEntity> getExamsPercentages(String configName);
 
   void updateExamsPercentages(double academicWeight, double daiWeight, double englishWeight);
+
+  List<SystemConfigEntity> getNotifications(String configName);
+
+  void updateNotifications(String emailContact, String emailNotificationsContact,
+      String whatsappContact, String officeContact, String instagramContact,
+      String facebookContact);
 }

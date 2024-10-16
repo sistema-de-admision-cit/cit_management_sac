@@ -2,14 +2,14 @@ import '../../../../assets/styles/global/input-fields.css'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
-const InputField = ({ field, value, handleChange, children, className, autoComplete, availableDates, showLabel = true }) => {
+const InputField = ({ field, value, handleChange, children, className, autoComplete, availableDates, showLabel = true, accept }) => {
   const textRelatedInput = (type) => {
     return (
       <input
         type={type}
         name={field.name}
         placeholder={field.placeholder}
-        value={value}
+        value={value || ''}
         onChange={handleChange}
         required={field.required || false}
         autoComplete={autoComplete || 'off'}
@@ -70,6 +70,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
         onChange={handleChange}
         required={field.required || false}
         multiple={field.multiple}
+        accept={accept || ''}
       />
     )
   }
@@ -119,13 +120,27 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     )
   }
 
+  const textAreaInput = () => {
+    return (
+      <textarea
+        name={field.name}
+        placeholder={field.placeholder}
+        value={value}
+        onChange={handleChange}
+        required={field.required || false}
+        autoComplete={autoComplete || 'off'}
+        className={`${className}`}
+      />
+    )
+  }
+
   // map
   const inputRenderers = {
     text: () => textRelatedInput('text'),
     password: () => textRelatedInput('password'),
     email: () => textRelatedInput('email'),
     tel: () => textRelatedInput('tel'),
-    textArea: () => textRelatedInput('textArea'),
+    textArea: () => textAreaInput(),
     select: () => selectInput(),
     'radio-group': () => radioGroupInput(),
     file: () => fileInput(),

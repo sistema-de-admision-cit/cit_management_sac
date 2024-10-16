@@ -5,21 +5,18 @@ import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.academic.AcademicExamQuestionsService;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.FileSystemStorageService;
-import cr.co.ctpcit.citsacbackend.rest.exams.academic.AcademicExamQuestionsController;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,22 +32,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 public class AcademicExamQuestionsControllerUnitTest {
 
+  AuthResponseDto authResponseDto;
   @Autowired
   private MockMvc mockMvc;
-
   @Autowired
   private ObjectMapper objectMapper;
-
   @MockBean
   private AcademicExamQuestionsService service;
-
   @MockBean
   private FileSystemStorageService serviceStorage;
-
   private AcademicExamQuestionsDto question1;
   private AcademicExamQuestionsDto question2;
-
-  AuthResponseDto authResponseDto;
 
   @BeforeEach
   public void setUp() throws Exception {

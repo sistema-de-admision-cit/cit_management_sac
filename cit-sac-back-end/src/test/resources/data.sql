@@ -111,16 +111,20 @@ VALUES ('Health Certificate Daniela', 'HC', 'file_example.pdf', 6),
        ('Health Certificate Mateo', 'HC', 'file_example.pdf', 9),
        ('Other Document Valeria', 'OT', 'file_example.pdf', 10);
 
+-- Insert value into tbl_examperiods
 INSERT INTO `tbl_examperiods` (start_date, end_date)
 VALUES ('2024-09-01', '2024-09-30');
+
+-- Insert value into tbl_examdays
 INSERT INTO `tbl_examdays` (exam_period_id, exam_day, start_time)
 VALUES (1, 'M', '08:00:00'); -- Lunes del primer periodo
 
+-- Insert value into tbl_daiquestions
 INSERT INTO `tbl_daiquestions` (question_grade, question_text, image_url)
-VALUES
-    ('2', '¿Como te sientes el dia de hoy?',NULL);
+VALUES ('2', '¿Como te sientes el dia de hoy?', NULL);
 
-INSERT INTO `tbl_academicquestions` (question_grade, option_a, option_b, option_c, option_d, correct_option, question_text)
+INSERT INTO `tbl_academicquestions` (question_grade, option_a, option_b, option_c, option_d, correct_option,
+                                     question_text)
 VALUES ('2', 'Paris', 'Madrid', 'Londres', 'San Jose', 'A', '¿Cual es la capital de Francia?');
 
 INSERT INTO `tbl_systemconfig` (`config_name`, `config_value`)
@@ -134,7 +138,7 @@ VALUES ('sysadmin@cit.co.cr', '$2a$10$x2PgQcVgktD6SS6wtJonwOlWpnLj24aH9c5aVC561v
 
 -- Password: 'campus' test admin
 INSERT INTO `tbl_users` (`email`, `user_password`, `role`)
-VALUES ('marta@cit.co.cr','$2a$10$15bZTAy6CG3OlPgl3glJxuROyEajUOTdKX9qx43Pa0JkTPR2ga2He','A');
+VALUES ('marta@cit.co.cr', '$2a$10$15bZTAy6CG3OlPgl3glJxuROyEajUOTdKX9qx43Pa0JkTPR2ga2He', 'A');
 
 -- Password: 'Omera32' test psico
 INSERT INTO `tbl_users` (`email`, `user_password`, `role`)
@@ -143,3 +147,12 @@ VALUES ('jorge@cit.co.cr', '$2a$10$RFPObfy6ro87gLXQalrEiuGehgDsyWfETW4h9h51eg1ZU
 -- Password: 'Mate8520' test teacher
 INSERT INTO `tbl_users` (`email`, `user_password`, `role`)
 VALUES ('rocio@cit.co.cr', '$2a$10$yNXsgRdu2T72V6xznUni7e6PDtcx4ZYq3XvNVAbIcRnhWBoIgGMTO', 'T');
+
+-- Insert value into tbl_systemconfig, puntos de contacto
+INSERT INTO `tbl_systemconfig` (`config_name`, `config_value`)
+VALUES ('email_contact', 'contactocit@ctpcit.co.cr'),
+       ('email_notifications_contact', 'notificaciones@ctpcit.co.cr'),
+       ('whatsapp_contact', '88090041'),
+       ('office_contact', '22370186'),
+       ('instagram_contact', 'ComplejoEducativoCIT'),
+       ('facebook_contact', 'ComplejoEducativoCIT');

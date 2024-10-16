@@ -6,14 +6,12 @@ import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiQuestionsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.examsImplementations.DaiQuestionsServiceImplementation;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.FileSystemStorageService;
-import cr.co.ctpcit.citsacbackend.rest.exams.dai.QuestionsDaiController;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -37,22 +35,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Rollback
 public class QuestionsDaiControllerUnitTest {
 
+  AuthResponseDto authResponseDto;
   @Autowired
   private MockMvc mockMvc;
-
   @Autowired
   private ObjectMapper objectMapper;
-
   @MockBean
   private DaiQuestionsServiceImplementation daiQuestionsService;
-
   @MockBean
   private FileSystemStorageService serviceStorage;
-
   private DaiQuestionsDto question1;
   private DaiQuestionsDto question2;
-
-  AuthResponseDto authResponseDto;
 
   @BeforeEach
   void setUp() throws Exception {

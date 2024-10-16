@@ -17,17 +17,18 @@ const AccessManagementView = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false); // Estado para mostrar/ocultar modal de confirmación
   const [pendingDeleteEmail, setPendingDeleteEmail] = useState(''); // Email del usuario a eliminar
 
+
   const { formData: formValues, setFormData: setFormValues } = useFormState({
     email: '',
     role: ''
-  });
+  })
 
   const { user } = useAuth(); // Accede al contexto de autenticación
   const currentUserEmail = user.name; // Obtén el correo electrónico del usuario en sesión
 
   useEffect(() => {
-    fetchUsers(setUsers, setLoading, setErrorMessage);
-  }, []);
+    fetchUsers(setUsers, setLoading, setErrorMessage)
+  }, [])
 
   const handleChange = (field, value) => {
     setFormValues({
@@ -77,6 +78,7 @@ const AccessManagementView = () => {
           deletedUsers={users}
           onDeleteClick={(email) => handleDeleteUser(email, fetchUsers, setSuccessMessage, setErrorMessage, currentUserEmail, setShowConfirmationModal, setPendingDeleteEmail)} // Pasa el email del usuario en sesión
           currentUserEmail={currentUserEmail} // Pasa también el email para evitar borrar el usuario en sesión
+
         />
       </div>
       {renderMessages()}
@@ -99,7 +101,7 @@ const AccessManagementView = () => {
         </div>
       )}
     </SectionLayout>
-  );
-};
+  )
+}
 
-export default AccessManagementView;
+export default AccessManagementView
