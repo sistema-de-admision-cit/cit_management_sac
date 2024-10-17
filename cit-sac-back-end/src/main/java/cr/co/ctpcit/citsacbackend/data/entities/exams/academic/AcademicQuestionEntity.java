@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.entities.exams.academic;
 
+import cr.co.ctpcit.citsacbackend.data.enums.QuestionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,8 +32,8 @@ public class AcademicQuestionEntity {
     private String imageUrl;
 
     @NotNull
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "question_type", nullable = false)
-    private String questionType;
+    private QuestionType questionType;
 
 }

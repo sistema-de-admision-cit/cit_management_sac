@@ -9,12 +9,16 @@ import lombok.Setter;
 @Entity
 @Table(name = "tbl_answer")
 public class AnswerEntity {
-    @EmbeddedId
-    private AnswerEntityId id;
+    @Id
+    @Column(name = "answer_id", nullable = false)
+    private Integer answerId;
 
-    @MapsId("id")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private AcademicExamQuestionEntity tblAcademicexamquestions;
+    @JoinColumns({
+        @JoinColumn(name = "question_id", referencedColumnName = "question_id", nullable = false),
+        @JoinColumn(name = "exam_id", referencedColumnName = "exam_id", nullable = false)
+    })
+    private AcademicExamQuestionEntity academicExamQuestion;
 
     @Column(name = "option_selected")
     private Integer optionSelected;
