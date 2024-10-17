@@ -123,10 +123,6 @@ VALUES (1, 'M', '08:00:00'); -- Lunes del primer periodo
 INSERT INTO `tbl_daiquestions` (question_grade, question_text, image_url)
 VALUES ('2', '¿Como te sientes el dia de hoy?', NULL);
 
-INSERT INTO `tbl_academicquestions` (question_grade, option_a, option_b, option_c, option_d, correct_option,
-                                     question_text)
-VALUES ('2', 'Paris', 'Madrid', 'Londres', 'San Jose', 'A', '¿Cual es la capital de Francia?');
-
 INSERT INTO `tbl_systemconfig` (`config_name`, `config_value`)
 VALUES ('dai_weight', 0.4),
        ('academic_weight', 0.4),

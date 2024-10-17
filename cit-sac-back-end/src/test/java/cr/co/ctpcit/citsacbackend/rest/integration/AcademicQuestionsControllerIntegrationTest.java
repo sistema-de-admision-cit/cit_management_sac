@@ -3,7 +3,6 @@ package cr.co.ctpcit.citsacbackend.rest.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicQuestionsDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-public class QuestionsAcademicControllerIntegrationTest {
+public class AcademicQuestionsControllerIntegrationTest {
 
   AuthResponseDto authResponseDto;
   @Autowired

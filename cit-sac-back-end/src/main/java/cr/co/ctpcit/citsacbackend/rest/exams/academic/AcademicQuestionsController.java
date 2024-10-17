@@ -14,9 +14,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/questions-academic")
-public class QuestionsAcademicController {
-
-  private final AcademicQuestionsServiceImplementation academicQuestionsServiceimplementation;
+public class AcademicQuestionsController {
 
   /**
    * Obtener todas las preguntas de examen
@@ -24,7 +22,6 @@ public class QuestionsAcademicController {
    * @return Lista de preguntas de examen
    */
   @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A') or hasAuthority('SCOPE_T')")
-  //TODO: Implementar paginación en la respuesta
   @GetMapping
   public ResponseEntity<List<AcademicQuestionsDto>> getAllExamQuestions() {
     List<AcademicQuestionsDto> examQuestions =

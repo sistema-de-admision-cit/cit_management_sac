@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @Rollback
-public class AcademicExamQuestionsControllerIntegrationTest {
+public class AcademicExamsControllerIntegrationTest {
 
   AuthResponseDto authResponseDto;
   @Autowired

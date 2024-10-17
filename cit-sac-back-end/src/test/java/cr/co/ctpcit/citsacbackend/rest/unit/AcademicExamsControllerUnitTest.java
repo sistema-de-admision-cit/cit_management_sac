@@ -2,8 +2,6 @@ package cr.co.ctpcit.citsacbackend.rest.unit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamQuestionsDto;
-import cr.co.ctpcit.citsacbackend.logic.services.exams.academic.AcademicExamQuestionsService;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.FileSystemStorageService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
-public class AcademicExamQuestionsControllerUnitTest {
+public class AcademicExamsControllerUnitTest {
 
   AuthResponseDto authResponseDto;
   @Autowired
