@@ -7,7 +7,7 @@ import java.util.List;
 
 public class UserMapper {
   public static UserEntity toEntity(UserDto dto) {
-    return UserEntity.builder().email(dto.getUsername()).userPassword(dto.getPassword())
+    return UserEntity.builder().email(dto.getUsername()).password(dto.getPassword())
         .role(dto.getRole()).id(dto.getId()).build();
   }
 
@@ -16,7 +16,7 @@ public class UserMapper {
   }
 
   private static UserDto toDto(UserEntity userEntity) {
-    return UserDto.builder().username(userEntity.getEmail()).password(userEntity.getUserPassword())
+    return UserDto.builder().username(userEntity.getEmail()).password(userEntity.getPassword())
         .role(userEntity.getRole()).id(userEntity.getId()).build();
   }
 }

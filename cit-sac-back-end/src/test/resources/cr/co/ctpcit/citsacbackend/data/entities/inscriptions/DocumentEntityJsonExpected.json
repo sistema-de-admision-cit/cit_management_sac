@@ -1,0 +1,9 @@
+{
+  "id": {
+    "documentId": 1,
+    "enrollmentId": 1
+  },
+  "documentName": "Document 1",
+  "documentType": "OT",
+  "documentUrl": "path/to/document"
+}

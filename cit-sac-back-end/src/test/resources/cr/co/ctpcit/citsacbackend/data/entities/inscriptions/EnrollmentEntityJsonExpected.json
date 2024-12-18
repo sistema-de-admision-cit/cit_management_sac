@@ -1,0 +1,27 @@
+{
+  "id": 1,
+  "student": {
+    "id": 2,
+    "person": {
+      "id": 2,
+      "firstName": "Mark",
+      "firstSurname": "Doe",
+      "secondSurname": "Johnson",
+      "idType": "CC",
+      "idNumber": "987654321",
+      "fullSurname": "Doe Johnson"
+    },
+    "birthDate": "2007-12-03",
+    "previousSchool": "Manhattan School",
+    "hasAccommodations": false,
+    "parents": []
+  },
+  "status": "PENDING",
+  "enrollmentDate": "2024-12-15T10:15:30Z",
+  "gradeToEnroll": "FIRST",
+  "knownThrough": "OT",
+  "examDate": "2024-12-15",
+  "consentGiven": true,
+  "whatsappNotification": false,
+  "documents": []
+}

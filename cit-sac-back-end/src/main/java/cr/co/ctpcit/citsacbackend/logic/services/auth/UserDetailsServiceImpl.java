@@ -3,7 +3,6 @@ package cr.co.ctpcit.citsacbackend.logic.services.auth;
 import cr.co.ctpcit.citsacbackend.data.entities.users.UserEntity;
 import cr.co.ctpcit.citsacbackend.data.repositories.users.UserRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.UserDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.auth.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -83,11 +81,11 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
     if (entity.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario no encontrado.");
     }
-    if (!passwordEncoder.matches(oldPassword, entity.get().getUserPassword())) {
+    if (!passwordEncoder.matches(oldPassword, entity.get().getPassword())) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Contraseña actual incorrecta.");
     }
 
-    entity.get().setUserPassword(passwordEncoder.encode(newPassword));
+    entity.get().setPassword(passwordEncoder.encode(newPassword));
     userRepository.save(entity.get());
   }
 

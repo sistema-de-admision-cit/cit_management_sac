@@ -20,19 +20,27 @@ import java.util.List;
 @Builder
 @Component
 public class UserDto implements UserDetails {
+
   private Long id;
+
   @JsonIgnore
   private String password;
+
   @Pattern(regexp = "^[\\w.-]+@ctpcit\\.co\\.cr$",
       message = "El correo debe pertenecer al dominio ctpcit.co.cr")
+  private String email;
+
   private String username;
+
   private Role role;
+
   private Boolean isDefaultPassword = false;
 
   public UserDto(UserEntity userEntity) {
     this.id = userEntity.getId();
-    this.password = userEntity.getUserPassword();
-    this.username = userEntity.getEmail();
+    this.password = userEntity.getPassword();
+    this.email = userEntity.getEmail();
+    this.username = userEntity.getUsername();
     this.role = userEntity.getRole();
   }
 
@@ -48,6 +56,6 @@ public class UserDto implements UserDetails {
 
   @Override
   public String getUsername() {
-    return username;
+    return email;
   }
 }
