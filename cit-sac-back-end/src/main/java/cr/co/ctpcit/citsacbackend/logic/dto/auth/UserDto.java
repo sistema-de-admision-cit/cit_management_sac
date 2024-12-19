@@ -34,6 +34,7 @@ public class UserDto implements UserDetails {
 
   private Role role;
 
+  @Builder.Default
   private Boolean isDefaultPassword = false;
 
   public UserDto(UserEntity userEntity) {

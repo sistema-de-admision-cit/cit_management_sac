@@ -64,7 +64,6 @@ class StudentEntityRepositoryTest {
   }
 
   @Test
-  @Disabled
   void testSaveParentStudentsEntity() {
     PersonEntity parentPersonEntity = new PersonEntity();
     parentPersonEntity.setFirstName("Jane");
@@ -83,6 +82,15 @@ class StudentEntityRepositoryTest {
     PersonEntity savedStudentPersonEntity = personEntityRepository.save(personEntity);
 
     parentEntity.addStudent(savedStudentPersonEntity.getStudent());
+
+    StudentEntity savedStudentEntity =
+        studentEntityRepository.findById(savedStudentPersonEntity.getId()).orElse(null);
+
+
+    assertNotNull(savedStudentEntity);
+    assertEquals(studentEntity, savedStudentEntity);
+    assertNotNull(savedStudentEntity.getParents());
+    assertEquals(1, savedStudentEntity.getParents().size());
   }
 
   @AfterEach

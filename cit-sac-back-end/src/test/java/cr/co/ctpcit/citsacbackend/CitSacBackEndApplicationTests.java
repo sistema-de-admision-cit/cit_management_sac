@@ -9,5 +9,4 @@ class CitSacBackEndApplicationTests {
   @Test
   void contextLoads() {
   }
-
 }

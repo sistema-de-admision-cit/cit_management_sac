@@ -8,8 +8,7 @@ import lombok.Getter;
  * that uses the same test in the process, so there is a test for 1-3 grades, another for 4-6
  * grades, and so on.
  */
-@Getter
 public enum Grades {
-  FIRST, SECOND, THIRD, FORTH, FIFTH, SIXTH, SEVENTH, EIGHTH, NINTH, TENTH
+  FIRST, SECOND, THIRD, FOURTH, FIFTH, SIXTH, SEVENTH, EIGHTH, NINTH, TENTH
 
 }

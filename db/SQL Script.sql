@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `tbl_Persons` (
   `first_surname` VARCHAR(32) NOT NULL,
   `second_surname` VARCHAR(32) NULL DEFAULT NULL,
   `id_type` ENUM('CC', 'DI', 'PA') NOT NULL, -- CC: Cedula, DI: DIMEX, PA: Pasaporte
-  `id_number` VARCHAR(16) NOT NULL,
+  `id_number` VARCHAR(32) NOT NULL,
   `full_surname` VARCHAR(64) AS (CONCAT(`first_surname`, ' ', `second_surname`)) STORED,
   PRIMARY KEY (`person_id`),
 
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `tbl_Address` (
   `province` VARCHAR(32) NOT NULL,
   `city` VARCHAR(32) NOT NULL,
   `district` VARCHAR(32) NOT NULL,
-  `address_info` VARCHAR(64) NOT NULL DEFAULT 'N/A',
+  `address_info` VARCHAR(128) NOT NULL DEFAULT 'N/A',
   PRIMARY KEY (`address_id`),
   INDEX `IDX_Addresses_ParentID` (`parent_id` ASC),
   CONSTRAINT `FK_Addresses_Parents`
@@ -145,7 +145,7 @@ DROP TABLE IF EXISTS `tbl_Enrollments`;
 CREATE TABLE IF NOT EXISTS `tbl_Enrollments` (
   `enrollment_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `student_id` INT UNSIGNED NOT NULL,
-  `status` ENUM('PENDING', 'ELEGIBLE', 'INELEGIBLE', 'ACCEPTED', 'REJECTED') NOT NULL,
+  `status` ENUM('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED') NOT NULL,
   `enrollment_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `grade_to_enroll` ENUM('FIRST', 'SECOND', 'THIRD', 'FOURTH', 'FIFTH', 'SIXTH', 'SEVENTH', 'EIGHTH', 'NINTH', 'TENTH') NOT NULL,
   `known_through` ENUM('SM', 'OH', 'FD', 'FM', 'OT') NOT NULL DEFAULT 'OT',
@@ -214,7 +214,7 @@ CREATE TABLE IF NOT EXISTS `tbl_Questions` (
   `image_url` VARCHAR(255) DEFAULT NULL,
   `question_grade` ENUM('FIRST', 'SECOND', 'THIRD', 'FOURTH', 'FIFTH', 'SIXTH', 'SEVENTH', 'EIGHTH', 'NINTH', 'TENTH') NOT NULL,
   `question_level` ENUM('EASY', 'MEDIUM', 'HARD') NOT NULL,
-  `selection_type` ENUM('UNIQUE', 'MULTIPLE') NOT NULL,
+  `selection_type` ENUM('UNIQUE', 'MULTIPLE', 'PARAGRAPH') NOT NULL DEFAULT 'PARAGRAPH',
   `deleted` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`question_id`),
   INDEX `IDX_Questions_QuestionType_ACA` ((`question_type` = 'ACA')),
@@ -338,8 +338,8 @@ DROP TABLE IF EXISTS `tbl_Exam_Periods` ;
 
 CREATE TABLE IF NOT EXISTS `tbl_Exam_Periods` (
   `exam_period_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `start_date` DATETIME(6) NOT NULL,
-  `end_date` DATETIME(6) NOT NULL,
+  `start_date` DATE NOT NULL,
+  `end_date` DATE NOT NULL,
   PRIMARY KEY (`exam_period_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -449,8 +449,8 @@ CREATE TABLE IF NOT EXISTS `tbl_Users` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(128) NOT NULL,
   `username` VARCHAR(64) NOT NULL,
-  `user_password` VARCHAR(32) NOT NULL,
-  `role` ENUM('SYS', 'ADMIN', 'TEACHER', 'PSI') NOT NULL,
+  `user_password` VARCHAR(128) NOT NULL,
+  `role` ENUM('SYS', 'ADMIN', 'TEACHER', 'PSYCHOLOGIST') NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE INDEX `UQ_Users_Email` (`email` ASC))
 ENGINE = InnoDB
