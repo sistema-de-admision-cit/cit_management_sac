@@ -13,5 +13,5 @@ import java.util.List;
  */
 public record StudentDto(Long id, PersonDto person, @NotNull LocalDate birthDate,
                          @Size(max = 128) String previousSchool, @NotNull Boolean hasAccommodations,
-                         List<ParentEntity> parentParents) implements Serializable {
+                         List<ParentEntity> parents) implements Serializable {
 }
