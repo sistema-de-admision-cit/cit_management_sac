@@ -1,0 +1,8 @@
+{
+  "id": 1,
+  "firstName": "John",
+  "firstSurname": "Doe",
+  "secondSurname": "Smith",
+  "idType": "CC",
+  "idNumber": "123456789"
+}

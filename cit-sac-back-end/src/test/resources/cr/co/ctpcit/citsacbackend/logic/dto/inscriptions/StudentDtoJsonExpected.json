@@ -1,0 +1,15 @@
+{
+  "id": 1,
+  "person": {
+    "id": 1,
+    "firstName": "John",
+    "firstSurname": "Doe",
+    "secondSurname": "Smith",
+    "idType": "CC",
+    "idNumber": "123456789"
+  },
+  "birthDate": "2007-12-03",
+  "previousSchool": "Manhattan School",
+  "hasAccommodations": false,
+  "parents": []
+}
