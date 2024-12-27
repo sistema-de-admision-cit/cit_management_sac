@@ -14,9 +14,9 @@ import java.util.List;
 /**
  * DTO for {@link EnrollmentEntity}
  */
-public record EnrollmentDto(Long id, @NotNull StudentDto student, @NotNull ProcessStatus status,
-                            @NotNull Instant enrollmentDate, @NotNull Grades gradeToEnroll,
-                            @NotNull KnownThrough knownThrough, @NotNull LocalDate examDate,
-                            @NotNull Boolean consentGiven, @NotNull Boolean whatsappNotification,
-                            List<DocumentDto> documents) implements Serializable {
+public record EnrollmentDto(Long id, @NotNull StudentDto student, ProcessStatus status,
+                            @NotNull Grades gradeToEnroll, @NotNull KnownThrough knownThrough,
+                            @NotNull LocalDate examDate, @NotNull Boolean consentGiven,
+                            @NotNull Boolean whatsappNotification, List<DocumentDto> documents)
+    implements Serializable {
 }
