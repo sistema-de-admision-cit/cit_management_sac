@@ -16,30 +16,26 @@ class DocumentDtoTest {
 
   @Test
   void testSerialize() throws Exception {
-    DocumentDto document = new DocumentDto(new DocumentIdDto(1L, 1L), "Document 1", DocType.OT);
+    DocumentDto document = new DocumentDto(1L, "Document 1", DocType.OT);
 
     assertThat(json.write(document)).isStrictlyEqualToJson("DocumentDtoJsonExpected.json");
-    assertThat(json.write(document)).hasJsonPathNumberValue("@.id.enrollmentId");
-    assertThat(json.write(document)).extractingJsonPathNumberValue("@.id.enrollmentId")
-        .isEqualTo(1);
+    assertThat(json.write(document)).hasJsonPathNumberValue("@.id");
+    assertThat(json.write(document)).extractingJsonPathNumberValue("@.id").isEqualTo(1);
   }
 
   @Test
   void testDeserialize() throws Exception {
     String content = """
         {
-          "id": {
-            "documentId": 1,
-            "enrollmentId": 1
-          },
+          "id": 1,
           "documentName": "Document 1",
           "documentType": "OT"
         }
         """;
-    DocumentDto document = new DocumentDto(new DocumentIdDto(1L, 1L), "Document 1", DocType.OT);
+    DocumentDto document = new DocumentDto(1L, "Document 1", DocType.OT);
 
     assertThat(json.parse(content)).isEqualTo(document);
-    assertThat(json.parseObject(content).id().enrollmentId()).isEqualTo(1);
+    assertThat(json.parseObject(content).id()).isEqualTo(1);
   }
 
 }

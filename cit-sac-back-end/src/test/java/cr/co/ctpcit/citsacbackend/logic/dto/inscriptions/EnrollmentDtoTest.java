@@ -42,7 +42,7 @@ class EnrollmentDtoTest {
     EnrollmentDto enrollment =
         new EnrollmentDto(null, student, ProcessStatus.PENDING, Grades.FIRST, KnownThrough.OT,
             LocalDate.parse("2024-12-15"), true, false, new ArrayList<>());
-    DocumentDto document = new DocumentDto(new DocumentIdDto(1L, 1L), "Document 1", DocType.OT);
+    DocumentDto document = new DocumentDto(1L, "Document 1", DocType.OT);
     enrollment.documents().add(document);
 
     assertThat(json.write(enrollment)).isStrictlyEqualToJson("EnrollmentDtoJsonExpected.json");
@@ -107,10 +107,7 @@ class EnrollmentDtoTest {
           "whatsappNotification": false,
           "documents": [
             {
-              "id": {
-                "documentId": 1,
-                "enrollmentId": 1
-              },
+              "id": 1,
               "documentName": "Document 1",
               "documentType": "OT"
             }
@@ -121,7 +118,7 @@ class EnrollmentDtoTest {
     EnrollmentDto enrollment =
         new EnrollmentDto(null, student, ProcessStatus.PENDING, Grades.FIRST, KnownThrough.OT,
             LocalDate.parse("2024-12-15"), true, false, new ArrayList<>());
-    DocumentDto document = new DocumentDto(new DocumentIdDto(1L, 1L), "Document 1", DocType.OT);
+    DocumentDto document = new DocumentDto(1L, "Document 1", DocType.OT);
     enrollment.documents().add(document);
 
     assertThat(json.parse(content)).isEqualTo(enrollment);

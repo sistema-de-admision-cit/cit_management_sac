@@ -18,37 +18,33 @@ class DocumentEntityTest {
   @Test
   void serializeJson() throws IOException {
     DocumentEntity document = new DocumentEntity();
-    document.setId(new DocumentEntityId(1L, 1L));
+    document.setId(1L);
     document.setDocumentName("Document 1");
-    document.setDocumentType(DocType.OT);
+    document.setDocType(DocType.OT);
     document.setDocumentUrl("path/to/document");
 
     assertThat(json.write(document)).isStrictlyEqualToJson("DocumentEntityJsonExpected.json");
     assertThat(json.write(document)).hasJsonPathValue("@.id");
-    assertThat(json.write(document)).extractingJsonPathValue("@.id.documentId").isEqualTo(1);
+    assertThat(json.write(document)).extractingJsonPathValue("@.id").isEqualTo(1);
   }
 
   @Test
   void deserializeJson() throws IOException {
     String expected = """
         {
-          "id": {
-            "documentId": 1,
-            "studentId": 1
-          },
+          "id": 1,
           "documentName": "Document 1",
           "documentType": "OT",
           "documentUrl": "path/to/document"
         }
         """;
     DocumentEntity document = new DocumentEntity();
-    document.setId(new DocumentEntityId(1L, 1L));
+    document.setId(1L);
     document.setDocumentName("Document 1");
-    document.setDocumentType(DocType.OT);
+    document.setDocType(DocType.OT);
     document.setDocumentUrl("path/to/document");
-    document.setEnrollment(new EnrollmentEntity());
 
-    assertThat(json.parseObject(expected).getId().getDocumentId()).isEqualTo(1);
+    assertThat(json.parseObject(expected).getId()).isEqualTo(1);
     assertThat(json.parseObject(expected).getDocumentUrl()).isEqualTo("path/to/document");
   }
 }

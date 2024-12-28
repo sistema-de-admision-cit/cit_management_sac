@@ -16,11 +16,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest(showSql = true)
-class StudentEntityRepositoryTest {
+class StudentRepositoryTest {
   @Autowired
-  private StudentEntityRepository studentEntityRepository;
+  private StudentRepository studentRepository;
   @Autowired
-  private PersonEntityRepository personEntityRepository;
+  private PersonRepository personRepository;
 
   private StudentEntity studentEntity;
   private PersonEntity personEntity;
@@ -44,7 +44,7 @@ class StudentEntityRepositoryTest {
 
   @Test
   void testSaveStudentEntity() {
-    PersonEntity savedPersonEntity = personEntityRepository.save(personEntity);
+    PersonEntity savedPersonEntity = personRepository.save(personEntity);
 
     assertNotNull(savedPersonEntity);
     assertNotNull(savedPersonEntity.getId());
@@ -55,9 +55,9 @@ class StudentEntityRepositoryTest {
 
   @Test
   void testFindStudentEntityById() {
-    PersonEntity savedPersonEntity = personEntityRepository.save(personEntity);
+    PersonEntity savedPersonEntity = personRepository.save(personEntity);
     StudentEntity savedStudentEntity =
-        studentEntityRepository.findById(savedPersonEntity.getId()).orElse(null);
+        studentRepository.findById(savedPersonEntity.getId()).orElse(null);
 
     assertNotNull(savedStudentEntity);
     assertEquals(studentEntity, savedStudentEntity);
@@ -78,13 +78,13 @@ class StudentEntityRepositoryTest {
     parentEntity.setPhoneNumber("88889999");
 
     parentPersonEntity.addParent(parentEntity);
-    PersonEntity savedParentPersonEntity = personEntityRepository.save(parentPersonEntity);
-    PersonEntity savedStudentPersonEntity = personEntityRepository.save(personEntity);
+    PersonEntity savedParentPersonEntity = personRepository.save(parentPersonEntity);
+    PersonEntity savedStudentPersonEntity = personRepository.save(personEntity);
 
     parentEntity.addStudent(savedStudentPersonEntity.getStudent());
 
     StudentEntity savedStudentEntity =
-        studentEntityRepository.findById(savedStudentPersonEntity.getId()).orElse(null);
+        studentRepository.findById(savedStudentPersonEntity.getId()).orElse(null);
 
 
     assertNotNull(savedStudentEntity);
@@ -95,6 +95,6 @@ class StudentEntityRepositoryTest {
 
   @AfterEach
   void tearDown() {
-    personEntityRepository.deleteAll();
+    personRepository.deleteAll();
   }
 }

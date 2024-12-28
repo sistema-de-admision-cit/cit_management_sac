@@ -1,17 +1,20 @@
 package cr.co.ctpcit.citsacbackend.logic.services.storage;
 
+import cr.co.ctpcit.citsacbackend.data.enums.DocType;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 @Service
 public interface StorageService {
   void init();
 
-  void store(MultipartFile file, String filename);
+  CompletableFuture<DocumentDto> store(MultipartFile file, String filename, DocType docType);
 
   Stream<Path> loadAll();
 

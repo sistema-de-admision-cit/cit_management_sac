@@ -16,12 +16,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest(showSql = true)
-class AddressEntityRepositoryTest {
+class AddressRepositoryTest {
 
   @Autowired
-  private AddressEntityRepository addressEntityRepository;
+  private AddressRepository addressRepository;
   @Autowired
-  private PersonEntityRepository personEntityRepository;
+  private PersonRepository personRepository;
 
   private AddressEntity addressEntity;
 
@@ -41,7 +41,7 @@ class AddressEntityRepositoryTest {
     parentEntity.setPhoneNumber("88889999");
 
     parentPersonEntity.addParent(parentEntity);
-    personEntityRepository.save(parentPersonEntity);
+    personRepository.save(parentPersonEntity);
 
     //Create address
     addressEntity = new AddressEntity();
@@ -55,7 +55,7 @@ class AddressEntityRepositoryTest {
 
   @Test
   void testCreateAddress() {
-    AddressEntity savedAddressEntity = addressEntityRepository.save(addressEntity);
+    AddressEntity savedAddressEntity = addressRepository.save(addressEntity);
 
     assertNotNull(savedAddressEntity);
     assertNotNull(savedAddressEntity.getId());
@@ -69,7 +69,7 @@ class AddressEntityRepositoryTest {
 
   @Test
   void testUpdateAddress() {
-    AddressEntity savedAddressEntity = addressEntityRepository.save(addressEntity);
+    AddressEntity savedAddressEntity = addressRepository.save(addressEntity);
 
     assertNotNull(savedAddressEntity);
     assertNotNull(savedAddressEntity.getId());
@@ -86,7 +86,7 @@ class AddressEntityRepositoryTest {
     savedAddressEntity.setDistrict("Panama");
     savedAddressEntity.setAddressInfo("100 meters south of the church in Panama");
 
-    AddressEntity updatedAddressEntity = addressEntityRepository.save(savedAddressEntity);
+    AddressEntity updatedAddressEntity = addressRepository.save(savedAddressEntity);
 
     assertNotNull(updatedAddressEntity);
     assertNotNull(updatedAddressEntity.getId());
@@ -100,7 +100,7 @@ class AddressEntityRepositoryTest {
 
   @Test
   void testFindAddressById() {
-    AddressEntity savedAddressEntity = addressEntityRepository.save(addressEntity);
+    AddressEntity savedAddressEntity = addressRepository.save(addressEntity);
 
     assertNotNull(savedAddressEntity);
     assertNotNull(savedAddressEntity.getId());
@@ -112,7 +112,7 @@ class AddressEntityRepositoryTest {
     assertEquals(addressEntity.getParent(), savedAddressEntity.getParent());
 
     AddressEntity foundAddressEntity =
-        addressEntityRepository.findById(savedAddressEntity.getId()).orElse(null);
+        addressRepository.findById(savedAddressEntity.getId()).orElse(null);
 
     assertNotNull(foundAddressEntity);
     assertNotNull(foundAddressEntity.getId());
@@ -126,7 +126,7 @@ class AddressEntityRepositoryTest {
 
   @AfterEach
   void tearDown() {
-    addressEntityRepository.deleteAll();
-    personEntityRepository.deleteAll();
+    addressRepository.deleteAll();
+    personRepository.deleteAll();
   }
 }

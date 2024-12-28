@@ -17,6 +17,7 @@ import static org.hibernate.generator.EventType.UPDATE;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "tbl_persons")
 public class PersonEntity {

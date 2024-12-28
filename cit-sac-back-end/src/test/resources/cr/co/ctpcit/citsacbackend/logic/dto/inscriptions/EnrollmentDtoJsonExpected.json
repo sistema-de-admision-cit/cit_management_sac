@@ -48,10 +48,7 @@
   "whatsappNotification": false,
   "documents": [
     {
-      "id": {
-        "documentId": 1,
-        "enrollmentId": 1
-      },
+      "id": 1,
       "documentName": "Document 1",
       "documentType": "OT"
     }

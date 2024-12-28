@@ -23,8 +23,8 @@ public class CitSacBackEndApplication {
   }
 
   @Bean
-  public Executor asyncExecutor() {
-    final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+  public Executor taskExecutor() {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
     executor.setCorePoolSize(10);
     executor.setMaxPoolSize(10);
     executor.setQueueCapacity(500);

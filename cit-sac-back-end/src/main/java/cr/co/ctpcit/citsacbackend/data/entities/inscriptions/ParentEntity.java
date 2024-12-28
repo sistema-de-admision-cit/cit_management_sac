@@ -6,10 +6,7 @@ import cr.co.ctpcit.citsacbackend.data.enums.Relationship;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -20,6 +17,7 @@ import java.util.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "tbl_parents")
 public class ParentEntity implements Serializable {
@@ -49,14 +47,10 @@ public class ParentEntity implements Serializable {
 
   @Column(name = "dai_exam", columnDefinition = "json")
   @JdbcTypeCode(SqlTypes.JSON)
-  private Map<String, Object> daiExam;
+  private Map<String, Object> daiExam = new HashMap<>();
 
   @JsonIgnore
-  @OneToMany(
-      mappedBy = "parent",
-      cascade = CascadeType.ALL,
-      orphanRemoval = true
-  )
+  @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ParentsStudentsEntity> students = new ArrayList<>();
 
   @JsonManagedReference

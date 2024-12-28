@@ -19,14 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest(showSql = true)
-class EnrollmentEntityRepositoryTest {
+class EnrollmentRepositoryTest {
 
   @Autowired
-  private EnrollmentEntityRepository enrollmentEntityRepository;
+  private EnrollmentRepository enrollmentRepository;
   @Autowired
-  private PersonEntityRepository personEntityRepository;
+  private PersonRepository personRepository;
   @Autowired
-  private StudentEntityRepository studentEntityRepository;
+  private StudentRepository studentRepository;
 
   private EnrollmentEntity enrollmentEntity;
 
@@ -47,7 +47,7 @@ class EnrollmentEntityRepositoryTest {
 
     parentPersonEntity.addParent(parentEntity);
 
-    personEntityRepository.save(parentPersonEntity);
+    personRepository.save(parentPersonEntity);
 
     //Create student
     PersonEntity studentPersonEntity = new PersonEntity();
@@ -64,7 +64,7 @@ class EnrollmentEntityRepositoryTest {
 
     studentPersonEntity.addStudent(studentEntity);
 
-    personEntityRepository.save(studentPersonEntity);
+    personRepository.save(studentPersonEntity);
     parentEntity.addStudent(studentEntity);
 
     //Create enrollment
@@ -81,7 +81,7 @@ class EnrollmentEntityRepositoryTest {
 
   @Test
   void testSaveEnrollmentEntity() {
-    EnrollmentEntity savedEnrollmentEntity = enrollmentEntityRepository.save(enrollmentEntity);
+    EnrollmentEntity savedEnrollmentEntity = enrollmentRepository.save(enrollmentEntity);
 
     assertNotNull(savedEnrollmentEntity);
     assertNotNull(savedEnrollmentEntity.getId());
@@ -90,9 +90,9 @@ class EnrollmentEntityRepositoryTest {
 
   @Test
   void testFindEnrollmentEntityById() {
-    EnrollmentEntity savedEnrollmentEntity = enrollmentEntityRepository.save(enrollmentEntity);
+    EnrollmentEntity savedEnrollmentEntity = enrollmentRepository.save(enrollmentEntity);
     EnrollmentEntity foundEnrollmentEntity =
-        enrollmentEntityRepository.findById(savedEnrollmentEntity.getId()).orElse(null);
+        enrollmentRepository.findById(savedEnrollmentEntity.getId()).orElse(null);
 
     assertNotNull(foundEnrollmentEntity);
     assertEquals(enrollmentEntity, foundEnrollmentEntity);
@@ -100,8 +100,8 @@ class EnrollmentEntityRepositoryTest {
 
   @AfterEach
   void tearDown() {
-    enrollmentEntityRepository.deleteAll();
-    studentEntityRepository.deleteAll();
-    personEntityRepository.deleteAll();
+    enrollmentRepository.deleteAll();
+    studentRepository.deleteAll();
+    personRepository.deleteAll();
   }
 }

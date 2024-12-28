@@ -15,12 +15,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest(showSql = false)
-class ParentEntityRepositoryTest {
+class ParentRepositoryTest {
   @Autowired
-  private ParentEntityRepository parentEntityRepository;
+  private ParentRepository parentRepository;
 
   @Autowired
-  private PersonEntityRepository personEntityRepository;
+  private PersonRepository personRepository;
 
   private PersonEntity personEntity;
   private ParentEntity parentEntity;
@@ -43,7 +43,7 @@ class ParentEntityRepositoryTest {
   @Test
   void testSaveParentEntity() {
     personEntity.addParent(parentEntity);
-    PersonEntity savedPersonEntity = personEntityRepository.save(personEntity);
+    PersonEntity savedPersonEntity = personRepository.save(personEntity);
 
     assertNotNull(savedPersonEntity);
     assertNotNull(savedPersonEntity.getId());
@@ -55,8 +55,8 @@ class ParentEntityRepositoryTest {
   @Test
   void testFindParentEntityById() {
     personEntity.addParent(parentEntity);
-    PersonEntity savedPersonEntity = personEntityRepository.save(personEntity);
-    ParentEntity savedParentEntity = parentEntityRepository.findById(savedPersonEntity.getId()).orElse(null);
+    PersonEntity savedPersonEntity = personRepository.save(personEntity);
+    ParentEntity savedParentEntity = parentRepository.findById(savedPersonEntity.getId()).orElse(null);
 
     assertNotNull(savedParentEntity);
     assertNotNull(savedParentEntity.getId());
@@ -65,7 +65,7 @@ class ParentEntityRepositoryTest {
 
   @AfterEach
   void tearDown() {
-    parentEntityRepository.deleteAll();
-    personEntityRepository.deleteAll();
+    parentRepository.deleteAll();
+    personRepository.deleteAll();
   }
 }

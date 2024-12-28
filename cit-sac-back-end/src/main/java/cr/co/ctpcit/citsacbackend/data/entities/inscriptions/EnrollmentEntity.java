@@ -6,10 +6,7 @@ import cr.co.ctpcit.citsacbackend.data.enums.KnownThrough;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
@@ -22,6 +19,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "tbl_enrollments")
 public class EnrollmentEntity {

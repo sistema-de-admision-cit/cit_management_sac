@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest(showSql = true)
-class PersonEntityRepositoryTest {
+class PersonRepositoryTest {
   @Autowired
-  private PersonEntityRepository personEntityRepository;
+  private PersonRepository personRepository;
 
   private PersonEntity personEntity;
 
@@ -31,7 +31,7 @@ class PersonEntityRepositoryTest {
 
   @Test
   void testSavePersonEntity() {
-    PersonEntity savedPersonEntity = personEntityRepository.save(personEntity);
+    PersonEntity savedPersonEntity = personRepository.save(personEntity);
     assertNotNull(savedPersonEntity);
     assertNotNull(savedPersonEntity.getId());
     assertEquals(personEntity, savedPersonEntity);
@@ -39,18 +39,18 @@ class PersonEntityRepositoryTest {
 
   @Test
   void testFindPersonEntityById() {
-    PersonEntity savedPersonEntity = personEntityRepository.save(personEntity);
+    PersonEntity savedPersonEntity = personRepository.save(personEntity);
     assertNotNull(savedPersonEntity);
     assertNotNull(savedPersonEntity.getId());
     assertEquals(personEntity, savedPersonEntity);
 
     PersonEntity foundPersonEntity =
-        personEntityRepository.findById(savedPersonEntity.getId()).orElse(null);
+        personRepository.findById(savedPersonEntity.getId()).orElse(null);
     assertNotNull(foundPersonEntity);
   }
 
   @AfterEach
   void tearDown() {
-    personEntityRepository.deleteAll();
+    personRepository.deleteAll();
   }
 }

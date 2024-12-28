@@ -1,8 +1,11 @@
 package cr.co.ctpcit.citsacbackend.logic.services.storage;
 
+import cr.co.ctpcit.citsacbackend.data.enums.DocType;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +14,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 @Service
@@ -29,8 +33,9 @@ public class StorageServiceImpl implements StorageService {
     }
   }
 
+  @Async
   @Override
-  public void store(MultipartFile file, String filename) {
+  public CompletableFuture<DocumentDto> store(MultipartFile file, String filename, DocType docType) {
     try {
       if (file.isEmpty()) {
         throw new StorageException(
@@ -41,6 +46,7 @@ public class StorageServiceImpl implements StorageService {
       throw new StorageException(
           "Failed to store file " + file.getOriginalFilename() + " with name " + filename, e);
     }
+    return CompletableFuture.completedFuture(new DocumentDto(null, filename, docType));
   }
 
   @Override
