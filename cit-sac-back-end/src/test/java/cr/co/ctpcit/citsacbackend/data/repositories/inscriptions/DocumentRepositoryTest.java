@@ -80,10 +80,11 @@ class DocumentRepositoryTest {
     //Create document
     documentEntity = new DocumentEntity();
     documentEntity.setId(null);
-    documentEntity.setEnrollment(enrollmentEntity);
     documentEntity.setDocumentName("Document Name");
     documentEntity.setDocType(DocType.OT);
     documentEntity.setDocumentUrl("D:/Documents/DocumentName.pdf");
+
+    enrollmentEntity.addDocument(documentEntity);
   }
 
   @Test

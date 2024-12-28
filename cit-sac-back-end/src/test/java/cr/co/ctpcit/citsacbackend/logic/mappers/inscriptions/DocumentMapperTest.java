@@ -1,0 +1,46 @@
+package cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions;
+
+import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.DocumentEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.EnrollmentEntity;
+import cr.co.ctpcit.citsacbackend.data.enums.DocType;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class DocumentMapperTest {
+
+  @Test
+  void testConvertToDto() {
+    EnrollmentEntity enrollmentEntity = new EnrollmentEntity();
+    enrollmentEntity.setId(1L);
+
+    DocumentEntity documentEntity = new DocumentEntity();
+    documentEntity.setId(1L);
+    documentEntity.setDocType(DocType.OT);
+    documentEntity.setDocumentName("Document Name");
+    documentEntity.setDocumentUrl("Document URL");
+    documentEntity.setEnrollment(enrollmentEntity);
+
+    DocumentDto documentDto = DocumentMapper.convertToDto(documentEntity);
+    assertNotNull(documentDto);
+    assertEquals(documentEntity.getId(), documentDto.id());
+    assertEquals(documentEntity.getDocType(), documentDto.documentType());
+    assertEquals(documentEntity.getDocumentName(), documentDto.documentName());
+  }
+
+  @Test
+  void testConvertToEntity() {
+    EnrollmentEntity enrollmentEntity = new EnrollmentEntity();
+    enrollmentEntity.setId(1L);
+
+    DocumentDto documentDto =
+        DocumentDto.builder().id(1L).documentType(DocType.OT).documentName("Document Name").build();
+
+    DocumentEntity documentEntity = DocumentMapper.convertToEntity(documentDto);
+    assertNotNull(documentEntity);
+    assertEquals(documentDto.id(), documentEntity.getId());
+    assertEquals(documentDto.documentType(), documentEntity.getDocType());
+    assertEquals(documentDto.documentName(), documentEntity.getDocumentName());
+  }
+}

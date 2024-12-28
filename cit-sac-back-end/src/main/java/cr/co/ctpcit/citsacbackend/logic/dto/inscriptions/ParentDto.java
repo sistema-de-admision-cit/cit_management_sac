@@ -4,6 +4,7 @@ import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.ParentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Relationship;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,9 +12,8 @@ import java.util.List;
 /**
  * DTO for {@link ParentEntity}
  */
-public record ParentDto(Long id, PersonDto person,
-                        @NotNull @Size(max = 32) String phoneNumber,
-                        @NotNull @Size(max = 64) String email,
-                        @NotNull Relationship relationship, List<AddressDto> addresses)
-    implements Serializable {
+@Builder
+public record ParentDto(Long id, PersonDto person, @NotNull @Size(max = 32) String phoneNumber,
+                        @NotNull @Size(max = 64) String email, @NotNull Relationship relationship,
+                        List<AddressDto> addresses) implements Serializable {
 }

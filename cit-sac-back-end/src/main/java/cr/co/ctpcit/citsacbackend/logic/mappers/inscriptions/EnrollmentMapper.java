@@ -14,12 +14,16 @@ import java.util.List;
  */
 public class EnrollmentMapper {
   public static EnrollmentDto convertToDto(EnrollmentEntity enrollmentEntity) {
-    return EnrollmentDto.builder().id(enrollmentEntity.getId()).status(enrollmentEntity.getStatus())
+    return EnrollmentDto.builder()
+        .id(enrollmentEntity.getId())
+        .student(StudentMapper.convertToDto(enrollmentEntity.getStudent()))
+        .status(enrollmentEntity.getStatus())
         .gradeToEnroll(enrollmentEntity.getGradeToEnroll())
-        .knownThrough(enrollmentEntity.getKnownThrough()).examDate(enrollmentEntity.getExamDate())
+        .knownThrough(enrollmentEntity.getKnownThrough())
+        .examDate(enrollmentEntity.getExamDate())
         .consentGiven(enrollmentEntity.getConsentGiven())
         .whatsappNotification(enrollmentEntity.getWhatsappNotification())
-        .documents(new ArrayList<>()).build();
+        .documents(DocumentMapper.convertToDtoList(enrollmentEntity.getDocuments())).build();
   }
 
   /*public static List<EnrollmentDto> convertToDtoList(List<EnrollmentEntity> enrollmentEntities) {
@@ -31,7 +35,9 @@ public class EnrollmentMapper {
   }
 
   public static EnrollmentEntity convertToEntity(EnrollmentDto enrollmentDto) {
-    return EnrollmentEntity.builder().status(enrollmentDto.status())
+    return EnrollmentEntity.builder()
+        .id(enrollmentDto.id())
+        .status(enrollmentDto.status())
         .gradeToEnroll(enrollmentDto.gradeToEnroll()).knownThrough(enrollmentDto.knownThrough())
         .examDate(enrollmentDto.examDate()).consentGiven(enrollmentDto.consentGiven())
         .whatsappNotification(enrollmentDto.whatsappNotification()).build();

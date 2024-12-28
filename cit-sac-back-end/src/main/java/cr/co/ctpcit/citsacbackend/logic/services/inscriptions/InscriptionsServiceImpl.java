@@ -37,6 +37,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   private final StorageService storageService;
   private final AddressRepository addressRepository;
   private final EnrollmentRepository enrollmentRepository;
+  private final DocumentRepository documentRepository;
 
   @Value("${storage.location}")
   private String rootLocation;
@@ -44,11 +45,13 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
   @Autowired
   public InscriptionsServiceImpl(PersonRepository personRepository, StorageService storageService,
-      AddressRepository addressRepository, EnrollmentRepository enrollmentRepository) {
+      AddressRepository addressRepository, EnrollmentRepository enrollmentRepository,
+      DocumentRepository documentRepository) {
     this.personRepository = personRepository;
     this.storageService = storageService;
     this.addressRepository = addressRepository;
     this.enrollmentRepository = enrollmentRepository;
+    this.documentRepository = documentRepository;
   }
 
   /**
@@ -170,7 +173,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
           AddressMapper.convertToEntity(inscriptionParent.addresses().getFirst());
 
       //Save the parent's address
-      address.setParent(parent);
+      parent.addAddress(address);
       addressRepository.save(address);
     }
 
@@ -217,6 +220,16 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
     // Save the enrollment
     enrollmentEntity = enrollmentRepository.save(enrollmentEntity);
+
+    // Add enrollment to each document
+    for (DocumentDto d : inscription.documents()) {
+      DocumentEntity document = DocumentMapper.convertToEntity(d);
+      document.setDocumentUrl(rootLocation + d.documentName());
+
+      // Save the document
+      enrollmentEntity.addDocument(document);
+      documentRepository.save(document);
+    }
 
     // Return
     return EnrollmentMapper.convertToDto(enrollmentEntity);

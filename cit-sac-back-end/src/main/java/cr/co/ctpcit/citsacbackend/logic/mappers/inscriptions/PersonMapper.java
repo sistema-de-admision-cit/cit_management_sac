@@ -5,13 +5,18 @@ import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.PersonDto;
 
 public class PersonMapper {
   public static PersonEntity convertToEntity(PersonDto person) {
-    return PersonEntity.builder()
-        .id(person.id())
-        .firstName(person.firstName())
-        .firstSurname(person.firstSurname())
-        .secondSurname(person.secondSurname())
-        .idType(person.idType())
-        .idNumber(person.idNumber())
-        .build();
+    return PersonEntity.builder().id(person.id()).firstName(person.firstName())
+        .firstSurname(person.firstSurname()).secondSurname(person.secondSurname())
+        .idType(person.idType()).idNumber(person.idNumber()).build();
+  }
+
+  public static PersonDto convertToDto(PersonEntity person) {
+    return PersonDto.builder()
+        .id(person.getId())
+        .firstName(person.getFirstName())
+        .firstSurname(person.getFirstSurname())
+        .secondSurname(person.getSecondSurname())
+        .idType(person.getIdType())
+        .idNumber(person.getIdNumber()).build();
   }
 }

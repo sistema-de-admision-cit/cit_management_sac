@@ -21,4 +21,9 @@ public class DocumentMapper {
   public static @NotEmpty List<DocumentDto> convertToDtoList(List<DocumentEntity> documents) {
     return documents.stream().map(DocumentMapper::convertToDto).toList();
   }
+
+  public static DocumentEntity convertToEntity(DocumentDto document) {
+    return DocumentEntity.builder().id(document.id()).docType(document.documentType())
+        .documentName(document.documentName()).build();
+  }
 }

@@ -50,7 +50,8 @@ class AddressRepositoryTest {
     addressEntity.setCity("San Jose");
     addressEntity.setDistrict("Pavas");
     addressEntity.setAddressInfo("100 meters south of the church");
-    addressEntity.setParent(parentEntity);
+
+    parentEntity.addAddress(addressEntity);
   }
 
   @Test
