@@ -28,20 +28,20 @@ public class AcademicQuestionsServiceImplementation implements AcademicQuestions
   }
 
   @Override
-  public List<AcademicQuestionsDto> obtenerTodasLasPreguntas() {
+  public List<AcademicQuestionsDto> getAllAcademicQuestions() {
     List<AcademicQuestionsEntity> entities = academicQuestionsRepository.findAll();
     return AcademicQuestionsMapper.toDtoList(entities);
   }
 
   @Override
-  public AcademicQuestionsDto obtenerPreguntaPorId(Integer id) {
+  public AcademicQuestionsDto getAcademicQuestionById(Integer id) {
     AcademicQuestionsEntity entity = academicQuestionsRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException("Pregunta no encontrada con el id " + id));
     return AcademicQuestionsMapper.toDto(entity);
   }
 
   @Override
-  public List<AcademicQuestionsDto> obtenerPreguntasPorQuestionText(String questionText) {
+  public List<AcademicQuestionsDto> getAcademicQuestionByQuestionText(String questionText) {
     List<AcademicQuestionsEntity> entities =
         academicQuestionsRepository.findByQuestionTextContaining(questionText);
     if (entities.isEmpty()) {
@@ -53,7 +53,7 @@ public class AcademicQuestionsServiceImplementation implements AcademicQuestions
 
 
   @Override
-  public void eliminarPregunta(Integer questionId) {
+  public void deleteAcademicQuestion(Integer questionId) {
     if (academicExamQuestionsRepository.existsByQuestionId(questionId)) {
       throw new IllegalStateException(
           "No se puede eliminar la pregunta porque está asociada a un examen.");
@@ -62,7 +62,7 @@ public class AcademicQuestionsServiceImplementation implements AcademicQuestions
   }
 
   @Override
-  public AcademicQuestionsDto modificarPregunta(Integer id, AcademicQuestionsDto preguntaDto) {
+  public AcademicQuestionsDto modifyAcademicQuestion(Integer id, AcademicQuestionsDto preguntaDto) {
     AcademicQuestionsEntity entity = academicQuestionsRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException("Pregunta no encontrada con el id " + id));
 

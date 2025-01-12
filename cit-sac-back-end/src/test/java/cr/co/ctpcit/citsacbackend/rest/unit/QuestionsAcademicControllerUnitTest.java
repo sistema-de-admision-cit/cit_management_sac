@@ -68,7 +68,7 @@ public class QuestionsAcademicControllerUnitTest {
   @Test
   void getAllExamQuestions() throws Exception {
     List<AcademicQuestionsDto> allQuestions = Arrays.asList(question1, question2);
-    when(academicQuestionsService.obtenerTodasLasPreguntas()).thenReturn(allQuestions);
+    when(academicQuestionsService.getAllAcademicQuestions()).thenReturn(allQuestions);
 
     mockMvc.perform(
             get("/api/questions-academic").header("Authorization", "Bearer " + authResponseDto.token())
@@ -79,7 +79,7 @@ public class QuestionsAcademicControllerUnitTest {
 
   @Test
   void getExamQuestionById() throws Exception {
-    when(academicQuestionsService.obtenerPreguntaPorId(1)).thenReturn(question1);
+    when(academicQuestionsService.getAcademicQuestionById(1)).thenReturn(question1);
 
     mockMvc.perform(get("/api/questions-academic/1").header("Authorization",
             "Bearer " + authResponseDto.token()).contentType(MediaType.APPLICATION_JSON))
@@ -88,7 +88,7 @@ public class QuestionsAcademicControllerUnitTest {
 
   @Test
   void getExamQuestionByIdNotFound() throws Exception {
-    when(academicQuestionsService.obtenerPreguntaPorId(1)).thenThrow(
+    when(academicQuestionsService.getAcademicQuestionById(1)).thenThrow(
         new NoSuchElementException("Pregunta no encontrada con el id 1"));
 
     mockMvc.perform(get("/api/questions-academic/1").header("Authorization",
@@ -107,7 +107,7 @@ public class QuestionsAcademicControllerUnitTest {
   @Test
   void deleteExamQuestionNotFound() throws Exception {
     doThrow(new NoSuchElementException("Pregunta no encontrada con el id 1")).when(
-        academicQuestionsService).eliminarPregunta(1);
+        academicQuestionsService).deleteAcademicQuestion(1);
 
     mockMvc.perform(delete("/api/questions-academic/1").header("Authorization",
             "Bearer " + authResponseDto.token()).contentType(MediaType.APPLICATION_JSON))
@@ -120,7 +120,7 @@ public class QuestionsAcademicControllerUnitTest {
     AcademicQuestionsDto updatedQuestion =
         new AcademicQuestionsDto(1, "¿Cuál es el océano más grande del mundo?", Grades.FORTH,
             "Atlántico", "Pacífico", "Índico", "Ártico", "B", null);
-    when(academicQuestionsService.modificarPregunta(1, updatedQuestion)).thenReturn(
+    when(academicQuestionsService.modifyAcademicQuestion(1, updatedQuestion)).thenReturn(
         updatedQuestion);
 
     mockMvc.perform(put("/api/questions-academic/1").header("Authorization",
@@ -142,7 +142,7 @@ public class QuestionsAcademicControllerUnitTest {
     AcademicQuestionsDto updatedQuestion =
         new AcademicQuestionsDto(1, "¿Cuál es el océano más grande del mundo?", Grades.FORTH,
             "Atlántico", "Pacífico", "Índico", "Ártico", "B", null);
-    when(academicQuestionsService.modificarPregunta(1, updatedQuestion)).thenThrow(
+    when(academicQuestionsService.modifyAcademicQuestion(1, updatedQuestion)).thenThrow(
         new NoSuchElementException("Pregunta no encontrada con el id 1"));
 
     mockMvc.perform(put("/api/questions-academic/1").header("Authorization",
@@ -155,7 +155,7 @@ public class QuestionsAcademicControllerUnitTest {
   @Test
   void getExamQuestionsByQuestionText() throws Exception {
     List<AcademicQuestionsDto> questions = Arrays.asList(question1);
-    when(academicQuestionsService.obtenerPreguntasPorQuestionText("cual")).thenReturn(questions);
+    when(academicQuestionsService.getAcademicQuestionByQuestionText("cual")).thenReturn(questions);
 
     mockMvc.perform(get("/api/questions-academic/search").param("questionText", "cual")
             .header("Authorization", "Bearer " + authResponseDto.token())

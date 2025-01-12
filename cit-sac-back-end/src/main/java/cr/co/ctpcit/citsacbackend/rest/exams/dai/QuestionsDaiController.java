@@ -28,8 +28,7 @@ public class QuestionsDaiController {
   @GetMapping
   //TODO: Implementar paginación en la respuesta
   public ResponseEntity<List<DaiQuestionsDto>> getAllExamQuestions() {
-    List<DaiQuestionsDto> examQuestions =
-        daiQuestionsServiceimplementation.obtenerTodasLasPreguntas();
+    List<DaiQuestionsDto> examQuestions = daiQuestionsServiceimplementation.getAllDaiQuestions();
     return ResponseEntity.ok(examQuestions);
   }
 
@@ -44,7 +43,7 @@ public class QuestionsDaiController {
   @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_P')")
   @GetMapping("/{id}")
   public ResponseEntity<DaiQuestionsDto> getExamQuestionById(@PathVariable Integer id) {
-    DaiQuestionsDto examQuestion = daiQuestionsServiceimplementation.obtenerPreguntaPorId(id);
+    DaiQuestionsDto examQuestion = daiQuestionsServiceimplementation.getDaiQuestionById(id);
     return ResponseEntity.ok(examQuestion);
   }
 
@@ -61,7 +60,7 @@ public class QuestionsDaiController {
   public ResponseEntity<List<DaiQuestionsDto>> getExamQuestionsByQuestionText(
       @RequestParam String questionText) {
     List<DaiQuestionsDto> examQuestions =
-        daiQuestionsServiceimplementation.obtenerPreguntasPorQuestionText(questionText);
+        daiQuestionsServiceimplementation.getDaiQuestionByQuestionText(questionText);
     return ResponseEntity.ok(examQuestions);
   }
 
@@ -74,7 +73,7 @@ public class QuestionsDaiController {
   @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_P')")
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteExamQuestion(@PathVariable Integer id) {
-    daiQuestionsServiceimplementation.eliminarPregunta(id);
+    daiQuestionsServiceimplementation.deleteDaiQuestion(id);
     return ResponseEntity.noContent().build();
   }
 
@@ -92,7 +91,7 @@ public class QuestionsDaiController {
   public ResponseEntity<DaiQuestionsDto> updateExamQuestion(@PathVariable Integer id,
       @RequestBody DaiQuestionsDto preguntaDto) {
     DaiQuestionsDto updatedQuestion =
-        daiQuestionsServiceimplementation.modificarPregunta(id, preguntaDto);
+        daiQuestionsServiceimplementation.modifyDaiQuestion(id, preguntaDto);
     return ResponseEntity.ok(updatedQuestion);
   }
 

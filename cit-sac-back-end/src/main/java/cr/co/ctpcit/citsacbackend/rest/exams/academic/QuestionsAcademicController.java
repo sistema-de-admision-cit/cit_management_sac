@@ -28,7 +28,7 @@ public class QuestionsAcademicController {
   @GetMapping
   public ResponseEntity<List<AcademicQuestionsDto>> getAllExamQuestions() {
     List<AcademicQuestionsDto> examQuestions =
-        academicQuestionsServiceimplementation.obtenerTodasLasPreguntas();
+        academicQuestionsServiceimplementation.getAllAcademicQuestions();
     return ResponseEntity.ok(examQuestions);
   }
 
@@ -42,7 +42,7 @@ public class QuestionsAcademicController {
   @GetMapping("/{id}")
   public ResponseEntity<AcademicQuestionsDto> getExamQuestionById(@PathVariable Integer id) {
     AcademicQuestionsDto examQuestion =
-        academicQuestionsServiceimplementation.obtenerPreguntaPorId(id);
+        academicQuestionsServiceimplementation.getAcademicQuestionById(id);
     return ResponseEntity.ok(examQuestion);
   }
 
@@ -57,7 +57,7 @@ public class QuestionsAcademicController {
   public ResponseEntity<List<AcademicQuestionsDto>> getExamQuestionsByQuestionText(
       @RequestParam String questionText) {
     List<AcademicQuestionsDto> examQuestions =
-        academicQuestionsServiceimplementation.obtenerPreguntasPorQuestionText(questionText);
+        academicQuestionsServiceimplementation.getAcademicQuestionByQuestionText(questionText);
     return ResponseEntity.ok(examQuestions);
   }
 
@@ -70,7 +70,7 @@ public class QuestionsAcademicController {
   @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_T')")
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteExamQuestion(@PathVariable Integer id) {
-    academicQuestionsServiceimplementation.eliminarPregunta(id);
+    academicQuestionsServiceimplementation.deleteAcademicQuestion(id);
     return ResponseEntity.noContent().build();
   }
 
@@ -87,7 +87,7 @@ public class QuestionsAcademicController {
   public ResponseEntity<AcademicQuestionsDto> updateExamQuestion(@PathVariable Integer id,
       @RequestBody AcademicQuestionsDto preguntaDto) {
     AcademicQuestionsDto updatedQuestion =
-        academicQuestionsServiceimplementation.modificarPregunta(id, preguntaDto);
+        academicQuestionsServiceimplementation.modifyAcademicQuestion(id, preguntaDto);
     return ResponseEntity.ok(updatedQuestion);
   }
 

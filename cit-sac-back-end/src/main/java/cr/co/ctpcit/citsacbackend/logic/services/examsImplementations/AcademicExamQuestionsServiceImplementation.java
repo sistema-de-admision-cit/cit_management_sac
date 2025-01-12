@@ -17,7 +17,7 @@ public class AcademicExamQuestionsServiceImplementation implements AcademicExamQ
   private final AcademicExamQuestionRepository repository;
 
   @Override
-  public List<AcademicExamQuestionsDto> getExamAnswers(Integer examId) {
+  public List<AcademicExamQuestionsDto> getAcademicExamAnswers(Integer examId) {
     return repository.findAllByIdExamId(examId).stream().map(AcademicExamQuestionsMapper::toDto)
         .collect(Collectors.toList());
   }

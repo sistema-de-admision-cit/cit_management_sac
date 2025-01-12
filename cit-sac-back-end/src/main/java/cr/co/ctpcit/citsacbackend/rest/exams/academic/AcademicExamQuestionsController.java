@@ -29,7 +29,7 @@ public class AcademicExamQuestionsController {
   @GetMapping("/{examId}/questions")
   public ResponseEntity<List<AcademicExamQuestionsDto>> getAcademicExamQuestions(
       @PathVariable Integer examId) {
-    List<AcademicExamQuestionsDto> examAnswers = service.getExamAnswers(examId);
+    List<AcademicExamQuestionsDto> examAnswers = service.getAcademicExamAnswers(examId);
     return ResponseEntity.ok(examAnswers);
   }
 }

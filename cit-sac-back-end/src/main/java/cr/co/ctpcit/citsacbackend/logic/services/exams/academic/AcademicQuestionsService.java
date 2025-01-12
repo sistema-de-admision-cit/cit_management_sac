@@ -5,13 +5,13 @@ import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicQuestionsDto;
 import java.util.List;
 
 public interface AcademicQuestionsService {
-  List<AcademicQuestionsDto> obtenerTodasLasPreguntas();
+  List<AcademicQuestionsDto> getAllAcademicQuestions();
 
-  AcademicQuestionsDto obtenerPreguntaPorId(Integer id);
+  AcademicQuestionsDto getAcademicQuestionById(Integer id);
 
-  List<AcademicQuestionsDto> obtenerPreguntasPorQuestionText(String questionText);
+  List<AcademicQuestionsDto> getAcademicQuestionByQuestionText(String questionText);
 
-  void eliminarPregunta(Integer id);
+  void deleteAcademicQuestion(Integer id);
 
-  AcademicQuestionsDto modificarPregunta(Integer id, AcademicQuestionsDto preguntaDto);
+  AcademicQuestionsDto modifyAcademicQuestion(Integer id, AcademicQuestionsDto preguntaDto);
 }

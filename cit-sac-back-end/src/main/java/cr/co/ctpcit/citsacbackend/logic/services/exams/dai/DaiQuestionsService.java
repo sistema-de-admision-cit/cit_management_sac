@@ -6,13 +6,13 @@ import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiQuestionsDto;
 import java.util.List;
 
 public interface DaiQuestionsService {
-  List<DaiQuestionsDto> obtenerTodasLasPreguntas();
+  List<DaiQuestionsDto> getAllDaiQuestions();
 
-  DaiQuestionsDto obtenerPreguntaPorId(Integer id);
+  DaiQuestionsDto getDaiQuestionById(Integer id);
 
-  List<DaiQuestionsDto> obtenerPreguntasPorQuestionText(String questionText);
+  List<DaiQuestionsDto> getDaiQuestionByQuestionText(String questionText);
 
-  void eliminarPregunta(Integer id);
+  void deleteDaiQuestion(Integer id);
 
-  DaiQuestionsDto modificarPregunta(Integer id, DaiQuestionsDto preguntaDto);
+  DaiQuestionsDto modifyDaiQuestion(Integer id, DaiQuestionsDto preguntaDto);
 }

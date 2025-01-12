@@ -28,20 +28,20 @@ public class DaiQuestionsServiceImplementation implements DaiQuestionsService {
   }
 
   @Override
-  public List<DaiQuestionsDto> obtenerTodasLasPreguntas() {
+  public List<DaiQuestionsDto> getAllDaiQuestions() {
     List<DaiQuestionsEntity> entities = daiQuestionsRepository.findAll();
     return DaiQuestionsMapper.toDtoList(entities);
   }
 
   @Override
-  public DaiQuestionsDto obtenerPreguntaPorId(Integer id) {
+  public DaiQuestionsDto getDaiQuestionById(Integer id) {
     DaiQuestionsEntity entity = daiQuestionsRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException("Pregunta no encontrada con el id " + id));
     return DaiQuestionsMapper.toDto(entity);
   }
 
   @Override
-  public List<DaiQuestionsDto> obtenerPreguntasPorQuestionText(String questionText) {
+  public List<DaiQuestionsDto> getDaiQuestionByQuestionText(String questionText) {
     List<DaiQuestionsEntity> entities =
         daiQuestionsRepository.findByQuestionTextContaining(questionText);
     if (entities.isEmpty()) {
@@ -52,7 +52,7 @@ public class DaiQuestionsServiceImplementation implements DaiQuestionsService {
   }
 
   @Override
-  public void eliminarPregunta(Integer questionId) {
+  public void deleteDaiQuestion(Integer questionId) {
     if (daiExamQuestionsRepository.existsByQuestionId(questionId)) {
       throw new IllegalStateException(
           "No se puede eliminar la pregunta porque está asociada a un examen.");
@@ -61,7 +61,7 @@ public class DaiQuestionsServiceImplementation implements DaiQuestionsService {
   }
 
   @Override
-  public DaiQuestionsDto modificarPregunta(Integer id, DaiQuestionsDto preguntaDto) {
+  public DaiQuestionsDto modifyDaiQuestion(Integer id, DaiQuestionsDto preguntaDto) {
     DaiQuestionsEntity entity = daiQuestionsRepository.findById(id)
         .orElseThrow(() -> new NoSuchElementException("Pregunta no encontrada con el id " + id));
 

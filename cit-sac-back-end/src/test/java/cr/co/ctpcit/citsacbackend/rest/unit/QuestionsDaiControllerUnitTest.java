@@ -68,7 +68,7 @@ public class QuestionsDaiControllerUnitTest {
   @Test
   void getAllExamQuestions() throws Exception {
     List<DaiQuestionsDto> allQuestions = Arrays.asList(question1, question2);
-    when(daiQuestionsService.obtenerTodasLasPreguntas()).thenReturn(allQuestions);
+    when(daiQuestionsService.getAllDaiQuestions()).thenReturn(allQuestions);
 
     mockMvc.perform(
             get("/api/questions-dai").header("Authorization", "Bearer " + authResponseDto.token())
@@ -79,7 +79,7 @@ public class QuestionsDaiControllerUnitTest {
 
   @Test
   void getExamQuestionById() throws Exception {
-    when(daiQuestionsService.obtenerPreguntaPorId(1)).thenReturn(question1);
+    when(daiQuestionsService.getDaiQuestionById(1)).thenReturn(question1);
 
     mockMvc.perform(
             get("/api/questions-dai/1").header("Authorization", "Bearer " + authResponseDto.token())
@@ -89,7 +89,7 @@ public class QuestionsDaiControllerUnitTest {
 
   @Test
   void getExamQuestionByIdNotFound() throws Exception {
-    when(daiQuestionsService.obtenerPreguntaPorId(1)).thenThrow(
+    when(daiQuestionsService.getDaiQuestionById(1)).thenThrow(
         new NoSuchElementException("Pregunta no encontrada con el id 1"));
 
     mockMvc.perform(
@@ -108,7 +108,7 @@ public class QuestionsDaiControllerUnitTest {
   @Test
   void deleteExamQuestionNotFound() throws Exception {
     doThrow(new NoSuchElementException("Pregunta no encontrada con el id 1")).when(
-        daiQuestionsService).eliminarPregunta(1);
+        daiQuestionsService).deleteDaiQuestion(1);
 
     mockMvc.perform(
             delete("/api/questions-dai/1").header("Authorization", "Bearer " + authResponseDto.token())
@@ -120,7 +120,7 @@ public class QuestionsDaiControllerUnitTest {
   void updateExamQuestion() throws Exception {
     DaiQuestionsDto updatedQuestion =
         new DaiQuestionsDto(1, "¿Cómo te has sentido las últimas semanas?", Grades.FORTH, null);
-    when(daiQuestionsService.modificarPregunta(1, updatedQuestion)).thenReturn(updatedQuestion);
+    when(daiQuestionsService.modifyDaiQuestion(1, updatedQuestion)).thenReturn(updatedQuestion);
 
     mockMvc.perform(
             put("/api/questions-dai/1").header("Authorization", "Bearer " + authResponseDto.token())
@@ -136,7 +136,7 @@ public class QuestionsDaiControllerUnitTest {
   void updateExamQuestionNotFound() throws Exception {
     DaiQuestionsDto updatedQuestion =
         new DaiQuestionsDto(1, "¿Cómo te has sentido las últimas semanas?", Grades.FORTH, null);
-    when(daiQuestionsService.modificarPregunta(1, updatedQuestion)).thenThrow(
+    when(daiQuestionsService.modifyDaiQuestion(1, updatedQuestion)).thenThrow(
         new NoSuchElementException("Pregunta no encontrada con el id 1"));
 
     mockMvc.perform(
@@ -150,7 +150,7 @@ public class QuestionsDaiControllerUnitTest {
   @Test
   void getExamQuestionsByQuestionText() throws Exception {
     List<DaiQuestionsDto> questions = Arrays.asList(question1);
-    when(daiQuestionsService.obtenerPreguntasPorQuestionText("Puedes")).thenReturn(questions);
+    when(daiQuestionsService.getDaiQuestionByQuestionText("Puedes")).thenReturn(questions);
 
     mockMvc.perform(get("/api/questions-dai/search").param("questionText", "Puedes")
             .header("Authorization", "Bearer " + authResponseDto.token())

@@ -17,7 +17,7 @@ public class DaiExamQuestionsServiceImplementation implements DaiExamQuestionsSe
   private final DaiExamQuestionsRepository repository;
 
   @Override
-  public List<DaiExamQuestionsDto> getExamAnswers(Integer examId) {
+  public List<DaiExamQuestionsDto> getDaiExamAnswers(Integer examId) {
     return repository.findAllByIdExamId(examId).stream().map(DaiExamQuestionsMapper::toDto)
         .collect(Collectors.toList());
   }

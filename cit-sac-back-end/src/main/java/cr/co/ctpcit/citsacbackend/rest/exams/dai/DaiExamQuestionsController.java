@@ -29,7 +29,7 @@ public class DaiExamQuestionsController {
   @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_P')")
   @GetMapping("/{examId}/questions")
   public ResponseEntity<List<DaiExamQuestionsDto>> getExamQuestions(@PathVariable Integer examId) {
-    List<DaiExamQuestionsDto> examAnswers = service.getExamAnswers(examId);
+    List<DaiExamQuestionsDto> examAnswers = service.getDaiExamAnswers(examId);
     return ResponseEntity.ok(examAnswers);
   }
 }

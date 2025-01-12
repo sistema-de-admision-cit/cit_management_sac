@@ -62,7 +62,7 @@ public class AcademicExamQuestionsControllerUnitTest {
   public void testGetAcademicExamQuestions() throws Exception {
     int examId = 1;
     List<AcademicExamQuestionsDto> questions = Arrays.asList(question1, question2);
-    when(service.getExamAnswers(examId)).thenReturn(questions);
+    when(service.getAcademicExamAnswers(examId)).thenReturn(questions);
 
     mockMvc.perform(
             get("/api/academic-exam-questions/{examId}/questions", examId).header("Authorization",

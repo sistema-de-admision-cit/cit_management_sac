@@ -62,7 +62,7 @@ public class DaiExamQuestionsControllerUnitTest {
   public void testGetExamQuestions() throws Exception {
     int examId = 1;
     List<DaiExamQuestionsDto> questions = Arrays.asList(question1, question2);
-    when(service.getExamAnswers(examId)).thenReturn(questions);
+    when(service.getDaiExamAnswers(examId)).thenReturn(questions);
 
     mockMvc.perform(
             get("/api/dai-exam-questions/{examId}/questions", examId).header("Authorization",
