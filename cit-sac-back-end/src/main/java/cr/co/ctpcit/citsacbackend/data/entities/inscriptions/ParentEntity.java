@@ -50,10 +50,12 @@ public class ParentEntity implements Serializable {
   private Map<String, Object> daiExam = new HashMap<>();
 
   @JsonIgnore
+  @Builder.Default
   @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ParentsStudentsEntity> students = new ArrayList<>();
 
   @JsonManagedReference
+  @Builder.Default
   @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<AddressEntity> addresses = new ArrayList<>();
 

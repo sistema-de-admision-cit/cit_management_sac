@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -39,9 +40,8 @@ public class EnrollmentEntity {
       columnDefinition = "enum('PENDING','ELIGIBLE','INELIGIBLE','ACCEPTED','REJECTED')")
   private ProcessStatus status;
 
-  @NotNull
-  @ColumnDefault("CURRENT_TIMESTAMP")
-  @Column(name = "enrollment_date", nullable = false)
+  @CreationTimestamp
+  @Column(name = "enrollment_date")
   private Instant enrollmentDate;
 
   @NotNull
@@ -72,6 +72,7 @@ public class EnrollmentEntity {
   private Boolean whatsappNotification = false;
 
   @JsonManagedReference
+  @Builder.Default
   @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<DocumentEntity> documents = new ArrayList<>();
 

@@ -3,6 +3,8 @@ package cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.StudentEntity;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
 
+import java.util.ArrayList;
+
 
 /**
  * Mapper for {@link StudentEntity} and {@link StudentDto} This class is used to convert
@@ -33,6 +35,7 @@ public class StudentMapper {
         .birthDate(inscription.birthDate())
         .previousSchool(inscription.previousSchool())
         .hasAccommodations(inscription.hasAccommodations())
+        .parents(new ArrayList<>())
         .build();
   }
 }

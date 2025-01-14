@@ -28,9 +28,9 @@ public class DocumentEntity {
   @JoinColumn(name = "enrollment_id", nullable = false, columnDefinition = "INT UNSIGNED")
   private EnrollmentEntity enrollment;
 
-  @Size(max = 32)
+  @Size(max = 64)
   @NotNull
-  @Column(name = "document_name", nullable = false, length = 32)
+  @Column(name = "document_name", nullable = false, length = 64)
   private String documentName;
 
   @NotNull

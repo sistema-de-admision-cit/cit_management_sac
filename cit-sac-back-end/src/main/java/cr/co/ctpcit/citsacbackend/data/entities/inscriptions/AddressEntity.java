@@ -28,9 +28,9 @@ public class AddressEntity {
   @JoinColumn(name = "parent_id", nullable = false, columnDefinition = "INT UNSIGNED")
   private ParentEntity parent;
 
-  @Size(max = 16)
+  @Size(max = 32)
   @NotNull
-  @Column(name = "country", nullable = false, length = 16)
+  @Column(name = "country", nullable = false, length = 32)
   private String country;
 
   @Size(max = 32)
@@ -48,10 +48,10 @@ public class AddressEntity {
   @Column(name = "district", nullable = false, length = 32)
   private String district;
 
-  @Size(max = 64)
+  @Size(max = 128)
   @NotNull
   @ColumnDefault("'N/A'")
-  @Column(name = "address_info", nullable = false, length = 64)
+  @Column(name = "address_info", nullable = false, length = 128)
   private String addressInfo;
 
   @Override

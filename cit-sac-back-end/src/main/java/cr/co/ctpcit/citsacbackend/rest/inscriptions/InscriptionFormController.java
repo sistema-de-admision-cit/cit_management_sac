@@ -76,7 +76,7 @@ public class InscriptionFormController {
    * @param exc the exception
    * @return a response entity with the status code
    */
-  @ExceptionHandler({NoSuchElementException.class, StorageFileNotFoundException.class})
+  @ExceptionHandler({NoSuchElementException.class})
   ResponseEntity<?> handleNoSuchElementException(NoSuchElementException exc) {
     return ResponseEntity.notFound().build();
   }

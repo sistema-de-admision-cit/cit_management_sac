@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -35,13 +36,18 @@ public class StorageServiceImpl implements StorageService {
 
   @Async
   @Override
-  public CompletableFuture<DocumentDto> store(MultipartFile file, String filename, DocType docType) {
+  public CompletableFuture<DocumentDto> store(MultipartFile file, String filename,
+      DocType docType) {
     try {
-      if (file.isEmpty()) {
-        throw new StorageException(
-            "Failed to store empty file " + file.getOriginalFilename() + " with name " + filename);
+      if (file != null) {
+        if (Files.exists(Paths.get(location).resolve(filename))) {
+          File existingFile = new File(location + filename);
+          filename = existingFile.getName().substring(0, existingFile.getName()
+              .lastIndexOf('.')) + "_" + System.currentTimeMillis() + filename.substring(
+              filename.lastIndexOf('.'));
+        }
+        Files.copy(file.getInputStream(), Paths.get(location).resolve(filename));
       }
-      Files.copy(file.getInputStream(), Paths.get(location).resolve(filename));
     } catch (IOException e) {
       throw new StorageException(
           "Failed to store file " + file.getOriginalFilename() + " with name " + filename, e);

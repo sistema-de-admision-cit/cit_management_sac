@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -38,6 +39,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   private final AddressRepository addressRepository;
   private final EnrollmentRepository enrollmentRepository;
   private final DocumentRepository documentRepository;
+  private final StudentRepository studentRepository;
 
   @Value("${storage.location}")
   private String rootLocation;
@@ -46,12 +48,13 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   @Autowired
   public InscriptionsServiceImpl(PersonRepository personRepository, StorageService storageService,
       AddressRepository addressRepository, EnrollmentRepository enrollmentRepository,
-      DocumentRepository documentRepository) {
+      DocumentRepository documentRepository, StudentRepository studentRepository) {
     this.personRepository = personRepository;
     this.storageService = storageService;
     this.addressRepository = addressRepository;
     this.enrollmentRepository = enrollmentRepository;
     this.documentRepository = documentRepository;
+    this.studentRepository = studentRepository;
   }
 
   /**
@@ -118,7 +121,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
    * @throws EnrollmentException if the student is already enrolled for the selected date
    */
   @Override
-  @Transactional(rollbackFor = {EnrollmentException.class, NoSuchElementException.class})
+  //@Transactional(rollbackFor = {EnrollmentException.class, NoSuchElementException.class})
   public EnrollmentDto addInscription(EnrollmentDto inscription, MultipartFile grades,
       MultipartFile letter) {
     CompletableFuture<DocumentDto> gradesDocument = CompletableFuture.completedFuture(null);
@@ -127,31 +130,36 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     //Save inscription
     if (grades != null && !grades.isEmpty()) {
       gradesDocument = storageService.store(grades,
-          "grades_" + inscription.id() + "_" + inscription.student().person().idNumber() + ".pdf",
-          DocType.OT);
+          "grades_" + inscription.student().person().idNumber() + ".pdf", DocType.OT);
     }
     if (letter != null && !letter.isEmpty()) {
       letterDocument = storageService.store(letter,
-          "letter_" + inscription.id() + "_" + inscription.student().person().idNumber() + ".pdf",
-          DocType.AC);
+          "letter_" + inscription.student().person().idNumber() + ".pdf", DocType.AC);
     }
 
     //Wait for the documents to be saved
     CompletableFuture.allOf(gradesDocument, letterDocument).join();
 
-    //Add the documents to the inscription
+    //Add the documents to a list
+    List<DocumentDto> documents = new ArrayList<>();
     try {
-      inscription.documents().add(gradesDocument.get());
-      inscription.documents().add(letterDocument.get());
+      DocumentDto gradesFutureDoc = gradesDocument.get();
+      DocumentDto letterFutureDoc = letterDocument.get();
+      if (gradesFutureDoc != null) {
+        documents.add(gradesFutureDoc);
+      }
+      if (letterFutureDoc != null) {
+        documents.add(letterFutureDoc);
+      }
     } catch (InterruptedException | ExecutionException e) {
       throw new EnrollmentException("Error while saving the documents");
     }
 
     //Save inscription
-    return createInscription(inscription);
+    return createInscription(inscription, documents);
   }
 
-  private EnrollmentDto createInscription(EnrollmentDto inscription) {
+  private EnrollmentDto createInscription(EnrollmentDto inscription, List<DocumentDto> documents) {
     //Validate if the student's parent already exists
     ParentDto inscriptionParent = inscription.student().parents().getFirst();
     Optional<PersonEntity> parentPersonOptional =
@@ -165,16 +173,15 @@ public class InscriptionsServiceImpl implements InscriptionsService {
       parent = ParentMapper.convertToEntity(inscriptionParent);
       parentPerson.addParent(parent);
 
-      //Save the parent
-      parentPerson = personRepository.save(parentPerson);
-
       //Get the parent's address
       AddressEntity address =
           AddressMapper.convertToEntity(inscriptionParent.addresses().getFirst());
 
       //Save the parent's address
       parent.addAddress(address);
-      addressRepository.save(address);
+
+      //Save the parent
+      personRepository.save(parentPerson);
     }
 
     // Validate if the student already exists
@@ -190,19 +197,25 @@ public class InscriptionsServiceImpl implements InscriptionsService {
       student = StudentMapper.convertToEntity(inscriptionStudent);
       studentPerson.addStudent(student);
 
+      //Add student to the parent
+      parent.addStudent(student);
+
       // Save the student
-      studentPerson = personRepository.save(studentPerson);
+      personRepository.save(studentPerson);
     }
 
+    //
     //Verify parent-student relation
     StudentEntity finalStudent = student;
     if (parent.getStudents().stream().noneMatch(s -> s.getStudent().equals(finalStudent))) {
       parent.addStudent(student);
+      studentRepository.save(student);
     }
 
     // Verify if the student is already enrolled
     List<EnrollmentEntity> studentEnrollments = enrollmentRepository.getAllByStudent(student);
     if (studentEnrollments.stream().anyMatch(e -> e.getExamDate().equals(inscription.examDate()))) {
+      //Falta eliminar los documentos de la inscripción
       throw new EnrollmentException("El estudiante ya está inscrito para la fecha seleccionada");
     }
 
@@ -215,14 +228,11 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     // Set pending status to the enrollment
     enrollmentEntity.setStatus(ProcessStatus.PENDING);
 
-    // Set student to the enrollment
-    enrollmentEntity.setStudent(student);
-
     // Save the enrollment
     enrollmentEntity = enrollmentRepository.save(enrollmentEntity);
 
     // Add enrollment to each document
-    for (DocumentDto d : inscription.documents()) {
+    for (DocumentDto d : documents) {
       DocumentEntity document = DocumentMapper.convertToEntity(d);
       document.setDocumentUrl(rootLocation + d.documentName());
 

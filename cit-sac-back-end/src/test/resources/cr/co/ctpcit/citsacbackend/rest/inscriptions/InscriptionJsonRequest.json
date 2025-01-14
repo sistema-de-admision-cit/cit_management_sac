@@ -1,0 +1,43 @@
+{
+  "id": null,
+  "student": {
+    "person": {
+      "firstName": "Mark",
+      "firstSurname": "Doe",
+      "secondSurname": "Johnson",
+      "idType": "CC",
+      "idNumber": "987654321"
+    },
+    "birthDate": "2007-12-03",
+    "previousSchool": "Manhattan School",
+    "hasAccommodations": false,
+    "parents": [
+      {
+        "person": {
+          "firstName": "John",
+          "firstSurname": "Doe",
+          "secondSurname": "Smith",
+          "idType": "CC",
+          "idNumber": "123456789"
+        },
+        "phoneNumber": "88889999",
+        "email": "johndoe@mtmail.com",
+        "relationship": "F",
+        "addresses": [
+          {
+            "country": "Costa Rica",
+            "province": "San José",
+            "city": "San José",
+            "district": "Pavas",
+            "addressInfo": "Ruta 104, Iglesia Ma. Reina del Universo, calle principal., Pavas, Costa Rica"
+          }
+        ]
+      }
+    ]
+  },
+  "gradeToEnroll": "FIRST",
+  "knownThrough": "OT",
+  "examDate": "2024-12-15",
+  "consentGiven": true,
+  "whatsappNotification": true
+}

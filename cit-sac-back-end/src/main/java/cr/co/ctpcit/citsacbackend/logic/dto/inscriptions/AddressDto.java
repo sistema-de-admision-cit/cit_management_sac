@@ -15,5 +15,5 @@ public record AddressDto(Long id, @NotNull @Size(max = 16) String country,
                          @NotNull @Size(max = 32) String province,
                          @NotNull @Size(max = 32) String city,
                          @NotNull @Size(max = 32) String district,
-                         @NotNull @Size(max = 64) String addressInfo) implements Serializable {
+                         @NotNull @Size(max = 128) String addressInfo) implements Serializable {
 }

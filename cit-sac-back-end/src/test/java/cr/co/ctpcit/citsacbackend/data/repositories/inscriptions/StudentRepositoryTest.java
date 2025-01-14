@@ -78,7 +78,8 @@ class StudentRepositoryTest {
     parentEntity.setPhoneNumber("88889999");
 
     parentPersonEntity.addParent(parentEntity);
-    PersonEntity savedParentPersonEntity = personRepository.save(parentPersonEntity);
+    personRepository.save(parentPersonEntity);
+
     PersonEntity savedStudentPersonEntity = personRepository.save(personEntity);
 
     parentEntity.addStudent(savedStudentPersonEntity.getStudent());
