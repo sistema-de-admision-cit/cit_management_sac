@@ -72,11 +72,20 @@ public class StorageServiceImpl implements StorageService {
 
   @Override
   public void deleteAll() {
-
+    try {
+      Files.walk(Paths.get(location)).filter(Files::isRegularFile).map(Path::toFile)
+          .forEach(File::delete);
+    } catch (IOException e) {
+      throw new StorageException("Failed to delete all files", e);
+    }
   }
 
   @Override
   public boolean deleteDocument(String filename) {
-    return false;
+    try {
+      return Files.deleteIfExists(Paths.get(location).resolve(filename));
+    } catch (IOException e) {
+      throw new StorageException("Failed to delete file " + filename, e);
+    }
   }
 }

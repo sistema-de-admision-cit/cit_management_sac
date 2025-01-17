@@ -14,7 +14,9 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.File;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 @RequiredArgsConstructor
@@ -38,6 +40,8 @@ public class InscriptionFormController {
       @RequestPart(value = "grades", required = false) MultipartFile grades,
       @RequestPart(name = "letter", required = false) MultipartFile letter,
       UriComponentsBuilder uriComponentsBuilder) {
+    verifyFile(grades);
+    verifyFile(letter);
 
     EnrollmentDto enrolled = inscriptionsService.addInscription(inscription, grades, letter);
 
@@ -45,6 +49,14 @@ public class InscriptionFormController {
     return ResponseEntity.created(
             uriComponentsBuilder.path("/api/inscription/{id}").buildAndExpand(enrolled.id()).toUri())
         .build();
+  }
+
+  private void verifyFile(MultipartFile file) {
+    if (file != null) {
+      if (!Objects.requireNonNull(file.getOriginalFilename()).toLowerCase().endsWith(".pdf")) {
+        throw new IllegalArgumentException("El archivo debe ser un PDF");
+      }
+    }
   }
 
   /**

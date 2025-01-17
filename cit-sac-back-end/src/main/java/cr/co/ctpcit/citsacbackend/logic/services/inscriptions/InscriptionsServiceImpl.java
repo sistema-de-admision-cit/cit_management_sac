@@ -36,7 +36,6 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
   private final PersonRepository personRepository;
   private final StorageService storageService;
-  private final AddressRepository addressRepository;
   private final EnrollmentRepository enrollmentRepository;
   private final DocumentRepository documentRepository;
   private final StudentRepository studentRepository;
@@ -47,11 +46,10 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
   @Autowired
   public InscriptionsServiceImpl(PersonRepository personRepository, StorageService storageService,
-      AddressRepository addressRepository, EnrollmentRepository enrollmentRepository,
-      DocumentRepository documentRepository, StudentRepository studentRepository) {
+      EnrollmentRepository enrollmentRepository, DocumentRepository documentRepository,
+      StudentRepository studentRepository) {
     this.personRepository = personRepository;
     this.storageService = storageService;
-    this.addressRepository = addressRepository;
     this.enrollmentRepository = enrollmentRepository;
     this.documentRepository = documentRepository;
     this.studentRepository = studentRepository;
@@ -216,6 +214,9 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     List<EnrollmentEntity> studentEnrollments = enrollmentRepository.getAllByStudent(student);
     if (studentEnrollments.stream().anyMatch(e -> e.getExamDate().equals(inscription.examDate()))) {
       //Falta eliminar los documentos de la inscripción
+      for (DocumentDto d : documents) {
+        storageService.deleteDocument(d.documentName());
+      }
       throw new EnrollmentException("El estudiante ya está inscrito para la fecha seleccionada");
     }
 
