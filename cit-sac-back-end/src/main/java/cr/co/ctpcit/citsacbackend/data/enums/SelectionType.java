@@ -4,5 +4,5 @@ package cr.co.ctpcit.citsacbackend.data.enums;
  * Enum for selection type of a question
  */
 public enum SelectionType {
-  UNIQUE, MULTIPLE
+  SINGLE, MULTIPLE
 }

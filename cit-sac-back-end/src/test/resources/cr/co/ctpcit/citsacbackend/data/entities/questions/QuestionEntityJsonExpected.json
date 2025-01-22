@@ -1,0 +1,28 @@
+{
+  "id": 1,
+  "questionType": "ACA",
+  "questionText": "Si se suma 11 más 5, existe un escenario donde el resultado es 4.",
+  "imageUrl": null,
+  "questionGrade": "EIGHTH",
+  "questionLevel": "HARD",
+  "selectionType": "SINGLE",
+  "deleted": false,
+  "questionOptionEntities": [
+    {
+      "id": {
+        "optionId": 1,
+        "questionId": 1
+      },
+      "isCorrect": false,
+      "option": "Falso"
+    },
+    {
+      "id": {
+        "optionId": 2,
+        "questionId": 1
+      },
+      "isCorrect": true,
+      "option": "Verdadero"
+    }
+  ]
+}

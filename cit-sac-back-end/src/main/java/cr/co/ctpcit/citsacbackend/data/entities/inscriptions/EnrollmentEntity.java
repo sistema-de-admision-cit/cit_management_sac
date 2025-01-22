@@ -64,11 +64,13 @@ public class EnrollmentEntity {
   @NotNull
   @ColumnDefault("0")
   @Column(name = "consent_given", nullable = false)
+  @Builder.Default
   private Boolean consentGiven = false;
 
   @NotNull
   @ColumnDefault("0")
   @Column(name = "whatsapp_notification", nullable = false)
+  @Builder.Default
   private Boolean whatsappNotification = false;
 
   @JsonManagedReference

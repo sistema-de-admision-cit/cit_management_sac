@@ -38,13 +38,11 @@ public class StudentEntity implements Serializable {
 
   @NotNull
   @Column(name = "has_accommodations", nullable = false)
+  @Builder.Default
   private Boolean hasAccommodations = false;
 
-  @OneToMany(
-      mappedBy = "student",
-      cascade = CascadeType.ALL,
-      orphanRemoval = true
-  )
+  @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+  @Builder.Default
   private List<ParentsStudentsEntity> parents = new ArrayList<>();
 
   @Override

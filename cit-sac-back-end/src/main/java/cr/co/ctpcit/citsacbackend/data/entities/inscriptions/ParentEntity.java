@@ -47,6 +47,7 @@ public class ParentEntity implements Serializable {
 
   @Column(name = "dai_exam", columnDefinition = "json")
   @JdbcTypeCode(SqlTypes.JSON)
+  @Builder.Default
   private Map<String, Object> daiExam = new HashMap<>();
 
   @JsonIgnore

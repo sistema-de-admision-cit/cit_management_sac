@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.entities.questions;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import cr.co.ctpcit.citsacbackend.data.enums.QuestionLevel;
 import cr.co.ctpcit.citsacbackend.data.enums.QuestionType;
@@ -11,10 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -63,6 +61,28 @@ public class QuestionEntity {
   private Boolean deleted = false;
 
   @OneToMany(mappedBy = "question")
+  @JsonManagedReference
   private List<QuestionOptionEntity> questionOptionEntities = new ArrayList<>();
 
+  public void addQuestionOption(QuestionOptionEntity questionOptionEntity) {
+    questionOptionEntities.add(questionOptionEntity);
+    questionOptionEntity.setQuestion(this);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
+
+    QuestionEntity that = (QuestionEntity) o;
+
+    return id.equals(that.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(id);
+  }
 }

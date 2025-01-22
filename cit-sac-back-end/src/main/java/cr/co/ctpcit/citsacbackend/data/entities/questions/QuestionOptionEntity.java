@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.entities.questions;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,6 +19,7 @@ public class QuestionOptionEntity {
   @MapsId("questionId")
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "question_id", nullable = false, columnDefinition = "INT UNSIGNED")
+  @JsonBackReference
   private QuestionEntity question;
 
   @NotNull
