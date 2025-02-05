@@ -4,6 +4,7 @@ package cr.co.ctpcit.citsacbackend.rest.config;
 import cr.co.ctpcit.citsacbackend.logic.dto.config.EmailConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.services.config.EmailConfigService;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,15 @@ public class EmailConfigController {
     @Autowired
     EmailConfigService emailConfigService;
 
+    //Mandarlo a inscripción
     @PostMapping
-    public ResponseEntity<String> sendEmail(@RequestBody EmailConfigDto emailConfigDto) throws MessagingException {
-        emailConfigService.sendEmail(emailConfigDto);
-        return new ResponseEntity<>("Email sent succesfuly", HttpStatus.OK);
+    public ResponseEntity<String> sendEmail(@RequestBody @Valid EmailConfigDto emailConfigDto) {
+        try {
+            emailConfigService.sendEmail(emailConfigDto);
+            return ResponseEntity.ok("Email enviado exitosamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al enviar el email: " + e.getMessage());
+        }
     }
 }

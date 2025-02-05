@@ -5,5 +5,5 @@ import jakarta.mail.MessagingException;
 
 public interface EmailConfigService {
 
-    public void sendEmail(EmailConfigDto emailConfigDto) throws MessagingException;
+    public void sendEmail(EmailConfigDto emailConfigDto);
 }

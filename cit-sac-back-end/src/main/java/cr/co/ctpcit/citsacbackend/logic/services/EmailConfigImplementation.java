@@ -18,14 +18,17 @@ public class EmailConfigImplementation implements EmailConfigService {
     }
 
     @Override
-    public void sendEmail(EmailConfigDto emailConfigDto) throws MessagingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message,true,"UTF8");
-        helper.setTo(emailConfigDto.getRecipient());
-        helper.setSubject(emailConfigDto.getSubject());
-        helper.setText(emailConfigDto.getMessage(), true);
-
-        mailSender.send(message);
+    public void sendEmail(EmailConfigDto emailConfigDto) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(emailConfigDto.getRecipient());
+            helper.setSubject(emailConfigDto.getSubject());
+            helper.setText(emailConfigDto.getMessage(), true);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Error al enviar el correo: " + e.getMessage(), e);
+        }
     }
 
 }
