@@ -13,13 +13,15 @@ import org.hibernate.annotations.ColumnDefault;
 @Entity
 @Table(name = "tbl_question_options")
 public class QuestionOptionEntity {
-  @EmbeddedId
-  private QuestionOptionEntityId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "option_id", columnDefinition = "INT UNSIGNED")
+  private Long id;
 
-  @MapsId("questionId")
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "question_id", nullable = false, columnDefinition = "INT UNSIGNED")
+  @NotNull
   @JsonBackReference
+  @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
+  @JoinColumn(name = "question_id", nullable = false, columnDefinition = "INT UNSIGNED")
   private QuestionEntity question;
 
   @NotNull

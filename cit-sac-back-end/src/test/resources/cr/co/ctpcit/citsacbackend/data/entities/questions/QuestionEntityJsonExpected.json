@@ -7,20 +7,14 @@
   "questionLevel": "HARD",
   "selectionType": "SINGLE",
   "deleted": false,
-  "questionOptionEntities": [
+  "questionOptions": [
     {
-      "id": {
-        "optionId": 1,
-        "questionId": 1
-      },
+      "id": 1,
       "isCorrect": false,
       "option": "Falso"
     },
     {
-      "id": {
-        "optionId": 2,
-        "questionId": 1
-      },
+      "id": 2,
       "isCorrect": true,
       "option": "Verdadero"
     }

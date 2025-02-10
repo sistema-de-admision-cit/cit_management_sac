@@ -24,7 +24,7 @@ public class AddressEntity {
 
   @NotNull
   @JsonBackReference
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
   @JoinColumn(name = "parent_id", nullable = false, columnDefinition = "INT UNSIGNED")
   private ParentEntity parent;
 

@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @JsonTest
 class QuestionEntityTest {
@@ -30,12 +29,12 @@ class QuestionEntityTest {
     question.setDeleted(false);
 
     QuestionOptionEntity option1 = new QuestionOptionEntity();
-    option1.setId(new QuestionOptionEntityId(1L, 1L));
+    option1.setId(1L);
     option1.setIsCorrect(false);
     option1.setOption("Falso");
 
     QuestionOptionEntity option2 = new QuestionOptionEntity();
-    option2.setId(new QuestionOptionEntityId(2L, 1L));
+    option2.setId(2L);
     option2.setIsCorrect(true);
     option2.setOption("Verdadero");
 
@@ -46,7 +45,8 @@ class QuestionEntityTest {
     assertThat(json.write(question)).hasJsonPathNumberValue("@.id");
     assertThat(json.write(question)).extractingJsonPathNumberValue("@.id").isEqualTo(1);
     assertThat(json.write(question)).hasJsonPathStringValue("@.questionType");
-    assertThat(json.write(question)).extractingJsonPathStringValue("@.selectionType").isEqualTo("SINGLE");
+    assertThat(json.write(question)).extractingJsonPathStringValue("@.selectionType")
+        .isEqualTo("SINGLE");
   }
 
   @Test
@@ -63,18 +63,14 @@ class QuestionEntityTest {
           "deleted": false,
           "questionOptions": [
             {
-              "id": {
-                "questionId": 1,
-                "optionId": 1
-              },
+              "questionId": 1,
+              "optionId": 1,
               "option": "Falso",
               "isCorrect": false
             },
             {
-              "id": {
-                "questionId": 1,
-                "optionId": 2
-              },
+              "questionId": 1,
+              "optionId": 2,
               "option": "Verdadero",
               "isCorrect": true
             }
@@ -92,12 +88,12 @@ class QuestionEntityTest {
     question.setDeleted(false);
 
     QuestionOptionEntity option1 = new QuestionOptionEntity();
-    option1.setId(new QuestionOptionEntityId(1L, 1L));
+    option1.setId(1L);
     option1.setIsCorrect(false);
     option1.setOption("Falso");
 
     QuestionOptionEntity option2 = new QuestionOptionEntity();
-    option2.setId(new QuestionOptionEntityId(1L, 2L));
+    option2.setId(2L);
     option2.setIsCorrect(true);
     option2.setOption("Verdadero");
 

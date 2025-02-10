@@ -8,19 +8,21 @@ import cr.co.ctpcit.citsacbackend.data.enums.SelectionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "tbl_questions")
 public class QuestionEntity {
   @Id
   @Column(name = "question_id", columnDefinition = "INT UNSIGNED")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotNull
@@ -52,7 +54,7 @@ public class QuestionEntity {
   @NotNull
   @Enumerated(EnumType.STRING)
   @Column(name = "selection_type", nullable = false,
-      columnDefinition = "enum('UNIQUE', 'MULTIPLE')")
+      columnDefinition = "enum('SINGLE', 'MULTIPLE', 'PARAGRAPH')")
   private SelectionType selectionType;
 
   @NotNull
@@ -60,12 +62,12 @@ public class QuestionEntity {
   @Column(name = "deleted", nullable = false)
   private Boolean deleted = false;
 
-  @OneToMany(mappedBy = "question")
+  @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonManagedReference
-  private List<QuestionOptionEntity> questionOptionEntities = new ArrayList<>();
+  private List<QuestionOptionEntity> questionOptions = new ArrayList<>();
 
   public void addQuestionOption(QuestionOptionEntity questionOptionEntity) {
-    questionOptionEntities.add(questionOptionEntity);
+    questionOptions.add(questionOptionEntity);
     questionOptionEntity.setQuestion(this);
   }
 
