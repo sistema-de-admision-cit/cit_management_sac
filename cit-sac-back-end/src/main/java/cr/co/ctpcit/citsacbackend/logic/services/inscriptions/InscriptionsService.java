@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Service
 public interface InscriptionsService {
@@ -19,7 +18,7 @@ public interface InscriptionsService {
 
   StudentDto findStudentById(@NotNull Long id);
 
-  List<StudentDto> findStudentByValue(String value);
+  List<EnrollmentDto> findStudentByValue(String value);
 
   EnrollmentDto addInscription(EnrollmentDto inscriptionDto, MultipartFile grades,
       MultipartFile letter);
@@ -36,4 +35,6 @@ public interface InscriptionsService {
   boolean deleteDocument(Long documentId);
 
   DocumentDto saveDocument(String documentName, String documentType, Long enrollmentId);
+
+  Iterable<EnrollmentDto> findEnrollmentsByStudentId(String idNumber);
 }

@@ -8,5 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Long> {
-  List<EnrollmentEntity> getAllByStudent(@NotNull StudentEntity student);
+  List<EnrollmentEntity> findAllByStudent(@NotNull StudentEntity student);
+
+  List<EnrollmentEntity> findAllByStudentIn(List<StudentEntity> students);
 }

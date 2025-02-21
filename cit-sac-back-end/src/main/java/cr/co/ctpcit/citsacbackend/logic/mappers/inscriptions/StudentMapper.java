@@ -4,6 +4,7 @@ import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.StudentEntity;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -22,12 +23,12 @@ public class StudentMapper {
         .hasAccommodations(studentEntity.getHasAccommodations()).build();
   }
 
-  /*public static List<StudentDto> convertToDtoList(List<StudentEntity> studentEntities) {
+  public static List<StudentDto> convertToDtoList(List<StudentEntity> studentEntities) {
     if (studentEntities == null) {
       return null;
     }
     return studentEntities.stream().map(StudentMapper::convertToDto).toList();
-  }*/
+  }
 
   public static StudentEntity convertToEntity(StudentDto inscription) {
     return StudentEntity.builder()

@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -96,6 +97,17 @@ class EnrollmentRepositoryTest {
 
     assertNotNull(foundEnrollmentEntity);
     assertEquals(enrollmentEntity, foundEnrollmentEntity);
+  }
+
+  @Test
+  void findAllByStudentEntity() {
+    EnrollmentEntity savedEnrollmentEntity = enrollmentRepository.save(enrollmentEntity);
+
+    List<EnrollmentEntity> foundEnrollmentEntities =
+        enrollmentRepository.findAllByStudent(savedEnrollmentEntity.getStudent());
+
+    assertNotNull(foundEnrollmentEntities);
+    assertEquals(enrollmentEntity, foundEnrollmentEntities.getFirst());
   }
 
   @AfterEach

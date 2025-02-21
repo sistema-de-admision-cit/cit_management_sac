@@ -25,9 +25,9 @@ public class EnrollmentMapper {
         .documents(DocumentMapper.convertToDtoList(enrollmentEntity.getDocuments())).build();
   }
 
-  /*public static List<EnrollmentDto> convertToDtoList(List<EnrollmentEntity> enrollmentEntities) {
+  public static List<EnrollmentDto> convertToDtoList(List<EnrollmentEntity> enrollmentEntities) {
     return enrollmentEntities.stream().map(EnrollmentMapper::convertToDto).toList();
-  }*/
+  }
 
   public static List<EnrollmentEntity> convertToEntityList(List<EnrollmentDto> enrollments) {
     return enrollments.stream().map(EnrollmentMapper::convertToEntity).toList();

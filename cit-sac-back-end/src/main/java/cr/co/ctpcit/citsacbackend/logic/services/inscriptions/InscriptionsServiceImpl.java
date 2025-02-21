@@ -14,15 +14,14 @@ import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -93,21 +92,31 @@ public class InscriptionsServiceImpl implements InscriptionsService {
    * @param value of the idNumber, the name of the student or first surname or previous school
    * @return a list of inscriptions that match the value
    */
-  /*@Override
-  public List<StudentDto> findStudentByValue(String value) {
+  @Override
+  public List<EnrollmentDto> findStudentByValue(String value) {
+    List<EnrollmentEntity> enrollments = new ArrayList<>();
     // Validate if the value is a number
     if (value.matches("\\d+")) {
-      List<StudentEntity> student = studentRepository.findStudentByIdNumberContaining(value);
-      return StudentMapper.convertToDtoList(student);
+      List<StudentEntity> student = studentRepository.findStudentByPerson_IdNumberContaining(value);
+
+      enrollments = enrollmentRepository.findAllByStudentIn(student);
     }
 
-    // Find students by first name, first surname or second surname
-    List<StudentEntity> students =
-        studentRepository.findByFirstNameContainingOrFirstSurnameContainingOrSecondSurnameContaining(
-            value, value, value);
+    if (enrollments.isEmpty()) {
+      // Find persons by first name, first surname or second surname
+      List<PersonEntity> findings =
+          personRepository.findByFirstNameContainingOrFirstSurnameContainingOrSecondSurnameContaining(
+              value, value, value);
 
-    return StudentMapper.convertToDtoList(students);
-  }*/
+      // Find students by persons
+      List<StudentEntity> students = studentRepository.findAllByPersonIn(findings);
+
+      // Find enrollments by students
+      enrollments = enrollmentRepository.findAllByStudentIn(students);
+    }
+
+    return EnrollmentMapper.convertToDtoList(enrollments);
+  }
 
   /**
    * Add an inscription
@@ -211,7 +220,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     }
 
     // Verify if the student is already enrolled
-    List<EnrollmentEntity> studentEnrollments = enrollmentRepository.getAllByStudent(student);
+    List<EnrollmentEntity> studentEnrollments = enrollmentRepository.findAllByStudent(student);
     if (studentEnrollments.stream().anyMatch(e -> e.getExamDate().equals(inscription.examDate()))) {
       //Falta eliminar los documentos de la inscripción
       for (DocumentDto d : documents) {
@@ -432,11 +441,6 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   }
 
   @Override
-  public List<StudentDto> findStudentByValue(String value) {
-    return List.of();
-  }
-
-  @Override
   public StudentDto updateExamDate(String id, String date) {
     return null;
   }
@@ -465,5 +469,18 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   @Override
   public DocumentDto saveDocument(String documentName, String documentType, Long enrollmentId) {
     return null;
+  }
+
+  @Override
+  public List<EnrollmentDto> findEnrollmentsByStudentId(String idNumber) {
+    Optional<StudentEntity> student =
+        studentRepository.findStudentEntityByPerson_IdNumber(idNumber);
+    if (student.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+          "No hay un estudiante con el id " + idNumber);
+    }
+    List<EnrollmentEntity> enrollments = enrollmentRepository.findAllByStudent(student.get());
+
+    return EnrollmentMapper.convertToDtoList(enrollments);
   }
 }

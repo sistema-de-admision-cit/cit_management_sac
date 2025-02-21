@@ -54,7 +54,7 @@ class StudentRepositoryTest {
   }
 
   @Test
-  void testFindStudentEntityById() {
+  void testFindStudentEntityByPersonId() {
     PersonEntity savedPersonEntity = personRepository.save(personEntity);
     StudentEntity savedStudentEntity =
         studentRepository.findById(savedPersonEntity.getId()).orElse(null);
@@ -92,6 +92,17 @@ class StudentRepositoryTest {
     assertEquals(studentEntity, savedStudentEntity);
     assertNotNull(savedStudentEntity.getParents());
     assertEquals(1, savedStudentEntity.getParents().size());
+  }
+
+  @Test
+  void shouldFindStudentByPersonIdNumber() {
+    PersonEntity savedPersonEntity = personRepository.save(personEntity);
+    StudentEntity savedStudentEntity =
+        studentRepository.findStudentEntityByPerson_IdNumber(savedPersonEntity.getIdNumber())
+            .orElse(null);
+
+    assertNotNull(savedStudentEntity);
+    assertEquals(studentEntity, savedStudentEntity);
   }
 
   @AfterEach

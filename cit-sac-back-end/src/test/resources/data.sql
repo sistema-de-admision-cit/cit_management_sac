@@ -88,7 +88,7 @@ VALUES (1, 11),
 INSERT INTO `tbl_enrollments`
 (`status`, `grade_to_enroll`, `known_through`, `exam_date`, `consent_given`, `whatsapp_notification`, `student_id`)
 VALUES ('PENDING','SIXTH', 'SM', '2024-01-10', 1, 1, 11),
-       ('ELIGIBLE','FIFTH', 'FM', '2024-01-11', 1, 0, 12),
+       ('ELIGIBLE','FIFTH', 'FM', '2024-01-11', 1, 0, 11),
        ('ACCEPTED','SEVENTH', 'OH', '2024-01-12', 1, 1, 13),
        ('REJECTED','EIGHTH', 'FD', '2024-01-13', 0, 1, 14),
        ('INELIGIBLE','NINTH', 'OT', '2024-01-14', 1, 0, 15),
@@ -123,15 +123,15 @@ VALUES (1, 'M', '08:00:00'); -- Lunes del primer periodo
 -- Insert value into tbl_questions
 INSERT INTO `tbl_questions` (`question_type`,`question_text`, `image_url`, `question_grade`, `question_level`, `selection_type`)
 VALUES ('DAI', '¿Cómo te sientes el día de hoy?', NULL, 'SECOND', 'EASY', 'PARAGRAPH'),
-       ('ACA', '¿Como se calcula el area de un circulo?', NULL, 'FIRST', 'EASY', 'UNIQUE'),
+       ('ACA', '¿Como se calcula el area de un circulo?', NULL, 'FIRST', 'EASY', 'SINGLE'),
        ('DAI', '¿Qué tipo de música prefieres?', NULL, 'THIRD', 'MEDIUM', 'PARAGRAPH'),
-       ('ACA', '¿Qué estación del año sigue despues del verano?', NULL, 'FOURTH', 'HARD', 'UNIQUE'),
+       ('ACA', '¿Qué estación del año sigue despues del verano?', NULL, 'FOURTH', 'HARD', 'SINGLE'),
        ('DAI', '¿Te gusta practicar deportes?', NULL, 'FIFTH', 'EASY', 'PARAGRAPH'),
-       ('ACA', '¿Cual es la temperatura de ebullición del agua?', NULL, 'SIXTH', 'MEDIUM', 'UNIQUE'),
+       ('ACA', '¿Cual es la temperatura de ebullición del agua?', NULL, 'SIXTH', 'MEDIUM', 'SINGLE'),
        ('DAI', '¿Prefieres la playa o la montaña?', NULL, 'SEVENTH', 'HARD', 'PARAGRAPH'),
-       ('ACA', '¿Cual es la formula de la teoría de la relatividad?', NULL, 'EIGHTH', 'EASY', 'UNIQUE'),
+       ('ACA', '¿Cual es la formula de la teoría de la relatividad?', NULL, 'EIGHTH', 'EASY', 'SINGLE'),
        ('DAI', '¿Cuál es tu película favorita?', NULL, 'NINTH', 'MEDIUM', 'PARAGRAPH'),
-       ('ACA', '¿Cual es la unidad de medida de los líquidos?', NULL, 'TENTH', 'HARD', 'UNIQUE');
+       ('ACA', '¿Cual es la unidad de medida de los líquidos?', NULL, 'TENTH', 'HARD', 'SINGLE');
 
 -- Insert value into tbl_question_options
 INSERT INTO `tbl_question_options` (`question_id`, `option`, `is_correct`)

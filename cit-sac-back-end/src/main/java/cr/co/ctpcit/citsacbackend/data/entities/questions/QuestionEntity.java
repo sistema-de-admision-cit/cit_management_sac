@@ -17,6 +17,7 @@ import java.util.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "tbl_questions")
 public class QuestionEntity {
@@ -59,10 +60,12 @@ public class QuestionEntity {
 
   @NotNull
   @ColumnDefault("0")
+  @Builder.Default
   @Column(name = "deleted", nullable = false)
   private Boolean deleted = false;
 
   @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+  @Builder.Default
   @JsonManagedReference
   private List<QuestionOptionEntity> questionOptions = new ArrayList<>();
 
