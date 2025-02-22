@@ -3,7 +3,6 @@ package cr.co.ctpcit.citsacbackend.rest.config;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.config.EmailConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.services.config.EmailConfigService;
-import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
