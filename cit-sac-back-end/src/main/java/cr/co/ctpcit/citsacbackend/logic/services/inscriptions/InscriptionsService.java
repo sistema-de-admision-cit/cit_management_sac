@@ -3,6 +3,7 @@ package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
@@ -23,14 +24,13 @@ public interface InscriptionsService {
   EnrollmentDto addInscription(EnrollmentDto inscriptionDto, MultipartFile grades,
       MultipartFile letter);
 
-  StudentDto updateExamDate(String id, String date);
+  void updateExamDate(String id, EnrollmentUpdateDto enrollmentUpdate);
 
-  boolean changeStatus(Long id, @NotNull ProcessStatus status);
+  void updateProcessStatus(String id, EnrollmentUpdateDto enrollmentUpdate);
 
-  boolean changeWhatsappPermission(Long id, Boolean permission);
+  void updateWhatsappPermission(String id, EnrollmentUpdateDto enrollmentUpdate);
 
-  Boolean updateEnrollment(Long enrollmentId, ProcessStatus status, String examDate,
-      String whatsappPermission, String comment, Integer changedBy);
+  void updateEnrollment(String id, EnrollmentUpdateDto enrollmentUpdate);
 
   boolean deleteDocument(Long documentId);
 

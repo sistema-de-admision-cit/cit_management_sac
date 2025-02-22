@@ -4,22 +4,23 @@ import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.*;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.ParentDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
 import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -60,16 +61,16 @@ public class InscriptionsServiceImpl implements InscriptionsService {
    * @param pageable the pageable object
    * @return a list of all inscriptions
    */
-  /*@Override
+  @Override
   public List<EnrollmentDto> getAllInscriptions(Pageable pageable) {
-    // Find all students
-    Page<StudentEntity> students = studentRepository.findAll(
+    // Find all enrollments
+    Page<EnrollmentEntity> students = enrollmentRepository.findAll(
         PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-            pageable.getSortOr(Sort.by(Sort.Direction.ASC, "idNumber"))));
+            pageable.getSortOr(Sort.by(Sort.Direction.ASC, "student.person.idNumber"))));
 
-    // Convert students to DTOs
-    return StudentMapper.convertToDtoList(students.getContent());
-  }*/
+    // Convert enrollments to DTOs
+    return EnrollmentMapper.convertToDtoList(students.getContent());
+  }
 
   /**
    * Get an inscription by id
@@ -258,97 +259,65 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   /**
    * Update the exam date of the student
    *
-   * @param id   the id of the enrollment
-   * @param date the new exam date
-   * @return the updated student
+   * @param id the id of the enrollment
    */
-  /*@Override
-  public StudentDto updateExamDate(String id, String date) {
+  @Override
+  public void updateExamDate(String id, EnrollmentUpdateDto enrollmentUpdate) {
     // Verify put parameters
-    EnrollmentEntity enrollmentEntity = verifyPutParameters(id);
-
-    // Update the exam date
-    enrollmentEntity.setExamDate(LocalDate.parse(date));
+    verifyPutParameters(id);
 
     // Save the enrollment
-    enrollmentEntity = enrollmentRepository.save(enrollmentEntity);
-
-    // Return
-    return StudentMapper.convertToDto(enrollmentEntity.getStudent());
-  }*/
+    enrollmentRepository.updateEnrollmentExamDate(Long.parseLong(id), enrollmentUpdate.examDate());
+  }
 
   /**
    * Change the status of the enrollment
    *
-   * @param id
-   * @param status
-   * @return true if the status was updated
+   * @param id the id of the enrollment
    */
-  /*@Override
-  public boolean changeStatus(Long id, ProcessStatus status) {
-    try {
-      this.enrollmentRepository.updateStatusById(id, status);
-    } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Error al actualizar el estado de la inscripción");
-    }
+  @Override
+  public void updateProcessStatus(String id, EnrollmentUpdateDto enrollmentUpdate) {
+    // Verify put parameters
+    verifyPutParameters(id);
 
-    return true;
-  }*/
+    // Save the enrollment
+    enrollmentRepository.updateEnrollmentStatus(Long.parseLong(id),
+        enrollmentUpdate.processStatus());
+  }
 
   /**
    * Change the whatsapp notification permission
    *
    * @param id         the id of the student
-   * @param permission the new permission
-   * @return true if the permission was updated
+   * @param enrollmentUpdate the enrollment update
    */
-  /*@Override
-  public boolean changeWhatsappPermission(Long id, Boolean permission) {
-    try {
-      this.enrollmentRepository.updateWhatsappNotificationById(id, permission);
-    } catch (Exception e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Error al actualizar la notificación de whatsapp");
-    }
+  @Override
+  public void updateWhatsappPermission(String id, EnrollmentUpdateDto enrollmentUpdate) {
+    // Verify put parameters
+    verifyPutParameters(id);
 
-    return true;
-  }*/
+    // Save the enrollment
+    enrollmentRepository.updateEnrollmentWhatsappPermission(Long.parseLong(id),
+        enrollmentUpdate.whatsappPermission());
+  }
 
 
   /**
    * Update the enrollment
    *
-   * @param enrollmentId       the id of the enrollment
-   * @param status             the new status
-   * @param examDate           the new exam date
-   * @param whatsappPermission the new whatsapp permission
-   * @param comment            the comment
-   * @param changedBy          the user that changed the enrollment
-   * @return true if the enrollment was updated
+   * @param id the id of the enrollment
    */
-  /*@Override
-  public Boolean updateEnrollment(Long enrollmentId, ProcessStatus status, String examDate,
-      String whatsappPermission, String comment, Integer changedBy) {
-    try {
-      // verify if the enrollment exists
-      if (!existsEnrollment(enrollmentId)) {
-        System.out.println("No hay una inscripción con el id " + enrollmentId);
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-            "No hay una inscripción con el id " + enrollmentId);
-      }
+  @Override
+  public void updateEnrollment(String id, EnrollmentUpdateDto enrollmentUpdate) {
+    // Verify put parameters
+    verifyPutParameters(id);
 
-      // Update the enrollment
-      enrollmentRepository.usp_update_enrollment_and_log(enrollmentId, status.name(),
-          Date.valueOf(examDate), Boolean.parseBoolean(whatsappPermission), comment, changedBy);
-
-      return true;
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Error al actualizar la inscripción");
-    }
-  }*/
+    // Save the enrollment
+    enrollmentRepository.usp_update_enrollment_and_log(Long.parseLong(id),
+        enrollmentUpdate.processStatus().toString(), enrollmentUpdate.examDate(),
+        enrollmentUpdate.whatsappPermission(), enrollmentUpdate.comment(),
+        enrollmentUpdate.changedBy());
+  }
 
   /*@Override
   public boolean deleteDocument(Long documentId) {
@@ -391,26 +360,12 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   /*private boolean existsEnrollment(Long enrollmentId) {
     return enrollmentRepository.existsById(enrollmentId);
   }*/
-
-  /*private EnrollmentEntity verifyPutParameters(String id) {
+  private void verifyPutParameters(String id) {
     // Validate if the id is a number
     if (!id.matches("\\d+")) {
       throw new EnrollmentException("El id no es un número válido");
     }
-
-    // Find enrollment by id
-    Optional<EnrollmentEntity> enrollment = enrollmentRepository.findById(Long.parseLong(id));
-
-    // If the enrollment is not present, return null
-    if (enrollment.isEmpty()) {
-      // Return Not Found
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-          "No hay una inscripción con el id " + id);
-    }
-
-    // Get the enrollment
-    return enrollment.get();
-  }*/
+  }
 
   /**
    * Create the relation between the student and the parent/guardian
@@ -431,33 +386,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     parent.addStudent(parentGuardianStudentEntity);
   }*/
   @Override
-  public List<EnrollmentDto> getAllInscriptions(Pageable pageable) {
-    return List.of();
-  }
-
-  @Override
   public StudentDto findStudentById(Long id) {
-    return null;
-  }
-
-  @Override
-  public StudentDto updateExamDate(String id, String date) {
-    return null;
-  }
-
-  @Override
-  public boolean changeStatus(Long id, ProcessStatus status) {
-    return false;
-  }
-
-  @Override
-  public boolean changeWhatsappPermission(Long id, Boolean permission) {
-    return false;
-  }
-
-  @Override
-  public Boolean updateEnrollment(Long enrollmentId, ProcessStatus status, String examDate,
-      String whatsappPermission, String comment, Integer changedBy) {
     return null;
   }
 
