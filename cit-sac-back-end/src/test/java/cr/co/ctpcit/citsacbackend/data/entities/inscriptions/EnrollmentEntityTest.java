@@ -19,60 +19,13 @@ class EnrollmentEntityTest {
 
   @Test
   void serializeJson() throws IOException {
-    PersonEntity person = new PersonEntity();
-    person.setId(11L);
-    person.setFirstName("Andrés");
-    person.setFirstSurname("Rodríguez");
-    person.setSecondSurname("Morales");
-    person.setIdType(IdType.CC);
-    person.setIdNumber("200123654");
-    person.setFullSurname("Rodríguez Morales");
-
-    StudentEntity student = new StudentEntity();
-    student.setId(11L);
-    student.setStudentPerson(person);
-    student.setBirthDate(LocalDate.parse("2010-03-12"));
-    student.setPreviousSchool("Escuela La Sabana");
-    student.setHasAccommodations(false);
-
-    PersonEntity person1 = new PersonEntity();
-    person1.setId(1L);
-    person1.setFirstName("Carlos");
-    person1.setFirstSurname("Rodríguez");
-    person1.setSecondSurname("Morales");
-    person1.setIdType(IdType.CC);
-    person1.setIdNumber("900321654");
-    person1.setFullSurname("Rodríguez Morales");
-
-    ParentEntity parent = new ParentEntity();
-    parent.setId(1L);
-    parent.setParentPerson(person1);
-    parent.setEmail("carlos.rod@example.com");
-    parent.setPhoneNumber("876543210");
-    parent.setRelationship(Relationship.F);
-    parent.setDaiExam(null);
-
+    StudentEntity student = TestProvider.provideStudent();
+    ParentEntity parent = TestProvider.provideParent();
     parent.addStudent(student);
+    parent.addAddress(TestProvider.provideAddress());
 
-    AddressEntity address = new AddressEntity();
-    address.setId(1L);
-    address.setCountry("Costa Rica");
-    address.setProvince("San José");
-    address.setCity("San José");
-    address.setDistrict("Carmen");
-    address.setAddressInfo("Avenida Central 100");
-
-    parent.addAddress(address);
-
-    EnrollmentEntity enrollment = new EnrollmentEntity();
-    enrollment.setId(1L);
+    EnrollmentEntity enrollment = TestProvider.provideEnrollment();
     enrollment.setStudent(student);
-    enrollment.setStatus(ProcessStatus.PENDING);
-    enrollment.setEnrollmentDate(Instant.parse("2024-12-15T10:15:30Z"));
-    enrollment.setGradeToEnroll(Grades.FIRST);
-    enrollment.setKnownThrough(KnownThrough.OT);
-    enrollment.setExamDate(LocalDate.parse("2024-12-15"));
-    enrollment.setConsentGiven(true);
 
     assertThat(json.write(enrollment)).isStrictlyEqualToJson("EnrollmentEntityJsonExpected.json");
     assertThat(json.write(enrollment)).hasJsonPathNumberValue("@.id");
@@ -143,60 +96,13 @@ class EnrollmentEntityTest {
         }
         """;
 
-    PersonEntity person = new PersonEntity();
-    person.setId(11L);
-    person.setFirstName("Andrés");
-    person.setFirstSurname("Rodríguez");
-    person.setSecondSurname("Morales");
-    person.setIdType(IdType.CC);
-    person.setIdNumber("200123654");
-    person.setFullSurname("Rodríguez Morales");
-
-    StudentEntity student = new StudentEntity();
-    student.setId(11L);
-    student.setStudentPerson(person);
-    student.setBirthDate(LocalDate.parse("2010-03-12"));
-    student.setPreviousSchool("Escuela La Sabana");
-    student.setHasAccommodations(false);
-
-    PersonEntity person1 = new PersonEntity();
-    person1.setId(1L);
-    person1.setFirstName("Carlos");
-    person1.setFirstSurname("Rodríguez");
-    person1.setSecondSurname("Morales");
-    person1.setIdType(IdType.CC);
-    person1.setIdNumber("900321654");
-    person1.setFullSurname("Rodríguez Morales");
-
-    ParentEntity parent = new ParentEntity();
-    parent.setId(1L);
-    parent.setParentPerson(person1);
-    parent.setEmail("carlos.rod@example.com");
-    parent.setPhoneNumber("876543210");
-    parent.setRelationship(Relationship.F);
-    parent.setDaiExam(null);
-
+    StudentEntity student = TestProvider.provideStudent();
+    ParentEntity parent = TestProvider.provideParent();
     parent.addStudent(student);
+    parent.addAddress(TestProvider.provideAddress());
 
-    AddressEntity address = new AddressEntity();
-    address.setId(1L);
-    address.setCountry("Costa Rica");
-    address.setProvince("San José");
-    address.setCity("San José");
-    address.setDistrict("Carmen");
-    address.setAddressInfo("Avenida Central 100");
-
-    parent.addAddress(address);
-
-    EnrollmentEntity enrollment = new EnrollmentEntity();
-    enrollment.setId(1L);
+    EnrollmentEntity enrollment = TestProvider.provideEnrollment();
     enrollment.setStudent(student);
-    enrollment.setStatus(ProcessStatus.PENDING);
-    enrollment.setEnrollmentDate(Instant.parse("2024-12-15T10:15:30Z"));
-    enrollment.setGradeToEnroll(Grades.FIRST);
-    enrollment.setKnownThrough(KnownThrough.OT);
-    enrollment.setExamDate(LocalDate.parse("2024-12-15"));
-    enrollment.setConsentGiven(true);
 
     assertThat(json.parse(expected)).isEqualTo(enrollment);
     assertThat(json.parseObject(expected).getId()).isEqualTo(1);

@@ -63,7 +63,7 @@ DROP TABLE IF EXISTS `tbl_Address` ;
 CREATE TABLE IF NOT EXISTS `tbl_Address` (
   `address_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `parent_id` INT UNSIGNED NOT NULL,
-  `country` VARCHAR(16) NOT NULL,
+  `country` VARCHAR(32) NOT NULL,
   `province` VARCHAR(32) NOT NULL,
   `city` VARCHAR(32) NOT NULL,
   `district` VARCHAR(32) NOT NULL,
@@ -174,10 +174,10 @@ DROP TABLE IF EXISTS `tbl_Documents`;
 CREATE TABLE IF NOT EXISTS `tbl_Documents` (
   `document_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `enrollment_id` INT UNSIGNED NOT NULL,
-  `document_name` VARCHAR(32) NOT NULL,
+  `document_name` VARCHAR(64) NOT NULL,
   `document_type` ENUM('AC', 'OT') NOT NULL,
   `document_url` VARCHAR(128) NOT NULL,
-  PRIMARY KEY (`document_id`,`enrollment_id`),
+  PRIMARY KEY (`document_id`),
   INDEX `IDX_Documents_EnrollmentID` (`enrollment_id` ASC),
   
   CONSTRAINT `FK_Documents_Enrollments`
@@ -190,8 +190,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `tbl_Questions`
 -- `selection_type`:
-  -- UNIQUE: unique answer
+  -- SINGLE: unique answer
   -- MULTIPLE: multiple answer
+  -- PARAGRAPH: table has no choises
 --------------------------------------------------------
 -- `question_type`:
   -- ACA: academic
@@ -214,7 +215,7 @@ CREATE TABLE IF NOT EXISTS `tbl_Questions` (
   `image_url` VARCHAR(255) DEFAULT NULL,
   `question_grade` ENUM('FIRST', 'SECOND', 'THIRD', 'FOURTH', 'FIFTH', 'SIXTH', 'SEVENTH', 'EIGHTH', 'NINTH', 'TENTH') NOT NULL,
   `question_level` ENUM('EASY', 'MEDIUM', 'HARD') NOT NULL,
-  `selection_type` ENUM('UNIQUE', 'MULTIPLE', 'PARAGRAPH') NOT NULL DEFAULT 'PARAGRAPH',
+  `selection_type` ENUM('SINGLE', 'MULTIPLE', 'PARAGRAPH') NOT NULL DEFAULT 'PARAGRAPH',
   `deleted` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`question_id`),
   INDEX `IDX_Questions_QuestionType_ACA` ((`question_type` = 'ACA')),
@@ -233,9 +234,8 @@ CREATE TABLE IF NOT EXISTS `tbl_Question_Options` (
   `question_id` INT UNSIGNED NOT NULL,
   `is_correct` BOOLEAN NOT NULL DEFAULT 0,
   `option` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`option_id`, `question_id`),
+  PRIMARY KEY (`option_id`),
   INDEX `IDX_QuestionOptions_QuestionID` (`question_id` ASC),
-  INDEX `IDX_QuestionOptions_OptionID` (`option_id` ASC),
 
   CONSTRAINT `FK_AcademicQuestions_QuestionOption`
     FOREIGN KEY (`question_id`)
@@ -524,7 +524,7 @@ BEGIN
 
     -- Registrar en la tabla de logs si la fecha de examen ha cambiado
     IF v_old_exam_date != p_new_exam_date THEN
-        INSERT INTO `tbl_Logs` 
+        INSERT INTO `tbl_Logs`
             (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
         VALUES 
             ('tbl_Enrollments', 'exam_date', v_old_exam_date, p_new_exam_date, p_changed_by, 

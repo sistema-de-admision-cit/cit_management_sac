@@ -93,11 +93,10 @@ class InscriptionsControllerTest {
     ResponseEntity<String> response =
         restTemplate.getForEntity("/api/inscriptions?page=0&size=10", String.class);
 
-    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
     DocumentContext documentContext = JsonPath.parse(response.getBody());
-
     int enrollmentCount = documentContext.read("$.length()");
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(enrollmentCount).isEqualTo(10);
   }
 

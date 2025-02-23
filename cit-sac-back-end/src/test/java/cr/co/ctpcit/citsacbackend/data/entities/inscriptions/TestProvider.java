@@ -1,8 +1,8 @@
 package cr.co.ctpcit.citsacbackend.data.entities.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.data.enums.IdType;
-import cr.co.ctpcit.citsacbackend.data.enums.Relationship;
+import cr.co.ctpcit.citsacbackend.data.enums.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 public class TestProvider {
@@ -67,5 +67,18 @@ public class TestProvider {
 
     return parent;
   }
+
+    public static EnrollmentEntity provideEnrollment() {
+      EnrollmentEntity enrollment = new EnrollmentEntity();
+      enrollment.setId(1L);
+      enrollment.setStatus(ProcessStatus.PENDING);
+      enrollment.setEnrollmentDate(Instant.parse("2024-12-15T10:15:30Z"));
+      enrollment.setGradeToEnroll(Grades.FIRST);
+      enrollment.setKnownThrough(KnownThrough.OT);
+      enrollment.setExamDate(LocalDate.parse("2024-12-15"));
+      enrollment.setConsentGiven(true);
+
+      return enrollment;
+    }
 }
 

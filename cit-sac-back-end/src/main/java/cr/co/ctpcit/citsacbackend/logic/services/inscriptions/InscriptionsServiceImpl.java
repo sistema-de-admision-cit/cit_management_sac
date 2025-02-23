@@ -66,7 +66,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     // Find all enrollments
     Page<EnrollmentEntity> students = enrollmentRepository.findAll(
         PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-            pageable.getSortOr(Sort.by(Sort.Direction.ASC, "student.person.idNumber"))));
+            pageable.getSortOr(Sort.by(Sort.Direction.ASC, "student.studentPerson.idNumber"))));
 
     // Convert enrollments to DTOs
     return EnrollmentMapper.convertToDtoList(students.getContent());
