@@ -125,8 +125,8 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- Table `tbl_Enrollments`
 -- status:
 	-- PENDING: waiting for approval
-  -- ELEGIBLE: student is elegible to go through the admission process
-  -- INELEGIBLE: student is not elegible to go through the admission process
+  -- ELIGIBLE: student is elegible to go through the admission process
+  -- INELIGIBLE: student is not elegible to go through the admission process
   -- ACCEPTED: student is accepted and can enroll
   -- REJECTED: student is rejected and cannot enroll
   -- -----------------------------------------------------
@@ -469,49 +469,68 @@ DROP PROCEDURE IF EXISTS usp_Update_Enrollment_And_Log//
 
 CREATE PROCEDURE usp_Update_Enrollment_And_Log ( 
     IN p_enrollment_id INT,
-    IN p_new_status ENUM('PENDING', 'ELEGIBLE', 'INELEGIBLE', 'ACCEPTED', 'REJECTED'),
+    IN p_new_status ENUM('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED'),
     IN p_new_exam_date DATE,
     IN p_new_whatsapp_permission BOOLEAN,
     IN p_comment VARCHAR(255),
     IN p_changed_by INT
 )
-
 BEGIN
-    DECLARE v_old_status ENUM('PENDING', 'ELEGIBLE', 'INELEGIBLE', 'ACCEPTED', 'REJECTED');
+    DECLARE v_old_status ENUM('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED');
     DECLARE v_old_exam_date DATE;
     DECLARE v_old_whatsapp_permission BOOLEAN;
+    DECLARE v_valid_status ENUM('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED');
 
-    -- Obtener los valores actuales
+    -- Obtener los valores actuales de la inscripción
     SELECT `status`, `exam_date`, `whatsapp_notification`
-    INTO v_old_status, v_old_exam_date, v_old_whatsapp_permission
-    FROM `tbl_Enrollments`
-    WHERE `enrollment_id` = p_enrollment_id;
+      INTO v_old_status, v_old_exam_date, v_old_whatsapp_permission
+      FROM `tbl_Enrollments`
+     WHERE `enrollment_id` = p_enrollment_id;
 
-    -- Actualizar los valores
+    -- Validar el nuevo estado: si es válido se usa, de lo contrario se conserva el antiguo
+    SET v_valid_status = CASE 
+                           WHEN p_new_status IN ('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED')
+                           THEN p_new_status
+                           ELSE v_old_status
+                         END;
+                         
+    -- Validar la nueva fecha de examen: si se pasa NULL se conserva la fecha anterior
+    SET p_new_exam_date = CASE 
+                            WHEN p_new_exam_date IS NOT NULL THEN p_new_exam_date 
+                            ELSE v_old_exam_date 
+                          END;
+
+    -- Validar el nuevo permiso de WhatsApp: si se pasa NULL se conserva el valor anterior
+    SET p_new_whatsapp_permission = CASE 
+                                      WHEN p_new_whatsapp_permission IS NOT NULL THEN p_new_whatsapp_permission 
+                                      ELSE v_old_whatsapp_permission 
+                                    END;
+
+    -- Actualizar solo los valores que resultaron válidos
     UPDATE `tbl_Enrollments`
-    SET `status` = p_new_status,
-        `exam_date` = p_new_exam_date,
-        `whatsapp_notification` = p_new_whatsapp_permission
-    WHERE `enrollment_id` = p_enrollment_id;
+       SET `status` = v_valid_status,
+           `exam_date` = p_new_exam_date,
+           `whatsapp_notification` = p_new_whatsapp_permission
+     WHERE `enrollment_id` = p_enrollment_id;
 
-
-    -- Si el status ha cambiado, registrar en la tabla de logs
-    IF v_old_status != p_new_status THEN
-        INSERT INTO `tbl_Log` 
+    -- Registrar en la tabla de logs si el estado ha cambiado
+    IF v_old_status != v_valid_status THEN
+        INSERT INTO `tbl_Logs` 
             (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
         VALUES 
-            ('tbl_Enrollments', 'status', v_old_status, p_new_status, p_changed_by, CONCAT('UPDATE tbl_Enrollments SET status = ', p_new_status, ' WHERE enrollment_id = ', p_enrollment_id), p_comment);
+            ('tbl_Enrollments', 'status', v_old_status, v_valid_status, p_changed_by, 
+             CONCAT('UPDATE tbl_Enrollments SET status = ', v_valid_status, ' WHERE enrollment_id = ', p_enrollment_id), p_comment);
     END IF;
 
-    -- Si la fecha de examen ha cambiado, registrar en la tabla de logs
+    -- Registrar en la tabla de logs si la fecha de examen ha cambiado
     IF v_old_exam_date != p_new_exam_date THEN
-        INSERT INTO `tbl_Log` 
+        INSERT INTO `tbl_Logs` 
             (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
         VALUES 
-            ('tbl_Enrollments', 'exam_date', v_old_exam_date, p_new_exam_date, p_changed_by, CONCAT('UPDATE tbl_Enrollments SET exam_date = ', p_new_exam_date, ' WHERE enrollment_id = ', p_enrollment_id), p_comment);
+            ('tbl_Enrollments', 'exam_date', v_old_exam_date, p_new_exam_date, p_changed_by, 
+             CONCAT('UPDATE tbl_Enrollments SET exam_date = ', p_new_exam_date, ' WHERE enrollment_id = ', p_enrollment_id), p_comment);
     END IF;
-    
-    -- No se requiere log para whatsapp_permission
+    -- No se requiere log para whatsapp_notification
 END//
 
 -- -----------------------------------------------------
