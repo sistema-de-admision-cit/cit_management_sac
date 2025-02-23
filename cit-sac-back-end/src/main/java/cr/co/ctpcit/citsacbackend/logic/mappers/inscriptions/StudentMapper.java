@@ -16,7 +16,7 @@ public class StudentMapper {
   public static StudentDto convertToDto(StudentEntity studentEntity) {
     return StudentDto.builder()
         .id(studentEntity.getId())
-        .person(PersonMapper.convertToDto(studentEntity.getPerson()))
+        .person(PersonMapper.convertToDto(studentEntity.getStudentPerson()))
         .parents(ParentMapper.convertToDtoList(studentEntity.getParents()))
         .previousSchool(studentEntity.getPreviousSchool())
         .birthDate(studentEntity.getBirthDate())

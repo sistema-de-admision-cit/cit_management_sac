@@ -4,7 +4,6 @@ import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.ParentEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.ParentsStudentsEntity;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.ParentDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +13,7 @@ import java.util.List;
 public class ParentMapper {
   public static ParentDto convertToDto(ParentEntity parentEntity) {
     return ParentDto.builder().id(parentEntity.getId())
-        .person(PersonMapper.convertToDto(parentEntity.getPerson()))
+        .person(PersonMapper.convertToDto(parentEntity.getParentPerson()))
         .phoneNumber(parentEntity.getPhoneNumber()).email(parentEntity.getEmail())
         .relationship(parentEntity.getRelationship())
         .addresses(AddressMapper.convertToDtoList(parentEntity.getAddresses())).build();

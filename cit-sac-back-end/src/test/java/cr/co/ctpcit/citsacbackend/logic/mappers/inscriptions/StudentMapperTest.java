@@ -26,7 +26,7 @@ class StudentMapperTest {
 
     StudentEntity studentEntity = new StudentEntity();
     studentEntity.setId(1L);
-    studentEntity.setPerson(personEntity);
+    studentEntity.setStudentPerson(personEntity);
     studentEntity.setPreviousSchool("School");
     studentEntity.setHasAccommodations(true);
     studentEntity.setBirthDate(LocalDate.parse("2000-01-01"));
@@ -38,7 +38,7 @@ class StudentMapperTest {
     // Assert
     assertNotNull(student);
     assertEquals(studentEntity.getId(), student.id());
-    assertEquals(studentEntity.getPerson().getId(), student.person().id());
+    assertEquals(studentEntity.getStudentPerson().getId(), student.person().id());
     assertEquals(studentEntity.getPreviousSchool(), student.previousSchool());
     assertEquals(studentEntity.getHasAccommodations(), student.hasAccommodations());
     assertEquals(studentEntity.getBirthDate(), student.birthDate());

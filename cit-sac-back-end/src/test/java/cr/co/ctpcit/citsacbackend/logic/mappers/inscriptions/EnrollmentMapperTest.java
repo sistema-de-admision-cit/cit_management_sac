@@ -31,7 +31,7 @@ class EnrollmentMapperTest {
 
     StudentEntity studentEntity = new StudentEntity();
     studentEntity.setId(1L);
-    studentEntity.setPerson(personEntity);
+    studentEntity.setStudentPerson(personEntity);
     studentEntity.setPreviousSchool("School");
     studentEntity.setHasAccommodations(true);
     studentEntity.setBirthDate(LocalDate.parse("2000-01-01"));

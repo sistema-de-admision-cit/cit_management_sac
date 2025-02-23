@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -98,7 +98,8 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     List<EnrollmentEntity> enrollments = new ArrayList<>();
     // Validate if the value is a number
     if (value.matches("\\d+")) {
-      List<StudentEntity> student = studentRepository.findStudentByPerson_IdNumberContaining(value);
+      List<StudentEntity> student =
+          studentRepository.findStudentByStudentPerson_IdNumberContaining(value);
 
       enrollments = enrollmentRepository.findAllByStudentIn(student);
     }
@@ -110,7 +111,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
               value, value, value);
 
       // Find students by persons
-      List<StudentEntity> students = studentRepository.findAllByPersonIn(findings);
+      List<StudentEntity> students = studentRepository.findAllByStudentPersonIn(findings);
 
       // Find enrollments by students
       enrollments = enrollmentRepository.findAllByStudentIn(students);
@@ -288,7 +289,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   /**
    * Change the whatsapp notification permission
    *
-   * @param id         the id of the student
+   * @param id               the id of the student
    * @param enrollmentUpdate the enrollment update
    */
   @Override
@@ -314,12 +315,12 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
     // Save the enrollment
     enrollmentRepository.usp_update_enrollment_and_log(Long.parseLong(id),
-        enrollmentUpdate.processStatus().toString(), enrollmentUpdate.examDate(),
+        enrollmentUpdate.processStatus().toString(), Date.valueOf(enrollmentUpdate.examDate()),
         enrollmentUpdate.whatsappPermission(), enrollmentUpdate.comment(),
         enrollmentUpdate.changedBy());
   }
 
-  /*@Override
+  @Override
   public boolean deleteDocument(Long documentId) {
 
     // If the document is not present, return Not Found
@@ -332,7 +333,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     documentRepository.deleteById(documentId);
 
     return true;
-  }*/
+  }
 
 
   /**
@@ -391,11 +392,6 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   }
 
   @Override
-  public boolean deleteDocument(Long documentId) {
-    return false;
-  }
-
-  @Override
   public DocumentDto saveDocument(String documentName, String documentType, Long enrollmentId) {
     return null;
   }
@@ -403,7 +399,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   @Override
   public List<EnrollmentDto> findEnrollmentsByStudentId(String idNumber) {
     Optional<StudentEntity> student =
-        studentRepository.findStudentEntityByPerson_IdNumber(idNumber);
+        studentRepository.findStudentEntityByStudentPerson_IdNumber(idNumber);
     if (student.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND,
           "No hay un estudiante con el id " + idNumber);

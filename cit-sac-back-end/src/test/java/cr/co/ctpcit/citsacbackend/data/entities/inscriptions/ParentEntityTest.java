@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.entities.inscriptions;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.co.ctpcit.citsacbackend.data.enums.IdType;
 import cr.co.ctpcit.citsacbackend.data.enums.Relationship;
 import org.junit.jupiter.api.Test;
@@ -18,30 +19,15 @@ class ParentEntityTest {
 
   @Test
   void serializeJson() throws Exception {
-    PersonEntity person = new PersonEntity();
-    person.setId(1L);
-    person.setFirstName("John");
-    person.setFirstSurname("Doe");
-    person.setSecondSurname("Smith");
-    person.setIdType(IdType.CC);
-    person.setIdNumber("123456789");
-    person.setFullSurname("Doe Smith");
-
-    ParentEntity parent = new ParentEntity();
-    parent.setId(1L);
-    parent.setPerson(person);
-    parent.setEmail("johndoe@mtmail.com");
-    parent.setPhoneNumber("88889999");
-    parent.setRelationship(Relationship.F);
-    parent.setDaiExam(null);
-    parent.setStudents(new ArrayList<>());
+    ParentEntity parent = TestProvider.provideParent();
+    parent.addAddress(TestProvider.provideAddress());
 
     assertThat(json.write(parent)).isStrictlyEqualToJson("ParentEntityJsonExpected.json");
     assertThat(json.write(parent)).hasJsonPathNumberValue("@.id");
     assertThat(json.write(parent)).extractingJsonPathNumberValue("@.id").isEqualTo(1);
     assertThat(json.write(parent)).hasJsonPathStringValue("@.email");
     assertThat(json.write(parent)).extractingJsonPathStringValue("@.email")
-        .isEqualTo("johndoe@mtmail.com");
+        .isEqualTo("carlos.rod@example.com");
   }
 
   @Test
@@ -49,42 +35,37 @@ class ParentEntityTest {
     String expected = """
         {
           "id": 1,
-          "person": {
+          "parentPerson": {
             "id": 1,
-            "firstName": "John",
-            "firstSurname": "Doe",
-            "secondSurname": "Smith",
+            "firstName": "Carlos",
+            "firstSurname": "Rodríguez",
+            "secondSurname": "Morales",
             "idType": "CC",
-            "idNumber": "123456789",
-            "fullSurname": "Doe Smith"
+            "idNumber": "900321654",
+            "fullSurname": "Rodríguez Morales"
           },
-          "phoneNumber": "88889999",
-          "email": "johndoe@mtmail.com",
+          "phoneNumber": "876543210",
+          "email": "carlos.rod@example.com",
           "relationship": "F",
-          "daiExam": null
+          "daiExam": null,
+          "addresses": [
+            {
+              "id": 1,
+              "country": "Costa Rica",
+              "province": "San José",
+              "city": "San José",
+              "district": "Carmen",
+              "addressInfo": "Avenida Central 100"
+            }
+          ]
         }
         """;
 
-    PersonEntity person = new PersonEntity();
-    person.setId(1L);
-    person.setFirstName("John");
-    person.setFirstSurname("Doe");
-    person.setSecondSurname("Smith");
-    person.setIdType(IdType.CC);
-    person.setIdNumber("123456789");
-    person.setFullSurname("Doe Smith");
-
-    ParentEntity parent = new ParentEntity();
-    parent.setId(1L);
-    parent.setPerson(person);
-    parent.setEmail("johndoe@mtmail.com");
-    parent.setPhoneNumber("88889999");
-    parent.setRelationship(Relationship.F);
-    parent.setDaiExam(null);
-    parent.setStudents(new ArrayList<>());
+    ParentEntity parent = TestProvider.provideParent();
+    parent.addAddress(TestProvider.provideAddress());
 
     assertThat(json.parse(expected)).isEqualTo(parent);
     assertThat(json.parseObject(expected).getId()).isEqualTo(1);
-    assertThat(json.parseObject(expected).getEmail()).isEqualTo("johndoe@mtmail.com");
+    assertThat(json.parseObject(expected).getEmail()).isEqualTo("carlos.rod@example.com");
   }
 }

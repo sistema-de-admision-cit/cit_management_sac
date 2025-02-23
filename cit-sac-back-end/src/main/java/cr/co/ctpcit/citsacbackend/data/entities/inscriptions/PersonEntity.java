@@ -57,33 +57,33 @@ public class PersonEntity {
   private String fullSurname;
 
   @JsonIgnore
-  @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(mappedBy = "studentPerson", cascade = CascadeType.ALL, orphanRemoval = true)
   private StudentEntity student;
 
   @JsonIgnore
-  @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(mappedBy = "parentPerson", cascade = CascadeType.ALL, orphanRemoval = true)
   private ParentEntity parent;
 
   public void addParent(ParentEntity parent) {
     this.parent = parent;
-    parent.setPerson(this);
+    parent.setParentPerson(this);
   }
 
   public void addStudent(StudentEntity student) {
     this.student = student;
-    student.setPerson(this);
+    student.setStudentPerson(this);
   }
 
   public void removeParent() {
     if (parent != null) {
-      parent.setPerson(null);
+      parent.setParentPerson(null);
       parent = null;
     }
   }
 
   public void removeStudent() {
     if (student != null) {
-      student.setPerson(null);
+      student.setStudentPerson(null);
       student = null;
     }
   }

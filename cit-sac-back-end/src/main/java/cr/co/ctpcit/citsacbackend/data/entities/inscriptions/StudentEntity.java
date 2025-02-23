@@ -26,7 +26,7 @@ public class StudentEntity implements Serializable {
   @MapsId
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "student_id", nullable = false, columnDefinition = "int UNSIGNED")
-  private PersonEntity person;
+  private PersonEntity studentPerson;
 
   @NotNull
   @Column(name = "birth_date", nullable = false)
@@ -42,6 +42,7 @@ public class StudentEntity implements Serializable {
   private Boolean hasAccommodations = false;
 
   @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference
   @Builder.Default
   private List<ParentsStudentsEntity> parents = new ArrayList<>();
 

@@ -28,7 +28,7 @@ public class ParentEntity implements Serializable {
   @MapsId
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinColumn(name = "parent_id", nullable = false, columnDefinition = "int UNSIGNED")
-  private PersonEntity person;
+  private PersonEntity parentPerson;
 
   @Size(max = 32)
   @NotNull

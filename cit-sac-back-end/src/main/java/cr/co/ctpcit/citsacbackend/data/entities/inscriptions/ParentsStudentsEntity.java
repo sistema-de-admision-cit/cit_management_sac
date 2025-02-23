@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.entities.inscriptions;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,7 @@ import java.util.Objects;
 public class ParentsStudentsEntity implements Serializable {
   @Id
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JsonBackReference
   @JoinColumn(name = "student_id", nullable = false)
   private StudentEntity student;
 

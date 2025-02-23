@@ -1,9 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.entities.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.data.enums.Grades;
-import cr.co.ctpcit.citsacbackend.data.enums.IdType;
-import cr.co.ctpcit.citsacbackend.data.enums.KnownThrough;
-import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
+import cr.co.ctpcit.citsacbackend.data.enums.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -23,20 +20,49 @@ class EnrollmentEntityTest {
   @Test
   void serializeJson() throws IOException {
     PersonEntity person = new PersonEntity();
-    person.setId(2L);
-    person.setFirstName("Mark");
-    person.setFirstSurname("Doe");
-    person.setSecondSurname("Johnson");
+    person.setId(11L);
+    person.setFirstName("Andrés");
+    person.setFirstSurname("Rodríguez");
+    person.setSecondSurname("Morales");
     person.setIdType(IdType.CC);
-    person.setIdNumber("987654321");
-    person.setFullSurname("Doe Johnson");
+    person.setIdNumber("200123654");
+    person.setFullSurname("Rodríguez Morales");
 
     StudentEntity student = new StudentEntity();
-    student.setId(2L);
-    student.setPerson(person);
-    student.setBirthDate(LocalDate.parse("2007-12-03"));
-    student.setPreviousSchool("Manhattan School");
+    student.setId(11L);
+    student.setStudentPerson(person);
+    student.setBirthDate(LocalDate.parse("2010-03-12"));
+    student.setPreviousSchool("Escuela La Sabana");
     student.setHasAccommodations(false);
+
+    PersonEntity person1 = new PersonEntity();
+    person1.setId(1L);
+    person1.setFirstName("Carlos");
+    person1.setFirstSurname("Rodríguez");
+    person1.setSecondSurname("Morales");
+    person1.setIdType(IdType.CC);
+    person1.setIdNumber("900321654");
+    person1.setFullSurname("Rodríguez Morales");
+
+    ParentEntity parent = new ParentEntity();
+    parent.setId(1L);
+    parent.setParentPerson(person1);
+    parent.setEmail("carlos.rod@example.com");
+    parent.setPhoneNumber("876543210");
+    parent.setRelationship(Relationship.F);
+    parent.setDaiExam(null);
+
+    parent.addStudent(student);
+
+    AddressEntity address = new AddressEntity();
+    address.setId(1L);
+    address.setCountry("Costa Rica");
+    address.setProvince("San José");
+    address.setCity("San José");
+    address.setDistrict("Carmen");
+    address.setAddressInfo("Avenida Central 100");
+
+    parent.addAddress(address);
 
     EnrollmentEntity enrollment = new EnrollmentEntity();
     enrollment.setId(1L);
@@ -60,48 +86,107 @@ class EnrollmentEntityTest {
   void deserializeJson() throws IOException {
     String expected = """
         {
-           "id": 1,
-           "student": {
-             "id": 2,
-             "person": {
-               "id": 2,
-               "firstName": "Mark",
-               "firstSurname": "Doe",
-               "secondSurname": "Johnson",
-               "idType": "CC",
-               "idNumber": "987654321",
-               "fullSurname": "Doe Johnson"
-             },
-             "birthDate": "2007-12-03",
-             "previousSchool": "Manhattan School",
-             "hasAccommodations": false,
-             "parents": []
-           },
-           "status": "PENDING",
-           "enrollmentDate": "2024-12-15T10:15:30Z",
-           "gradeToEnroll": "FIRST",
-           "knownThrough": "OT",
-           "examDate": "2024-12-15",
-           "consentGiven": true,
-           "whatsappNotification": false
-         }
+          "id": 1,
+          "student": {
+            "id": 11,
+            "studentPerson": {
+              "id": 11,
+              "firstName": "Andrés",
+              "firstSurname": "Rodríguez",
+              "secondSurname": "Morales",
+              "idType": "CC",
+              "idNumber": "200123654",
+              "fullSurname": "Rodríguez Morales"
+            },
+            "birthDate": "2010-03-12",
+            "previousSchool": "Escuela La Sabana",
+            "hasAccommodations": false,
+            "parents": [
+              {
+                "parent": {
+                  "id": 1,
+                  "parentPerson": {
+                    "id": 1,
+                    "firstName": "Carlos",
+                    "firstSurname": "Rodríguez",
+                    "secondSurname": "Morales",
+                    "idType": "CC",
+                    "idNumber": "900321654",
+                    "fullSurname": "Rodríguez Morales"
+                  },
+                  "phoneNumber": "876543210",
+                  "email": "carlos.rod@example.com",
+                  "relationship": "F",
+                  "daiExam": null,
+                  "addresses": [
+                    {
+                      "id": 1,
+                      "country": "Costa Rica",
+                      "province": "San José",
+                      "city": "San José",
+                      "district": "Carmen",
+                      "addressInfo": "Avenida Central 100"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "status": "PENDING",
+          "enrollmentDate": "2024-12-15T10:15:30Z",
+          "gradeToEnroll": "FIRST",
+          "knownThrough": "OT",
+          "examDate": "2024-12-15",
+          "consentGiven": true,
+          "whatsappNotification": false,
+          "documents": []
+        }
         """;
 
     PersonEntity person = new PersonEntity();
-    person.setId(2L);
-    person.setFirstName("Mark");
-    person.setFirstSurname("Doe");
-    person.setSecondSurname("Johnson");
+    person.setId(11L);
+    person.setFirstName("Andrés");
+    person.setFirstSurname("Rodríguez");
+    person.setSecondSurname("Morales");
     person.setIdType(IdType.CC);
-    person.setIdNumber("987654321");
-    person.setFullSurname("Doe Johnson");
+    person.setIdNumber("200123654");
+    person.setFullSurname("Rodríguez Morales");
 
     StudentEntity student = new StudentEntity();
-    student.setId(2L);
-    student.setPerson(person);
-    student.setBirthDate(LocalDate.parse("2007-12-03"));
-    student.setPreviousSchool("Manhattan School");
+    student.setId(11L);
+    student.setStudentPerson(person);
+    student.setBirthDate(LocalDate.parse("2010-03-12"));
+    student.setPreviousSchool("Escuela La Sabana");
     student.setHasAccommodations(false);
+
+    PersonEntity person1 = new PersonEntity();
+    person1.setId(1L);
+    person1.setFirstName("Carlos");
+    person1.setFirstSurname("Rodríguez");
+    person1.setSecondSurname("Morales");
+    person1.setIdType(IdType.CC);
+    person1.setIdNumber("900321654");
+    person1.setFullSurname("Rodríguez Morales");
+
+    ParentEntity parent = new ParentEntity();
+    parent.setId(1L);
+    parent.setParentPerson(person1);
+    parent.setEmail("carlos.rod@example.com");
+    parent.setPhoneNumber("876543210");
+    parent.setRelationship(Relationship.F);
+    parent.setDaiExam(null);
+
+    parent.addStudent(student);
+
+    AddressEntity address = new AddressEntity();
+    address.setId(1L);
+    address.setCountry("Costa Rica");
+    address.setProvince("San José");
+    address.setCity("San José");
+    address.setDistrict("Carmen");
+    address.setAddressInfo("Avenida Central 100");
+
+    parent.addAddress(address);
 
     EnrollmentEntity enrollment = new EnrollmentEntity();
     enrollment.setId(1L);

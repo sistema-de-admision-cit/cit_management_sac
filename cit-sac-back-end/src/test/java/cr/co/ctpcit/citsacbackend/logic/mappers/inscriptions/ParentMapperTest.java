@@ -44,7 +44,7 @@ class ParentMapperTest {
 
     ParentEntity parentEntity = new ParentEntity();
     parentEntity.setId(1L);
-    parentEntity.setPerson(personEntity);
+    parentEntity.setParentPerson(personEntity);
     parentEntity.setPhoneNumber("88889999");
     parentEntity.setEmail("johndoe@mtmail.com");
     parentEntity.setRelationship(Relationship.F);
@@ -55,7 +55,7 @@ class ParentMapperTest {
     // Assert
     assertNotNull(parent);
     assertEquals(parentEntity.getId(), parent.id());
-    assertEquals(parentEntity.getPerson().getId(), parent.person().id());
+    assertEquals(parentEntity.getParentPerson().getId(), parent.person().id());
     assertEquals(parentEntity.getPhoneNumber(), parent.phoneNumber());
     assertEquals(parentEntity.getEmail(), parent.email());
     assertEquals(parentEntity.getRelationship(), parent.relationship());

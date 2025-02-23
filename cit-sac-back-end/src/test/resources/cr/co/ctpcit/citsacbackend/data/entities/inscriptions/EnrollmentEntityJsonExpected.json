@@ -1,20 +1,49 @@
 {
   "id": 1,
   "student": {
-    "id": 2,
-    "person": {
-      "id": 2,
-      "firstName": "Mark",
-      "firstSurname": "Doe",
-      "secondSurname": "Johnson",
+    "id": 11,
+    "studentPerson": {
+      "id": 11,
+      "firstName": "Andrés",
+      "firstSurname": "Rodríguez",
+      "secondSurname": "Morales",
       "idType": "CC",
-      "idNumber": "987654321",
-      "fullSurname": "Doe Johnson"
+      "idNumber": "200123654",
+      "fullSurname": "Rodríguez Morales"
     },
-    "birthDate": "2007-12-03",
-    "previousSchool": "Manhattan School",
+    "birthDate": "2010-03-12",
+    "previousSchool": "Escuela La Sabana",
     "hasAccommodations": false,
-    "parents": []
+    "parents": [
+      {
+        "parent": {
+          "id": 1,
+          "parentPerson": {
+            "id": 1,
+            "firstName": "Carlos",
+            "firstSurname": "Rodríguez",
+            "secondSurname": "Morales",
+            "idType": "CC",
+            "idNumber": "900321654",
+            "fullSurname": "Rodríguez Morales"
+          },
+          "phoneNumber": "876543210",
+          "email": "carlos.rod@example.com",
+          "relationship": "F",
+          "daiExam": null,
+          "addresses": [
+            {
+              "id": 1,
+              "country": "Costa Rica",
+              "province": "San José",
+              "city": "San José",
+              "district": "Carmen",
+              "addressInfo": "Avenida Central 100"
+            }
+          ]
+        }
+      }
+    ]
   },
   "status": "PENDING",
   "enrollmentDate": "2024-12-15T10:15:30Z",

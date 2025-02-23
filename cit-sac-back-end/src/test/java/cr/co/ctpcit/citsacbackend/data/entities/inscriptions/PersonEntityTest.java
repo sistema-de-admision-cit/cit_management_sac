@@ -16,20 +16,13 @@ class PersonEntityTest {
 
   @Test
   void testSerialize() throws Exception {
-    PersonEntity person = new PersonEntity();
-    person.setId(1L);
-    person.setFirstName("John");
-    person.setFirstSurname("Doe");
-    person.setSecondSurname("Smith");
-    person.setIdType(IdType.CC);
-    person.setIdNumber("123456789");
-    person.setFullSurname("Doe Smith");
+    PersonEntity person = TestProvider.provideParentPerson();
 
     assertThat(json.write(person)).isStrictlyEqualToJson("PersonEntityJsonExpected.json");
     assertThat(json.write(person)).hasJsonPathNumberValue("@.id");
     assertThat(json.write(person)).extractingJsonPathNumberValue("@.id").isEqualTo(1);
     assertThat(json.write(person)).hasJsonPathStringValue("@.firstName");
-    assertThat(json.write(person)).extractingJsonPathStringValue("@.firstName").isEqualTo("John");
+    assertThat(json.write(person)).extractingJsonPathStringValue("@.firstName").isEqualTo("Carlos");
   }
 
   @Test
@@ -37,26 +30,19 @@ class PersonEntityTest {
     String expected = """
         {
           "id": 1,
-          "firstName": "John",
-          "firstSurname": "Doe",
-          "secondSurname": "Smith",
+          "firstName": "Carlos",
+          "firstSurname": "Rodríguez",
+          "secondSurname": "Morales",
           "idType": "CC",
-          "idNumber": "123456789",
-          "fullSurname": "Doe Smith"
+          "idNumber": "900321654",
+          "fullSurname": "Rodríguez Morales"
         }
         """;
 
-    PersonEntity person = new PersonEntity();
-    person.setId(1L);
-    person.setFirstName("John");
-    person.setFirstSurname("Doe");
-    person.setSecondSurname("Smith");
-    person.setIdType(IdType.CC);
-    person.setIdNumber("123456789");
-    person.setFullSurname("Doe Smith");
+    PersonEntity person = TestProvider.provideParentPerson();
 
     assertThat(json.parse(expected)).isEqualTo(person);
     assertThat(json.parseObject(expected).getId()).isEqualTo(1);
-    assertThat(json.parseObject(expected).getIdNumber()).isEqualTo("123456789");
+    assertThat(json.parseObject(expected).getIdNumber()).isEqualTo("900321654");
   }
 }

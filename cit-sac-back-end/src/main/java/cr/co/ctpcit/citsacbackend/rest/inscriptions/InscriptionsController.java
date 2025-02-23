@@ -1,6 +1,5 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
@@ -9,8 +8,10 @@ import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -126,7 +127,7 @@ public class InscriptionsController {
    * @param filename the name of the document
    * @return the document as a resource
    */
-  /*@GetMapping("/documents/download/{filename}")
+  @GetMapping("/documents/download/{filename}")
   public ResponseEntity<Resource> downloadDocuments(@PathVariable String filename) {
     Resource resource;
 
@@ -138,7 +139,7 @@ public class InscriptionsController {
 
     return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
         "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
-  }*/
+  }
 
   /**
    * Delete a document
@@ -147,7 +148,7 @@ public class InscriptionsController {
    * @param filename the path of the document in the static/files document folder
    * @return ok if the document was deleted, not found otherwise
    */
-  /*@DeleteMapping("/documents/delete/{id}")
+  @DeleteMapping("/documents/delete/{id}")
   public ResponseEntity<String> deleteDocument(@PathVariable Long id,
       @RequestParam String filename) {
     boolean databaseDeleted = inscriptionsService.deleteDocument(id);
@@ -157,7 +158,7 @@ public class InscriptionsController {
     return databaseDeleted && storageDeleted ?
         ResponseEntity.ok().build() :
         ResponseEntity.notFound().build();
-  }*/
+  }
 
   /**
    * Upload a document

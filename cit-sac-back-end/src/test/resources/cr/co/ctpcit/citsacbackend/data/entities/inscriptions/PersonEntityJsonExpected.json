@@ -1,9 +1,9 @@
 {
   "id": 1,
-  "firstName": "John",
-  "firstSurname": "Doe",
-  "secondSurname": "Smith",
+  "firstName": "Carlos",
+  "firstSurname": "Rodríguez",
+  "secondSurname": "Morales",
   "idType": "CC",
-  "idNumber": "123456789",
-  "fullSurname": "Doe Smith"
+  "idNumber": "900321654",
+  "fullSurname": "Rodríguez Morales"
 }

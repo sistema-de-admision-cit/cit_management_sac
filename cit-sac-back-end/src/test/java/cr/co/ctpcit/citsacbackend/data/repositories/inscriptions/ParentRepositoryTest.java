@@ -49,7 +49,7 @@ class ParentRepositoryTest {
     assertNotNull(savedPersonEntity.getId());
     assertEquals(personEntity, savedPersonEntity);
     assertNotNull(savedPersonEntity.getParent());
-    assertNotNull(parentEntity.getPerson());
+    assertNotNull(parentEntity.getParentPerson());
   }
 
   @Test

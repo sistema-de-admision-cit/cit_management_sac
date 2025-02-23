@@ -1,12 +1,8 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
 import net.minidev.json.JSONArray;
 import org.junit.jupiter.api.MethodOrderer;
@@ -20,13 +16,16 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_CLASS;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql(scripts = {"rollback-update-inscriptions.sql"}, executionPhase = AFTER_TEST_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class InscriptionsControllerTest {
 
@@ -113,19 +112,11 @@ class InscriptionsControllerTest {
     Integer enrollmentId = documentContext.read("$[0].id");
 
     EnrollmentUpdateDto updatedEnrollment =
-        new EnrollmentUpdateDto(LocalDate.parse("2025-02-28"), null, null);
+        new EnrollmentUpdateDto(LocalDate.parse("2025-02-28"), null, null, null, null);
 
     //Request
     HttpEntity<EnrollmentUpdateDto> request = new HttpEntity<>(updatedEnrollment);
     ResponseEntity<Void> putResponse =
-        restTemplate.exchange("/api/inscriptions/update-exam-date/{id}", HttpMethod.PUT, request,
-            Void.class, enrollmentId);
-
-    assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-
-    updatedEnrollment = new EnrollmentUpdateDto(LocalDate.parse("2024-01-10"), null, null);
-    request = new HttpEntity<>(updatedEnrollment);
-    putResponse =
         restTemplate.exchange("/api/inscriptions/update-exam-date/{id}", HttpMethod.PUT, request,
             Void.class, enrollmentId);
 
@@ -142,19 +133,12 @@ class InscriptionsControllerTest {
     DocumentContext documentContext = JsonPath.parse(response.getBody());
     Integer enrollmentId = documentContext.read("$[0].id");
 
-    EnrollmentUpdateDto updatedEnrollment = new EnrollmentUpdateDto(null, ProcessStatus.REJECTED, null);
+    EnrollmentUpdateDto updatedEnrollment =
+        new EnrollmentUpdateDto(null, ProcessStatus.REJECTED, null, null, null);
 
     //Request
     HttpEntity<EnrollmentUpdateDto> request = new HttpEntity<>(updatedEnrollment);
     ResponseEntity<Void> putResponse =
-        restTemplate.exchange("/api/inscriptions/update-status/{id}", HttpMethod.PUT, request,
-            Void.class, enrollmentId);
-
-    assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-
-    updatedEnrollment = new EnrollmentUpdateDto(null, ProcessStatus.PENDING, null);
-    request = new HttpEntity<>(updatedEnrollment);
-    putResponse =
         restTemplate.exchange("/api/inscriptions/update-status/{id}", HttpMethod.PUT, request,
             Void.class, enrollmentId);
 
@@ -171,7 +155,7 @@ class InscriptionsControllerTest {
     DocumentContext documentContext = JsonPath.parse(response.getBody());
     Integer enrollmentId = documentContext.read("$[0].id");
 
-    EnrollmentUpdateDto updatedEnrollment = new EnrollmentUpdateDto(null, null, false);
+    EnrollmentUpdateDto updatedEnrollment = new EnrollmentUpdateDto(null, null, false, null, null);
 
     //Request
     HttpEntity<EnrollmentUpdateDto> request = new HttpEntity<>(updatedEnrollment);
@@ -180,13 +164,27 @@ class InscriptionsControllerTest {
             Void.class, enrollmentId);
 
     assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+  }
 
+  @Test
+  @Order(8)
+  @Sql(scripts = {"rollback-update-inscriptions.sql"}, executionPhase = BEFORE_TEST_METHOD)
+  void shouldUpdateEnrollmentSavingCommentsAndActionPerformerLog() {
+    //Get enrollments of person with id 200123654
+    ResponseEntity<String> response =
+        restTemplate.getForEntity("/api/inscriptions/200123654", String.class);
 
-    updatedEnrollment = new EnrollmentUpdateDto(null, null, true);
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+    Integer enrollmentId = documentContext.read("$[0].id");
 
-    request = new HttpEntity<>(updatedEnrollment);
-    putResponse =
-        restTemplate.exchange("/api/inscriptions/update-whatsapp/{id}", HttpMethod.PUT, request,
+    EnrollmentUpdateDto updatedEnrollment =
+        new EnrollmentUpdateDto(LocalDate.parse("2025-02-28"), ProcessStatus.REJECTED, false,
+            "Action made to update enrollment as test", 1);
+
+    //Request
+    HttpEntity<EnrollmentUpdateDto> request = new HttpEntity<>(updatedEnrollment);
+    ResponseEntity<Void> putResponse =
+        restTemplate.exchange("/api/inscriptions/update-enrollment/{id}", HttpMethod.PUT, request,
             Void.class, enrollmentId);
 
     assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);

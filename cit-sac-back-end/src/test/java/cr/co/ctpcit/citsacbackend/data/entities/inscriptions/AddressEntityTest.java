@@ -19,8 +19,8 @@ class AddressEntityTest {
     address.setCountry("Costa Rica");
     address.setProvince("San José");
     address.setCity("San José");
-    address.setDistrict("Pavas");
-    address.setAddressInfo("Ruta 104, Iglesia Ma. Reina del Universo, calle principal., Pavas, Costa Rica");
+    address.setDistrict("Carmen");
+    address.setAddressInfo("Avenida Central 100");
 
     assertThat(json.write(address)).isStrictlyEqualToJson("AddressEntityJsonExpected.json");
     assertThat(json.write(address)).hasJsonPathNumberValue("@.id");
@@ -38,8 +38,8 @@ class AddressEntityTest {
           "country": "Costa Rica",
           "province": "San José",
           "city": "San José",
-          "district": "Pavas",
-          "addressInfo": "Ruta 104, Iglesia Ma. Reina del Universo, calle principal., Pavas, Costa Rica"
+          "district": "Carmen",
+          "addressInfo": "Avenida Central 100"
         }
         """;
     AddressEntity address = new AddressEntity();
@@ -47,8 +47,8 @@ class AddressEntityTest {
     address.setCountry("Costa Rica");
     address.setProvince("San José");
     address.setCity("San José");
-    address.setDistrict("Pavas");
-    address.setAddressInfo("Ruta 104, Iglesia Ma. Reina del Universo, calle principal., Pavas, Costa Rica");
+    address.setDistrict("Carmen");
+    address.setAddressInfo("Avenida Central 100");
 
     assertThat(json.parse(expected)).isEqualTo(address);
     assertThat(json.parseObject(expected).getId()).isEqualTo(1);
