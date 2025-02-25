@@ -7,6 +7,9 @@ import cr.co.ctpcit.citsacbackend.data.enums.QuestionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -49,4 +52,11 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
 
   List<QuestionEntity> findAllByDeletedTrue();
 
+  /**
+   * Soft delete a question.
+   */
+  @Modifying
+  @Transactional
+  @Query("UPDATE QuestionEntity q SET q.deleted = true WHERE q.id = ?1")
+  void softDeleteQuestion(Long id);
 }

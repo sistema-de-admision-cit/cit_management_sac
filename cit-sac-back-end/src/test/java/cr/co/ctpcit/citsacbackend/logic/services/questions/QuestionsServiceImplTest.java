@@ -8,7 +8,6 @@ import cr.co.ctpcit.citsacbackend.data.enums.SelectionType;
 import cr.co.ctpcit.citsacbackend.data.repositories.questions.QuestionRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.questions.QuestionMapper;
-import cr.co.ctpcit.citsacbackend.logic.services.questions.QuestionsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -115,6 +114,15 @@ public class QuestionsServiceImplTest {
     questionsService.updateQuestion(sampleDto);
 
     verify(questionRepository, times(1)).save(any(QuestionEntity.class));
+  }
+
+  @Test
+  public void testDeleteQuestion() {
+    Long questionId = 1L;
+    
+    questionsService.deleteQuestion(questionId);
+
+    verify(questionRepository, times(1)).softDeleteQuestion(questionId);
   }
 
   // Helper method to create a sample QuestionDto.

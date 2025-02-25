@@ -18,4 +18,6 @@ public interface QuestionService {
   Page<QuestionDto> getQuestionsByType(QuestionType questionType, Pageable pageable);
 
   QuestionDto updateQuestion(QuestionDto questionDto);
+
+  void deleteQuestion(Long id);
 }

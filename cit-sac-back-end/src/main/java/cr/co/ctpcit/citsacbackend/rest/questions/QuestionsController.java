@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -62,6 +63,17 @@ public class QuestionsController {
   public ResponseEntity<QuestionDto> updateQuestion(@RequestBody QuestionDto questionDto) {
     try {
       return ResponseEntity.ok(questionService.updateQuestion(questionDto));
+    } catch (Exception e) {
+      e.printStackTrace();
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
+  @DeleteMapping("/delete/{id}")
+  public ResponseEntity<String> deleteQuestion(@PathVariable Long id) {
+    try {
+      questionService.deleteQuestion(id);
+      return ResponseEntity.ok("Question deleted successfully.");
     } catch (Exception e) {
       e.printStackTrace();
       return ResponseEntity.badRequest().build();
