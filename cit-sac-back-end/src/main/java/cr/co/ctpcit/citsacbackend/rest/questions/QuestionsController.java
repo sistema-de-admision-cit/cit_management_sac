@@ -1,14 +1,15 @@
 package cr.co.ctpcit.citsacbackend.rest.questions;
 
-import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionEntity;
+import cr.co.ctpcit.citsacbackend.data.enums.Grades;
+import cr.co.ctpcit.citsacbackend.data.enums.QuestionLevel;
 import cr.co.ctpcit.citsacbackend.data.enums.QuestionType;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionFilterSpec;
 import cr.co.ctpcit.citsacbackend.logic.services.questions.QuestionsServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,25 +36,21 @@ public class QuestionsController {
 
   @GetMapping("/get-all")
   public ResponseEntity<Page<QuestionDto>> getAllQuestions(
-      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+      @RequestParam(required = false) Boolean deleted,
+      @RequestParam(required = false) QuestionType questionType,
+      @RequestParam(required = false) Grades grade,
+      @RequestParam(required = false) QuestionLevel questionLevel) {
 
     Pageable pageable = PageRequest.of(page, size);
 
-    Page<QuestionDto> questionsPage = questionService.getQuestions(pageable);
+    QuestionFilterSpec filter = new QuestionFilterSpec(deleted, questionType, grade, questionLevel);
+
+    Page<QuestionDto> questionsPage = questionService.getQuestions(filter, pageable);
 
     return ResponseEntity.ok(questionsPage);
   }
-
-  @GetMapping("/get-by-type/{type}")
-  public ResponseEntity<Page<QuestionDto>> getQuestionsByType(@PathVariable QuestionType type,
-      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-    Pageable pageable = PageRequest.of(page, size);
-
-    Page<QuestionDto> questionsPage = questionService.getQuestionsByType(type, pageable);
-
-    return ResponseEntity.ok(questionsPage);
-  }
-
+  
   @GetMapping("/get-by-id/{id}")
   public ResponseEntity<QuestionDto> getQuestionById(@PathVariable Long id) {
     return ResponseEntity.ok(questionService.getQuestionById(id));

@@ -7,51 +7,21 @@ import cr.co.ctpcit.citsacbackend.data.enums.QuestionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> {
+public interface QuestionRepository
+    extends JpaRepository<QuestionEntity, Long>, JpaSpecificationExecutor<QuestionEntity> {
   /**
    * Get all questions in a paginated way.
    */
   @Override
   Page<QuestionEntity> findAll(Pageable pageable);
-
-
-  /**
-   * Find all questions by question type.
-   *
-   * @param questionType
-   * @return List of questions.
-   * @see QuestionType
-   */
-  Page<QuestionEntity> findAllByQuestionType(QuestionType questionType, Pageable pageable);
-
-  /**
-   * Find all questions by question grade.
-   *
-   * @param questionGrade
-   * @return List of questions.
-   * @see Grades
-   */
-  List<QuestionEntity> findAllByQuestionGrade(Grades questionGrade);
-
-  /**
-   * Find all questions by question level.
-   *
-   * @param questionLevel
-   * @return List of questions.
-   * @see QuestionLevel
-   */
-  List<QuestionEntity> findAllByQuestionLevel(QuestionLevel questionLevel);
-
-  List<QuestionEntity> findAllByDeletedFalse();
-
-  List<QuestionEntity> findAllByDeletedTrue();
-
+  
   /**
    * Soft delete a question.
    */

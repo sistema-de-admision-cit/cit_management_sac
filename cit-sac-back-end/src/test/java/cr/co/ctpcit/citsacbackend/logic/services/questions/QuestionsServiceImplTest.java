@@ -59,7 +59,7 @@ public class QuestionsServiceImplTest {
     Page<QuestionEntity> entityPage = new PageImpl<>(Collections.singletonList(sampleEntity));
     when(questionRepository.findAll(pageable)).thenReturn(entityPage);
 
-    Page<QuestionDto> dtoPage = questionsService.getQuestions(pageable);
+    Page<QuestionDto> dtoPage = questionsService.getQuestions(null, pageable);
 
     assertNotNull(dtoPage);
     assertEquals(1, dtoPage.getTotalElements());
@@ -87,24 +87,7 @@ public class QuestionsServiceImplTest {
 
     assertNull(resultDto);
   }
-
-  @Test
-  public void testGetQuestionsByType() {
-    Pageable pageable = PageRequest.of(0, 10);
-    QuestionType sampleType = QuestionType.ACA; // assuming this is a valid enum constant
-    QuestionEntity sampleEntity = createSampleQuestionEntity();
-    sampleEntity.setQuestionType(sampleType);
-    Page<QuestionEntity> entityPage = new PageImpl<>(Collections.singletonList(sampleEntity));
-    when(questionRepository.findAllByQuestionType(eq(sampleType), eq(pageable))).thenReturn(
-        entityPage);
-
-    Page<QuestionDto> dtoPage = questionsService.getQuestionsByType(sampleType, pageable);
-
-    assertNotNull(dtoPage);
-    assertEquals(1, dtoPage.getTotalElements());
-    assertEquals(sampleType, dtoPage.getContent().get(0).questionType());
-  }
-
+  
   @Test
   public void testUpdateQuestion() {
     QuestionDto sampleDto = createSampleQuestionDto();
@@ -119,7 +102,7 @@ public class QuestionsServiceImplTest {
   @Test
   public void testDeleteQuestion() {
     Long questionId = 1L;
-    
+
     questionsService.deleteQuestion(questionId);
 
     verify(questionRepository, times(1)).softDeleteQuestion(questionId);
