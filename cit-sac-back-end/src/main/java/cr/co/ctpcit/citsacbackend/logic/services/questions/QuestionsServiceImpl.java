@@ -21,11 +21,12 @@ public class QuestionsServiceImpl implements QuestionService {
   }
 
   @Override
-  public void createQuestion(QuestionDto questionDto) {
+  public QuestionDto createQuestion(QuestionDto questionDto) {
     QuestionEntity questionEntity = QuestionMapper.dtoToEntity(questionDto);
-    List<QuestionOptionEntity> options = questionEntity.getQuestionOptions();
 
-    QuestionEntity saved = questionRepository.save(questionEntity);
+    QuestionEntity questionSaved = questionRepository.save(questionEntity);
+
+    return QuestionMapper.entityToDto(questionSaved);
   }
 
   @Override
@@ -42,6 +43,15 @@ public class QuestionsServiceImpl implements QuestionService {
   public Page<QuestionDto> getQuestionsByType(QuestionType questionType, Pageable pageable) {
     return questionRepository.findAllByQuestionType(questionType, pageable)
         .map(QuestionMapper::entityToDto);
+  }
+
+  @Override
+  public QuestionDto updateQuestion(QuestionDto questionDto) {
+    QuestionEntity questionEntity = QuestionMapper.dtoToEntity(questionDto);
+
+    QuestionEntity questionUpdated = questionRepository.save(questionEntity);
+
+    return QuestionMapper.entityToDto(questionUpdated);
   }
 }
 

@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest.questions;
 
+import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.QuestionType;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
 import cr.co.ctpcit.citsacbackend.logic.services.questions.QuestionsServiceImpl;
@@ -19,17 +20,16 @@ public class QuestionsController {
   }
 
   @PostMapping("/create")
-  public ResponseEntity<Void> createQuestion(@RequestBody QuestionDto questionDto) {
+  public ResponseEntity<QuestionDto> createQuestion(@RequestBody QuestionDto questionDto) {
     System.out.println("Creating question...");
     System.out.println(questionDto);
     try {
-      questionService.createQuestion(questionDto);
+      QuestionDto questionSaved = questionService.createQuestion(questionDto);
+      return ResponseEntity.ok(questionSaved);
     } catch (Exception e) {
       e.printStackTrace();
       return ResponseEntity.badRequest().build();
     }
-
-    return ResponseEntity.ok().build();
   }
 
   @GetMapping("/get-all")
@@ -56,6 +56,16 @@ public class QuestionsController {
   @GetMapping("/get-by-id/{id}")
   public ResponseEntity<QuestionDto> getQuestionById(@PathVariable Long id) {
     return ResponseEntity.ok(questionService.getQuestionById(id));
+  }
+
+  @PutMapping("/update")
+  public ResponseEntity<QuestionDto> updateQuestion(@RequestBody QuestionDto questionDto) {
+    try {
+      return ResponseEntity.ok(questionService.updateQuestion(questionDto));
+    } catch (Exception e) {
+      e.printStackTrace();
+      return ResponseEntity.badRequest().build();
+    }
   }
 
   @GetMapping("/health")
