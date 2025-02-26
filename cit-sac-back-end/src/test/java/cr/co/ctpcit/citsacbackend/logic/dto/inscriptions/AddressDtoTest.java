@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.TestProvider;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.AddressEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,7 @@ class AddressDtoTest {
 
   @Test
   void serializeJson() throws Exception {
-    AddressDto address = new AddressDto(1L, "Costa Rica", "San José", "San José", "Pavas",
-        "Ruta 104, Iglesia Ma. Reina del Universo, calle principal., Pavas, Costa Rica");
+    AddressDto address = TestProvider.provideAddressDto();
 
     assertThat(json.write(address)).isStrictlyEqualToJson("AddressDtoJsonExpected.json");
     assertThat(json.write(address)).hasJsonPathNumberValue("@.id");
@@ -36,12 +36,11 @@ class AddressDtoTest {
           "country": "Costa Rica",
           "province": "San José",
           "city": "San José",
-          "district": "Pavas",
-          "addressInfo": "Ruta 104, Iglesia Ma. Reina del Universo, calle principal., Pavas, Costa Rica"
+          "district": "Carmen",
+          "addressInfo": "Avenida Central 100"
         }
         """;
-    AddressDto address = new AddressDto(1L, "Costa Rica", "San José", "San José", "Pavas",
-        "Ruta 104, Iglesia Ma. Reina del Universo, calle principal., Pavas, Costa Rica");
+    AddressDto address = TestProvider.provideAddressDto();
 
     assertThat(json.parse(content)).isEqualTo(address);
     assertThat(json.parseObject(content).id()).isEqualTo(1);

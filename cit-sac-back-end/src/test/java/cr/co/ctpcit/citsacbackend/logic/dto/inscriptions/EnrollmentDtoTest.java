@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.TestProvider;
 import cr.co.ctpcit.citsacbackend.data.enums.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,18 +23,11 @@ class EnrollmentDtoTest {
 
   @BeforeEach
   void setUp() {
-    PersonDto parentPerson = new PersonDto(1L, "John", "Doe", "Smith", IdType.CC, "123456789");
-    ParentDto parent =
-        new ParentDto(1L, parentPerson, "88889999", "johndoe@mtmail.com", Relationship.F,
-            new ArrayList<>());
-    AddressDto address = new AddressDto(1L, "Costa Rica", "San José", "San José", "Pavas",
-        "Ruta 104, Iglesia Ma. Reina del Universo, calle principal., Pavas, Costa Rica");
+    ParentDto parent = TestProvider.provideParentDto();
+    AddressDto address = TestProvider.provideAddressDto();
     parent.addresses().add(address);
 
-    PersonDto studentPerson = new PersonDto(2L, "Mark", "Doe", "Johnson", IdType.CC, "987654321");
-    student =
-        new StudentDto(2L, studentPerson, LocalDate.parse("2007-12-03"), "Manhattan School", false,
-            new ArrayList<>());
+    student = TestProvider.provideStudentDto();
     student.parents().add(parent);
   }
 
@@ -42,7 +36,12 @@ class EnrollmentDtoTest {
     EnrollmentDto enrollment =
         new EnrollmentDto(null, student, ProcessStatus.PENDING, Grades.FIRST, KnownThrough.OT,
             LocalDate.parse("2024-12-15"), true, false, new ArrayList<>());
-    DocumentDto document = new DocumentDto(1L, "Document 1", DocType.OT);
+
+    long timestamp = 856332114336L;
+    String documentUrlPostfix = "grades_" + student.person().idNumber() + "_" + timestamp + ".pdf";
+
+    DocumentDto document =
+        new DocumentDto(1L, documentUrlPostfix, DocType.OT, "Documento de notas");
     enrollment.documents().add(document);
 
     assertThat(json.write(enrollment)).isStrictlyEqualToJson("EnrollmentDtoJsonExpected.json");
@@ -50,7 +49,7 @@ class EnrollmentDtoTest {
     assertThat(json.write(enrollment)).extractingJsonPathNumberValue("@.id").isNull();
     assertThat(json.write(enrollment)).hasJsonPathValue("@.student");
     assertThat(json.write(enrollment)).extractingJsonPathStringValue("@.student.previousSchool")
-        .isEqualTo("Manhattan School");
+        .isEqualTo("Escuela La Sabana");
     assertThat(json.write(enrollment)).hasJsonPathStringValue("@.status");
   }
 
@@ -60,31 +59,31 @@ class EnrollmentDtoTest {
         {
           "id": null,
           "student": {
-            "id": 2,
+            "id": 11,
             "person": {
-              "id": 2,
-              "firstName": "Mark",
-              "firstSurname": "Doe",
-              "secondSurname": "Johnson",
+              "id": 11,
+              "firstName": "Andrés",
+              "firstSurname": "Rodríguez",
+              "secondSurname": "Morales",
               "idType": "CC",
-              "idNumber": "987654321"
+              "idNumber": "200123654"
             },
-            "birthDate": "2007-12-03",
-            "previousSchool": "Manhattan School",
+            "birthDate": "2010-03-12",
+            "previousSchool": "Escuela La Sabana",
             "hasAccommodations": false,
             "parents": [
               {
                 "id": 1,
                 "person": {
                   "id": 1,
-                  "firstName": "John",
-                  "firstSurname": "Doe",
-                  "secondSurname": "Smith",
+                  "firstName": "Carlos",
+                  "firstSurname": "Rodríguez",
+                  "secondSurname": "Morales",
                   "idType": "CC",
-                  "idNumber": "123456789"
+                  "idNumber": "900321654"
                 },
-                "phoneNumber": "88889999",
-                "email": "johndoe@mtmail.com",
+                "phoneNumber": "876543210",
+                "email": "carlos.rod@example.com",
                 "relationship": "F",
                 "addresses": [
                   {
@@ -92,8 +91,8 @@ class EnrollmentDtoTest {
                     "country": "Costa Rica",
                     "province": "San José",
                     "city": "San José",
-                    "district": "Pavas",
-                    "addressInfo": "Ruta 104, Iglesia Ma. Reina del Universo, calle principal., Pavas, Costa Rica"
+                    "district": "Carmen",
+                    "addressInfo": "Avenida Central 100"
                   }
                 ]
               }
@@ -108,8 +107,9 @@ class EnrollmentDtoTest {
           "documents": [
             {
               "id": 1,
-              "documentName": "Document 1",
-              "documentType": "OT"
+              "documentUrlPostfix": "grades_200123654_856332114336.pdf",
+              "documentType": "OT",
+              "documentName": "Documento de notas"
             }
           ]
         }
@@ -118,12 +118,17 @@ class EnrollmentDtoTest {
     EnrollmentDto enrollment =
         new EnrollmentDto(null, student, ProcessStatus.PENDING, Grades.FIRST, KnownThrough.OT,
             LocalDate.parse("2024-12-15"), true, false, new ArrayList<>());
-    DocumentDto document = new DocumentDto(1L, "Document 1", DocType.OT);
+
+    long timestamp = 856332114336L;
+    String documentUrlPostfix = "grades_" + student.person().idNumber() + "_" + timestamp + ".pdf";
+
+    DocumentDto document =
+        new DocumentDto(1L, documentUrlPostfix, DocType.OT, "Documento de notas");
     enrollment.documents().add(document);
 
     assertThat(json.parse(content)).isEqualTo(enrollment);
     assertThat(json.parseObject(content).id()).isNull();
-    assertThat(json.parseObject(content).student().previousSchool()).isEqualTo("Manhattan School");
+    assertThat(json.parseObject(content).student().previousSchool()).isEqualTo("Escuela La Sabana");
     assertThat(json.parseObject(content).status()).isEqualTo(ProcessStatus.PENDING);
 
   }

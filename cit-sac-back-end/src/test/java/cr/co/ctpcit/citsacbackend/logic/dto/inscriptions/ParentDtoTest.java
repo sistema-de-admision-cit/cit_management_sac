@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.TestProvider;
 import cr.co.ctpcit.citsacbackend.data.enums.IdType;
 import cr.co.ctpcit.citsacbackend.data.enums.Relationship;
 import org.junit.jupiter.api.Test;
@@ -19,15 +20,14 @@ class ParentDtoTest {
 
   @Test
   void serializeJson() throws Exception {
-    PersonDto person = new PersonDto(1L, "John", "Doe", "Smith", IdType.CC, "123456789");
-    ParentDto parent = new ParentDto(1L, person, "88889999", "johndoe@mtmail.com", Relationship.F,
-        new ArrayList<>());
+    ParentDto parent = TestProvider.provideParentDto();
 
     assertThat(json.write(parent)).isStrictlyEqualToJson("ParentDtoJsonExpected.json");
     assertThat(json.write(parent)).hasJsonPathNumberValue("@.id");
     assertThat(json.write(parent)).extractingJsonPathNumberValue("@.id").isEqualTo(1);
     assertThat(json.write(parent)).hasJsonPathStringValue("@.email");
-    assertThat(json.write(parent)).extractingJsonPathStringValue("@.email").isEqualTo("johndoe@mtmail.com");
+    assertThat(json.write(parent)).extractingJsonPathStringValue("@.email")
+        .isEqualTo("carlos.rod@example.com");
   }
 
   @Test
@@ -37,26 +37,23 @@ class ParentDtoTest {
           "id": 1,
           "person": {
             "id": 1,
-            "firstName": "John",
-            "firstSurname": "Doe",
-            "secondSurname": "Smith",
+            "firstName": "Carlos",
+            "firstSurname": "Rodríguez",
+            "secondSurname": "Morales",
             "idType": "CC",
-            "idNumber": "123456789",
-            "fullSurname": "Doe Smith"
+            "idNumber": "900321654"
           },
-          "phoneNumber": "88889999",
-          "email": "johndoe@mtmail.com",
+          "phoneNumber": "876543210",
+          "email": "carlos.rod@example.com",
           "relationship": "F",
           "addresses": []
         }
         """;
 
-    PersonDto person = new PersonDto(1L, "John", "Doe", "Smith", IdType.CC, "123456789");
-    ParentDto parent = new ParentDto(1L, person, "88889999", "johndoe@mtmail.com", Relationship.F,
-        new ArrayList<>());
+    ParentDto parent = TestProvider.provideParentDto();
 
     assertThat(json.parse(expected)).isEqualTo(parent);
     assertThat(json.parseObject(expected).id()).isEqualTo(1);
-    assertThat(json.parseObject(expected).email()).isEqualTo("johndoe@mtmail.com");
+    assertThat(json.parseObject(expected).email()).isEqualTo("carlos.rod@example.com");
   }
 }

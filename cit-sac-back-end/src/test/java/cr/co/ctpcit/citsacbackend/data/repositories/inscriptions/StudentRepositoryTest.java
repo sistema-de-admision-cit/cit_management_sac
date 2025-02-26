@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -24,6 +25,8 @@ class StudentRepositoryTest {
 
   private StudentEntity studentEntity;
   private PersonEntity personEntity;
+  @Autowired
+  private ParentRepository parentRepository;
 
   @BeforeEach
   void setUp() {
@@ -43,7 +46,7 @@ class StudentRepositoryTest {
   }
 
   @Test
-  void testSaveStudentEntity() {
+  void testSaveNewStudentEntity() {
     PersonEntity savedPersonEntity = personRepository.save(personEntity);
 
     assertNotNull(savedPersonEntity);
@@ -78,7 +81,7 @@ class StudentRepositoryTest {
     parentEntity.setPhoneNumber("88889999");
 
     parentPersonEntity.addParent(parentEntity);
-    personRepository.save(parentPersonEntity);
+    personRepository.save(parentPersonEntity); //Save Parent
 
     PersonEntity savedStudentPersonEntity = personRepository.save(personEntity);
 
@@ -103,6 +106,26 @@ class StudentRepositoryTest {
 
     assertNotNull(savedStudentEntity);
     assertEquals(studentEntity, savedStudentEntity);
+  }
+
+  @Test
+  void shouldAddStudentToExistingParent() {
+    //Find Parent
+    ParentEntity parentEntity = parentRepository.findById(10L).orElse(null);
+    assertNotNull(parentEntity);
+
+    //Create Student
+    parentEntity.addStudent(studentEntity);
+
+    //Save Student
+    studentEntity = studentRepository.save(studentEntity);
+    assertNotNull(studentEntity);
+    assertNotNull(studentEntity.getId());
+
+    //Find Parent-Student relation
+    StudentEntity savedStudentEntity = studentRepository.findById(studentEntity.getId()).orElse(null);
+    assertThat(savedStudentEntity).isNotNull();
+    assertEquals(1, savedStudentEntity.getParents().size());
   }
 
   @AfterEach

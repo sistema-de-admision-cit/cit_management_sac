@@ -1,16 +1,25 @@
 package cr.co.ctpcit.citsacbackend.logic.services.storage;
 
+import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.DocumentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.DocType;
+import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.DocumentRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
+import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageFileNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,10 +27,18 @@ import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
+@RequiredArgsConstructor
 @Service
 public class StorageServiceImpl implements StorageService {
   @Value("${storage.location}")
   private String location;
+
+  private DocumentRepository documentRepository;
+
+  @Autowired
+  public StorageServiceImpl(DocumentRepository documentRepository) {
+    this.documentRepository = documentRepository;
+  }
 
   @Override
   public void init() {
@@ -40,19 +57,14 @@ public class StorageServiceImpl implements StorageService {
       DocType docType) {
     try {
       if (file != null) {
-        if (Files.exists(Paths.get(location).resolve(filename))) {
-          File existingFile = new File(location + filename);
-          filename = existingFile.getName().substring(0, existingFile.getName()
-              .lastIndexOf('.')) + "_" + System.currentTimeMillis() + filename.substring(
-              filename.lastIndexOf('.'));
-        }
         Files.copy(file.getInputStream(), Paths.get(location).resolve(filename));
       }
     } catch (IOException e) {
       throw new StorageException(
           "Failed to store file " + file.getOriginalFilename() + " with name " + filename, e);
     }
-    return CompletableFuture.completedFuture(new DocumentDto(null, filename, docType));
+
+    return CompletableFuture.completedFuture(new DocumentDto(null, filename, docType, null));
   }
 
   @Override
@@ -61,13 +73,28 @@ public class StorageServiceImpl implements StorageService {
   }
 
   @Override
-  public Path load(String filename) {
-    return null;
-  }
+  public Resource loadAsResource(Long id) {
+    DocumentEntity documentEntity = documentRepository.findById(id).orElse(null);
 
-  @Override
-  public Resource loadAsResource(String filename) {
-    return null;
+    if (documentEntity == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Document not found");
+    }
+
+    try {
+      Path file = Paths.get(documentEntity.getDocumentUrl());
+      Resource resource = new UrlResource(file.toUri());
+
+      if (resource.exists() || resource.isReadable()) {
+        return resource;
+      } else {
+        throw new StorageFileNotFoundException(
+            "Could not read file with id: " + documentEntity.getId());
+
+      }
+    } catch (MalformedURLException e) {
+      throw new StorageFileNotFoundException(
+          "Could not read file with id: " + documentEntity.getId(), e);
+    }
   }
 
   @Override

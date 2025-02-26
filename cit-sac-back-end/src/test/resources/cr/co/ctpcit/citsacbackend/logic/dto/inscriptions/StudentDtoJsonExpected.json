@@ -1,15 +1,15 @@
 {
-  "id": 1,
+  "id": 11,
   "person": {
-    "id": 1,
-    "firstName": "John",
-    "firstSurname": "Doe",
-    "secondSurname": "Smith",
+    "id": 11,
+    "firstName": "Andrés",
+    "firstSurname": "Rodríguez",
+    "secondSurname": "Morales",
     "idType": "CC",
-    "idNumber": "123456789"
+    "idNumber": "200123654"
   },
-  "birthDate": "2007-12-03",
-  "previousSchool": "Manhattan School",
+  "birthDate": "2010-03-12",
+  "previousSchool": "Escuela La Sabana",
   "hasAccommodations": false,
   "parents": []
 }

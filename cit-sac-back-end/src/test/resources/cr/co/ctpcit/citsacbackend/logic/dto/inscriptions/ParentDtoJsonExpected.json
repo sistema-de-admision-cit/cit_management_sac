@@ -2,14 +2,14 @@
   "id": 1,
   "person": {
     "id": 1,
-    "firstName": "John",
-    "firstSurname": "Doe",
-    "secondSurname": "Smith",
+    "firstName": "Carlos",
+    "firstSurname": "Rodríguez",
+    "secondSurname": "Morales",
     "idType": "CC",
-    "idNumber": "123456789"
+    "idNumber": "900321654"
   },
-  "phoneNumber": "88889999",
-  "email": "johndoe@mtmail.com",
+  "phoneNumber": "876543210",
+  "email": "carlos.rod@example.com",
   "relationship": "F",
   "addresses": []
 }

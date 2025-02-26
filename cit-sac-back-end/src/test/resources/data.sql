@@ -37,8 +37,8 @@ VALUES
     (6, '876542019', 'ana.martinez@example.com', 'M'),
     (7, '865742013', 'ricardo.gomez@example.com', 'F'),
     (8, '876590348', 'laura.perez@example.com', 'G'),
-    (9, '834792019', 'gabriel.sanchez@example.com', 'M'),
-    (10, '896734320', 'elena.cordero@example.com', 'F');
+    (9, '834792019', 'gabriel.sanchez@example.com', 'F'),
+    (10, '896734320', 'elena.cordero@example.com', 'M');
 
 -- Insert values into tbl_address
 INSERT INTO `tbl_address`

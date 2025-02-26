@@ -1,0 +1,57 @@
+{
+  "id": null,
+  "student": {
+    "id": null,
+    "person": {
+      "id": null,
+      "firstName": "Valeria",
+      "firstSurname": "Cordero",
+      "secondSurname": "Solano",
+      "idType": "DI",
+      "idNumber": "270456789"
+    },
+    "birthDate": "2008-10-14",
+    "previousSchool": "Escuela San Lucas",
+    "hasAccommodations": false,
+    "parents": [
+      {
+        "id": null,
+        "person": {
+          "id": null,
+          "firstName": "Elena",
+          "firstSurname": "Cordero",
+          "secondSurname": "Solano",
+          "idType": "CC",
+          "idNumber": "940123789"
+        },
+        "phoneNumber": "896734320",
+        "email": "elena.cordero@example.com",
+        "relationship": "M",
+        "addresses": [
+          {
+            "id": 1,
+            "country": "Costa Rica",
+            "province": "Puntarenas",
+            "city": "Esparza",
+            "district": "Macacona",
+            "addressInfo": "Detrás de la iglesia"
+          }
+        ]
+      }
+    ]
+  },
+  "status": "PENDING",
+  "gradeToEnroll": "NINTH",
+  "knownThrough": "OT",
+  "examDate": "2024-12-15",
+  "consentGiven": true,
+  "whatsappNotification": false,
+  "documents": [
+    {
+      "id": null,
+      "documentUrlPostfix": null,
+      "documentType": "OT",
+      "documentName": null
+    }
+  ]
+}

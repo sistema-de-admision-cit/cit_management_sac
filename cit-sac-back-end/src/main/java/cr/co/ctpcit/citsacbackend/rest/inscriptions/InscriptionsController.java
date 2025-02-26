@@ -124,15 +124,15 @@ public class InscriptionsController {
   /**
    * Download documents
    *
-   * @param filename the name of the document
+   * @param id the name of the document
    * @return the document as a resource
    */
-  @GetMapping("/documents/download/{filename}")
-  public ResponseEntity<Resource> downloadDocuments(@PathVariable String filename) {
+  @GetMapping("/documents/download/{id}")
+  public ResponseEntity<Resource> downloadDocuments(@PathVariable Long id) {
     Resource resource;
 
     try {
-      resource = storageService.loadAsResource(filename);
+      resource = storageService.loadAsResource(id);
     } catch (Exception e) {
       return ResponseEntity.notFound().build();
     }

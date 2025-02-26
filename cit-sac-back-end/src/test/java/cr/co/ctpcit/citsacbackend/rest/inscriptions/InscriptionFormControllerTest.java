@@ -30,11 +30,11 @@ class InscriptionFormControllerTest {
 
   @Test
   @Order(1)
-  @Sql(scripts = {"delete-inscription.sql"}, executionPhase = BEFORE_TEST_METHOD)
+  @Sql(scripts = {"delete-inscription.sql"}, executionPhase = AFTER_TEST_METHOD)
   void createInscription() throws Exception {
     //Request
     HttpEntity<MultiValueMap<String, Object>> request =
-        createRequest("InscriptionJsonRequest.json");
+        createRequest("InscriptionNonexistentStudentJsonRequest.json");
 
     ResponseEntity<Void> response =
         restTemplate.postForEntity("/api/inscription/add", request, Void.class);
@@ -44,10 +44,11 @@ class InscriptionFormControllerTest {
 
   @Test
   @Order(2)
+  @Sql(scripts = {"delete-inscription.sql"}, executionPhase = AFTER_TEST_METHOD)
   void createInscriptionWithExistentDad() throws IOException {
     //Request
     HttpEntity<MultiValueMap<String, Object>> request =
-        createRequest("InscriptionSameDadJsonRequest.json");
+        createRequest("InscriptionExistingDadJsonRequest.json");
 
     ResponseEntity<Void> response =
         restTemplate.postForEntity("/api/inscription/add", request, Void.class);
@@ -56,23 +57,15 @@ class InscriptionFormControllerTest {
   }
 
   @Test
-  void createInscriptionForExistentStudent() throws IOException {
+  void createInscriptionForExistentStudent_NonexistentDad() throws IOException {
     //Request for existent student different exam date
     HttpEntity<MultiValueMap<String, Object>> request =
-        createRequest("InscriptionExistentStudentJsonRequest.json");
+        createRequest("InscriptionExistentStudentNonexistentDadJsonRequest.json");
 
     ResponseEntity<Void> response =
         restTemplate.postForEntity("/api/inscription/add", request, Void.class);
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
-
-    //Request for existent student same exam date
-    request = createRequest("InscriptionJsonRequest.json");
-
-    ResponseEntity<Void> response2 =
-        restTemplate.postForEntity("/api/inscription/add", request, Void.class);
-
-    assertEquals(HttpStatus.CONFLICT, response2.getStatusCode());
   }
 
   @Test

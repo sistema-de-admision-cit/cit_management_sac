@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.TestProvider;
 import cr.co.ctpcit.citsacbackend.data.enums.IdType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,45 +19,40 @@ class StudentDtoTest {
 
   @Test
   void testSerialize() throws Exception {
-    PersonDto person = new PersonDto(1L, "John", "Doe", "Smith", IdType.CC, "123456789");
-    StudentDto student =
-        new StudentDto(1L, person, LocalDate.parse("2007-12-03"), "Manhattan School", false,
-            new ArrayList<>());
+    StudentDto student = TestProvider.provideStudentDto();
 
     assertThat(json.write(student)).isStrictlyEqualToJson("StudentDtoJsonExpected.json");
     assertThat(json.write(student)).hasJsonPathNumberValue("@.id");
-    assertThat(json.write(student)).extractingJsonPathNumberValue("@.id").isEqualTo(1);
+    assertThat(json.write(student)).extractingJsonPathNumberValue("@.id").isEqualTo(11);
     assertThat(json.write(student)).hasJsonPathStringValue("@.previousSchool");
     assertThat(json.write(student)).extractingJsonPathStringValue("@.previousSchool")
-        .isEqualTo("Manhattan School");
+        .isEqualTo("Escuela La Sabana");
   }
 
   @Test
   void testDeserialize() throws Exception {
     String content = """
         {
-        "id": 1,
-        "person": {
-            "id": 1,
-            "firstName": "John",
-            "firstSurname": "Doe",
-            "secondSurname": "Smith",
+          "id": 11,
+          "person": {
+            "id": 11,
+            "firstName": "Andrés",
+            "firstSurname": "Rodríguez",
+            "secondSurname": "Morales",
             "idType": "CC",
-            "idNumber": "123456789"
-        },
-        "birthDate": "2007-12-03",
-        "previousSchool": "Manhattan School",
-        "hasAccommodations": false,
-        "parents": []
+            "idNumber": "200123654"
+          },
+          "birthDate": "2010-03-12",
+          "previousSchool": "Escuela La Sabana",
+          "hasAccommodations": false,
+          "parents": []
         }
         """;
-    PersonDto person = new PersonDto(1L, "John", "Doe", "Smith", IdType.CC, "123456789");
-    StudentDto student =
-        new StudentDto(1L, person, LocalDate.parse("2007-12-03"), "Manhattan School", false,
-            new ArrayList<>());
+
+    StudentDto student = TestProvider.provideStudentDto();
 
     assertThat(json.parse(content)).isEqualTo(student);
-    assertThat(json.parseObject(content).id()).isEqualTo(1);
-    assertThat(json.parseObject(content).previousSchool()).isEqualTo("Manhattan School");
+    assertThat(json.parseObject(content).id()).isEqualTo(11);
+    assertThat(json.parseObject(content).previousSchool()).isEqualTo("Escuela La Sabana");
   }
 }

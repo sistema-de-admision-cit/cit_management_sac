@@ -1,41 +1,69 @@
 DELETE
 FROM `tbl_documents`
 WHERE `enrollment_id` IN (SELECT `enrollment_id`
+                          FROM `tbl_enrollments`
+                          WHERE `student_id` IN (SELECT `student_id`
+                                                 FROM `tbl_students`
+                                                 WHERE `birth_date` = '1989-12-16'
+                                                    OR `birth_date` = '2017-12-31'
+                                                     AND `previous_school` = 'Escuela de Getsemaní'
+                                                    OR `previous_school` = 'Escuela Jose Figueres Ferrer'));
+
+DELETE
+FROM `tbl_documents`
+WHERE `enrollment_id` = (SELECT `enrollment_id`
                          FROM `tbl_enrollments`
-                         WHERE `student_id` IN (SELECT `student_id`
-                                               FROM `tbl_students`
-                                               WHERE `birth_date` = '2007-12-03' OR `birth_date` = '2000-12-31'
-                                                 AND `previous_school` = 'Manhattan School'));
+                         WHERE `student_id` = '20'
+                             AND `exam_date` = '2024-12-15'
+                            OR `exam_date` = '2024-12-16');
+
 
 DELETE
 FROM `tbl_enrollments`
 WHERE `student_id` IN (SELECT `student_id`
-                      FROM `tbl_students`
-                      WHERE `birth_date` = '2007-12-03' OR `birth_date` = '2000-12-31'
-                        AND `previous_school` = 'Manhattan School');
+                       FROM `tbl_students`
+                       WHERE `birth_date` = '1989-12-16'
+                          OR `birth_date` = '2017-12-31'
+                           AND `previous_school` = 'Escuela de Getsemaní'
+                          OR `previous_school` = 'Escuela Jose Figueres Ferrer');
 
 DELETE
-FROM `tbl_address`
-WHERE `parent_id` IN (SELECT `parent_id`
-                     FROM `tbl_parents`
-                     WHERE `phone_number` = '88889999');
+FROM `tbl_enrollments`
+WHERE `student_id` = '20'
+  AND `exam_date` = '2024-12-15' OR `exam_date` = '2024-12-16';
 
 DELETE
 FROM `tbl_parents_students`
 WHERE `student_id` IN (SELECT `student_id`
-                      FROM `tbl_students`
-                      WHERE `birth_date` = '2007-12-03' OR `birth_date` = '2000-12-31'
-                        AND `previous_school` = 'Manhattan School');
+                       FROM `tbl_students`
+                       WHERE `birth_date` = '1989-12-16'
+                          OR `birth_date` = '2017-12-31'
+                           AND `previous_school` = 'Escuela de Getsemaní'
+                          OR `previous_school` = 'Escuela Jose Figueres Ferrer');
 
 DELETE
 FROM `tbl_students`
-WHERE `birth_date` = '2007-12-03' OR `birth_date` = '2000-12-31'
-  AND `previous_school` = 'Manhattan School';
+WHERE `birth_date` = '1989-12-16'
+   OR `birth_date` = '2017-12-31'
+    AND `previous_school` = 'Escuela de Getsemaní'
+   OR `previous_school` = 'Escuela Jose Figueres Ferrer';
+
+DELETE
+FROM `tbl_address`
+WHERE `parent_id` = (SELECT `person_id`
+                     FROM `tbl_persons`
+                     WHERE `id_number` = '100030683');
 
 DELETE
 FROM `tbl_parents`
-WHERE `phone_number` = '88889999';
+WHERE `parent_id` = (SELECT `person_id`
+                     FROM `tbl_persons`
+                     WHERE `id_number` = '100030683');
 
 DELETE
 FROM `tbl_persons`
-WHERE `id_number` = '123456789' OR `id_number` = '987654321' OR `id_number` = '605530232';
+WHERE `id_number` = '603540987'
+   OR `id_number` = '100030683'
+   OR `id_number` = '503690412';
+
+

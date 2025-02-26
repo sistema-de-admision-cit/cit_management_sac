@@ -1,0 +1,57 @@
+{
+  "id": null,
+  "student": {
+    "id": null,
+    "person": {
+      "id": null,
+      "firstName": "Hernán",
+      "firstSurname": "Jimenez",
+      "secondSurname": "Morales",
+      "idType": "CC",
+      "idNumber": "603540987"
+    },
+    "birthDate": "1989-12-16",
+    "previousSchool": "Escuela de Getsemaní",
+    "hasAccommodations": false,
+    "parents": [
+      {
+        "id": null,
+        "person": {
+          "id": null,
+          "firstName": "Mauricio",
+          "firstSurname": "Jimenez",
+          "secondSurname": "Elizondo",
+          "idType": "CC",
+          "idNumber": "100030683"
+        },
+        "phoneNumber": "85632364",
+        "email": "mau.jime.eli@example.com",
+        "relationship": "F",
+        "addresses": [
+          {
+            "id": null,
+            "country": "Costa Rica",
+            "province": "San José",
+            "city": "Escazú",
+            "district": "San Rafael",
+            "addressInfo": "De la iglesia católica 200 metros al sur, casa esquinera a mano derecha"
+          }
+        ]
+      }
+    ]
+  },
+  "status": "PENDING",
+  "gradeToEnroll": "NINTH",
+  "knownThrough": "OT",
+  "examDate": "2024-12-16",
+  "consentGiven": true,
+  "whatsappNotification": false,
+  "documents": [
+    {
+      "id": null,
+      "documentUrlPostfix": null,
+      "documentType": "OT",
+      "documentName": null
+    }
+  ]
+}

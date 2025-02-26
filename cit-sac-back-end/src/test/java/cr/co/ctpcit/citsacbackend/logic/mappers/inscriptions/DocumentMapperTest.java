@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.TestProvider;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.DocumentEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.EnrollmentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.DocType;
@@ -34,8 +35,12 @@ class DocumentMapperTest {
     EnrollmentEntity enrollmentEntity = new EnrollmentEntity();
     enrollmentEntity.setId(1L);
 
+    long timestamp = 856332114336L;
+    String documentUrlPostfix =
+        "grades_" + TestProvider.provideStudentDto().person().idNumber() + "_" + timestamp + ".pdf";
+
     DocumentDto documentDto =
-        DocumentDto.builder().id(1L).documentType(DocType.OT).documentName("Document Name").build();
+        new DocumentDto(1L, documentUrlPostfix, DocType.OT, "Documento de notas");
 
     DocumentEntity documentEntity = DocumentMapper.convertToEntity(documentDto);
     assertNotNull(documentEntity);

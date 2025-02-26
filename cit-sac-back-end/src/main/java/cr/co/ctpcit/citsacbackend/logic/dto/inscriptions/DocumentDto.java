@@ -11,7 +11,7 @@ import java.io.Serializable;
  * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.inscriptions.DocumentEntity}
  */
 @Builder
-public record DocumentDto(Long id, @Size(max = 32) String documentName,
-                          @NotNull DocType documentType)
+public record DocumentDto(Long id, @Size(max = 32) String documentUrlPostfix,
+                          @NotNull DocType documentType, String documentName)
     implements Serializable {
 }

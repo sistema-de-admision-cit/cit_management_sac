@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.TestProvider;
 import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,12 @@ class DocumentDtoTest {
 
   @Test
   void testSerialize() throws Exception {
-    DocumentDto document = new DocumentDto(1L, "Document 1", DocType.OT);
+    long timestamp = 856332114336L;
+    String documentUrlPostfix =
+        "grades_" + TestProvider.provideStudentDto().person().idNumber() + "_" + timestamp + ".pdf";
+
+    DocumentDto document =
+        new DocumentDto(1L, documentUrlPostfix, DocType.OT, "Documento de notas");
 
     assertThat(json.write(document)).isStrictlyEqualToJson("DocumentDtoJsonExpected.json");
     assertThat(json.write(document)).hasJsonPathNumberValue("@.id");
@@ -28,11 +34,17 @@ class DocumentDtoTest {
     String content = """
         {
           "id": 1,
-          "documentName": "Document 1",
-          "documentType": "OT"
+          "documentUrlPostfix": "grades_200123654_856332114336.pdf",
+          "documentType": "OT",
+          "documentName": "Documento de notas"
         }
         """;
-    DocumentDto document = new DocumentDto(1L, "Document 1", DocType.OT);
+    long timestamp = 856332114336L;
+    String documentUrlPostfix =
+        "grades_" + TestProvider.provideStudentDto().person().idNumber() + "_" + timestamp + ".pdf";
+
+    DocumentDto document =
+        new DocumentDto(1L, documentUrlPostfix, DocType.OT, "Documento de notas");
 
     assertThat(json.parse(content)).isEqualTo(document);
     assertThat(json.parseObject(content).id()).isEqualTo(1);

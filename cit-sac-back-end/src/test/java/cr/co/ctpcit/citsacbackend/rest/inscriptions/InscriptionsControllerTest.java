@@ -189,4 +189,6 @@ class InscriptionsControllerTest {
     assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
   }
 
+
+
 }

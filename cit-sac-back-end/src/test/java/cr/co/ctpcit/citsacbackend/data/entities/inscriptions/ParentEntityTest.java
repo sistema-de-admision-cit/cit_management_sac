@@ -1,14 +1,10 @@
 package cr.co.ctpcit.citsacbackend.data.entities.inscriptions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import cr.co.ctpcit.citsacbackend.data.enums.IdType;
-import cr.co.ctpcit.citsacbackend.data.enums.Relationship;
+import cr.co.ctpcit.citsacbackend.TestProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
-
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

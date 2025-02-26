@@ -136,14 +136,18 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     CompletableFuture<DocumentDto> gradesDocument = CompletableFuture.completedFuture(null);
     CompletableFuture<DocumentDto> letterDocument = CompletableFuture.completedFuture(null);
 
+    long timestamp = System.currentTimeMillis();
+
     //Save inscription
     if (grades != null && !grades.isEmpty()) {
       gradesDocument = storageService.store(grades,
-          "grades_" + inscription.student().person().idNumber() + ".pdf", DocType.OT);
+          "grades_" + inscription.student().person().idNumber() + "_" + timestamp + ".pdf",
+          DocType.OT);
     }
     if (letter != null && !letter.isEmpty()) {
       letterDocument = storageService.store(letter,
-          "letter_" + inscription.student().person().idNumber() + ".pdf", DocType.AC);
+          "letter_" + inscription.student().person().idNumber() + "_" + timestamp + ".pdf",
+          DocType.OT);
     }
 
     //Wait for the documents to be saved
@@ -210,7 +214,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
       parent.addStudent(student);
 
       // Save the student
-      personRepository.save(studentPerson);
+      studentRepository.save(student);
     }
 
     //
@@ -226,7 +230,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     if (studentEnrollments.stream().anyMatch(e -> e.getExamDate().equals(inscription.examDate()))) {
       //Falta eliminar los documentos de la inscripción
       for (DocumentDto d : documents) {
-        storageService.deleteDocument(d.documentName());
+        storageService.deleteDocument(d.documentUrlPostfix());
       }
       throw new EnrollmentException("El estudiante ya está inscrito para la fecha seleccionada");
     }
@@ -244,9 +248,16 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     enrollmentEntity = enrollmentRepository.save(enrollmentEntity);
 
     // Add enrollment to each document
-    for (DocumentDto d : documents) {
-      DocumentEntity document = DocumentMapper.convertToEntity(d);
-      document.setDocumentUrl(rootLocation + d.documentName());
+    for (DocumentDto documentDto : documents) {
+      DocumentEntity document = DocumentMapper.convertToEntity(documentDto);
+      String documentName;
+      if (documentDto.documentType() == DocType.OT) {
+        documentName = "Documento de Notas";
+      } else {
+        documentName = "Documento de Adecuaciones";
+      }
+      document.setDocumentName(documentName);
+      document.setDocumentUrl(rootLocation + documentDto.documentUrlPostfix());
 
       // Save the document
       enrollmentEntity.addDocument(document);

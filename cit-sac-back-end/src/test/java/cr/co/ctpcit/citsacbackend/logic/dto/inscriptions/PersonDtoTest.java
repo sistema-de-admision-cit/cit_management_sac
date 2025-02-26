@@ -1,6 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.data.enums.IdType;
+import cr.co.ctpcit.citsacbackend.TestProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -18,13 +18,13 @@ class PersonDtoTest {
 
   @Test
   void serializeJson() throws IOException {
-    PersonDto person = new PersonDto(1L, "John", "Doe", "Smith", IdType.CC, "123456789");
+    PersonDto person = TestProvider.provideParentPersonDto();
 
     assertThat(json.write(person)).isStrictlyEqualToJson("PersonDtoJsonExpected.json");
     assertThat(json.write(person)).hasJsonPathNumberValue("@.id");
     assertThat(json.write(person)).extractingJsonPathNumberValue("@.id").isEqualTo(1);
     assertThat(json.write(person)).hasJsonPathStringValue("@.firstName");
-    assertThat(json.write(person)).extractingJsonPathStringValue("@.firstName").isEqualTo("John");
+    assertThat(json.write(person)).extractingJsonPathStringValue("@.firstName").isEqualTo("Carlos");
   }
 
   @Test
@@ -32,17 +32,17 @@ class PersonDtoTest {
     String content = """
         {
           "id": 1,
-          "firstName": "John",
-          "firstSurname": "Doe",
-          "secondSurname": "Smith",
+          "firstName": "Carlos",
+          "firstSurname": "Rodríguez",
+          "secondSurname": "Morales",
           "idType": "CC",
-          "idNumber": "123456789"
+          "idNumber": "900321654"
         }
         """;
-    PersonDto person = new PersonDto(1L, "John", "Doe", "Smith", IdType.CC, "123456789");
+    PersonDto person = TestProvider.provideParentPersonDto();
 
     assertThat(json.parse(content)).isEqualTo(person);
     assertThat(json.parseObject(content).id()).isEqualTo(1);
-    assertThat(json.parseObject(content).idNumber()).isEqualTo("123456789");
+    assertThat(json.parseObject(content).idNumber()).isEqualTo("900321654");
   }
 }
