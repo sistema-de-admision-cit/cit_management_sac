@@ -1,11 +1,20 @@
 package cr.co.ctpcit.citsacbackend.logic.services.questions;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
-import org.springframework.web.bind.annotation.PostMapping;
+import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionFilterSpec;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
-
+@Service
 public interface QuestionService {
-    void createQuestion(QuestionDto questionDto);
-    List<QuestionDto> getQuestions();
+  QuestionDto createQuestion(QuestionDto questionDto);
+
+  Page<QuestionDto> getQuestions(QuestionFilterSpec filterSpec, Pageable pageable);
+
+  QuestionDto getQuestionById(Long id);
+  
+  QuestionDto updateQuestion(QuestionDto questionDto);
+
+  void deleteQuestion(Long id);
 }
