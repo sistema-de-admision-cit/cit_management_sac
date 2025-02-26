@@ -7,6 +7,7 @@ import cr.co.ctpcit.citsacbackend.data.enums.QuestionType;
 import cr.co.ctpcit.citsacbackend.data.enums.SelectionType;
 import cr.co.ctpcit.citsacbackend.data.repositories.questions.QuestionRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionFilterSpec;
 import cr.co.ctpcit.citsacbackend.logic.mappers.questions.QuestionMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,11 +55,14 @@ public class QuestionsServiceImplTest {
   @Test
   public void testGetQuestions() {
     Pageable pageable = PageRequest.of(0, 10);
+    QuestionFilterSpec filter =
+        new QuestionFilterSpec(true, QuestionType.ACA, Grades.FIRST, QuestionLevel.EASY);
+
     QuestionEntity sampleEntity = createSampleQuestionEntity();
     Page<QuestionEntity> entityPage = new PageImpl<>(Collections.singletonList(sampleEntity));
-    when(questionRepository.findAll(pageable)).thenReturn(entityPage);
+    when(questionRepository.findAll(filter, pageable)).thenReturn(entityPage);
 
-    Page<QuestionDto> dtoPage = questionsService.getQuestions(null, pageable);
+    Page<QuestionDto> dtoPage = questionsService.getQuestions(filter, pageable);
 
     assertNotNull(dtoPage);
     assertEquals(1, dtoPage.getTotalElements());
@@ -87,7 +90,7 @@ public class QuestionsServiceImplTest {
 
     assertNull(resultDto);
   }
-  
+
   @Test
   public void testUpdateQuestion() {
     QuestionDto sampleDto = createSampleQuestionDto();
