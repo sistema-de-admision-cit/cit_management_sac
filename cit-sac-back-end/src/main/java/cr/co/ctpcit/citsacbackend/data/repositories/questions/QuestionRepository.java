@@ -27,6 +27,6 @@ public interface QuestionRepository
    */
   @Modifying
   @Transactional
-  @Query("UPDATE QuestionEntity q SET q.deleted = true WHERE q.id = ?1")
+  @Query("UPDATE QuestionEntity q SET q.deleted = true WHERE q.id = :id")
   void softDeleteQuestion(Long id);
 }

@@ -19,6 +19,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
+import static cr.co.ctpcit.citsacbackend.rest.inscriptions.InscriptionsFileVerifier.verifyFile;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/inscription")
@@ -49,14 +51,6 @@ public class InscriptionFormController {
     return ResponseEntity.created(
             uriComponentsBuilder.path("/api/inscription/{id}").buildAndExpand(enrolled.id()).toUri())
         .build();
-  }
-
-  private void verifyFile(MultipartFile file) {
-    if (file != null) {
-      if (!Objects.requireNonNull(file.getOriginalFilename()).toLowerCase().endsWith(".pdf")) {
-        throw new IllegalArgumentException("El archivo debe ser un PDF");
-      }
-    }
   }
 
   /**

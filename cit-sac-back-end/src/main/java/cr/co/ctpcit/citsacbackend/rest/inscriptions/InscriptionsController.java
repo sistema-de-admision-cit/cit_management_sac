@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
@@ -16,9 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import static cr.co.ctpcit.citsacbackend.rest.inscriptions.InscriptionsFileVerifier.verifyFile;
 
 @RequiredArgsConstructor
 @RestController
@@ -73,6 +78,7 @@ public class InscriptionsController {
 
   /**
    * Update exam date
+   *
    * @param id the id of the enrollment
    */
   @PutMapping("/update-exam-date/{id}")
@@ -85,6 +91,7 @@ public class InscriptionsController {
 
   /**
    * Update process status
+   *
    * @param id the id of the enrollment
    */
   @PutMapping("/update-status/{id}")
@@ -111,7 +118,7 @@ public class InscriptionsController {
   /**
    * Update enrollment
    *
-   * @param enrollmentId       the id of the enrollment
+   * @param enrollmentId the id of the enrollment
    */
   @PutMapping("/update-enrollment/{enrollmentId}")
   public ResponseEntity<String> updateEnrollment(@PathVariable("enrollmentId") String enrollmentId,
@@ -119,6 +126,27 @@ public class InscriptionsController {
     inscriptionsService.updateEnrollment(enrollmentId, enrollmentUpdate);
 
     return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Upload a document
+   *
+   * @param file         the file to upload
+   * @param documentType the type of the document
+   * @param enrollmentId the id of the enrollment
+   * @return the document
+   */
+  @PostMapping("/documents/upload")
+  public ResponseEntity<Void> uploadDocument(@RequestParam("file") MultipartFile file,
+      @RequestParam("documentType") String documentType,
+      @RequestParam("enrollmentId") Long enrollmentId, UriComponentsBuilder uriComponentsBuilder) {
+    verifyFile(file);
+
+    DocumentDto document = inscriptionsService.saveDocument(documentType, enrollmentId, file);
+
+    return ResponseEntity.created(
+        uriComponentsBuilder.path("/api/inscriptions/documents/download/{id}")
+            .buildAndExpand(document.id()).toUri()).build();
   }
 
   /**
@@ -145,46 +173,14 @@ public class InscriptionsController {
    * Delete a document
    *
    * @param id       the id of the document
-   * @param filename the path of the document in the static/files document folder
    * @return ok if the document was deleted, not found otherwise
    */
   @DeleteMapping("/documents/delete/{id}")
-  public ResponseEntity<String> deleteDocument(@PathVariable Long id,
-      @RequestParam String filename) {
-    boolean databaseDeleted = inscriptionsService.deleteDocument(id);
+  public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
+    inscriptionsService.deleteDocument(id);
 
-    boolean storageDeleted = storageService.deleteDocument(filename);
-
-    return databaseDeleted && storageDeleted ?
-        ResponseEntity.ok().build() :
-        ResponseEntity.notFound().build();
+    return ResponseEntity.noContent().build();
   }
-
-  /**
-   * Upload a document
-   *
-   * @param file         the file to upload
-   * @param documentName the name of the document
-   * @param documentType the type of the document
-   * @param enrollmentId the id of the enrollment
-   * @return the document
-   */
-  /*@PostMapping("/documents/upload")
-  @Async
-  public CompletableFuture<ResponseEntity<DocumentDto>> uploadDocument(
-      @RequestParam("file") MultipartFile file, @RequestParam("documentName") String documentName,
-      @RequestParam("documentType") String documentType,
-      @RequestParam("enrollmentId") Long enrollmentId) {
-    if (file.isEmpty()) {
-      return CompletableFuture.completedFuture(ResponseEntity.badRequest().build());
-    }
-    DocumentDto document =
-        inscriptionsService.saveDocument(documentName, documentType, enrollmentId);
-
-    storageService.store(file, documentName);
-
-    return CompletableFuture.completedFuture(ResponseEntity.ok(document));
-  }*/
 
   /**
    * Handle constraint violation exceptions

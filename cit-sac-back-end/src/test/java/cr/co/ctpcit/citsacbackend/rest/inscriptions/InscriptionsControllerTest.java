@@ -4,26 +4,29 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
+import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.*;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_CLASS;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
+@Slf4j
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = {"rollback-update-inscriptions.sql"}, executionPhase = AFTER_TEST_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -189,6 +192,88 @@ class InscriptionsControllerTest {
     assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
   }
 
+  ByteArrayResource fileContent = new ByteArrayResource("Dummy file content".getBytes()) {
+    @Override
+    public String getFilename() {
+      return "test.pdf";
+    }
+  };
+  static String testDocumentLocation;
+
+  @Test
+  @Order(9)
+  public void testUploadDocument_Success() throws Exception {
+    //Request
+    HttpEntity<MultiValueMap<String, Object>> request = createFileUploadEndpointRequest();
+
+    ResponseEntity<Void> response =
+        restTemplate.postForEntity("/api/inscriptions/documents/upload", request, Void.class);
+
+    //Get the document location
+    testDocumentLocation = response.getHeaders().getLocation().toString();
+
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
 
+  }
+
+  @Test
+  @Order(10)
+  @DirtiesContext
+  public void testDownloadDocuments_Success() throws Exception {
+    //Get id from the location
+    long documentId =
+        Long.parseLong(testDocumentLocation.substring(testDocumentLocation.lastIndexOf("/") + 1));
+
+    ResponseEntity<byte[]> response =
+        restTemplate.exchange("/api/inscriptions/documents/download/" + documentId, HttpMethod.GET,
+            null, byte[].class);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+  }
+
+  @Test
+  @Order(11)
+  public void testDeleteDocument_Success() {
+    //Get id from the location
+    long documentId =
+        Long.parseLong(testDocumentLocation.substring(testDocumentLocation.lastIndexOf("/") + 1));
+
+    ResponseEntity<Void> response = restTemplate.exchange("/api/inscriptions/documents/delete/" + documentId,
+        HttpMethod.DELETE, null, Void.class);
+
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+  }
+
+  private HttpEntity<MultiValueMap<String, Object>> createFileUploadEndpointRequest()
+      throws IOException {
+    MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
+
+    //Main request headers
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+    //File attachment headers
+    HttpHeaders fileAttachmentHeaders = new HttpHeaders();
+    fileAttachmentHeaders.setContentType(MediaType.APPLICATION_PDF);
+
+    //File attachment
+    ByteArrayResource someFile = new ByteArrayResource("Some file content".getBytes()) {
+      @Override
+      public String getFilename() {
+        return "testFile.pdf";
+      }
+    };
+
+    HttpEntity<ByteArrayResource> fileAttachment =
+        new HttpEntity<>(someFile, fileAttachmentHeaders);
+
+    multipartRequest.add("file", fileAttachment);
+    multipartRequest.add("documentType", "OT");
+    multipartRequest.add("enrollmentId", 2L);
+
+    //Request
+    return new HttpEntity<>(multipartRequest, headers);
+  }
 }

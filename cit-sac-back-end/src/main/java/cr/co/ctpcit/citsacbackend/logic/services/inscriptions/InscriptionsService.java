@@ -1,6 +1,5 @@
 package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
@@ -32,9 +31,9 @@ public interface InscriptionsService {
 
   void updateEnrollment(String id, EnrollmentUpdateDto enrollmentUpdate);
 
-  boolean deleteDocument(Long documentId);
+  void deleteDocument(Long documentId);
 
-  DocumentDto saveDocument(String documentName, String documentType, Long enrollmentId);
+  DocumentDto saveDocument(String documentType, Long enrollmentId, MultipartFile file);
 
   Iterable<EnrollmentDto> findEnrollmentsByStudentId(String idNumber);
 }

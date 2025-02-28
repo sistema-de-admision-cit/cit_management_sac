@@ -74,11 +74,9 @@ public class StorageServiceImpl implements StorageService {
 
   @Override
   public Resource loadAsResource(Long id) {
-    DocumentEntity documentEntity = documentRepository.findById(id).orElse(null);
-
-    if (documentEntity == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Document not found");
-    }
+    DocumentEntity documentEntity = documentRepository.findById(id).orElseThrow(
+        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+            "Documento no encontrado con el id: " + id));
 
     try {
       Path file = Paths.get(documentEntity.getDocumentUrl());
@@ -88,12 +86,12 @@ public class StorageServiceImpl implements StorageService {
         return resource;
       } else {
         throw new StorageFileNotFoundException(
-            "Could not read file with id: " + documentEntity.getId());
+            "Documento no encontrado con el id: " + documentEntity.getId());
 
       }
     } catch (MalformedURLException e) {
       throw new StorageFileNotFoundException(
-          "Could not read file with id: " + documentEntity.getId(), e);
+          "Documento no encontrado con el id: " + documentEntity.getId(), e);
     }
   }
 
@@ -108,11 +106,20 @@ public class StorageServiceImpl implements StorageService {
   }
 
   @Override
-  public boolean deleteDocument(String filename) {
+  public void deleteDocumentByUrlPostfix(String urlPostfix) {
     try {
-      return Files.deleteIfExists(Paths.get(location).resolve(filename));
+      Files.deleteIfExists(Paths.get(location).resolve(urlPostfix));
     } catch (IOException e) {
-      throw new StorageException("Failed to delete file " + filename, e);
+      throw new StorageException("Failed to delete file " + urlPostfix, e);
+    }
+  }
+
+  @Override
+  public void deleteDocumentByUrl(String url) {
+    try {
+      Files.deleteIfExists(Paths.get(url));
+    } catch (IOException e) {
+      throw new StorageException("Failed to delete file " + url, e);
     }
   }
 }

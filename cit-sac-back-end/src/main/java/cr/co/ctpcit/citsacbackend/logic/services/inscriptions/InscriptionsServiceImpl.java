@@ -230,7 +230,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     if (studentEnrollments.stream().anyMatch(e -> e.getExamDate().equals(inscription.examDate()))) {
       //Falta eliminar los documentos de la inscripción
       for (DocumentDto d : documents) {
-        storageService.deleteDocument(d.documentUrlPostfix());
+        storageService.deleteDocumentByUrlPostfix(d.documentUrlPostfix());
       }
       throw new EnrollmentException("El estudiante ya está inscrito para la fecha seleccionada");
     }
@@ -250,13 +250,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     // Add enrollment to each document
     for (DocumentDto documentDto : documents) {
       DocumentEntity document = DocumentMapper.convertToEntity(documentDto);
-      String documentName;
-      if (documentDto.documentType() == DocType.OT) {
-        documentName = "Documento de Notas";
-      } else {
-        documentName = "Documento de Adecuaciones";
-      }
-      document.setDocumentName(documentName);
+      setDocumentName(document, documentDto.documentType());
       document.setDocumentUrl(rootLocation + documentDto.documentUrlPostfix());
 
       // Save the document
@@ -266,6 +260,22 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
     // Return
     return EnrollmentMapper.convertToDto(enrollmentEntity);
+  }
+
+  /**
+   * Set the document name
+   *
+   * @param document the document entity
+   * @param docType  the document type
+   */
+  private void setDocumentName(DocumentEntity document, DocType docType) {
+    String documentName;
+    if (docType == DocType.OT) {
+      documentName = "Documento de Notas";
+    } else {
+      documentName = "Documento de Adecuaciones";
+    }
+    document.setDocumentName(documentName);
   }
 
   /**
@@ -332,46 +342,76 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   }
 
   @Override
-  public boolean deleteDocument(Long documentId) {
+  public void deleteDocument(Long documentId) {
 
     // If the document is not present, return Not Found
-    if (!documentRepository.existsById(documentId)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-          "No hay un documento con el id " + documentId);
-    }
+    DocumentEntity document = documentRepository.findById(documentId).orElseThrow(
+        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+            "Documento no encontrado con el id " + documentId));
+    EnrollmentEntity enrollment = document.getEnrollment();
+
+    //Delete actual file
+    storageService.deleteDocumentByUrl(document.getDocumentUrl());
 
     // Delete the document
+    enrollment.removeDocument(document);
     documentRepository.deleteById(documentId);
-
-    return true;
   }
 
 
   /**
    * Save a document
    *
-   * @param documentName the name of the document
    * @param documentType the type of the document
    * @param enrollmentId the id of the enrollment to save the document
    * @return the saved document
    */
-  /*@Override
-  public DocumentDto saveDocument(String documentName, String documentType, Long enrollmentId) {
-    EnrollmentEntity enrollment = enrollmentRepository.findById(enrollmentId).get();
+  @Override
+  public DocumentDto saveDocument(String documentType, Long enrollmentId, MultipartFile file) {
+    EnrollmentEntity enrollment = enrollmentRepository.findById(enrollmentId).orElse(null);
 
+    if (enrollment == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+          "No hay una inscripción con el id " + enrollmentId);
+    }
 
-    // Create the document
-    DocumentEntity document = DocumentEntity.builder().documentName(documentName)
-        .documentType(DocType.valueOf(documentType)).documentUrl(documentName)
-        .enrollment(enrollment).build();
+    CompletableFuture<DocumentDto> fileDocument = CompletableFuture.completedFuture(null);
 
     // Save the document
-    return DocumentMapper.convertToDto(documentRepository.save(document));
-  }*/
+    long timestamp = System.currentTimeMillis();
 
-  /*private boolean existsEnrollment(Long enrollmentId) {
-    return enrollmentRepository.existsById(enrollmentId);
-  }*/
+    //Save inscription
+    if (file != null && !file.isEmpty()) {
+      fileDocument = storageService.store(file,
+          "grades_" + enrollment.getStudent().getStudentPerson()
+              .getIdNumber() + "_" + timestamp + ".pdf", DocType.fromString(documentType));
+    }
+
+    //Wait for the documents to be saved
+    CompletableFuture.completedFuture(fileDocument).join();
+
+    //Save the document in the database
+    DocumentDto documentDto = fileDocument.join();
+    DocumentEntity document = DocumentMapper.convertToEntity(documentDto);
+    setDocumentName(document, documentDto.documentType());
+    document.setDocumentUrl(rootLocation + documentDto.documentUrlPostfix());
+
+    enrollment.addDocument(document);
+    document = documentRepository.save(document);
+
+    //Delete the last document with the same DocType
+    List<DocumentEntity> documents = enrollment.getDocuments();
+    for (DocumentEntity d : documents) {
+      if (d.getDocType() == document.getDocType() && !d.equals(document)) {
+        storageService.deleteDocumentByUrl(d.getDocumentUrl());
+        enrollment.removeDocument(d);
+        documentRepository.delete(d);
+      }
+    }
+
+    return DocumentMapper.convertToDto(document);
+  }
+
   private void verifyPutParameters(String id) {
     // Validate if the id is a number
     if (!id.matches("\\d+")) {
@@ -399,11 +439,6 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   }*/
   @Override
   public StudentDto findStudentById(Long id) {
-    return null;
-  }
-
-  @Override
-  public DocumentDto saveDocument(String documentName, String documentType, Long enrollmentId) {
     return null;
   }
 

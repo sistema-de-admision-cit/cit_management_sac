@@ -21,6 +21,8 @@ public class QuestionsServiceImpl implements QuestionService {
   public QuestionDto createQuestion(QuestionDto questionDto) {
     QuestionEntity questionEntity = QuestionMapper.dtoToEntity(questionDto);
 
+    questionEntity.setDeleted(null);
+
     QuestionEntity questionSaved = questionRepository.save(questionEntity);
 
     return QuestionMapper.entityToDto(questionSaved);

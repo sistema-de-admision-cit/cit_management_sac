@@ -56,7 +56,7 @@ public class QuestionsServiceImplTest {
   public void testGetQuestions() {
     Pageable pageable = PageRequest.of(0, 10);
     QuestionFilterSpec filter =
-        new QuestionFilterSpec(true, QuestionType.ACA, Grades.FIRST, QuestionLevel.EASY);
+        new QuestionFilterSpec(false, QuestionType.ACA, Grades.FIRST, QuestionLevel.EASY);
 
     QuestionEntity sampleEntity = createSampleQuestionEntity();
     Page<QuestionEntity> entityPage = new PageImpl<>(Collections.singletonList(sampleEntity));

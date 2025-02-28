@@ -22,5 +22,7 @@ public interface StorageService {
 
   void deleteAll();
 
-  boolean deleteDocument(String filename);
+  void deleteDocumentByUrlPostfix(String urlPostfix);
+
+  void deleteDocumentByUrl(String url);
 }

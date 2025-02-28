@@ -272,20 +272,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
-
-CREATE TABLE `tbl_Exam_Questions` (
-  `exam_id` INT UNSIGNED NOT NULL,
-  `question_id` INT UNSIGNED NOT NULL,
-  `selected_option_id` INT UNSIGNED DEFAULT NULL,
-  `answer_text` TEXT DEFAULT NULL,
-  PRIMARY KEY (`exam_id`, `question_id`),
-  FOREIGN KEY (`exam_id`) REFERENCES `tbl_Exams` (`exam_id`),
-  FOREIGN KEY (`question_id`) REFERENCES `tbl_Questions` (`question_id`),
-  FOREIGN KEY (`selected_option_id`) REFERENCES `tbl_Question_Options` (`option_id`)
-);
-
-
-
 -- -----------------------------------------------------
 -- Table `tbl_Academic_Exams`
 -- -----------------------------------------------------
