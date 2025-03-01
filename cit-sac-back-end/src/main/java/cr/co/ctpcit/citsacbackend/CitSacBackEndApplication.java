@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableConfigurationProperties(StorageProperties.class)
 public class CitSacBackEndApplication {
 
-  public static void main(String[] args)  {
+  /*public static void main(String[] args)  {
       // Usa try-with-resources para cerrar el contexto automáticamente
       try (ConfigurableApplicationContext context = SpringApplication.run(CitSacBackEndApplication.class, args)) {
 
@@ -26,7 +26,7 @@ public class CitSacBackEndApplication {
 
         // Crea un DTO con los datos del correo
         EmailConfigDto emailConfigDto = new EmailConfigDto();
-        emailConfigDto.setRecipient("118250725@castrocarazo.ac.cr");
+        emailConfigDto.setRecipient("alessandrocd07@hotmail.com");
         emailConfigDto.setSubject("Confirmación de Registro - Complejo Educativo CIT");
         emailConfigDto.setMessage(
                 "<html>" +
@@ -63,11 +63,11 @@ public class CitSacBackEndApplication {
           System.err.println("Error al enviar el correo: " + e.getMessage());
         }
       }
-    }
+    }*/
 
-  /*public static void main(String[] args) {
+  public static void main(String[] args) {
     SpringApplication.run(CitSacBackEndApplication.class, args);
-  }*/
+  }
 
   @Bean
   CommandLineRunner init(StorageService storageService) {
