@@ -51,6 +51,12 @@ public class QuestionsServiceImpl implements QuestionService {
   public void deleteQuestion(Long id) {
     questionRepository.softDeleteQuestion(id);
   }
+
+  @Override
+  public Page<QuestionDto> searchQuestion(String questionText, Pageable pageable) {
+    return questionRepository.findAllByQuestionTextContaining(questionText, pageable)
+        .map(QuestionMapper::entityToDto);
+  }
 }
 
 
