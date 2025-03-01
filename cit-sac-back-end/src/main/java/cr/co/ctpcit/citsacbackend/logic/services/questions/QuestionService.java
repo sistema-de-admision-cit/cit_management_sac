@@ -13,8 +13,10 @@ public interface QuestionService {
   Page<QuestionDto> getQuestions(QuestionFilterSpec filterSpec, Pageable pageable);
 
   QuestionDto getQuestionById(Long id);
-  
+
   QuestionDto updateQuestion(QuestionDto questionDto);
 
   void deleteQuestion(Long id);
+
+  Page<QuestionDto> searchQuestion(String questionText, Pageable pageable);
 }

@@ -74,6 +74,13 @@ public class QuestionsController {
       return ResponseEntity.badRequest().build();
     }
   }
+  
+  @GetMapping("/search")
+  public ResponseEntity<Page<QuestionDto>> searchQuestion(@RequestParam String questionText,
+      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    Pageable pageable = PageRequest.of(page, size);
+    return ResponseEntity.ok(questionService.searchQuestion(questionText, pageable));
+  }
 
   @GetMapping("/health")
   public ResponseEntity<String> healthCheck() {
