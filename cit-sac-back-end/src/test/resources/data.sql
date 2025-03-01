@@ -101,16 +101,16 @@ VALUES ('PENDING','SIXTH', 'SM', '2024-01-10', 1, 1, 11),
 -- Insert values into tbl_documents
 INSERT INTO `tbl_documents`
     (`document_name`, `document_type`, `document_url`, `enrollment_id`)
-VALUES ('Health Certificate Andrés', 'AC', '/home/user/docs/andres_health.pdf', 1),
-       ('Other Document Sofía', 'OT', '/home/user/docs/sofia_other.pdf', 2),
-       ('Health Certificate Felipe', 'AC', '/home/user/docs/felipe_health.pdf', 3),
-       ('Health Certificate Lucía', 'AC', '/home/user/docs/lucia_health.pdf', 4),
-       ('Other Document Javier', 'OT', '/home/user/docs/javier_other.pdf', 5),
-       ('Health Certificate Daniela', 'AC', 'file_example.pdf', 6),
-       ('Other Document Pablo', 'OT', 'file_example.pdf', 7),
-       ('Health Certificate Camila', 'AC', 'file_example.pdf', 8),
-       ('Health Certificate Mateo', 'AC', 'file_example.pdf', 9),
-       ('Other Document Valeria', 'OT', 'file_example.pdf', 10);
+VALUES ('Documento de Notas', 'OT', 'grades_200123654_856332114336.pdf', 1),
+       ('Documento de Notas', 'OT', '/home/user/docs/sofia_other.pdf', 2),
+       ('Documento de Adecuaciones', 'AC', '/home/user/docs/felipe_health.pdf', 3),
+       ('Documento de Adecuaciones', 'AC', '/home/user/docs/lucia_health.pdf', 4),
+       ('Documento de Notas', 'OT', '/home/user/docs/javier_other.pdf', 5),
+       ('Documento de Adecuaciones', 'AC', 'file_example.pdf', 6),
+       ('Documento de Notas', 'OT', 'file_example.pdf', 7),
+       ('Documento de Adecuaciones', 'AC', 'file_example.pdf', 8),
+       ('Documento de Adecuaciones', 'AC', 'file_example.pdf', 9),
+       ('Documento de Notas', 'OT', 'file_example.pdf', 10);
 
 -- Insert value into tbl_examperiods
 INSERT INTO `tbl_exam_periods` (`start_date`, `end_date`)
@@ -168,15 +168,15 @@ VALUES
 
 -- Insert value into tbl_system_config
 INSERT INTO `tbl_system_config` (`config_name`, `config_value`)
-VALUES ('dai_weight', 0.4),
-       ('academic_weight', 0.4),
-       ('english_weight', 0.2),
-       ('email_contact', 'contactocit@ctpcit.co.cr'),
-       ('email_notifications_contact', 'notificaciones@ctpcit.co.cr'),
-       ('whatsapp_contact', '88090041'),
-       ('office_contact', '22370186'),
-       ('instagram_contact', 'ComplejoEducativoCIT'),
-       ('facebook_contact', 'ComplejoEducativoCIT');
+VALUES ('PREV_GRADES_WEIGHT', 0.4),
+       ('ACADEMIC_WEIGHT', 0.4),
+       ('ENGLISH_WEIGHT', 0.2),
+       ('EMAIL_CONTACT', 'contactocit@ctpcit.co.cr'),
+       ('EMAIL_NOTIFICATION_CONTACT', 'notificaciones@ctpcit.co.cr'),
+       ('WHATSAPP_CONTACT', '88090041'),
+       ('OFFICE_CONTACT', '22370186'),
+       ('INSTAGRAM_CONTACT', 'ComplejoEducativoCIT'),
+       ('FACEBOOK_CONTACT', 'ComplejoEducativoCIT');
 
 -- Password: 'campus12' test sysadmin
 INSERT INTO `tbl_users` (`email`, `username`, `user_password`, `role`)

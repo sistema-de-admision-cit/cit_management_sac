@@ -422,12 +422,13 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 -- -----------------------------------------------------
 -- Table `tbl_System_Config`
+
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tbl_System_Config`;
 
 CREATE TABLE IF NOT EXISTS `tbl_System_Config` (
   `config_id` INT NOT NULL AUTO_INCREMENT,
-  `config_name` VARCHAR(32) NOT NULL,
+  `config_name` ENUM('EMAIL_CONTACT', 'EMAIL_NOTIFICATION_CONTACT', 'WHATSAPP_CONTACT', 'OFFICE_CONTACT', 'FACEBOOK_CONTACT', 'INSTAGRAM_CONTACT', 'PREV_GRADES_WEIGHT', 'ACADEMIC_WEIGHT', 'ENGLISH_WEIGHT') NOT NULL,
   `config_value` VARCHAR(128) NOT NULL,
   PRIMARY KEY (`config_id`),
   UNIQUE INDEX `UQ_Config_Name` (`config_name` ASC) VISIBLE)

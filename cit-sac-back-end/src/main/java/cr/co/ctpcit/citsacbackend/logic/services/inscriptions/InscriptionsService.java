@@ -16,8 +16,6 @@ public interface InscriptionsService {
 
   List<EnrollmentDto> getAllInscriptions(Pageable pageable);
 
-  StudentDto findStudentById(@NotNull Long id);
-
   List<EnrollmentDto> findStudentByValue(String value);
 
   EnrollmentDto addInscription(EnrollmentDto inscriptionDto, MultipartFile grades,

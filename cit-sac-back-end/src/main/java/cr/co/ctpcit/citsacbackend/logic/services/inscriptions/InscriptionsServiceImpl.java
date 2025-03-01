@@ -73,21 +73,6 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   }
 
   /**
-   * Get an inscription by id
-   *
-   * @param id the id of the student
-   * @return the inscription with the given id
-   */
-  /*@Override
-  public StudentDto findStudentById(Long id) {
-    // Find student by id
-    Optional<StudentEntity> student = studentRepository.findStudentById(id);
-
-    // Convert student to DTO or null if not present
-    return student.map(StudentMapper::convertToDto).orElse(null);
-  }*/
-
-  /**
    * Get an inscription by value
    *
    * @param value of the idNumber, the name of the student or first surname or previous school
@@ -437,10 +422,6 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     // Add the relation to the parent/guardian
     parent.addStudent(parentGuardianStudentEntity);
   }*/
-  @Override
-  public StudentDto findStudentById(Long id) {
-    return null;
-  }
 
   @Override
   public List<EnrollmentDto> findEnrollmentsByStudentId(String idNumber) {

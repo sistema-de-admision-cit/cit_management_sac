@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.entities.config;
+package cr.co.ctpcit.citsacbackend.data.entities.configs;
 
 import cr.co.ctpcit.citsacbackend.data.enums.WeekDays;
 import jakarta.persistence.*;

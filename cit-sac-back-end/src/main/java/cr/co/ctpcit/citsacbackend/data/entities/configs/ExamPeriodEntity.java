@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.entities.config;
+package cr.co.ctpcit.citsacbackend.data.entities.configs;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

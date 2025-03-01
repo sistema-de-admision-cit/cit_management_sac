@@ -41,7 +41,7 @@ class EnrollmentDtoTest {
     String documentUrlPostfix = "grades_" + student.person().idNumber() + "_" + timestamp + ".pdf";
 
     DocumentDto document =
-        new DocumentDto(1L, documentUrlPostfix, DocType.OT, "Documento de notas");
+        new DocumentDto(1L, documentUrlPostfix, DocType.OT, "Documento de Notas");
     enrollment.documents().add(document);
 
     assertThat(json.write(enrollment)).isStrictlyEqualToJson("EnrollmentDtoJsonExpected.json");
@@ -109,7 +109,7 @@ class EnrollmentDtoTest {
               "id": 1,
               "documentUrlPostfix": "grades_200123654_856332114336.pdf",
               "documentType": "OT",
-              "documentName": "Documento de notas"
+              "documentName": "Documento de Notas"
             }
           ]
         }
@@ -123,7 +123,7 @@ class EnrollmentDtoTest {
     String documentUrlPostfix = "grades_" + student.person().idNumber() + "_" + timestamp + ".pdf";
 
     DocumentDto document =
-        new DocumentDto(1L, documentUrlPostfix, DocType.OT, "Documento de notas");
+        new DocumentDto(1L, documentUrlPostfix, DocType.OT, "Documento de Notas");
     enrollment.documents().add(document);
 
     assertThat(json.parse(content)).isEqualTo(enrollment);

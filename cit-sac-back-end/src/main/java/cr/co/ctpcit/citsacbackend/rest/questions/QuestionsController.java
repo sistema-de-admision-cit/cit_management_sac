@@ -23,8 +23,6 @@ public class QuestionsController {
 
   @PostMapping("/create")
   public ResponseEntity<QuestionDto> createQuestion(@RequestBody QuestionDto questionDto) {
-    System.out.println("Creating question...");
-    System.out.println(questionDto);
     try {
       QuestionDto questionSaved = questionService.createQuestion(questionDto);
       return ResponseEntity.ok(questionSaved);
@@ -50,7 +48,7 @@ public class QuestionsController {
 
     return ResponseEntity.ok(questionsPage);
   }
-  
+
   @GetMapping("/get-by-id/{id}")
   public ResponseEntity<QuestionDto> getQuestionById(@PathVariable Long id) {
     return ResponseEntity.ok(questionService.getQuestionById(id));
