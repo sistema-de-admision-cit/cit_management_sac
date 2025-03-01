@@ -11,6 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+
 
 @RestController
 @RequestMapping("/api/questions")
@@ -21,16 +24,20 @@ public class QuestionsController {
     this.questionService = questionService;
   }
 
-  @PostMapping("/create")
-  public ResponseEntity<QuestionDto> createQuestion(@RequestBody QuestionDto questionDto) {
+  @PostMapping(value = "/create", consumes = {"multipart/form-data"})
+  public ResponseEntity<QuestionDto> createQuestion(
+      @RequestPart("question") QuestionDto questionDto,
+      @RequestPart(value = "file", required = false) MultipartFile file) {
     try {
-      QuestionDto questionSaved = questionService.createQuestion(questionDto);
-      return ResponseEntity.ok(questionSaved);
+      QuestionDto savedQuestion = questionService.createQuestion(questionDto, file);
+      return ResponseEntity.ok(savedQuestion);
     } catch (Exception e) {
       e.printStackTrace();
       return ResponseEntity.badRequest().build();
     }
   }
+
+  
 
   @GetMapping("/get-all")
   public ResponseEntity<Page<QuestionDto>> getAllQuestions(
@@ -74,7 +81,7 @@ public class QuestionsController {
       return ResponseEntity.badRequest().build();
     }
   }
-  
+
   @GetMapping("/search")
   public ResponseEntity<Page<QuestionDto>> searchQuestion(@RequestParam String questionText,
       @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
