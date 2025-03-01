@@ -66,22 +66,9 @@ public class ParentEntity implements Serializable {
     student.getParents().add(parentsStudentsEntity);
   }
 
-  public void removeStudent(StudentEntity student) {
-    ParentsStudentsEntity parentsStudentsEntity = new ParentsStudentsEntity(student, this);
-    student.getParents().remove(parentsStudentsEntity);
-    students.remove(parentsStudentsEntity);
-    parentsStudentsEntity.setParent(null);
-    parentsStudentsEntity.setStudent(null);
-  }
-
   public void addAddress(AddressEntity address) {
     addresses.add(address);
     address.setParent(this);
-  }
-
-  public void removeAddress(AddressEntity address) {
-    addresses.remove(address);
-    address.setParent(null);
   }
 
   @Override

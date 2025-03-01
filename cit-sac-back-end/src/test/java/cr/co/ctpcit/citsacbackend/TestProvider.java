@@ -6,6 +6,8 @@ import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.AddressDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.ParentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.PersonDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionOptionDto;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -116,7 +118,22 @@ public class TestProvider {
   }
 
   public static AddressDto provideAddressDto() {
-    return new AddressDto(1L, "Costa Rica", "San José", "San José", "Carmen", "Avenida Central 100");
+    return new AddressDto(1L, "Costa Rica", "San José", "San José", "Carmen",
+        "Avenida Central 100");
+  }
+
+  public static QuestionDto provideQuestionDto() {
+    return new QuestionDto(2L, QuestionType.ACA, "¿Como se calcula el area de un circulo?", null,
+        Grades.FIRST, QuestionLevel.EASY, SelectionType.SINGLE, false, getQuestionOptions());
+  }
+
+  private static ArrayList<QuestionOptionDto> getQuestionOptions() {
+    ArrayList<QuestionOptionDto> options = new ArrayList<>();
+    options.add(new QuestionOptionDto(1L, true, "π * radio^2"));
+    options.add(new QuestionOptionDto(2L, false, "2 * radio"));
+    options.add(new QuestionOptionDto(3L, false, "π * diámetro"));
+    options.add(new QuestionOptionDto(4L, false, "radio * altura"));
+    return options;
   }
 }
 

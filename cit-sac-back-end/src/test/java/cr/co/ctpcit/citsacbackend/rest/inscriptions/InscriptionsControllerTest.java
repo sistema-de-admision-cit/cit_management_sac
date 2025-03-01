@@ -237,6 +237,7 @@ class InscriptionsControllerTest {
   @Order(11)
   public void testDeleteDocument_Success() {
     //Get id from the location
+
     long documentId =
         Long.parseLong(testDocumentLocation.substring(testDocumentLocation.lastIndexOf("/") + 1));
 
