@@ -111,6 +111,23 @@ public class QuestionsServiceImplTest {
     verify(questionRepository, times(1)).softDeleteQuestion(questionId);
   }
 
+  @Test
+  public void searchQuestionByText() {
+    Pageable pageable = PageRequest.of(0, 10);
+    String questionText = "favorite color";
+
+    QuestionEntity sampleEntity = createSampleQuestionEntity();
+    Page<QuestionEntity> entityPage = new PageImpl<>(Collections.singletonList(sampleEntity));
+    when(questionRepository.findAllByQuestionTextContaining(questionText, pageable)).thenReturn(
+        entityPage);
+
+    Page<QuestionDto> dtoPage = questionsService.searchQuestion(questionText, pageable);
+
+    assertNotNull(dtoPage);
+    assertEquals(1, dtoPage.getTotalElements());
+    assertEquals(sampleEntity.getId(), dtoPage.getContent().get(0).id());
+  }
+
   // Helper method to create a sample QuestionDto.
   private QuestionDto createSampleQuestionDto() {
     QuestionDto dto =
