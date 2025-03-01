@@ -404,25 +404,6 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     }
   }
 
-  /**
-   * Create the relation between the student and the parent/guardian
-   *
-   * @param student the student
-   * @param parent  the parent/guardian
-   */
-  /*private void createParentGuardianStudentRelation(StudentEntity student,
-      ParentsGuardianEntity parent) {
-    // Create ParentGuardianStudentEntity
-    ParentGuardianStudentEntity parentGuardianStudentEntity =
-        new ParentGuardianStudentEntity(student, parent);
-
-    // Add the relation to the student
-    student.addParentGuardian(parentGuardianStudentEntity);
-
-    // Add the relation to the parent/guardian
-    parent.addStudent(parentGuardianStudentEntity);
-  }*/
-
   @Override
   public List<EnrollmentDto> findEnrollmentsByStudentId(String idNumber) {
     Optional<StudentEntity> student =

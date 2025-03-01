@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.entities.configs;
 
+import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,10 +19,10 @@ public class SystemConfigEntity {
   @Column(name = "config_id", nullable = false)
   private Integer id;
 
-  @Size(max = 32)
-  @NotNull
-  @Column(name = "config_name", nullable = false, length = 32)
-  private String configName;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "config_name", nullable = false,
+      columnDefinition = "ENUM('EMAIL_CONTACT', 'EMAIL_NOTIFICATION_CONTACT', 'WHATSAPP_CONTACT', 'OFFICE_CONTACT', 'FACEBOOK_CONTACT', 'INSTAGRAM_CONTACT', 'PREV_GRADES_WEIGHT', 'ACADEMIC_WEIGHT', 'ENGLISH_WEIGHT')")
+  private Configurations configName;
 
   @Size(max = 128)
   @NotNull
