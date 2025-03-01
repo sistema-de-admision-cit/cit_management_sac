@@ -1,6 +1,7 @@
 package cr.co.ctpcit.citsacbackend.rest.configs;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateWeightsConfigsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.configs.SystemConfigServiceImpl;
 import jakarta.validation.Valid;
@@ -20,14 +21,6 @@ public class SystemConfigController {
 
   private final SystemConfigServiceImpl systemConfigService;
 
-  @PostMapping
-  public ResponseEntity<SystemConfigDto> addSystemConfig(
-      @RequestBody @Valid SystemConfigDto systemConfigDto) {
-    SystemConfigDto savedConfig = systemConfigService.addSystemConfig(systemConfigDto);
-
-    return new ResponseEntity<>(savedConfig, HttpStatus.CREATED);
-  }
-
   @GetMapping("/get-process-weights")
   public ResponseEntity<List<SystemConfigDto>> getProcessWeights() {
     List<SystemConfigDto> processWeights = systemConfigService.getProcessWeights();
@@ -36,7 +29,7 @@ public class SystemConfigController {
   }
 
   @PutMapping("/update-process-weights")
-  public ResponseEntity<String> updateExamsPercentages(
+  public ResponseEntity<String> updateProcessWeights(
       @RequestBody UpdateWeightsConfigsDto weightsConfigs) {
 
     systemConfigService.updateWeights(weightsConfigs.prevGradesWeight(),
@@ -46,27 +39,21 @@ public class SystemConfigController {
     return ResponseEntity.ok().build();
   }
 
-  /*@GetMapping("/get-notifications")
-  public ResponseEntity<List<SystemConfigDto>> getNotifications() {
+  @GetMapping("/get-contact-info")
+  public ResponseEntity<List<SystemConfigDto>> getContactInfo() {
+    List<SystemConfigDto> contactInfo = systemConfigService.getContactInfo();
 
-    List<SystemConfigDto> notifications = systemConfigService.getNotifications();
-    return new ResponseEntity<>(notifications, HttpStatus.OK);
-  }*/
+    return new ResponseEntity<>(contactInfo, HttpStatus.OK);
+  }
 
-  /*@PutMapping("/update-notifications")
-  public ResponseEntity<List<SystemConfigEntity>> updateNotifications(
-      @RequestParam("email_contact") String emailContact,
-      @RequestParam("email_notifications_contact") String emailNotificationsContact,
-      @RequestParam("whatsapp_contact") String whatsappContact,
-      @RequestParam("office_contact") String officeContact,
-      @RequestParam("instagram_contact") String instagramContact,
-      @RequestParam("facebook_contact") String facebookContact) {
+  @PutMapping("/update-contact-info")
+  public ResponseEntity<String> updateContactInfo(
+      @RequestBody UpdateContactInfoConfigsDto contactInfoConfigsDto) {
 
-    systemConfigService.updateNotifications(emailContact, emailNotificationsContact,
-        whatsappContact, officeContact, instagramContact, facebookContact);
+    systemConfigService.updateContactInfo(contactInfoConfigsDto);
 
-    return new ResponseEntity<>(getNotifications().getBody(), HttpStatus.OK);
-  }*/
+    return ResponseEntity.ok().build();
+  }
 
 
 }

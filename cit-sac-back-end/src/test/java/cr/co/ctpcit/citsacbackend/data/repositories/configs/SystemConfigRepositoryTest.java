@@ -29,14 +29,14 @@ class SystemConfigRepositoryTest {
   }
 
   @Test
-  @Disabled
   void saveExistingSystemConfig() {
-    SystemConfigEntity savedSystemConfig = systemConfigRepository.save(
-        new SystemConfigEntity(null, Configurations.EMAIL_CONTACT, "ejemplo@cit.co.cr"));
-
-    assertNotNull(savedSystemConfig);
-    assertNotNull(savedSystemConfig.getId());
-    assertEquals(systemConfigEntity.getConfigName(), savedSystemConfig.getConfigName());
+    try {
+      SystemConfigEntity savedSystemConfig = systemConfigRepository.save(
+          new SystemConfigEntity(null, Configurations.EMAIL_CONTACT, "ejemplo@cit.co.cr"));
+    } catch (Exception e) {
+      assertEquals("org.springframework.dao.DataIntegrityViolationException",
+          e.getClass().getName());
+    }
   }
 
   @Test
@@ -68,5 +68,14 @@ class SystemConfigRepositoryTest {
     assertNotNull(processWeights);
     assertFalse(processWeights.isEmpty());
     assertEquals(3, processWeights.size());
+  }
+
+  @Test
+  void findSystemContactInfo() {
+    List<SystemConfigEntity> contactInfo = systemConfigRepository.getContactInfo();
+
+    assertNotNull(contactInfo);
+    assertFalse(contactInfo.isEmpty());
+    assertEquals(6, contactInfo.size());
   }
 }

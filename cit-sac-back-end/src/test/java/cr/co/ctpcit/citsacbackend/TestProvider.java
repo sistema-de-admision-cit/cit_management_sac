@@ -2,6 +2,9 @@ package cr.co.ctpcit.citsacbackend;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.data.enums.*;
+import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateWeightsConfigsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.AddressDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.ParentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.PersonDto;
@@ -134,6 +137,20 @@ public class TestProvider {
     options.add(new QuestionOptionDto(3L, false, "π * diámetro"));
     options.add(new QuestionOptionDto(4L, false, "radio * altura"));
     return options;
+  }
+
+  public static UpdateWeightsConfigsDto provideUpdateWeightsConfigsDto() {
+    return new UpdateWeightsConfigsDto(0.4, 0.4, 0.2);
+  }
+
+  public static UpdateContactInfoConfigsDto provideUpdateContactInfoConfigsDto() {
+    return new UpdateContactInfoConfigsDto("contactocit@ctpcit.co.cr",
+        "notificaciones@ctpcit.co.cr", "88090041", "22370186", "ComplejoEducativoCIT",
+        "ComplejoEducativoCIT");
+  }
+
+  public static SystemConfigDto provideSystemConfigDto() {
+    return new SystemConfigDto(1, Configurations.EMAIL_CONTACT, "contactocit@ctpcit.co.cr");
   }
 }
 

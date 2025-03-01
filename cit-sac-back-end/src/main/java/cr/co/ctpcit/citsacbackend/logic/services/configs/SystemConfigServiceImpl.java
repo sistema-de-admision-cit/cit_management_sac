@@ -4,6 +4,7 @@ import cr.co.ctpcit.citsacbackend.data.entities.configs.SystemConfigEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
 import cr.co.ctpcit.citsacbackend.data.repositories.configs.SystemConfigRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.configs.SystemConfigMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -50,64 +51,52 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     }
 
     //Update PREV_GRADES_WEIGHT
-    saveWeight(Configurations.PREV_GRADES_WEIGHT, prevGradesWeight);
+    saveConfiguration(Configurations.PREV_GRADES_WEIGHT, String.valueOf(prevGradesWeight));
 
     //Update ACADEMIC_WEIGHT
-    saveWeight(Configurations.ACADEMIC_WEIGHT, academicWeight);
+    saveConfiguration(Configurations.ACADEMIC_WEIGHT, String.valueOf(academicWeight));
 
     //Update ENGLISH_WEIGHT
-    saveWeight(Configurations.ENGLISH_WEIGHT, englishWeight);
+    saveConfiguration(Configurations.ENGLISH_WEIGHT, String.valueOf(englishWeight));
   }
 
-  private void saveWeight(Configurations configName, Double weight) {
+  @Override
+  public List<SystemConfigDto> getContactInfo() {
+    return SystemConfigMapper.toDtoList(systemConfigRepository.getContactInfo());
+  }
+
+  @Override
+  public void updateContactInfo(UpdateContactInfoConfigsDto contactInfoConfigsDto) {
+    //Update EMAIL_CONTACT
+    saveConfiguration(Configurations.EMAIL_CONTACT, contactInfoConfigsDto.emailContact());
+
+    //Update EMAIL_NOTIFICATIONS_CONTACT
+    saveConfiguration(Configurations.EMAIL_NOTIFICATION_CONTACT,
+        contactInfoConfigsDto.emailNotificationsContact());
+
+    //Update WHATSAPP_CONTACT
+    saveConfiguration(Configurations.WHATSAPP_CONTACT, contactInfoConfigsDto.whatsappContact());
+
+    //Update OFFICE_CONTACT
+    saveConfiguration(Configurations.OFFICE_CONTACT, contactInfoConfigsDto.officeContact());
+
+    //Update INSTAGRAM_CONTACT
+    saveConfiguration(Configurations.INSTAGRAM_CONTACT, contactInfoConfigsDto.instagramContact());
+
+    //Update FACEBOOK_CONTACT
+    saveConfiguration(Configurations.FACEBOOK_CONTACT, contactInfoConfigsDto.facebookContact());
+  }
+
+  private void saveConfiguration(Configurations configName, String value) {
     SystemConfigEntity savedWeight =
         systemConfigRepository.findByConfigName(configName).orElse(null);
 
     if (savedWeight == null) {
-      savedWeight = new SystemConfigEntity(null, configName, String.valueOf(weight));
+      savedWeight = new SystemConfigEntity(null, configName, value);
     } else {
-      savedWeight.setConfigValue(String.valueOf(weight));
+      savedWeight.setConfigValue(value);
     }
 
     systemConfigRepository.save(savedWeight);
   }
-
-  @Override
-  public List<SystemConfigEntity> getNotifications(Configurations configName) {
-    return List.of();
-  }
-
-  @Override
-  public void updateNotifications(String emailContact, String emailNotificationsContact,
-      String whatsappContact, String officeContact, String instagramContact,
-      String facebookContact) {
-
-
-  }
-
-  /*@Override
-  public List<SystemConfigEntity> getNotifications(Configurations configName) {
-    List<SystemConfigEntity> notifications =
-        systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
-
-    if (notifications.isEmpty()) {
-      systemConfigRepository.updateNotifications("", "", "", "", "", "");
-      notifications =
-          systemConfigRepository.getSystemConfigEntitiesByConfigNameContaining(configName);
-    }
-
-    return notifications;
-  }*/
-
-  /*@Override
-  public void updateNotifications(String emailContact, String emailNotificationsContact,
-      String whatsappContact, String officeContact, String instagramContact,
-      String facebookContact) {
-    try {
-      systemConfigRepository.updateNotifications(emailContact, emailNotificationsContact,
-          whatsappContact, officeContact, instagramContact, facebookContact);
-    } catch (Exception e) {
-      throw new RuntimeException("Error al actualizar las notificaciones", e);
-    }
-  }*/
 }
