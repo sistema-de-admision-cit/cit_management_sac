@@ -3,10 +3,13 @@ package cr.co.ctpcit.citsacbackend.data.repositories.configs;
 import cr.co.ctpcit.citsacbackend.data.entities.configs.SystemConfigEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,6 +26,17 @@ class SystemConfigRepositoryTest {
   void setUp() {
     systemConfigEntity = SystemConfigEntity.builder().id(4).configName(Configurations.EMAIL_CONTACT)
         .configValue("servicioalcliente@cit.co.cr").build();
+  }
+
+  @Test
+  @Disabled
+  void saveExistingSystemConfig() {
+    SystemConfigEntity savedSystemConfig = systemConfigRepository.save(
+        new SystemConfigEntity(null, Configurations.EMAIL_CONTACT, "ejemplo@cit.co.cr"));
+
+    assertNotNull(savedSystemConfig);
+    assertNotNull(savedSystemConfig.getId());
+    assertEquals(systemConfigEntity.getConfigName(), savedSystemConfig.getConfigName());
   }
 
   @Test
@@ -45,5 +59,14 @@ class SystemConfigRepositoryTest {
     assertNotNull(foundSystemConfig);
     assertEquals(systemConfigEntity.getId(), foundSystemConfig.getId());
     assertEquals(systemConfigEntity.getConfigName(), foundSystemConfig.getConfigName());
+  }
+
+  @Test
+  void findSystemProcessWeights() {
+    List<SystemConfigEntity> processWeights = systemConfigRepository.getProcessWeights();
+
+    assertNotNull(processWeights);
+    assertFalse(processWeights.isEmpty());
+    assertEquals(3, processWeights.size());
   }
 }

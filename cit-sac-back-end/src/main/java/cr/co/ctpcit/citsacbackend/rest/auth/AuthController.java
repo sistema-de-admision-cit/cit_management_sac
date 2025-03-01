@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin("*")
 public class AuthController {
   private final JwtEncoder encoder;
   private final DaoAuthenticationProviderCstm daoAuthenticationProvider;
