@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest.configs;
 
+import cr.co.ctpcit.citsacbackend.logic.dto.configs.ExamPeriodDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateWeightsConfigsDto;
@@ -55,6 +56,15 @@ public class SystemConfigController {
     return ResponseEntity.ok().build();
   }
 
+  /**
+   * Get the exam periods for the current year
+   * @return a list of exam periods of the year
+   */
+  @GetMapping("/get-current-exam-periods")
+    public ResponseEntity<List<ExamPeriodDto>> getCurrentExamPeriods() {
+        List<ExamPeriodDto> examPeriods = systemConfigService.getCurrentExamPeriods();
 
+        return new ResponseEntity<>(examPeriods, HttpStatus.OK);
+    }
 }
 

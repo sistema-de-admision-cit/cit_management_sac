@@ -33,30 +33,8 @@ public class CitSacBackEndApplication {
     return executor;
   }
 
-  /*@Bean
-  CommandLineRunner init(StorageService storageService) {
-    return (args) -> {
-      storageService.init();
-    };
-  }*/
-
   @Bean
   public PasswordEncoder encoder() {
     return new BCryptPasswordEncoder();
   }
-
-  /*@Bean
-  CommandLineRunner saveTestUser(PasswordEncoder encoder, UserRepository userRepository) {
-    try {
-      return (args) -> {
-        UserEntity user =
-            new UserEntity(null, "rocio@cit.co.cr", encoder.encode("Mate8520").toString(), Role.T);
-        userRepository.save(user);
-      };
-    } catch (Exception e) {
-        return (args) -> {
-            System.out.println("Error al guardar usuario de prueba");
-        };
-    }
-  }*/
 }

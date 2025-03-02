@@ -79,4 +79,17 @@ class SystemConfigControllerTest {
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
   }
+
+  @Test
+  void getCurrentExamPeriods() {
+    ResponseEntity<String> response =
+        restTemplate.getForEntity("/api/system-config/get-current-exam-periods", String.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+    int enrollmentCount = documentContext.read("$.length()");
+    assertThat(enrollmentCount).isEqualTo(3);
+  }
 }

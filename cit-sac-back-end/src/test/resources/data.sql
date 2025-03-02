@@ -114,7 +114,9 @@ VALUES ('Documento de Notas', 'OT', 'grades_200123654_856332114336.pdf', 1),
 
 -- Insert value into tbl_examperiods
 INSERT INTO `tbl_exam_periods` (`start_date`, `end_date`)
-VALUES ('2024-09-01', '2024-09-30');
+VALUES ('2025-01-01', '2025-03-15'),
+       ('2025-04-01', '2025-06-15'),
+       ('2025-07-01', '2025-09-15');
 
 -- Insert value into tbl_examdays
 INSERT INTO `tbl_exam_days` (exam_period_id, exam_day, start_time)

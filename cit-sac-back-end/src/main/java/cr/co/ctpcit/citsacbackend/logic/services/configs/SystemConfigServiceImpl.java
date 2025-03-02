@@ -2,15 +2,19 @@ package cr.co.ctpcit.citsacbackend.logic.services.configs;
 
 import cr.co.ctpcit.citsacbackend.data.entities.configs.SystemConfigEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
+import cr.co.ctpcit.citsacbackend.data.repositories.configs.ExamPeriodRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.configs.SystemConfigRepository;
+import cr.co.ctpcit.citsacbackend.logic.dto.configs.ExamPeriodDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
+import cr.co.ctpcit.citsacbackend.logic.mappers.configs.ExamPeriodMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.configs.SystemConfigMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -18,25 +22,7 @@ import java.util.List;
 public class SystemConfigServiceImpl implements SystemConfigService {
 
   private final SystemConfigRepository systemConfigRepository;
-
-  @Override
-  public SystemConfigDto addSystemConfig(SystemConfigDto systemConfigDto) {
-    //Find existing configuration
-    SystemConfigEntity savedConfig =
-        systemConfigRepository.findByConfigName(systemConfigDto.configName()).orElse(null);
-
-    SystemConfigEntity savedEntity;
-    //If configuration does not exist, create it, else update it
-    if (savedConfig == null) {
-      SystemConfigEntity newConfig = SystemConfigMapper.toEntity(systemConfigDto);
-      savedEntity = systemConfigRepository.save(newConfig);
-    } else {
-      savedConfig.setConfigValue(systemConfigDto.configValue());
-      savedEntity = systemConfigRepository.save(savedConfig);
-    }
-
-    return SystemConfigMapper.toDto(savedEntity);
-  }
+  private final ExamPeriodRepository examPeriodRepository;
 
   @Override
   public List<SystemConfigDto> getProcessWeights() {
@@ -85,6 +71,12 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
     //Update FACEBOOK_CONTACT
     saveConfiguration(Configurations.FACEBOOK_CONTACT, contactInfoConfigsDto.facebookContact());
+  }
+
+  @Override
+  public List<ExamPeriodDto> getCurrentExamPeriods() {
+    int currentYear = LocalDate.now().getYear();
+    return ExamPeriodMapper.examPeriodToDtoList(examPeriodRepository.findByYear(currentYear));
   }
 
   private void saveConfiguration(Configurations configName, String value) {
