@@ -20,30 +20,33 @@ export const handleChange = (e, setQuestionData, isFile = false) => {
 }
 
 export const handleTestOptionChange = (e, questionData, setQuestionData) => {
+  console.log('handleTestOptionChange', e.target.value)
+
   setQuestionData({
     ...questionData,
-    examType: e.target.value,
-    question: questionData.question,
-    options: questionData.options,
+    questionType: e.target.value,
+    questionText: questionData.question,
+    questionOptionsText: questionData.questionOptionsText,
     correctOption: ''
   })
 }
 
 export const handleOptionChange = (index, value, questionData, setQuestionData) => {
-  const newOptions = [...questionData.options]
+  console.log('handleOptionChange', index, value)
+  const newOptions = [...questionData.questionOptionsText]
   newOptions[index] = value
   setQuestionData({
     ...questionData,
-    options: newOptions
+    questionOptionsTextds: newOptions
   })
 }
 
 export const clearForm = (setQuestionData) => {
   setQuestionData({
-    examType: '',
-    question: '',
+    questionType: '',
+    questionText: '',
     images: [],
-    options: ['', '', '', ''],
+    questionOptionsText: ['', '', '', ''],
     correctOption: ''
   })
 }
@@ -58,17 +61,25 @@ export const handleCreateQuestionSubmit = (e, questionData, setErrorMessage, set
   // Crea un nuevo objeto FormData
   const formData = new FormData()
 
-  // Agregar los campos de texto
-  formData.append('examType', questionData.examType)
-  formData.append('question', questionData.question)
-  formData.append('options', JSON.stringify(questionData.options))
-  formData.append('correctOption', questionData.correctOption)
+  const questionOptions = questionData.questionOptionsText.map((option, index) => ({
+    isCorrect: index === questionData.correctOption,
+    option
+  }))
 
-  // Agregar los archivos (imágenes)
-  if (questionData.images && questionData.images.length) {
-    for (const image of questionData.images) {
-      formData.append('images', image)
-    }
+  const questionDto = {
+    questionType: questionData.examType,
+    questionText: questionData.question,
+    imageUrl: questionData.imageUrl,
+    questionGrade: questionData.questionGrade || 'FIFTH', // update hardcoded value
+    selectionType: questionData.selectionType || 'SINGLE', // update hardcoded value
+    deleted: false,
+    questionOptions
+  }
+
+  formData.append('question', new Blob([JSON.stringify(questionDto)], { type: 'application/json' }))
+
+  if (questionData.file) {
+    formData.append('file', questionData.file)
   }
 
   setIsLoading(true)
@@ -84,7 +95,7 @@ export const handleCreateQuestionSubmit = (e, questionData, setErrorMessage, set
     console.log(response)
     setIsLoading(false)
     setSuccessMessage('Pregunta guardada exitosamente')
-    clearForm(setQuestionData) // Limpia el formulario si es necesario
+    clearForm(setQuestionData)
   }).catch(error => {
     console.error(error)
     setErrorMessage('Ocurrió un error al guardar la pregunta')
@@ -121,15 +132,15 @@ export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessM
 const searchQuestionByTitleUrl = import.meta.env.VITE_SEARCH_QUESTIONS_ENDPOINT
 export const handleSearch = (query, setQuestions, searchExamType, setSearchCode) => {
   setSearchCode('')
+
   const searchParams = new URLSearchParams()
-  searchParams.append('query', query)
-  searchParams.append('examType', searchExamType)
+  searchParams.append('questionText', query)
 
   const url = `${searchQuestionByTitleUrl}?${searchParams.toString()}`
 
   axios.get(url)
     .then(response => {
-      const questions = response.data
+      const questions = response.data.content
       console.log(questions)
       setQuestions(questions)
     })

@@ -33,11 +33,11 @@ const QuestionList = ({ questions, onDelete, onModify, loading, actionType }) =>
           : questions.length
             ? (
                 questions.map((question) => (
-                  <li key={question.code}>
-                    <span>{question.question}</span>
+                  <li key={question.id}>
+                    <span>{question.questionText}</span>
                     {actionType === 'delete'
                       ? (
-                        <Button className='btn btn-danger' onClick={() => handleDelete(question.code)}>
+                        <Button className='btn btn-danger' onClick={() => handleDelete(question.id)}>
                           Eliminar
                         </Button>
                         )

@@ -23,8 +23,8 @@ const FindQuestion = ({ onResultsUpdate }) => {
 
   const examTypeOptions = [
     { value: 'both', label: 'Ambos' },
-    { value: 'academic', label: 'Académico' },
-    { value: 'dai', label: 'DAI' }
+    { value: 'ACA', label: 'Académico' },
+    { value: 'DAI', label: 'DAI' }
   ]
 
   return (

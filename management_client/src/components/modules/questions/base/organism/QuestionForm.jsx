@@ -19,7 +19,7 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
   const [isLoading, setIsLoading] = useState(false)
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
-  const { examType, question, options, correctOption } = questionData
+  const { questionType, questionText, questionOptionsText, correctOption } = questionData
 
   // clean ALL the form data so it will look like a new form
   const handleSearchAgain = () => {
@@ -48,15 +48,15 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
       <form onSubmit={(e) => onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)} className='question-form'>
         <h2>Información de la pregunta</h2>
         <ExamTypeOptions
-          value={examType}
+          value={questionType}
           handleChange={(e) => handleTestOptionChange(e, questionData, setQuestionData)}
           options={EXAM_TYPE_OPTIONS}
         />
 
         <h2>Contenido de la pregunta</h2>
         <InputField
-          field={{ name: 'question', label: 'Pregunta', type: 'text', placeholder: 'Ingrese la pregunta aquí', required: true }}
-          value={question}
+          field={{ name: 'questionText', label: 'Pregunta', type: 'text', placeholder: 'Ingrese la pregunta aquí', required: true }}
+          value={questionText}
           handleChange={(e, isFile = false) => handleChange(e, setQuestionData, isFile)}
           className='form-group'
         />
@@ -68,11 +68,11 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
         />
 
         {/* cuando el tipo de pregunta es unica, se agrega el componente UniqueQuestionSection */}
-        {examType === 'academic' && (
+        {questionType === 'ACA' && (
           <>
             <h2>Opciones de respuesta</h2>
             <UniqueQuestionSection
-              options={options}
+              options={questionOptionsText}
               correctOption={correctOption}
               handleOptionChange={(index, value) => handleOptionChange(index, value, questionData, setQuestionData)}
               handleInputChange={(e, isFile = false) => handleChange(e, setQuestionData, isFile)}

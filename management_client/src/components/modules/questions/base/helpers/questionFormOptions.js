@@ -1,4 +1,4 @@
 export const EXAM_TYPE_OPTIONS = [
-  { value: 'academic', label: 'Académico' },
-  { value: 'dai', label: 'DAI' }
+  { value: 'ACA', label: 'Académico' },
+  { value: 'DAI', label: 'DAI' }
 ]

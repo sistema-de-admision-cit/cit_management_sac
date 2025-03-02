@@ -23,7 +23,7 @@ export const handleGetAllQuestions = (setQuestions, setLoading, setErrorMessage)
 
   axios.get(getAllQuestionsUrl).then(response => {
     console.log(response)
-    setQuestions(response.data)
+    setQuestions(response.data.content)
     setLoading(false)
   }).catch(error => {
     console.error(error)
