@@ -47,7 +47,7 @@ public class QuestionsServiceImplTest {
     QuestionEntity sampleEntity = QuestionMapper.dtoToEntity(sampleDto);
     when(questionRepository.save(any(QuestionEntity.class))).thenReturn(sampleEntity);
 
-    questionsService.createQuestion(sampleDto);
+    questionsService.createQuestion(sampleDto, null);
 
     verify(questionRepository, times(1)).save(any(QuestionEntity.class));
   }

@@ -5,9 +5,11 @@ import cr.co.ctpcit.citsacbackend.data.repositories.questions.QuestionRepository
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionFilterSpec;
 import cr.co.ctpcit.citsacbackend.logic.mappers.questions.QuestionMapper;
+import cr.co.ctpcit.citsacbackend.logic.services.files.FileStorageServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service implementation for managing questions.
@@ -15,38 +17,52 @@ import org.springframework.stereotype.Service;
 @Service
 public class QuestionsServiceImpl implements QuestionService {
   private final QuestionRepository questionRepository;
+  private final FileStorageServiceImpl fileStorageService;
 
   /**
    * Constructor for QuestionsServiceImpl.
    *
    * @param questionRepository The repository for managing question entities.
+   * @param fileStorageService The service for handling file storage.
    */
-  public QuestionsServiceImpl(QuestionRepository questionRepository) {
+  public QuestionsServiceImpl(QuestionRepository questionRepository,
+      FileStorageServiceImpl fileStorageService) {
     this.questionRepository = questionRepository;
+    this.fileStorageService = fileStorageService;
   }
 
   /**
-   * Creates a new question.
+   * Creates a new question and uploads an optional file.
    *
    * @param questionDto The question data transfer object.
+   * @param file        The optional file (image, PDF, etc.).
    * @return The created QuestionDto.
    */
   @Override
-  public QuestionDto createQuestion(QuestionDto questionDto) {
-    QuestionEntity questionEntity = QuestionMapper.dtoToEntity(questionDto);
+  public QuestionDto createQuestion(QuestionDto questionDto, MultipartFile file) {
+    try {
+      String fileUrl = null;
 
-    questionEntity.setDeleted(null);
+      if (file != null && !file.isEmpty()) {
+        fileUrl = fileStorageService.storeFile(file, questionDto.questionText(), "questions");
+      }
 
-    QuestionEntity questionSaved = questionRepository.save(questionEntity);
+      QuestionEntity questionEntity = QuestionMapper.dtoToEntity(questionDto);
+      questionEntity.setImageUrl(fileUrl); // Save the file URL in the entity
 
-    return QuestionMapper.entityToDto(questionSaved);
+      QuestionEntity questionSaved = questionRepository.save(questionEntity);
+
+      return QuestionMapper.entityToDto(questionSaved);
+    } catch (Exception e) {
+      throw new RuntimeException("Error creating question", e);
+    }
   }
 
   /**
    * Retrieves a paginated list of questions based on filter criteria.
    *
    * @param filterSpec The filter specification for querying questions.
-   * @param pageable The pagination details.
+   * @param pageable   The pagination details.
    * @return A page of QuestionDto objects.
    */
   @Override
@@ -94,7 +110,7 @@ public class QuestionsServiceImpl implements QuestionService {
    * Searches for questions containing the specified text.
    *
    * @param questionText The text to search for in questions.
-   * @param pageable The pagination details.
+   * @param pageable     The pagination details.
    * @return A page of QuestionDto objects matching the search criteria.
    */
   @Override
