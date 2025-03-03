@@ -1,5 +1,7 @@
 package cr.co.ctpcit.citsacbackend.logic.services.configs;
 
+import cr.co.ctpcit.citsacbackend.data.entities.configs.ExamDayEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.configs.ExamPeriodEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.configs.SystemConfigEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
 import cr.co.ctpcit.citsacbackend.data.repositories.configs.ExamPeriodRepository;
@@ -74,9 +76,53 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   }
 
   @Override
+  public ExamPeriodDto getExamPeriod(Long id) {
+    return ExamPeriodMapper.toDto(examPeriodRepository.findById(id).orElseThrow(
+        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+            "Periodo de exámenes no encontrado")));
+  }
+
+  @Override
   public List<ExamPeriodDto> getCurrentExamPeriods() {
     int currentYear = LocalDate.now().getYear();
-    return ExamPeriodMapper.examPeriodToDtoList(examPeriodRepository.findByYear(currentYear));
+    return ExamPeriodMapper.periodsToDtoList(examPeriodRepository.findByYear(currentYear));
+  }
+
+  @Override
+  public List<ExamPeriodDto> getExamPeriodsByYear(int year) {
+    return ExamPeriodMapper.periodsToDtoList(examPeriodRepository.findByYear(year));
+  }
+
+  @Override
+  public void createExamPeriod(ExamPeriodDto examPeriodDto) {
+    //Validate if the exam period already exists
+    if (examPeriodRepository.existsByStartDateAndEndDate(examPeriodDto.startDate(),
+        examPeriodDto.endDate())) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "El periodo de exámenes ya existe");
+    }
+
+    //Validate if the period overlap another period
+    List<ExamPeriodEntity> periods =
+        examPeriodRepository.findByStartDateBetweenOrEndDateBetween(examPeriodDto.startDate(),
+            examPeriodDto.endDate());
+    if (!periods.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT,
+          "El periodo de exámenes se superpone con otro periodo ya existente");
+    }
+
+    //Create the exam period
+    ExamPeriodEntity examPeriodEntity = ExamPeriodMapper.toEntity(examPeriodDto);
+
+    //Create the exam days
+    List<ExamDayEntity> examDays = ExamPeriodMapper.daysDtoToEntityList(examPeriodDto.examDays());
+
+    //Add exam days to the period
+    for (ExamDayEntity examDay : examDays) {
+      examPeriodEntity.addExamDay(examDay);
+    }
+
+    //save the exam period
+    examPeriodRepository.save(examPeriodEntity);
   }
 
   private void saveConfiguration(Configurations configName, String value) {

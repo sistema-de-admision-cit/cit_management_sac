@@ -3,10 +3,7 @@ package cr.co.ctpcit.citsacbackend.data.entities.configs;
 import cr.co.ctpcit.citsacbackend.data.enums.WeekDays;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalTime;
 import java.util.Objects;
@@ -15,6 +12,7 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "tbl_exam_days")
 public class ExamDayEntity {

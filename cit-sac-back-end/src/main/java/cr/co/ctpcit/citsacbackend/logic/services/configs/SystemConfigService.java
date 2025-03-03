@@ -15,5 +15,11 @@ public interface SystemConfigService {
 
   void updateContactInfo(UpdateContactInfoConfigsDto contactInfoConfigsDto);
 
+  ExamPeriodDto getExamPeriod(Long id);
+
   List<ExamPeriodDto> getCurrentExamPeriods();
+
+  List<ExamPeriodDto> getExamPeriodsByYear(int year);
+
+  void createExamPeriod(ExamPeriodDto examPeriodDto);
 }

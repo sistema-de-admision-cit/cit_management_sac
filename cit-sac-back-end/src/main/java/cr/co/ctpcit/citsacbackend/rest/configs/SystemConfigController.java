@@ -5,12 +5,12 @@ import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateWeightsConfigsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.configs.SystemConfigServiceImpl;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -57,14 +57,51 @@ public class SystemConfigController {
   }
 
   /**
+   * Get the exam period by id
+   *
+   * @param id the id of the exam period
+   * @return the exam period
+   */
+  @GetMapping("/get-exam-period/{id}")
+  public ResponseEntity<ExamPeriodDto> getExamPeriod(@PathVariable Long id) {
+    ExamPeriodDto examPeriod = systemConfigService.getExamPeriod(id);
+
+    return new ResponseEntity<>(examPeriod, HttpStatus.OK);
+  }
+
+  /**
    * Get the exam periods for the current year
+   *
    * @return a list of exam periods of the year
    */
   @GetMapping("/get-current-exam-periods")
-    public ResponseEntity<List<ExamPeriodDto>> getCurrentExamPeriods() {
-        List<ExamPeriodDto> examPeriods = systemConfigService.getCurrentExamPeriods();
+  public ResponseEntity<List<ExamPeriodDto>> getCurrentExamPeriods() {
+    List<ExamPeriodDto> examPeriods = systemConfigService.getCurrentExamPeriods();
 
-        return new ResponseEntity<>(examPeriods, HttpStatus.OK);
-    }
+    return new ResponseEntity<>(examPeriods, HttpStatus.OK);
+  }
+
+  /**
+   * Get the exam periods for a given year
+   *
+   * @param year the year to get the exam periods
+   * @return a list of exam periods of the year
+   */
+  @GetMapping("/get-exam-periods/{year}")
+  public ResponseEntity<List<ExamPeriodDto>> getExamPeriods(@PathVariable Integer year) {
+    List<ExamPeriodDto> examPeriods = systemConfigService.getExamPeriodsByYear(year);
+
+    return new ResponseEntity<>(examPeriods, HttpStatus.OK);
+  }
+
+  @PostMapping("/create-exam-period")
+  public ResponseEntity<Void> createExamPeriod(@RequestBody ExamPeriodDto examPeriodDto,
+      UriComponentsBuilder uriComponentsBuilder) {
+    systemConfigService.createExamPeriod(examPeriodDto);
+
+    return ResponseEntity.created(
+        uriComponentsBuilder.path("/api/system-config/get-exam-period/{id}")
+            .buildAndExpand(examPeriodDto.id()).toUri()).build();
+  }
 }
 

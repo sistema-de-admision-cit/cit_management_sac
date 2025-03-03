@@ -33,3 +33,15 @@ WHERE config_name = 'INSTAGRAM_CONTACT';
 UPDATE tbl_system_config
 SET config_value = 'ComplejoEducativoCIT'
 WHERE config_name = 'FACEBOOK_CONTACT';
+
+DELETE
+FROM tbl_exam_days
+WHERE exam_period_id = (SELECT exam_period_id
+                        FROM tbl_exam_periods
+                        WHERE start_date = '2021-01-01'
+                          AND end_date = '2021-03-15');
+
+DELETE
+FROM tbl_exam_periods
+WHERE start_date = '2021-01-01'
+  AND end_date = '2021-03-15';

@@ -2,9 +2,7 @@ package cr.co.ctpcit.citsacbackend;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.data.enums.*;
-import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateWeightsConfigsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.configs.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.AddressDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.ParentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.PersonDto;
@@ -14,7 +12,9 @@ import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionOptionDto;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TestProvider {
 
@@ -151,6 +151,32 @@ public class TestProvider {
 
   public static SystemConfigDto provideSystemConfigDto() {
     return new SystemConfigDto(1, Configurations.EMAIL_CONTACT, "contactocit@ctpcit.co.cr");
+  }
+
+  public static ExamPeriodDto provideNonExistentExamPeriodDto() {
+    return new ExamPeriodDto(null, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-03-15"),
+        provideNonExistentExamDayDtoList());
+  }
+
+  public static ExamPeriodDto provideExistentExamPeriodDto() {
+    return new ExamPeriodDto(1L, LocalDate.parse("2025-01-01"), LocalDate.parse("2025-03-15"),
+        provideExistingExamDayDtoList());
+  }
+
+  public static List<ExamDayDto> provideExistingExamDayDtoList() {
+    List<ExamDayDto> examDayDtoList = new ArrayList<>();
+    examDayDtoList.add(new ExamDayDto(1L, WeekDays.M, LocalTime.of(8, 0, 0)));
+    examDayDtoList.add(new ExamDayDto(2L, WeekDays.K, LocalTime.of(8, 0, 0)));
+    examDayDtoList.add(new ExamDayDto(3L, WeekDays.F, LocalTime.of(8, 0, 0)));
+    return examDayDtoList;
+  }
+
+  public static List<ExamDayDto> provideNonExistentExamDayDtoList() {
+    List<ExamDayDto> examDayDtoList = new ArrayList<>();
+    examDayDtoList.add(new ExamDayDto(null, WeekDays.M, LocalTime.of(8, 0, 0)));
+    examDayDtoList.add(new ExamDayDto(null, WeekDays.K, LocalTime.of(8, 0, 0)));
+    examDayDtoList.add(new ExamDayDto(null, WeekDays.F, LocalTime.of(8, 0, 0)));
+    return examDayDtoList;
   }
 }
 
