@@ -7,6 +7,7 @@ import QuestionList from '../../base/organism/QuestionList.jsx'
 import { handleGetAllQuestions } from '../../delete_questions/helpers/formHandlers'
 import { getQuestionById } from '../helpers/helpers'
 import useMessages from '../../../../core/global/hooks/useMessages'
+import Pagination from '../../../../core/global/molecules/Pagination.jsx'
 
 /**
  * Maps question options data to the format required by the form.
@@ -30,43 +31,45 @@ const ModifyQuestionView = () => {
   const [incomingData, setIncomingData] = useState(null)
   const [questions, setQuestions] = useState([])
   const [loading, setLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
 
   const { setErrorMessage, renderMessages } = useMessages()
 
-  useEffect(() =>
-    handleGetAllQuestions(setQuestions, setLoading, setErrorMessage)
-  , [])
+  const fetchQuestions = (page = 0, size = 10) => {
+    handleGetAllQuestions(page, size, setQuestions, setTotalPages, setLoading, setErrorMessage)
+  }
+
+  useEffect(() => {
+    fetchQuestions(currentPage)
+  }, [currentPage])
 
   useEffect(() => {
     if (incomingData) {
       setQuestionData(null)
       const timer = setTimeout(() => {
         console.log('incomingData', incomingData)
-
-        // transform questionOptions
         const transformedOptions = mapIncomingQuestionOptionsData(incomingData.questionOptions)
-
         setQuestionData({
           ...incomingData,
           ...transformedOptions
         })
       }, 0)
-
-      // Limpieza del efecto
       return () => clearTimeout(timer)
     }
   }, [incomingData])
 
-  // Maneja la pregunta encontrada
   const handleQuestionFound = (data) => {
-    // getQuestionByCode is async
     getQuestionById(data.id, setIncomingData, setErrorMessage, setLoading)
   }
 
-  // si el usuario decide buscar otra pregunta, limpiar los datos actuales (esto arregla el error de que no se podia eliminar una pregunta y volve a buscar la misma)
   useEffect(() => {
     setIncomingData(null)
   }, [questionData])
+
+  const onPageChange = (page) => {
+    setCurrentPage(page)
+  }
 
   return (
     <SectionLayout title='Modificar pregunta'>
@@ -86,6 +89,13 @@ const ModifyQuestionView = () => {
               actionType='modify'
             />
           </div>
+        )}
+        {!questionData && totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={onPageChange}
+          />
         )}
         {questionData && (
           <div className='form-section'>
