@@ -4,11 +4,12 @@ import { validateFields } from './helpers'
 export const handleChange = (e, setQuestionData, isFile = false) => {
   const { name, value, files } = e.target
 
-  if (isFile && files) {
-    const fileArray = Array.from(files) // Convierte los archivos a un array
+  if (isFile && files && files[0]) {
+    console.log('handleChange', name, files[0])
+
     setQuestionData(prevState => ({
       ...prevState,
-      [name]: fileArray
+      [name]: files[0]
     }))
   } else {
     // Manejar campos de texto
@@ -53,7 +54,7 @@ export const clearForm = (setQuestionData) => {
   setQuestionData({
     questionType: '',
     questionText: '',
-    images: [],
+    file: null,
     questionOptionsText: ['', '', '', ''],
     correctOption: ''
   })
@@ -66,7 +67,9 @@ export const handleCreateQuestionSubmit = (e, questionData, setErrorMessage, set
   setSuccessMessage('')
   validateFields(questionData, setErrorMessage)
 
-  // Crea un nuevo objeto FormData
+  console.log(questionData)
+
+  // Crear un nuevo objeto FormData
   const formData = new FormData()
 
   const questionOptions = questionData.questionOptionsText.map((option, index) => ({
@@ -75,19 +78,22 @@ export const handleCreateQuestionSubmit = (e, questionData, setErrorMessage, set
   }))
 
   const questionDto = {
-    questionType: questionData.examType,
-    questionText: questionData.question,
-    imageUrl: questionData.imageUrl,
-    questionGrade: questionData.questionGrade || 'FIFTH', // update hardcoded value
-    selectionType: questionData.selectionType || 'SINGLE', // update hardcoded value
+    questionType: questionData.questionType,
+    questionText: questionData.questionText,
+    questionGrade: questionData.questionGrade || 'FIFTH', // remove magic numbers or make this fields optional
+    selectionType: questionData.selectionType || 'SINGLE', // remove magic numbers or make this fields optional
+    questionLevel: 'MEDIUM', // remove magic numbers or make this fields optional
     deleted: false,
-    questionOptions
+    questionOptions: questionOptions || ['', '', '', ''] // remove magic numbers or make this fields optional
   }
+
+  console.log(questionDto)
 
   formData.append('question', new Blob([JSON.stringify(questionDto)], { type: 'application/json' }))
 
-  if (questionData.file) {
-    formData.append('file', questionData.file)
+  if (questionData.images) {
+    console.log('handleCreateQuestionSubmit', questionData.images)
+    formData.append('file', questionData.images)
   }
 
   setIsLoading(true)

@@ -1,13 +1,13 @@
 export const validateFields = (questionData, setErrorMessage) => {
-  if (!questionData.examType) {
+  if (!questionData.questionType) {
     setErrorMessage('Por favor, seleccione el tipo de examen.')
     return
   }
-  if (!questionData.question) {
+  if (!questionData.questionText) {
     setErrorMessage('Por favor, ingrese la pregunta.')
     return
   }
-  if (questionData.examType === 'academic') {
+  if (questionData.questionText === 'academic') {
     for (let i = 0; i < 4; i++) {
       if (!questionData.options[i]) {
         setErrorMessage(`Por favor, ingrese la opción ${i + 1}.`)
