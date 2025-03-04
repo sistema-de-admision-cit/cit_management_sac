@@ -14,7 +14,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Builder
 @Entity
 @Table(name = "tbl_question_options")
-public class QuestionOptionEntity {
+public class  QuestionOptionEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "option_id", columnDefinition = "INT UNSIGNED")
