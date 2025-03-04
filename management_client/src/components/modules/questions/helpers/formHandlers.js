@@ -20,15 +20,23 @@ export const handleChange = (e, setQuestionData, isFile = false) => {
 }
 
 export const handleTestOptionChange = (e, questionData, setQuestionData) => {
-  console.log('handleTestOptionChange', e.target.value)
+  const { name, value } = e.target
+  console.log('handleTestOptionChange', name, value)
 
-  setQuestionData({
-    ...questionData,
-    questionType: e.target.value,
-    questionText: questionData.question,
-    questionOptionsText: questionData.questionOptionsText,
-    correctOption: ''
-  })
+  // If you want to reset certain things only when `questionType` changes,
+  // you can conditionally handle that here. For example:
+  if (name === 'questionType') {
+    setQuestionData(prevState => ({
+      ...prevState,
+      questionType: value,
+      correctOption: ''
+    }))
+  } else if (name === 'questionGrade') {
+    setQuestionData(prevState => ({
+      ...prevState,
+      questionGrade: value
+    }))
+  }
 }
 
 export const handleOptionChange = (index, value, questionData, setQuestionData) => {

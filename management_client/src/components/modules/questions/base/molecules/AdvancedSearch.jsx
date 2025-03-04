@@ -1,8 +1,8 @@
 import InputField from '../../../../core/global/atoms/InputField'
-import ExamTypeOptions from '../../base/molecules/ExamTypeOptions'
+import QuestionTypeOptions from './QuestionTypeOptions'
 import { handleSearchByCode } from '../../helpers/formHandlers'
 
-const AdvancedSearch = ({ searchCode, setSearchCode, setQuery, setSearchExamType, setQuestions, searchExamType, handleExamTypeChange, examTypeOptions }) => {
+const AdvancedSearch = ({ searchCode, setSearchCode, setQuery, setSearchExamType, setQuestions, searchExamType, handleExamTypeChange, questionTypeOptions }) => {
   return (
     <div className='advanced-search-container'>
       <InputField
@@ -11,10 +11,10 @@ const AdvancedSearch = ({ searchCode, setSearchCode, setQuery, setSearchExamType
         handleChange={(e) => handleSearchByCode(e, setQuery, setSearchCode, setQuestions, searchExamType)}
         className='form-group'
       />
-      <ExamTypeOptions
+      <QuestionTypeOptions
         value={searchExamType}
         handleChange={handleExamTypeChange}
-        options={examTypeOptions}
+        options={questionTypeOptions}
         isRequired={false}
       />
     </div>

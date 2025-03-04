@@ -5,8 +5,8 @@ const AddQuestionForm = () => {
   const initialData = {
     questionType: '',
     questionText: '',
+    questionGrade: '',
     imageUrl: '',
-    questionGrade: ['', '', '', ''],
     selectionType: '',
     deleted: false,
     questionOptionsText: ['', '', '', ''],

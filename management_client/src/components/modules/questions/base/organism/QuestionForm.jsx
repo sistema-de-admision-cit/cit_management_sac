@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import ExamTypeOptions from '../molecules/ExamTypeOptions'
+import QuestionTypeOptions from '../molecules/QuestionTypeOptions'
 import InputField from '../../../../core/global/atoms/InputField'
 import Button from '../../../../core/global/atoms/Button'
 import UniqueQuestionSection from './UniqueQuestionSection'
@@ -12,14 +12,15 @@ import {
   handleOptionChange
 } from '../../helpers/formHandlers'
 import { getButtonState } from '../../helpers/helpers'
-import { EXAM_TYPE_OPTIONS } from '../helpers/questionFormOptions'
+import { EXAM_GRADE_OPTIONS, EXAM_TYPE_OPTIONS } from '../helpers/questionFormOptions'
+import QuestionGradeOptions from '../molecules/QuestionGradeOptions'
 
 const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAgain }) => {
   const { formData: questionData, setFormData: setQuestionData, resetForm } = useFormState(initialData)
   const [isLoading, setIsLoading] = useState(false)
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
-  const { questionType, questionText, questionOptionsText, correctOption } = questionData
+  const { questionType, questionGrade, questionText, questionOptionsText, correctOption } = questionData
 
   // clean ALL the form data so it will look like a new form
   const handleSearchAgain = () => {
@@ -47,10 +48,16 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
       <h1>{title}</h1>
       <form onSubmit={(e) => onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)} className='question-form'>
         <h2>Información de la pregunta</h2>
-        <ExamTypeOptions
+        <QuestionTypeOptions
           value={questionType}
           handleChange={(e) => handleTestOptionChange(e, questionData, setQuestionData)}
           options={EXAM_TYPE_OPTIONS}
+        />
+
+        <QuestionGradeOptions
+          value={questionGrade}
+          handleChange={(e) => handleTestOptionChange(e, questionData, setQuestionData)}
+          options={EXAM_GRADE_OPTIONS}
         />
 
         <h2>Contenido de la pregunta</h2>
