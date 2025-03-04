@@ -45,7 +45,7 @@ export const handleOptionChange = (index, value, questionData, setQuestionData) 
   newOptions[index] = value
   setQuestionData({
     ...questionData,
-    questionOptionsTextds: newOptions
+    questionOptionsText: newOptions
   })
 }
 
