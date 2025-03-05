@@ -1,30 +1,29 @@
-import { useEffect, useState } from 'react';
-import SectionLayout from '../../../../core/global/molecules/SectionLayout';
-import '../../../../../assets/styles/global/input-fields.css';
-import '../../../../../assets/styles/global/view.css';
-import Button from '../../../../core/global/atoms/Button';
-import AccessManegementSection from '../organisms/AccessManagementSection';
-import DeletedUsersTable from '../organisms/UserTable';
-import useMessages from '../../../../core/global/hooks/useMessages';
-import useFormState from '../../../../core/global/hooks/useFormState';
-import { handleSubmit, fetchUsers, isFormValid, handleDeleteUser, confirmDeleteUser } from '../handlers/handler';
-import { useAuth } from '../../../../../router/AuthProvider'; // Importa el contexto de autenticación
+import { useEffect, useState } from 'react'
+import SectionLayout from '../../../../core/global/molecules/SectionLayout'
+import '../../../../../assets/styles/global/input-fields.css'
+import '../../../../../assets/styles/global/view.css'
+import Button from '../../../../core/global/atoms/Button'
+import AccessManegementSection from '../organisms/AccessManagementSection'
+import DeletedUsersTable from '../organisms/UserTable'
+import useMessages from '../../../../core/global/hooks/useMessages'
+import useFormState from '../../../../core/global/hooks/useFormState'
+import { handleSubmit, fetchUsers, isFormValid, handleDeleteUser, confirmDeleteUser } from '../handlers/handler'
+import { useAuth } from '../../../../../router/AuthProvider' // Importa el contexto de autenticación
 
 const AccessManagementView = () => {
-  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages();
-  const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false); // Estado para mostrar/ocultar modal de confirmación
-  const [pendingDeleteEmail, setPendingDeleteEmail] = useState(''); // Email del usuario a eliminar
-
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
+  const [loading, setLoading] = useState(false)
+  const [users, setUsers] = useState([])
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false) // Estado para mostrar/ocultar modal de confirmación
+  const [pendingDeleteEmail, setPendingDeleteEmail] = useState('') // Email del usuario a eliminar
 
   const { formData: formValues, setFormData: setFormValues } = useFormState({
     email: '',
     role: ''
   })
 
-  const { user } = useAuth(); // Accede al contexto de autenticación
-  const currentUserEmail = user.name; // Obtén el correo electrónico del usuario en sesión
+  const { user } = useAuth() // Accede al contexto de autenticación
+  const currentUserEmail = user.name // Obtén el correo electrónico del usuario en sesión
 
   useEffect(() => {
     fetchUsers(setUsers, setLoading, setErrorMessage)
@@ -34,20 +33,20 @@ const AccessManagementView = () => {
     setFormValues({
       ...formValues,
       [field]: value
-    });
-  };
+    })
+  }
 
   const handleConfirmDelete = () => {
     confirmDeleteUser(
-      pendingDeleteEmail, 
-      fetchUsers, 
-      setSuccessMessage, 
-      setErrorMessage, 
-      setShowConfirmationModal, 
+      pendingDeleteEmail,
+      fetchUsers,
+      setSuccessMessage,
+      setErrorMessage,
+      setShowConfirmationModal,
       setUsers, // Pasamos setUsers para actualizar la lista
       setLoading // Pasamos setLoading para manejar el estado de cargando
-    );
-  };
+    )
+  }
 
   return (
     <SectionLayout title='Gestión de Acceso'>

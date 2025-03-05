@@ -1,13 +1,13 @@
 export const validateFields = (questionData, setErrorMessage) => {
-  if (!questionData.examType) {
+  if (!questionData.questionType) {
     setErrorMessage('Por favor, seleccione el tipo de examen.')
     return
   }
-  if (!questionData.question) {
+  if (!questionData.questionText) {
     setErrorMessage('Por favor, ingrese la pregunta.')
     return
   }
-  if (questionData.examType === 'academic') {
+  if (questionData.questionText === 'academic') {
     for (let i = 0; i < 4; i++) {
       if (!questionData.options[i]) {
         setErrorMessage(`Por favor, ingrese la opción ${i + 1}.`)
@@ -27,21 +27,21 @@ export const getButtonState = (questionData, isLoading) => {
   }
 
   // si alguno de los campos está vacío, deshabilitar el botón
-  if (!questionData.examType || !questionData.question) {
+  if (!questionData.questionType || !questionData.questionText) {
     return true
   }
 
   // si es seleccion unica
-  if (questionData.examType === 'academic') {
+  if (questionData.questionType === 'ACA') {
     // crear un set para verificar que no haya opciones repetidas
-    const set = new Set(questionData.options)
+    const set = new Set(questionData.questionOptionsText)
     if (set.size !== 4) {
       return true
     }
 
     // verificar que no haya campos vacíos
     for (let i = 0; i < 4; i++) {
-      if (!questionData.options[i]) {
+      if (!questionData.questionOptionsText[i]) {
         return true
       }
     }

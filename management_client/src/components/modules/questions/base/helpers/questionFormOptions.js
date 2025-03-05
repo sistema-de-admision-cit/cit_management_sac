@@ -1,4 +1,17 @@
 export const EXAM_TYPE_OPTIONS = [
-  { value: 'academic', label: 'Académico' },
-  { value: 'dai', label: 'DAI' }
+  { value: 'ACA', label: 'Académico' },
+  { value: 'DAI', label: 'DAI' }
+]
+
+export const EXAM_GRADE_OPTIONS = [
+  { value: 'FIRST', label: 'Primero' },
+  { value: 'SECOND', label: 'Segundo' },
+  { value: 'THIRD', label: 'Tercero' },
+  { value: 'FOURTH', label: 'Cuarto' },
+  { value: 'FIFTH', label: 'Quinto' },
+  { value: 'SIXTH', label: 'Sexto' },
+  { value: 'SEVENTH', label: 'Séptimo' },
+  { value: 'EIGHTH', label: 'Octavo' },
+  { value: 'NINTH', label: 'Noveno' },
+  { value: 'TENTH', label: 'Décimo' }
 ]

@@ -15,7 +15,7 @@ public interface QuestionService {
 
   QuestionDto getQuestionById(Long id);
 
-  QuestionDto updateQuestion(QuestionDto questionDto);
+  QuestionDto updateQuestion(QuestionDto questionDto, MultipartFile file);
 
   void deleteQuestion(Long id);
 

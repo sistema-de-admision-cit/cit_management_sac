@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 /**
  * Service implementation for managing questions.
  */
@@ -85,15 +87,33 @@ public class QuestionsServiceImpl implements QuestionService {
    * Updates an existing question.
    *
    * @param questionDto The updated question data.
+   * @param file        The optional new file (image, PDF, etc.).
    * @return The updated QuestionDto.
    */
   @Override
-  public QuestionDto updateQuestion(QuestionDto questionDto) {
-    QuestionEntity questionEntity = QuestionMapper.dtoToEntity(questionDto);
+  public QuestionDto updateQuestion(QuestionDto questionDto, MultipartFile file) {
+    try {
+      Optional<QuestionEntity> existingQuestionOpt = questionRepository.findById(questionDto.id());
+      if (existingQuestionOpt.isEmpty()) {
+        throw new RuntimeException("Question not found");
+      }
 
-    QuestionEntity questionUpdated = questionRepository.save(questionEntity);
+      QuestionEntity existingQuestion = existingQuestionOpt.get();
 
-    return QuestionMapper.entityToDto(questionUpdated);
+      if (file != null && !file.isEmpty()) {
+        String fileUrl =
+            fileStorageService.storeFile(file, questionDto.questionText(), "questions");
+        existingQuestion.setImageUrl(fileUrl);
+      }
+
+      existingQuestion.setQuestionText(questionDto.questionText());
+      existingQuestion.setQuestionType(questionDto.questionType());
+      
+      QuestionEntity questionUpdated = questionRepository.save(existingQuestion);
+      return QuestionMapper.entityToDto(questionUpdated);
+    } catch (Exception e) {
+      throw new RuntimeException("Error updating question", e);
+    }
   }
 
   /**

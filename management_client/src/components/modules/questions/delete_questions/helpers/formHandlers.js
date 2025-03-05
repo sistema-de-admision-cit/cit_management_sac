@@ -18,16 +18,25 @@ export const handleDeleteFromList = (code, questions, setQuestions, setErrorMess
 }
 
 const getAllQuestionsUrl = import.meta.env.VITE_GET_ALL_QUESTIONS_ENDPOINT
-export const handleGetAllQuestions = (setQuestions, setLoading, setErrorMessage) => {
-  setLoading(true)
-
-  axios.get(getAllQuestionsUrl).then(response => {
-    console.log(response)
-    setQuestions(response.data)
+export const handleGetAllQuestions = async (
+  page = 0,
+  size = 10,
+  setQuestions,
+  setTotalPages,
+  setLoading,
+  setErrorMessage
+) => {
+  try {
+    setLoading(true)
+    const response = await axios.get(getAllQuestionsUrl, {
+      params: { page, size }
+    })
+    const data = response.data
+    setQuestions(data.content)
+    setTotalPages(data.totalPages)
+  } catch (err) {
+    setErrorMessage(err.message)
+  } finally {
     setLoading(false)
-  }).catch(error => {
-    console.error(error)
-    setLoading(false)
-    setErrorMessage('Hubo un error al cargar las preguntas. Por favor, intenta de nuevo.')
-  })
+  }
 }
