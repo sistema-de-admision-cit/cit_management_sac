@@ -1,8 +1,10 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.logic.dto.configs.ExamPeriodDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageFileNotFoundException;
+import cr.co.ctpcit.citsacbackend.logic.services.configs.SystemConfigService;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.File;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -29,6 +32,7 @@ import static cr.co.ctpcit.citsacbackend.rest.inscriptions.InscriptionsFileVerif
 public class InscriptionFormController {
 
   private final InscriptionsService inscriptionsService;
+  private final SystemConfigService systemConfigService;
 
   /**
    * This method creates a new inscription based on the information provided in the request from the
@@ -51,6 +55,18 @@ public class InscriptionFormController {
     return ResponseEntity.created(
             uriComponentsBuilder.path("/api/inscription/{id}").buildAndExpand(enrolled.id()).toUri())
         .build();
+  }
+
+  /**
+   * Get the exam periods for the current year
+   *
+   * @return a list of exam periods of the year
+   */
+  @GetMapping("/get-current-exam-periods")
+  public ResponseEntity<List<ExamPeriodDto>> getCurrentExamPeriods() {
+    List<ExamPeriodDto> examPeriods = systemConfigService.getCurrentExamPeriods();
+
+    return new ResponseEntity<>(examPeriods, HttpStatus.OK);
   }
 
   /**

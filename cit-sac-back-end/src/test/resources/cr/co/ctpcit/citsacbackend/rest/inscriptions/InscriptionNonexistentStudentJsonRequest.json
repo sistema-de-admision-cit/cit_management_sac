@@ -1,9 +1,6 @@
 {
-  "id": null,
   "student": {
-    "id": null,
     "person": {
-      "id": null,
       "firstName": "Hernán",
       "firstSurname": "Jimenez",
       "secondSurname": "Morales",
@@ -15,9 +12,7 @@
     "hasAccommodations": false,
     "parents": [
       {
-        "id": null,
         "person": {
-          "id": null,
           "firstName": "Mauricio",
           "firstSurname": "Jimenez",
           "secondSurname": "Elizondo",
@@ -29,7 +24,6 @@
         "relationship": "F",
         "addresses": [
           {
-            "id": null,
             "country": "Costa Rica",
             "province": "San José",
             "city": "Escazú",
@@ -40,7 +34,6 @@
       }
     ]
   },
-  "status": "PENDING",
   "gradeToEnroll": "NINTH",
   "knownThrough": "OT",
   "examDate": "2024-12-16",

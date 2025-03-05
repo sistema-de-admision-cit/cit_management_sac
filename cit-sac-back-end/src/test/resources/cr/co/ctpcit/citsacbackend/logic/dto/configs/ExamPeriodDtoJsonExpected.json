@@ -1,0 +1,17 @@
+{
+  "id": null,
+  "startDate": "2021-01-01",
+  "endDate": "2021-02-01",
+  "examDays": [
+    {
+      "id": null,
+      "examDay": "M",
+      "startTime": "08:00:00"
+    },
+    {
+      "id": null,
+      "examDay": "T",
+      "startTime": "08:00:00"
+    }
+  ]
+}

@@ -118,6 +118,8 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   //@Transactional(rollbackFor = {EnrollmentException.class, NoSuchElementException.class})
   public EnrollmentDto addInscription(EnrollmentDto inscription, MultipartFile grades,
       MultipartFile letter) {
+    verifyEnrollmentInput(inscription);
+
     CompletableFuture<DocumentDto> gradesDocument = CompletableFuture.completedFuture(null);
     CompletableFuture<DocumentDto> letterDocument = CompletableFuture.completedFuture(null);
 
@@ -155,6 +157,24 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
     //Save inscription
     return createInscription(inscription, documents);
+  }
+
+  private void verifyEnrollmentInput(EnrollmentDto inscription) {
+    // Verify if the student is already enrolled
+    // Get the student
+    StudentEntity student = studentRepository.findStudentEntityByStudentPerson_IdNumber(
+        inscription.student().person().idNumber()).orElse(null);
+
+    if (student != null) {
+      List<EnrollmentEntity> studentEnrollments = enrollmentRepository.findAllByStudent(student);
+      if (studentEnrollments.stream()
+          .anyMatch(e -> e.getExamDate().equals(inscription.examDate()))) {
+        throw new EnrollmentException("El estudiante ya está inscrito para la fecha seleccionada");
+      }
+    }
+
+    // TODO: Verify examDate is between any period
+
   }
 
   private EnrollmentDto createInscription(EnrollmentDto inscription, List<DocumentDto> documents) {
@@ -208,16 +228,6 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     if (parent.getStudents().stream().noneMatch(s -> s.getStudent().equals(finalStudent))) {
       parent.addStudent(student);
       studentRepository.save(student);
-    }
-
-    // Verify if the student is already enrolled
-    List<EnrollmentEntity> studentEnrollments = enrollmentRepository.findAllByStudent(student);
-    if (studentEnrollments.stream().anyMatch(e -> e.getExamDate().equals(inscription.examDate()))) {
-      //Falta eliminar los documentos de la inscripción
-      for (DocumentDto d : documents) {
-        storageService.deleteDocumentByUrlPostfix(d.documentUrlPostfix());
-      }
-      throw new EnrollmentException("El estudiante ya está inscrito para la fecha seleccionada");
     }
 
     // Get the Enrollment
