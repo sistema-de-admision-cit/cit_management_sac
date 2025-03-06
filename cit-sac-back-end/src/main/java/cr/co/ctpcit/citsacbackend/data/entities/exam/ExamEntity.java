@@ -1,11 +1,15 @@
 package cr.co.ctpcit.citsacbackend.data.entities.exam;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.EnrollmentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.QuestionType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -14,41 +18,51 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "tbl_Exams")
+@Table(name = "tbl_exams")
 public class ExamEntity {
     @Id
-    @Column(name = "exam_id", columnDefinition = "INT UNSIGNED")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_exam;
+    @Column(name = "exam_id", columnDefinition = "INT UNSIGNED")
+    private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "enrollment_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Exams_Enrollments"))
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "enrollment_id", nullable = false, columnDefinition = "INT UNSIGNED")
     private EnrollmentEntity enrollment;
 
     @NotNull
-    @Column(name = "exam_id", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Instant exam_date = Instant.now();
+    @CreationTimestamp
+    @Column(name = "exam_date", nullable = false, updatable = false)
+    private Instant examDate;
 
-    @NotNull //Cambiar tipo
+    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "exam_type", nullable = false, columnDefinition = "enum('ACA','DAI')")
-    private QuestionType exam_type;
+    @Column(name = "exam_type", nullable = false, columnDefinition = "enum('ACA', 'DAI')")
+    private  QuestionType examType;
 
-    @Column(name = "responses", columnDefinition = "JSON DEFAULT NULL")
+    @Column(name = "responses", columnDefinition = "JSON")
     private String responses;
+
+    @OneToMany(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    @Builder.Default
+    private List<ExamQuestionsEntity> examQuestions = new ArrayList<>();
+
+    public void addExamQuestion(ExamQuestionsEntity examQuestion) {
+        examQuestions.add(examQuestion);
+        examQuestion.setExam(this);
+    }
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ExamEntity that = (ExamEntity) o;
-        return Objects.equals(id_exam, that.id_exam) && Objects.equals(enrollment, that.enrollment) && Objects.equals(exam_date, that.exam_date) && exam_type == that.exam_type && Objects.equals(responses, that.responses);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id_exam, enrollment, exam_date, exam_type, responses);
+        return Objects.hash(id);
     }
 }
-
-
-

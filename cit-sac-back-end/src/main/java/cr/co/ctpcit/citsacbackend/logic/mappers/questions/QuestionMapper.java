@@ -19,9 +19,9 @@ public class QuestionMapper {
    * @return a QuestionDto with data copied from the entity
    */
   public static QuestionDto entityToDto(QuestionEntity entity) {
-    if (entity == null) {
-      return null;
-    }
+      if (entity == null) {
+        return null;
+      }
 
     // Convert the list of QuestionOptionEntity to QuestionOptionDto
     List<QuestionOptionDto> optionDtos = entity.getQuestionOptions().stream().map(

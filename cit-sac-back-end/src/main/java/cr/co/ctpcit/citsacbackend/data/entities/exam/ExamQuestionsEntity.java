@@ -1,47 +1,48 @@
 package cr.co.ctpcit.citsacbackend.data.entities.exam;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionEntity;
-import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionOptionEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.util.Objects;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "tbl_exam_questions")
 public class ExamQuestionsEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "exam_question_id", columnDefinition = "INT UNSIGNED")
+    private Long id;
+
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "exam_id", nullable = false)
-    private ExamEntity exam_id;
+    @JoinColumn(name = "exam_id", nullable = false, columnDefinition = "INT UNSIGNED")
+    @JsonBackReference
+    private ExamEntity exam;
 
-    @Id
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "question_id", nullable = false)
-    private QuestionEntity question_id;
+    @JoinColumn(name = "question_id", nullable = false, columnDefinition = "INT UNSIGNED")
+    private QuestionEntity question;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "selected_option_id", nullable = false, foreignKey = @ForeignKey(name = "FK_Questions_Options"))
-    private QuestionOptionEntity options;
-
-    @Column(name = "answer_text", columnDefinition = "TEXT")
-    private String answerText;
+    @Column(name = "answer", columnDefinition = "TEXT")
+    private String answer;
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ExamQuestionsEntity that = (ExamQuestionsEntity) o;
-        return Objects.equals(exam_id, that.exam_id) && Objects.equals(question_id, that.question_id) && Objects.equals(options, that.options) && Objects.equals(answerText, that.answerText);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(exam_id, question_id, options, answerText);
+        return Objects.hash(id);
     }
 }
