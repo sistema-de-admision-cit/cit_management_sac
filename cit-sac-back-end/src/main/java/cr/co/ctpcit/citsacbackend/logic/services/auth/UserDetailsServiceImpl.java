@@ -82,7 +82,7 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario no encontrado.");
     }
     if (!passwordEncoder.matches(oldPassword, entity.get().getPassword())) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Contraseña actual incorrecta.");
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
 
     entity.get().setPassword(passwordEncoder.encode(newPassword));

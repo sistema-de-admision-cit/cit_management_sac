@@ -96,6 +96,7 @@ public class QuestionsServiceImplTest {
     QuestionDto sampleDto = createSampleQuestionDto();
     QuestionEntity sampleEntity = QuestionMapper.dtoToEntity(sampleDto);
     when(questionRepository.save(any(QuestionEntity.class))).thenReturn(sampleEntity);
+    when(questionRepository.findById(sampleDto.id())).thenReturn(Optional.of(sampleEntity));
 
     questionsService.updateQuestion(sampleDto, null);
 

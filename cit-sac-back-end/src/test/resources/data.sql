@@ -191,4 +191,4 @@ INSERT INTO `tbl_users` (`email`, `username`, `user_password`, `role`)
 VALUES ('sysadmin@cit.co.cr', 'Sysadmin', '$2a$10$x2PgQcVgktD6SS6wtJonwOlWpnLj24aH9c5aVC561vDqTO8PzUY4S', 'SYS'),
        ('marta@cit.co.cr', 'Marta', '$2a$10$15bZTAy6CG3OlPgl3glJxuROyEajUOTdKX9qx43Pa0JkTPR2ga2He', 'ADMIN'),
        ('jorge@cit.co.cr', 'Jorge', '$2a$10$RFPObfy6ro87gLXQalrEiuGehgDsyWfETW4h9h51eg1ZUWlpMnrIG', 'PSYCHOLOGIST'),
-       ('rocio@cit.co.cr', 'Rocio', '$2a$10$yNXsgRdu2T72V6xznUni7e6PDtcx4ZYq3XvNVAbIcRnhWBoIgGMTO', 'TEACHER');
+       ('rocio@cit.co.cr', 'Rocio', '$2a$10$yNXsgRdu2T72V6xznUni7e6PDtcx4ZYq3XvNVAbIcRnhWBoIgGMTO', 'TEACHER'); -- Password Rocío: 'Mate8520'
