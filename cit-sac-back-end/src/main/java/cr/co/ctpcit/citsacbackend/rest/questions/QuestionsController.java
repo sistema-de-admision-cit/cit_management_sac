@@ -36,7 +36,7 @@ public class QuestionsController {
       return ResponseEntity.badRequest().build();
     }
   }
-  
+
   @GetMapping("/get-all")
   public ResponseEntity<Page<QuestionDto>> getAllQuestions(
       @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
@@ -59,7 +59,7 @@ public class QuestionsController {
     return ResponseEntity.ok(questionService.getQuestionById(id));
   }
 
-  @PutMapping(value = "/update", consumes = {"multipart/form-data"})
+  @PostMapping(value = "/update", consumes = {"multipart/form-data"})
   public ResponseEntity<QuestionDto> updateQuestion(
       @RequestPart("question") QuestionDto questionDto,
       @RequestPart(value = "file", required = false) MultipartFile file) {

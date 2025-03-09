@@ -47,17 +47,14 @@ const ModifyQuestionView = () => {
   useEffect(() => {
     if (incomingData) {
       setQuestionData(null)
-      const timer = setTimeout(() => {
-        console.log('incomingData', incomingData)
-        const transformedOptions = mapIncomingQuestionOptionsData(incomingData.questionOptions)
-        setQuestionData({
-          ...incomingData,
-          ...transformedOptions
-        })
-      }, 0)
-      return () => clearTimeout(timer)
+      console.log('incomingData', incomingData)
+      const transformedOptions = mapIncomingQuestionOptionsData(incomingData.questionOptions)
+      setQuestionData({
+        ...incomingData,
+        ...transformedOptions
+      })
     }
-  }, [incomingData])
+  }, [incomingData, setQuestionData])
 
   const handleQuestionFound = (data) => {
     getQuestionById(data.id, setIncomingData, setErrorMessage, setLoading)
