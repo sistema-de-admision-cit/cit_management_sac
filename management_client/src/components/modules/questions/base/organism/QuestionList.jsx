@@ -5,6 +5,7 @@ import ConfirmationModal from '../../../../ui/confirmation_modal/view/Confirmati
 import Pagination from '../../../../core/global/molecules/Pagination.jsx'
 import '../../../../../assets/styles/questions/question-list.css'
 import { handleGetAllQuestions } from '../../delete_questions/helpers/formHandlers'
+import { useAuth } from '../../../../../router/AuthProvider.jsx'
 
 const mapExamType = (examType) => {
   const examTypeMap = {
@@ -16,17 +17,34 @@ const mapExamType = (examType) => {
   return examTypeMap[examType]
 }
 
-const QuestionList = ({ onDelete, onModify, actionType, searchQuery = '', searchExamType = 'both' }) => {
+const mapExamTypeBasedOnUserRole = (userRole) => {
+  console.log('userRole', userRole)
+  const examTypeMap = {
+    SYS: null,
+    ADMIN: null,
+    PSYCHOLOGIST: 'DAI',
+    TEACHER: 'ACA'
+  }
+
+  return examTypeMap[userRole]
+}
+
+const QuestionList = ({ onDelete, onModify, actionType, searchQuery = '', searchExamType, userRole }) => {
   const [questions, setQuestions] = useState([])
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [loading, setLoading] = useState(false)
   const [selectedQuestionCode, setSelectedQuestionCode] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [examType, setExamType] = useState(mapExamTypeBasedOnUserRole(userRole))
   const pageSize = 10
 
+  useEffect(() => {
+    setExamType(mapExamType(searchExamType))
+  }, [searchExamType])
+
   const fetchQuestions = (page = 0) => {
-    handleGetAllQuestions(page, pageSize, searchQuery, mapExamType(searchExamType), setQuestions, setTotalPages, setLoading)
+    handleGetAllQuestions(page, pageSize, searchQuery, examType, setQuestions, setTotalPages, setLoading)
   }
 
   useEffect(() => {

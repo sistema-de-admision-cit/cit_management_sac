@@ -6,6 +6,8 @@ import QuestionList from '../../base/organism/QuestionList.jsx'
 import { getQuestionById } from '../helpers/helpers'
 import useMessages from '../../../../core/global/hooks/useMessages'
 import '../../../../../assets/styles/global/view.css'
+import { useAuth } from '../../../../../router/AuthProvider.jsx'
+import { mapExamTypeFilter } from '../../base/helpers/questionFormOptions.js'
 
 const mapIncomingQuestionOptionsData = (questionOptions) => {
   if (!Array.isArray(questionOptions)) return { questionOptionsText: [], correctOption: '' }
@@ -18,10 +20,11 @@ const mapIncomingQuestionOptionsData = (questionOptions) => {
 }
 
 const ModifyQuestionView = () => {
+  const { user } = useAuth()
   const [questionData, setQuestionData] = useState(null)
   const [incomingData, setIncomingData] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [searchExamType, setSearchExamType] = useState('both')
+  const [searchExamType, setSearchExamType] = useState(mapExamTypeFilter(user.role))
   const { setErrorMessage, renderMessages } = useMessages()
 
   const handleQuestionFound = (data) => {
@@ -47,6 +50,7 @@ const ModifyQuestionView = () => {
             setQuery={setSearchQuery}
             searchExamType={searchExamType}
             setSearchExamType={setSearchExamType}
+            userRole={user.role}
           />
         </div>
         {!questionData && (
@@ -56,6 +60,7 @@ const ModifyQuestionView = () => {
               onModify={handleQuestionFound}
               searchQuery={searchQuery}
               searchExamType={searchExamType}
+              userRole={user.role}
             />
           </div>
         )}

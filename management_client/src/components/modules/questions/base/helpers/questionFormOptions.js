@@ -1,7 +1,8 @@
-export const EXAM_TYPE_OPTIONS = [
-  { value: 'ACA', label: 'Académico' },
+export const ACADEMIC_EXAM_TYPE_OPTIONS =
+  { value: 'ACA', label: 'Académico' }
+
+export const DAI_EXAM_TYPE_OPTIONS =
   { value: 'DAI', label: 'DAI' }
-]
 
 export const EXAM_GRADE_OPTIONS = [
   { value: 'FIRST', label: 'Primero' },
@@ -15,3 +16,8 @@ export const EXAM_GRADE_OPTIONS = [
   { value: 'NINTH', label: 'Noveno' },
   { value: 'TENTH', label: 'Décimo' }
 ]
+
+export const mapExamTypeFilter = (userRole) => {
+  const examTypeMap = { SYS: 'both', ADMIN: 'both', PSYCHOLOGIST: 'DAI', TEACHER: 'ACA' }
+  return examTypeMap[userRole]
+}
