@@ -19,21 +19,22 @@ const getAllQuestionsUrl = import.meta.env.VITE_GET_ALL_QUESTIONS_ENDPOINT
 export const handleGetAllQuestions = async (
   page = 0,
   size = 10,
+  searchQuery = '',
+  questionType = null,
   setQuestions,
   setTotalPages,
-  setLoading,
-  setErrorMessage
+  setLoading
 ) => {
   try {
     setLoading(true)
     const response = await axios.get(getAllQuestionsUrl, {
-      params: { page, size }
+      params: { page, size, questionText: searchQuery, questionType }
     })
     const data = response.data
     setQuestions(data.content)
     setTotalPages(data.totalPages)
   } catch (err) {
-    setErrorMessage(err.message)
+    console.error(err)
   } finally {
     setLoading(false)
   }

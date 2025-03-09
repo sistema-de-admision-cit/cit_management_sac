@@ -4,8 +4,17 @@ import Spinner from '../../../../core/global/atoms/Spinner.jsx'
 import ConfirmationModal from '../../../../ui/confirmation_modal/view/ConfirmationModal.jsx'
 import Pagination from '../../../../core/global/molecules/Pagination.jsx'
 import '../../../../../assets/styles/questions/question-list.css'
-import { handleSearchPaginated } from '../../helpers/formHandlers'
 import { handleGetAllQuestions } from '../../delete_questions/helpers/formHandlers'
+
+const mapExamType = (examType) => {
+  const examTypeMap = {
+    both: null,
+    ACA: 'ACA',
+    DAI: 'DAI'
+  }
+
+  return examTypeMap[examType]
+}
 
 const QuestionList = ({ onDelete, onModify, actionType, searchQuery = '', searchExamType = 'both' }) => {
   const [questions, setQuestions] = useState([])
@@ -17,20 +26,7 @@ const QuestionList = ({ onDelete, onModify, actionType, searchQuery = '', search
   const pageSize = 10
 
   const fetchQuestions = (page = 0) => {
-    setLoading(true)
-    if (searchQuery) {
-      handleSearchPaginated(
-        searchQuery,
-        setQuestions,
-        setTotalPages,
-        setLoading,
-        searchExamType,
-        page,
-        pageSize
-      )
-    } else {
-      handleGetAllQuestions(page, pageSize, setQuestions, setTotalPages, setLoading)
-    }
+    handleGetAllQuestions(page, pageSize, searchQuery, mapExamType(searchExamType), setQuestions, setTotalPages, setLoading)
   }
 
   useEffect(() => {

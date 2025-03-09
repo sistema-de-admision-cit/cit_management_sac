@@ -40,14 +40,16 @@ public class QuestionsController {
   @GetMapping("/get-all")
   public ResponseEntity<Page<QuestionDto>> getAllQuestions(
       @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-      @RequestParam(required = false) Boolean deleted,
+      @RequestParam(required = false, defaultValue = "") String questionText,
+      @RequestParam(required = false, defaultValue = "false") Boolean deleted,
       @RequestParam(required = false) QuestionType questionType,
       @RequestParam(required = false) Grades grade,
       @RequestParam(required = false) QuestionLevel questionLevel) {
 
     Pageable pageable = PageRequest.of(page, size);
 
-    QuestionFilterSpec filter = new QuestionFilterSpec(deleted, questionType, grade, questionLevel);
+    QuestionFilterSpec filter =
+        new QuestionFilterSpec(questionText, deleted, questionType, grade, questionLevel);
 
     Page<QuestionDto> questionsPage = questionService.getQuestions(filter, pageable);
 

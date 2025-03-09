@@ -169,44 +169,6 @@ export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessM
   })
 }
 
-/**
- *
- * @param {string} query - looking for
- * @param {function} setQuestions - setter function for the questions
- * @param {string} searchExamType - exam type to search (both, dai or academic)
- * @param {string} setSearchCode - setter function for the search code
-*/
-const searchQuestionByTitleUrl = import.meta.env.VITE_SEARCH_QUESTIONS_ENDPOINT
-export const handleSearchPaginated = (
-  query,
-  setQuestions,
-  totalPages,
-  setLoading,
-  searchExamType,
-  page = 0,
-  pageSize = 10
-) => {
-  console.log('handleSearchPaginated', query, searchExamType, page, pageSize)
-  const searchParams = new URLSearchParams()
-  searchParams.append('questionText', query)
-  searchParams.append('page', page)
-  searchParams.append('size', pageSize)
-
-  const url = `${searchQuestionByTitleUrl}?${searchParams.toString()}`
-
-  axios.get(url)
-    .then(response => {
-      const questions = response.data.content
-      setQuestions(questions)
-      totalPages(response.data.totalPages)
-      setLoading(false)
-    })
-    .catch(error => {
-      console.error(error)
-      setLoading(false)
-    })
-}
-
 const searchQuestionByCodeUrl = import.meta.env.VITE_SEARCH_QUESTION_BY_CODE_ENDPOINT
 export const handleSearchByCode = (e, setQuery, setSearchCode, setQuestions, searchExamType) => {
   e.preventDefault()
