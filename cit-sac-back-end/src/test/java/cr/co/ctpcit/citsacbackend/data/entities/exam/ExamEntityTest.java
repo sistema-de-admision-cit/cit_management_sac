@@ -35,6 +35,7 @@ class ExamEntityTest {
         assertThat(json.write(exam)).extractingJsonPathNumberValue("@.id").isEqualTo(1);
         assertThat(json.write(exam)).hasJsonPathStringValue("@.examType");
         assertThat(json.write(exam)).extractingJsonPathStringValue("@.examType").isEqualTo("ACA");
+
     }
 
     @Test
