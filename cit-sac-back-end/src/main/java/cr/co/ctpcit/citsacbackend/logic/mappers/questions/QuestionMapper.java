@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 
 @Component
 public class QuestionMapper {
-
   /**
    * Converts a QuestionEntity to a QuestionDto.
    *
    * @param entity the QuestionEntity instance
    * @return a QuestionDto with data copied from the entity
    */
+
   public static QuestionDto entityToDto(QuestionEntity entity) {
       if (entity == null) {
         return null;
