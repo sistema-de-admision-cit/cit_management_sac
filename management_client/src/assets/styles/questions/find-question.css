@@ -19,6 +19,10 @@ label {
   font-weight: bold;
 }
 
+.find-question-container {
+  margin: 1rem auto;
+}
+
 .find-question-container input[type="text"] {
   /* agregar icono de busqueda */
   background-image: url("../../icons/search-alt-2-svgrepo-com.svg");
