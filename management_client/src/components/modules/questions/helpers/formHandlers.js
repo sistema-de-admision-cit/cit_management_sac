@@ -177,11 +177,20 @@ export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessM
  * @param {string} setSearchCode - setter function for the search code
 */
 const searchQuestionByTitleUrl = import.meta.env.VITE_SEARCH_QUESTIONS_ENDPOINT
-export const handleSearch = (query, setQuestions, searchExamType, setSearchCode) => {
-  setSearchCode('')
-
+export const handleSearchPaginated = (
+  query,
+  setQuestions,
+  totalPages,
+  setLoading,
+  searchExamType,
+  page = 0,
+  pageSize = 10
+) => {
+  console.log('handleSearchPaginated', query, searchExamType, page, pageSize)
   const searchParams = new URLSearchParams()
   searchParams.append('questionText', query)
+  searchParams.append('page', page)
+  searchParams.append('size', pageSize)
 
   const url = `${searchQuestionByTitleUrl}?${searchParams.toString()}`
 
@@ -189,9 +198,12 @@ export const handleSearch = (query, setQuestions, searchExamType, setSearchCode)
     .then(response => {
       const questions = response.data.content
       setQuestions(questions)
+      totalPages(response.data.totalPages)
+      setLoading(false)
     })
     .catch(error => {
       console.error(error)
+      setLoading(false)
     })
 }
 
