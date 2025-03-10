@@ -10,10 +10,15 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "tbl_english_exams")
-public class EnglishExam {
+public class EnglishExamEntity {
   @Id
   @Column(name = "exam_id", columnDefinition = "INT UNSIGNED")
   private Long id;
+
+  @MapsId
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "exam_id", nullable = false, columnDefinition = "INT UNSIGNED")
+  private ExamEntity exam;
 
   @Column(name = "tracktest_id", columnDefinition = "INT UNSIGNED")
   private Long trackTestId;
@@ -27,5 +32,6 @@ public class EnglishExam {
   @NotNull
   @Column(name = "core", nullable = false)
   private Byte core;
+
 
 }

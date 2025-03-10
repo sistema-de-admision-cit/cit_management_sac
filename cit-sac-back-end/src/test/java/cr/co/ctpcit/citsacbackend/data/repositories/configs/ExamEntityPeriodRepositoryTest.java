@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest(showSql = false)
-class ExamPeriodRepositoryTest {
+class ExamEntityPeriodRepositoryTest {
 
   @Autowired
   private ExamPeriodRepository examPeriodRepository;

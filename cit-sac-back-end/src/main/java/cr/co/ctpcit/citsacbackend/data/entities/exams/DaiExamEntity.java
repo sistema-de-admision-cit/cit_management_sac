@@ -12,10 +12,15 @@ import org.hibernate.annotations.ColumnDefault;
 @Setter
 @Entity
 @Table(name = "tbl_dai_exams")
-public class DaiExam {
+public class DaiExamEntity {
   @Id
   @Column(name = "exam_id", columnDefinition = "INT UNSIGNED")
   private Long id;
+
+  @MapsId
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @JoinColumn(name = "exam_id", nullable = false, columnDefinition = "INT UNSIGNED")
+  private ExamEntity exam;
 
   @Size(max = 255)
   @ColumnDefault("''")

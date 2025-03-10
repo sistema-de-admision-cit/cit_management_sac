@@ -23,7 +23,7 @@ import static org.hibernate.generator.EventType.UPDATE;
 public class PersonEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "person_id", columnDefinition = "int UNSIGNED")
+  @Column(name = "person_id", columnDefinition = "INT UNSIGNED")
   private Long id;
 
   @Size(max = 32)
@@ -72,20 +72,6 @@ public class PersonEntity {
   public void addStudent(StudentEntity student) {
     this.student = student;
     student.setStudentPerson(this);
-  }
-
-  public void removeParent() {
-    if (parent != null) {
-      parent.setParentPerson(null);
-      parent = null;
-    }
-  }
-
-  public void removeStudent() {
-    if (student != null) {
-      student.setStudentPerson(null);
-      student = null;
-    }
   }
 
   @Override

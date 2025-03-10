@@ -22,12 +22,12 @@ import java.util.*;
 @Table(name = "tbl_parents")
 public class ParentEntity implements Serializable {
   @Id
-  @Column(name = "parent_id", columnDefinition = "int UNSIGNED")
+  @Column(name = "parent_id", columnDefinition = "INT UNSIGNED")
   private Long id;
 
   @MapsId
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinColumn(name = "parent_id", nullable = false, columnDefinition = "int UNSIGNED")
+  @JoinColumn(name = "parent_id", nullable = false, columnDefinition = "INT UNSIGNED")
   private PersonEntity parentPerson;
 
   @Size(max = 32)

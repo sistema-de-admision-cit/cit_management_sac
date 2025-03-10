@@ -8,7 +8,7 @@ import org.springframework.boot.test.json.JacksonTester;
 import static org.junit.jupiter.api.Assertions.*;
 
 @JsonTest
-class ExamPeriodDtoTest {
+class ExamEntityPeriodDtoTest {
   @Autowired
   private JacksonTester<ExamPeriodDto> json;
 
