@@ -66,7 +66,7 @@ public class QuestionsServiceImplTest {
 
     assertNotNull(dtoPage);
     assertEquals(1, dtoPage.getTotalElements());
-    assertEquals(sampleEntity.getId(), dtoPage.getContent().get(0).id());
+    assertEquals(sampleEntity.getId(), dtoPage.getContent().getFirst().id());
   }
 
   @Test
@@ -126,7 +126,7 @@ public class QuestionsServiceImplTest {
 
     assertNotNull(dtoPage);
     assertEquals(1, dtoPage.getTotalElements());
-    assertEquals(sampleEntity.getId(), dtoPage.getContent().get(0).id());
+    assertEquals(sampleEntity.getId(), dtoPage.getContent().getFirst().id());
   }
 
   // Helper method to create a sample QuestionDto.

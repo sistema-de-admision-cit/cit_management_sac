@@ -85,8 +85,9 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     if (value.matches("\\d+")) {
       List<StudentEntity> student =
           studentRepository.findStudentByStudentPerson_IdNumberContaining(value);
-
-      enrollments = enrollmentRepository.findAllByStudentIn(student);
+      if(!student.isEmpty()) {
+        enrollments = enrollmentRepository.findAllByStudentIn(student);
+      }
     }
 
     if (enrollments.isEmpty()) {

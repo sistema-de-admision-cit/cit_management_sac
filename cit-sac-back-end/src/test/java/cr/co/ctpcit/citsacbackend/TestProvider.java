@@ -3,12 +3,11 @@ package cr.co.ctpcit.citsacbackend;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.data.enums.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.*;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.AddressDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.ParentDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.PersonDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionOptionDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -80,6 +79,11 @@ public class TestProvider {
   }
 
   public static EnrollmentEntity provideEnrollment() {
+    StudentEntity student = TestProvider.provideStudent();
+    ParentEntity parent = TestProvider.provideParent();
+    parent.addStudent(student);
+    parent.addAddress(TestProvider.provideAddress());
+
     EnrollmentEntity enrollment = new EnrollmentEntity();
     enrollment.setId(1L);
     enrollment.setStatus(ProcessStatus.PENDING);
@@ -88,8 +92,37 @@ public class TestProvider {
     enrollment.setKnownThrough(KnownThrough.OT);
     enrollment.setExamDate(LocalDate.parse("2024-12-15"));
     enrollment.setConsentGiven(true);
+    enrollment.setStudent(student);
 
     return enrollment;
+  }
+
+  public static List<EnrollmentEntity> provideEnrollmentList() {
+    List<EnrollmentEntity> enrollmentList = new ArrayList<>();
+    enrollmentList.add(provideEnrollment());
+    return enrollmentList;
+  }
+
+  public static List<EnrollmentDto> provideEnrollmentDtoList() {
+    List<EnrollmentDto> enrollmentDtoList = new ArrayList<>();
+    enrollmentDtoList.add(provideEnrollmentDto());
+    return enrollmentDtoList;
+  }
+
+  public static Page<EnrollmentEntity> provideEnrollmentPage() {
+    return new PageImpl<>(provideEnrollmentList());
+  }
+
+  public static EnrollmentDto provideEnrollmentDto() {
+    ParentDto parent = TestProvider.provideParentDto();
+    AddressDto address = TestProvider.provideAddressDto();
+    parent.addresses().add(address);
+
+    StudentDto student = TestProvider.provideStudentDto();
+    student.parents().add(parent);
+
+    return new EnrollmentDto(null, student, ProcessStatus.PENDING, Grades.FIRST, KnownThrough.OT,
+        LocalDate.parse("2024-12-15"), true, false, new ArrayList<>());
   }
 
   public static DocumentEntity provideDocument() {

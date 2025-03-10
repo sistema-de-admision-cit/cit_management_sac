@@ -19,26 +19,13 @@ class EnrollmentDtoTest {
   @Autowired
   private JacksonTester<EnrollmentDto> json;
 
-  private StudentDto student;
-
-  @BeforeEach
-  void setUp() {
-    ParentDto parent = TestProvider.provideParentDto();
-    AddressDto address = TestProvider.provideAddressDto();
-    parent.addresses().add(address);
-
-    student = TestProvider.provideStudentDto();
-    student.parents().add(parent);
-  }
-
   @Test
   void testSerialize() throws Exception {
-    EnrollmentDto enrollment =
-        new EnrollmentDto(null, student, ProcessStatus.PENDING, Grades.FIRST, KnownThrough.OT,
-            LocalDate.parse("2024-12-15"), true, false, new ArrayList<>());
+    EnrollmentDto enrollment = TestProvider.provideEnrollmentDto();
 
     long timestamp = 856332114336L;
-    String documentUrlPostfix = "grades_" + student.person().idNumber() + "_" + timestamp + ".pdf";
+    String documentUrlPostfix =
+        "grades_" + enrollment.student().person().idNumber() + "_" + timestamp + ".pdf";
 
     DocumentDto document =
         new DocumentDto(1L, documentUrlPostfix, DocType.OT, "Documento de Notas");
@@ -115,12 +102,11 @@ class EnrollmentDtoTest {
         }
         """;
 
-    EnrollmentDto enrollment =
-        new EnrollmentDto(null, student, ProcessStatus.PENDING, Grades.FIRST, KnownThrough.OT,
-            LocalDate.parse("2024-12-15"), true, false, new ArrayList<>());
+    EnrollmentDto enrollment = TestProvider.provideEnrollmentDto();
 
     long timestamp = 856332114336L;
-    String documentUrlPostfix = "grades_" + student.person().idNumber() + "_" + timestamp + ".pdf";
+    String documentUrlPostfix =
+        "grades_" + enrollment.student().person().idNumber() + "_" + timestamp + ".pdf";
 
     DocumentDto document =
         new DocumentDto(1L, documentUrlPostfix, DocType.OT, "Documento de Notas");

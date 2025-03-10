@@ -17,13 +17,7 @@ class EnrollmentEntityTest {
 
   @Test
   void serializeJson() throws IOException {
-    StudentEntity student = TestProvider.provideStudent();
-    ParentEntity parent = TestProvider.provideParent();
-    parent.addStudent(student);
-    parent.addAddress(TestProvider.provideAddress());
-
     EnrollmentEntity enrollment = TestProvider.provideEnrollment();
-    enrollment.setStudent(student);
 
     assertThat(json.write(enrollment)).isStrictlyEqualToJson("EnrollmentEntityJsonExpected.json");
     assertThat(json.write(enrollment)).hasJsonPathNumberValue("@.id");
@@ -93,14 +87,7 @@ class EnrollmentEntityTest {
           "documents": []
         }
         """;
-
-    StudentEntity student = TestProvider.provideStudent();
-    ParentEntity parent = TestProvider.provideParent();
-    parent.addStudent(student);
-    parent.addAddress(TestProvider.provideAddress());
-
     EnrollmentEntity enrollment = TestProvider.provideEnrollment();
-    enrollment.setStudent(student);
 
     assertThat(json.parse(expected)).isEqualTo(enrollment);
     assertThat(json.parseObject(expected).getId()).isEqualTo(1);
