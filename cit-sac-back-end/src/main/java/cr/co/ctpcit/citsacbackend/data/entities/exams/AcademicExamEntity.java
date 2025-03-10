@@ -2,13 +2,15 @@ package cr.co.ctpcit.citsacbackend.data.entities.exams;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "tbl_academic_exams")
 public class AcademicExamEntity {

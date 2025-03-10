@@ -1,5 +1,9 @@
 package cr.co.ctpcit.citsacbackend;
 
+import cr.co.ctpcit.citsacbackend.data.entities.exams.AcademicExamEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.exams.DaiExamEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.exams.EnglishExamEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.data.enums.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.*;
@@ -9,10 +13,12 @@ import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionOptionDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TestProvider {
@@ -210,6 +216,26 @@ public class TestProvider {
     examDayDtoList.add(new ExamDayDto(null, WeekDays.K, LocalTime.of(8, 0, 0)));
     examDayDtoList.add(new ExamDayDto(null, WeekDays.F, LocalTime.of(8, 0, 0)));
     return examDayDtoList;
+  }
+
+  public static ExamEntity provideExam() {
+    return ExamEntity.builder().id(null).enrollment(provideEnrollment()).examDate(Instant.now())
+        .examType(ExamType.ACA).responses(new HashMap<>()).build();
+  }
+
+  public static EnglishExamEntity provideEnglishExam() {
+    return EnglishExamEntity.builder().id(null).trackTestId(1L).level(EnglishLevel.B2)
+        .core((byte) 1).build();
+  }
+
+  public static DaiExamEntity provideDaiExam() {
+    return DaiExamEntity.builder().id(null).comment(
+            "El estudiante menciona una situación de acoso escolar en su institución anterior, aparte de eso, todo bien.")
+        .recommendation(Recommendation.ADMIT).build();
+  }
+
+  public static AcademicExamEntity provideAcademicExam() {
+    return AcademicExamEntity.builder().id(null).grade(new BigDecimal("85.00")).build();
   }
 }
 

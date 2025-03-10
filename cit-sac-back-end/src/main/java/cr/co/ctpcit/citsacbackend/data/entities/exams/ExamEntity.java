@@ -5,8 +5,7 @@ import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.EnrollmentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -17,6 +16,9 @@ import java.util.Objects;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "tbl_exams")
 public class ExamEntity {

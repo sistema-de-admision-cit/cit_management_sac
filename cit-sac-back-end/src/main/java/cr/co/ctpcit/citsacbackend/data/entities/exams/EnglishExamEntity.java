@@ -3,11 +3,13 @@ package cr.co.ctpcit.citsacbackend.data.entities.exams;
 import cr.co.ctpcit.citsacbackend.data.enums.EnglishLevel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "tbl_english_exams")
 public class EnglishExamEntity {
