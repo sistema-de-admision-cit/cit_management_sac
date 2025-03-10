@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.services.questions;
 
+import cr.co.ctpcit.citsacbackend.TestProvider;
 import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import cr.co.ctpcit.citsacbackend.data.enums.QuestionLevel;
@@ -43,7 +44,7 @@ public class QuestionsServiceImplTest {
 
   @Test
   public void testCreateQuestion() {
-    QuestionDto sampleDto = createSampleQuestionDto();
+    QuestionDto sampleDto = TestProvider.provideQuestionDto();
     QuestionEntity sampleEntity = QuestionMapper.dtoToEntity(sampleDto);
     when(questionRepository.save(any(QuestionEntity.class))).thenReturn(sampleEntity);
 
@@ -93,7 +94,7 @@ public class QuestionsServiceImplTest {
 
   @Test
   public void testUpdateQuestion() {
-    QuestionDto sampleDto = createSampleQuestionDto();
+    QuestionDto sampleDto = TestProvider.provideQuestionDto();
     QuestionEntity sampleEntity = QuestionMapper.dtoToEntity(sampleDto);
     when(questionRepository.save(any(QuestionEntity.class))).thenReturn(sampleEntity);
     when(questionRepository.findById(sampleDto.id())).thenReturn(Optional.of(sampleEntity));
@@ -127,15 +128,6 @@ public class QuestionsServiceImplTest {
     assertNotNull(dtoPage);
     assertEquals(1, dtoPage.getTotalElements());
     assertEquals(sampleEntity.getId(), dtoPage.getContent().getFirst().id());
-  }
-
-  // Helper method to create a sample QuestionDto.
-  private QuestionDto createSampleQuestionDto() {
-    QuestionDto dto =
-        new QuestionDto(1L, QuestionType.ACA, "What is your favorite color?", null, Grades.FOURTH,
-            QuestionLevel.EASY, SelectionType.SINGLE, false, Collections.emptyList());
-
-    return dto;
   }
 
   // Helper method to create a sample QuestionEntity.
