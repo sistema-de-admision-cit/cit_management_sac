@@ -1,15 +1,36 @@
 .question-list ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
+
 .question-list li {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr auto;
   align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #e0e0e0; 
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.question-list li:hover {
+  background: #f9f9f9;
 }
 
 .question-list li span {
-  flex-grow: 1;
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .question-list li {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .question-list li .btn {
+    margin-top: 8px;
+    width: 100%;
+  }
 }

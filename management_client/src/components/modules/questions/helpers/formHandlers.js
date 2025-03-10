@@ -5,8 +5,6 @@ export const handleChange = (e, setQuestionData, isFile = false) => {
   const { name, value, files } = e.target
 
   if (isFile && files && files[0]) {
-    console.log('handleChange', name, files[0])
-
     setQuestionData(prevState => ({
       ...prevState,
       [name]: files[0]
@@ -20,7 +18,7 @@ export const handleChange = (e, setQuestionData, isFile = false) => {
   }
 }
 
-export const handleTestOptionChange = (e, questionData, setQuestionData) => {
+export const handleTestOptionChange = (e, _questionData, setQuestionData) => {
   const { name, value } = e.target
   console.log('handleTestOptionChange', name, value)
 
@@ -117,7 +115,7 @@ export const handleCreateQuestionSubmit = (e, questionData, setErrorMessage, set
   })
 }
 
-// modif
+const modifyQuestionUrl = import.meta.env.VITE_UPDATE_QUESTION_ENDPOINT
 export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessMessage, setIsLoading) => {
   e.preventDefault()
   setErrorMessage('')
@@ -128,39 +126,47 @@ export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessM
 
   setIsLoading(true)
 
-  // Hacer la llamada para modificar los datos en el servidor (TODO: reemplazar por la API)
-  setTimeout(() => {
-    console.log(questionData)
+  const questionOptions = questionData.questionOptionsText.map((option, index) => ({
+    isCorrect: index === questionData.correctOption,
+    option
+  }))
+
+  const formData = new FormData()
+
+  const questionDto = {
+    id: questionData.id,
+    questionType: questionData.questionType,
+    questionText: questionData.questionText,
+    questionGrade: questionData.questionGrade || 'FIFTH', // remove magic numbers or make this fields optional
+    selectionType: questionData.selectionType || 'SINGLE', // remove magic numbers or make this fields optional
+    questionLevel: 'MEDIUM', // remove magic numbers or make this fields optional
+    deleted: false,
+    questionOptions: questionOptions || ['', '', '', ''] // remove magic numbers or make this fields optional
+  }
+
+  formData.append('question', new Blob([JSON.stringify(questionDto)], { type: 'application/json' }))
+
+  if (questionData.images) {
+    console.log('handleUpdateQuestion', questionData.images)
+    formData.append('file', questionData.images, { type: 'multipart/form-data' })
+  }
+
+  axios.post(
+    `${modifyQuestionUrl}`,
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 10000
+    }
+  ).then(response => {
+    console.log(response)
     setIsLoading(false)
     setSuccessMessage('Pregunta modificada exitosamente')
-  }, 1000)
-}
-
-/**
- *
- * @param {string} query - looking for
- * @param {function} setQuestions - setter function for the questions
- * @param {string} searchExamType - exam type to search (both, dai or academic)
- * @param {string} setSearchCode - setter function for the search code
-*/
-const searchQuestionByTitleUrl = import.meta.env.VITE_SEARCH_QUESTIONS_ENDPOINT
-export const handleSearch = (query, setQuestions, searchExamType, setSearchCode) => {
-  setSearchCode('')
-
-  const searchParams = new URLSearchParams()
-  searchParams.append('questionText', query)
-
-  const url = `${searchQuestionByTitleUrl}?${searchParams.toString()}`
-
-  axios.get(url)
-    .then(response => {
-      const questions = response.data.content
-      console.log(questions)
-      setQuestions(questions)
-    })
-    .catch(error => {
-      console.error(error)
-    })
+  }).catch(error => {
+    console.error(error)
+    setErrorMessage('Ocurrió un error al modificar la pregunta')
+    setIsLoading(false)
+  })
 }
 
 const searchQuestionByCodeUrl = import.meta.env.VITE_SEARCH_QUESTION_BY_CODE_ENDPOINT

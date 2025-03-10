@@ -36,18 +36,20 @@ public class QuestionsController {
       return ResponseEntity.badRequest().build();
     }
   }
-  
+
   @GetMapping("/get-all")
   public ResponseEntity<Page<QuestionDto>> getAllQuestions(
       @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-      @RequestParam(required = false) Boolean deleted,
+      @RequestParam(required = false, defaultValue = "") String questionText,
+      @RequestParam(required = false, defaultValue = "false") Boolean deleted,
       @RequestParam(required = false) QuestionType questionType,
       @RequestParam(required = false) Grades grade,
       @RequestParam(required = false) QuestionLevel questionLevel) {
 
     Pageable pageable = PageRequest.of(page, size);
 
-    QuestionFilterSpec filter = new QuestionFilterSpec(deleted, questionType, grade, questionLevel);
+    QuestionFilterSpec filter =
+        new QuestionFilterSpec(questionText, deleted, questionType, grade, questionLevel);
 
     Page<QuestionDto> questionsPage = questionService.getQuestions(filter, pageable);
 
@@ -59,7 +61,7 @@ public class QuestionsController {
     return ResponseEntity.ok(questionService.getQuestionById(id));
   }
 
-  @PutMapping(value = "/update", consumes = {"multipart/form-data"})
+  @PostMapping(value = "/update", consumes = {"multipart/form-data"})
   public ResponseEntity<QuestionDto> updateQuestion(
       @RequestPart("question") QuestionDto questionDto,
       @RequestPart(value = "file", required = false) MultipartFile file) {

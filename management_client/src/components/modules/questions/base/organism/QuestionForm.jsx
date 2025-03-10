@@ -12,17 +12,30 @@ import {
   handleOptionChange
 } from '../../helpers/formHandlers'
 import { getButtonState } from '../../helpers/helpers'
-import { EXAM_GRADE_OPTIONS, EXAM_TYPE_OPTIONS } from '../helpers/questionFormOptions'
+import { EXAM_GRADE_OPTIONS, ACADEMIC_EXAM_TYPE_OPTIONS, DAI_EXAM_TYPE_OPTIONS } from '../helpers/questionFormOptions'
 import QuestionGradeOptions from '../molecules/QuestionGradeOptions'
+import { useAuth } from '../../../../../router/AuthProvider'
 
 const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAgain }) => {
+  const { user } = useAuth()
+  const userRole = user.role
+
   const { formData: questionData, setFormData: setQuestionData, resetForm } = useFormState(initialData)
   const [isLoading, setIsLoading] = useState(false)
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
   const { questionType, questionGrade, questionText, questionOptionsText, correctOption } = questionData
 
-  // clean ALL the form data so it will look like a new form
+  const filteredExamTypeOptions =
+    userRole === 'SYS' || userRole === 'ADMIN'
+      ? [ACADEMIC_EXAM_TYPE_OPTIONS, DAI_EXAM_TYPE_OPTIONS]
+      : userRole === 'PSYCHOLOGIST'
+        ? [DAI_EXAM_TYPE_OPTIONS]
+        : userRole === 'TEACHER'
+          ? [ACADEMIC_EXAM_TYPE_OPTIONS]
+          : [ACADEMIC_EXAM_TYPE_OPTIONS, DAI_EXAM_TYPE_OPTIONS]
+
+  // Limpiar todos los datos del formulario para que parezca un nuevo formulario
   const handleSearchAgain = () => {
     searchAgain()
     resetForm()
@@ -51,7 +64,7 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
         <QuestionTypeOptions
           value={questionType}
           handleChange={(e) => handleTestOptionChange(e, questionData, setQuestionData)}
-          options={EXAM_TYPE_OPTIONS}
+          options={filteredExamTypeOptions}
         />
 
         <QuestionGradeOptions
@@ -74,7 +87,7 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
           className='form-group'
         />
 
-        {/* cuando el tipo de pregunta es unica, se agrega el componente UniqueQuestionSection */}
+        {/* Cuando el tipo de pregunta es única, se agrega el componente UniqueQuestionSection */}
         {questionType === 'ACA' && (
           <>
             <h2>Opciones de respuesta</h2>

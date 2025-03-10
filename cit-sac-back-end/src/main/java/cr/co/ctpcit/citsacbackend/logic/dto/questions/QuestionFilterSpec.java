@@ -13,13 +13,17 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 
-public record QuestionFilterSpec(Boolean deleted, QuestionType questionType, Grades grade,
-                                 QuestionLevel questionLevel)
+public record QuestionFilterSpec(String questionText, Boolean deleted, QuestionType questionType,
+                                 Grades grade, QuestionLevel questionLevel)
     implements Specification<QuestionEntity> {
   @Override
   public Predicate toPredicate(Root<QuestionEntity> root, CriteriaQuery<?> query,
       CriteriaBuilder cb) {
     List<Predicate> predicates = new ArrayList<>();
+
+    if (questionText != null && !questionText.isEmpty()) {
+      predicates.add(cb.like(root.get("questionText"), "%" + questionText + "%"));
+    }
 
     if (deleted != null) {
       predicates.add(cb.equal(root.get("deleted"), deleted));
