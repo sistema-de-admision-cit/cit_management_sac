@@ -7,9 +7,11 @@ import cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.data.enums.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.*;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionOptionDto;
+import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.EnrollmentMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -236,6 +238,39 @@ public class TestProvider {
 
   public static AcademicExamEntity provideAcademicExam() {
     return AcademicExamEntity.builder().id(null).grade(new BigDecimal("85.00")).build();
+  }
+
+  public static Question provideQuestionAcaDto() {
+    return new QuestionAcaDto(2L, QuestionType.ACA, "¿Como se calcula el area de un circulo?", null,
+        Grades.FIRST, QuestionLevel.EASY, SelectionType.SINGLE, false,
+        provideQuestionOptionAcaDtoList());
+  }
+
+  public static List<QuestionOptionAcaDto> provideQuestionOptionAcaDtoList() {
+    List<QuestionOptionAcaDto> questionOptionAcaDtoList = new ArrayList<>();
+    questionOptionAcaDtoList.add(new QuestionOptionAcaDto(1L, true, "π * radio^2", true));
+    questionOptionAcaDtoList.add(new QuestionOptionAcaDto(2L, false, "2 * radio", false));
+    questionOptionAcaDtoList.add(new QuestionOptionAcaDto(3L, false, "π * diámetro", false));
+    questionOptionAcaDtoList.add(new QuestionOptionAcaDto(4L, false, "radio * altura", false));
+    return questionOptionAcaDtoList;
+  }
+
+  public static Question provideQuestionDaiDto() {
+    return new QuestionDaiDto(1L, QuestionType.DAI, "¿Cómo te sientes el día de hoy?", null,
+        Grades.SECOND, QuestionLevel.EASY, SelectionType.PARAGRAPH, false,
+        "Me siento muy bien, aunque con un poco de sueño.");
+  }
+
+  public static ExamDto provideAcaExamDto() {
+    return ExamDto.builder().id(1L)
+        .enrollment(EnrollmentMapper.convertToDto(provideEnrollment()).id()).examDate(Instant.EPOCH)
+        .examType(ExamType.ACA).responses(List.of(provideQuestionAcaDto())).build();
+  }
+
+  public static ExamDto provideDaiExamDto() {
+    return ExamDto.builder().id(2L)
+        .enrollment(EnrollmentMapper.convertToDto(provideEnrollment()).id()).examDate(Instant.EPOCH)
+        .examType(ExamType.DAI).responses(List.of(provideQuestionDaiDto())).build();
   }
 }
 

@@ -19,9 +19,6 @@ class ExamRepositoryTest {
   private ExamRepository examRepository;
 
   private ExamEntity exam;
-  private EnglishExamEntity englishExam;
-  private DaiExamEntity daiExam;
-  private AcademicExamEntity academicExam;
 
   @Test
   void shouldSaveAnExam() {
@@ -39,7 +36,7 @@ class ExamRepositoryTest {
   @Test
   void shouldSaveAnEnglishExam() {
     exam = TestProvider.provideExam();
-    englishExam = TestProvider.provideEnglishExam();
+    EnglishExamEntity englishExam = TestProvider.provideEnglishExam();
 
     //save
     exam.addEnglishExam(englishExam);
@@ -55,7 +52,7 @@ class ExamRepositoryTest {
   @Test
   void shouldSaveADaiExam() {
     exam = TestProvider.provideExam();
-    daiExam = TestProvider.provideDaiExam();
+    DaiExamEntity daiExam = TestProvider.provideDaiExam();
 
     //save
     exam.addDaiExam(daiExam);
@@ -71,7 +68,7 @@ class ExamRepositoryTest {
   @Test
   void shouldSaveAnAcademicExam() {
     exam = TestProvider.provideExam();
-    academicExam = TestProvider.provideAcademicExam();
+    AcademicExamEntity academicExam = TestProvider.provideAcademicExam();
 
     //save
     exam.addAcademicExam(academicExam);

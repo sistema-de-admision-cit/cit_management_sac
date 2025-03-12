@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -32,8 +33,7 @@ public class ExamEntity {
   @JoinColumn(name = "enrollment_id", nullable = false)
   private EnrollmentEntity enrollment;
 
-  @NotNull
-  @ColumnDefault("CURRENT_TIMESTAMP")
+  @CreationTimestamp
   @Column(name = "exam_date", nullable = false)
   private Instant examDate;
 
