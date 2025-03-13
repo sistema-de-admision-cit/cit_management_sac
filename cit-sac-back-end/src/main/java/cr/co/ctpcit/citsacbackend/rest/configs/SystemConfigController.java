@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest.configs;
 
+import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.ExamPeriodDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
@@ -94,6 +95,13 @@ public class SystemConfigController {
     return new ResponseEntity<>(examPeriods, HttpStatus.OK);
   }
 
+  /**
+   * Create a new exam period
+   *
+   * @param examPeriodDto        the exam period to create
+   * @param uriComponentsBuilder the uri components builder
+   * @return the response entity
+   */
   @PostMapping("/create-exam-period")
   public ResponseEntity<Void> createExamPeriod(@RequestBody ExamPeriodDto examPeriodDto,
       UriComponentsBuilder uriComponentsBuilder) {
@@ -102,6 +110,24 @@ public class SystemConfigController {
     return ResponseEntity.created(
         uriComponentsBuilder.path("/api/system-config/get-exam-period/{id}")
             .buildAndExpand(examPeriodDto.id()).toUri()).build();
+  }
+
+
+  @PutMapping("/academic-exam-questions-quantity/{quantity}")
+  public ResponseEntity<String> updateAcademicExamQuestionsQuantity(
+      @PathVariable Integer quantity) {
+    systemConfigService.updateExamQuestionsQuantity(Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY,
+        quantity);
+
+    return ResponseEntity.ok().build();
+  }
+
+  @PutMapping("/dai-exam-questions-quantity/{quantity}")
+  public ResponseEntity<String> updateDaiExamQuestionsQuantity(@PathVariable Integer quantity) {
+    systemConfigService.updateExamQuestionsQuantity(Configurations.DAI_EXAM_QUESTIONS_QUANTITY,
+        quantity);
+
+    return ResponseEntity.ok().build();
   }
 }
 

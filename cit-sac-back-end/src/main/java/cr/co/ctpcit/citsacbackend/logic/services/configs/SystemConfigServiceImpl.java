@@ -125,16 +125,25 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     examPeriodRepository.save(examPeriodEntity);
   }
 
-  private void saveConfiguration(Configurations configName, String value) {
-    SystemConfigEntity savedWeight =
-        systemConfigRepository.findByConfigName(configName).orElse(null);
-
-    if (savedWeight == null) {
-      savedWeight = new SystemConfigEntity(null, configName, value);
-    } else {
-      savedWeight.setConfigValue(value);
+  @Override
+  public void updateExamQuestionsQuantity(Configurations config, Integer quantity) {
+    if (config != Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY && config != Configurations.DAI_EXAM_QUESTIONS_QUANTITY) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Configuración no válida");
     }
 
-    systemConfigRepository.save(savedWeight);
+    saveConfiguration(config, String.valueOf(quantity));
+  }
+
+  private void saveConfiguration(Configurations configName, String value) {
+    SystemConfigEntity savedConfig =
+        systemConfigRepository.findByConfigName(configName).orElse(null);
+
+    if (savedConfig == null) {
+      savedConfig = new SystemConfigEntity(null, configName, value);
+    } else {
+      savedConfig.setConfigValue(value);
+    }
+
+    systemConfigRepository.save(savedConfig);
   }
 }

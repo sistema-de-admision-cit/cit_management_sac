@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.data.entities.exams;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.EnrollmentEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
@@ -29,6 +30,7 @@ public class ExamEntity {
   private Long id;
 
   @NotNull
+  @JsonBackReference
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "enrollment_id", nullable = false)
   private EnrollmentEntity enrollment;

@@ -1,6 +1,7 @@
 package cr.co.ctpcit.citsacbackend.data.entities.inscriptions;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import cr.co.ctpcit.citsacbackend.data.enums.KnownThrough;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
@@ -78,6 +79,11 @@ public class EnrollmentEntity {
   @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<DocumentEntity> documents = new ArrayList<>();
 
+  @JsonManagedReference
+  @Builder.Default
+  @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<ExamEntity> exams = new ArrayList<>();
+
   public void addDocument(DocumentEntity document) {
     documents.add(document);
     document.setEnrollment(this);
@@ -86,6 +92,11 @@ public class EnrollmentEntity {
   public void removeDocument(DocumentEntity document) {
     documents.remove(document);
     document.setEnrollment(null);
+  }
+
+  public void addExam(ExamEntity exam) {
+    exams.add(exam);
+    exam.setEnrollment(this);
   }
 
   @Override

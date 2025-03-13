@@ -84,7 +84,8 @@ class EnrollmentEntityTest {
           "examDate": "2024-12-15",
           "consentGiven": true,
           "whatsappNotification": false,
-          "documents": []
+          "documents": [],
+          "exams": []
         }
         """;
     EnrollmentEntity enrollment = TestProvider.provideEnrollment();

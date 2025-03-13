@@ -427,7 +427,19 @@ DROP TABLE IF EXISTS `tbl_System_Config`;
 
 CREATE TABLE IF NOT EXISTS `tbl_System_Config` (
   `config_id` INT NOT NULL AUTO_INCREMENT,
-  `config_name` ENUM('EMAIL_CONTACT', 'EMAIL_NOTIFICATION_CONTACT', 'WHATSAPP_CONTACT', 'OFFICE_CONTACT', 'FACEBOOK_CONTACT', 'INSTAGRAM_CONTACT', 'PREV_GRADES_WEIGHT', 'ACADEMIC_WEIGHT', 'ENGLISH_WEIGHT') NOT NULL,
+  `config_name` ENUM(
+						'EMAIL_CONTACT',                   	-- Email for the people to ask any question 
+                        'EMAIL_NOTIFICATION_CONTACT', 		-- Email for the system to send notifications
+						'WHATSAPP_CONTACT',					-- Whatsapp phone number to send notifications
+                        'OFFICE_CONTACT', 					-- Office phone number
+                        'FACEBOOK_CONTACT', 				-- Facebook profile name
+                        'INSTAGRAM_CONTACT', 				-- Instagram profile name
+                        'PREV_GRADES_WEIGHT', 				-- Weight of the previous grades in the process
+                        'ACADEMIC_WEIGHT', 					-- Weight of the academic exam in the process 
+                        'ENGLISH_WEIGHT', 					-- Weight of the english exam in the process
+                        'ACADEMIC_EXAM_QUESTIONS_QUANTITY', -- Academic exam question quantity 
+                        'DAI_EXAM_QUESTIONS_QUANTITY'		-- DAI exam question quantity
+					) NOT NULL,
   `config_value` VARCHAR(128) NOT NULL,
   PRIMARY KEY (`config_id`),
   UNIQUE INDEX `UQ_Config_Name` (`config_name` ASC) VISIBLE)

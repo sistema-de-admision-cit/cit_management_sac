@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.services.configs;
 
+import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.ExamPeriodDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
@@ -22,4 +23,6 @@ public interface SystemConfigService {
   List<ExamPeriodDto> getExamPeriodsByYear(int year);
 
   void createExamPeriod(ExamPeriodDto examPeriodDto);
+
+  void updateExamQuestionsQuantity(Configurations config, Integer quantity);
 }
