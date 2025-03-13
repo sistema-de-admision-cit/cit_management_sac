@@ -36,7 +36,8 @@ public class ExamsServiceImpl implements ExamsService {
   public ExamDto getAcademicExam(String id) {
     //Validate Student Exists By ID
     StudentEntity student = studentRepository.findStudentEntityByStudentPerson_IdNumber(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+            "Verifique su número de cédula."));
 
     List<EnrollmentEntity> enrollments = enrollmentRepository.findAllByStudent(student);
     EnrollmentEntity enrollmentInUse = null;

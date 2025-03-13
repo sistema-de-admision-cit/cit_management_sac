@@ -1,5 +1,7 @@
 package cr.co.ctpcit.citsacbackend.rest.exams;
 
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamDto;
 import org.junit.jupiter.api.MethodOrderer;
@@ -38,6 +40,36 @@ class ExamsControllerTest {
     assertThat(examDto.examType()).isEqualTo(ExamType.ACA);
     assertThat(examDto.responses()).isNotNull();
     assertThat(examDto.responses().size()).isEqualTo(20);
+  }
 
+  @Test
+  void getAcademicExamNotFound() {
+    ResponseEntity<String> response =
+        restTemplate.getForEntity("/api/exams/academic-exam/{id}", String.class, 225566);
+
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    //Check if the response contains the expected message
+    assertThat((String) documentContext.read("$.message")).isEqualTo(
+        "Verifique su número de cédula.");
+  }
+
+  @Test
+  void getAcademicExamBadRequest() {
+    //Generates two exam for both enrollments for the student
+    ResponseEntity<String> response =
+        restTemplate.getForEntity("/api/exams/academic-exam/{id}", String.class, 200123654);
+    response = restTemplate.getForEntity("/api/exams/academic-exam/{id}", String.class, 200123654);
+
+    //Generates a new exam for the student but there will not be available exams enrollments
+    response = restTemplate.getForEntity("/api/exams/academic-exam/{id}", String.class, 200123654);
+
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    //Check if the response contains the expected message
+    assertThat((String) documentContext.read("$.message")).isEqualTo(
+        "El estudiante no tiene inscripciones activas para examen.");
   }
 }
