@@ -15,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -72,4 +74,22 @@ class QuestionRepositoryTest {
     assertEquals(2, savedQuestion.getQuestionOptions().size());
   }
 
+  @Test
+  @Order(3)
+  void findRandomQuestionsByGradeAndType() {
+    List<QuestionEntity> questions =
+        questionRepository.findRandomQuestionsByGradeAndType(Grades.TENTH, QuestionType.ACA, 20);
+
+    assertNotNull(questions);
+    assertEquals(20, questions.size());
+  }
+
+  @Test
+  @Order(4)
+    void findQuestionsByType() {
+        List<QuestionEntity> questions = questionRepository.findQuestionsByType(QuestionType.DAI, 5);
+
+        assertNotNull(questions);
+        assertEquals(5, questions.size());
+    }
 }

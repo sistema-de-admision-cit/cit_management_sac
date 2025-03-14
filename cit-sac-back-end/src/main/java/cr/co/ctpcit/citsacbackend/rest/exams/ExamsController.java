@@ -1,7 +1,9 @@
 package cr.co.ctpcit.citsacbackend.rest.exams;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamDaiDto;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.ExamsService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -22,8 +24,22 @@ public class ExamsController {
   }
 
   @PutMapping("/save-academic-exam")
-  public ResponseEntity<Void> saveAcademicExam(@RequestBody ExamAcaDto examAcaDto) {
+  public ResponseEntity<Void> saveAcademicExam(@RequestBody @Valid ExamAcaDto examAcaDto) {
     examsService.saveAcademicExam(examAcaDto);
+
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/dai-exam/{id}")
+    public ResponseEntity<ExamDaiDto> getDaiExam(@PathVariable String id) {
+        ExamDaiDto daiExam = examsService.getDaiExam(id);
+
+        return ResponseEntity.ok(daiExam);
+    }
+
+  @PutMapping("/save-dai-exam")
+  public ResponseEntity<Void> saveDaiExam(@RequestBody @Valid ExamDaiDto examDaiDto) {
+    examsService.saveDaiExam(examDaiDto);
 
     return ResponseEntity.noContent().build();
   }

@@ -39,8 +39,6 @@ class ExamAcaDtoTest {
               "questionType": "ACA",
               "questionText": "¿Como se calcula el area de un circulo?",
               "imageUrl": null,
-              "questionGrade": "FIRST",
-              "questionLevel": "EASY",
               "selectionType": "SINGLE",
               "deleted": false,
               "questionOptions": [

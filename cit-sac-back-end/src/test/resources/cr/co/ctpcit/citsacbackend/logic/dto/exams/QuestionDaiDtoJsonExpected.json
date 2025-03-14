@@ -3,8 +3,6 @@
   "questionType": "DAI",
   "questionText": "¿Cómo te sientes el día de hoy?",
   "imageUrl": null,
-  "questionGrade": "SECOND",
-  "questionLevel": "EASY",
   "selectionType": "PARAGRAPH",
   "deleted": false,
   "response": "Me siento muy bien, aunque con un poco de sueño."

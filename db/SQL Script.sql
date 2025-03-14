@@ -298,7 +298,7 @@ DROP TABLE IF EXISTS `tbl_Dai_Exams` ;
 CREATE TABLE IF NOT EXISTS `tbl_Dai_Exams` (
   `exam_id` INT UNSIGNED NOT NULL,
   `comment` VARCHAR(255) DEFAULT '',
-  `recommendation` ENUM('ADMIT', 'REJECT') NOT NULL,
+  `recommendation` ENUM('ADMIT', 'REJECT') DEFAULT NULL,
   `reviewed` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`exam_id`),
 

@@ -2,6 +2,7 @@ package cr.co.ctpcit.citsacbackend.logic.services.exams;
 
 import cr.co.ctpcit.citsacbackend.data.entities.configs.SystemConfigEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.AcademicExamEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.exams.DaiExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.EnrollmentEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.StudentEntity;
@@ -16,6 +17,7 @@ import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.EnrollmentRepos
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.StudentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.questions.QuestionRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamDaiDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.QuestionAcaDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.QuestionOptionAcaDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.exams.ExamMapper;
@@ -48,58 +50,12 @@ public class ExamsServiceImpl implements ExamsService {
    */
   @Override
   public ExamAcaDto getAcademicExam(String id) {
-    //Validate Student Exists By ID
-    StudentEntity student = studentRepository.findStudentEntityByStudentPerson_IdNumber(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-            "Verifique su número de cédula."));
-
-    List<EnrollmentEntity> enrollments = enrollmentRepository.findAllByStudent(student);
-    EnrollmentEntity enrollmentInUse = null;
-    //Validate Student Inscriptions has an exam for today
-    for (EnrollmentEntity enrollment : enrollments) {
-      //If there is an exam for today, return the exam
-      if (enrollment.getExamDate().equals(LocalDate.now())) {
-        enrollmentInUse = enrollment;
-      }
-    }
-
-    //If there is no exam for today, validate the nearest exam date enrollment
-    if (enrollmentInUse == null) {
-      for (EnrollmentEntity enrollment : enrollments) {
-        //Validate if a ACA exam already exists
-        enrollmentInUse = enrollment;
-        for (ExamEntity exam : enrollment.getExams()) {
-          if (exam.getExamType().equals(ExamType.ACA)) {
-            enrollmentInUse = null;
-          }
-        }
-        if (enrollmentInUse != null) {
-          break;
-        }
-      }
-    }
-
-    if (enrollmentInUse == null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          "El estudiante no tiene inscripciones activas para examen.");
-    }
-
-    //Get the exam based on Grade of the enrollment and the quantity of questions
-    SystemConfigEntity config =
-        systemConfigRepository.findByConfigName(Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY)
-            .orElse(null);
-
-    if (config == null) {
-      config = new SystemConfigEntity();
-      config.setConfigName(Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY);
-      config.setConfigValue("40");
-      systemConfigRepository.save(config);
-    }
+    EnrollmentEntity enrollmentInUse = getEnrollmentInUse(id, ExamType.ACA);
 
     //Get the questions
     List<QuestionEntity> questions =
         questionRepository.findRandomQuestionsByGradeAndType(enrollmentInUse.getGradeToEnroll(),
-            QuestionType.ACA, Integer.parseInt(config.getConfigValue()));
+            QuestionType.ACA, getQuestionQuantity(Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY));
 
     //Asociate the exam to the enrollment
     ExamEntity examEntity =
@@ -110,7 +66,7 @@ public class ExamsServiceImpl implements ExamsService {
     examEntity = examRepository.save(examEntity);
 
     //Return Exam with the enrollment id
-    return ExamMapper.examToExamDto(examEntity, questions);
+    return ExamMapper.examToExamAcaDto(examEntity, questions);
   }
 
   /**
@@ -122,19 +78,7 @@ public class ExamsServiceImpl implements ExamsService {
    */
   @Override
   public void saveAcademicExam(ExamAcaDto examDto) {
-    //Look for the examEntity
-    ExamEntity exam = examRepository.findById(examDto.id()).orElseThrow(
-        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Examen no encontrado."));
-
-    //Validate the exam is not already answered
-    if (exam.getResponses().containsKey("exam")) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El examen ya fue respondido.");
-    }
-
-    //Validates if the exam is not Academic
-    if (!exam.getExamType().equals(ExamType.ACA) || examDto.examType() != ExamType.ACA) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El examen no es académico.");
-    }
+    ExamEntity exam = verifyExam(examDto.id(), examDto.examType());
 
     //Create the academic exam
     AcademicExamEntity academicExam = new AcademicExamEntity();
@@ -143,6 +87,43 @@ public class ExamsServiceImpl implements ExamsService {
 
     //Add the academic exam to the exam
     exam.addAcademicExam(academicExam);
+
+    //Add the responses to the exam
+    exam.getResponses().put("exam", examDto.responses());
+
+    //Save the exam
+    examRepository.save(exam);
+  }
+
+  @Override
+  public ExamDaiDto getDaiExam(String id) {
+    EnrollmentEntity enrollmentInUse = getEnrollmentInUse(id, ExamType.DAI);
+
+    //Get the questions
+    List<QuestionEntity> questions = questionRepository.findQuestionsByType(QuestionType.DAI,
+        getQuestionQuantity(Configurations.DAI_EXAM_QUESTIONS_QUANTITY));
+
+    //Asociate the exam to the enrollment
+    ExamEntity examEntity =
+        ExamEntity.builder().enrollment(enrollmentInUse).examType(ExamType.DAI).build();
+
+    //Save the exam
+    enrollmentInUse.addExam(examEntity);
+    examEntity = examRepository.save(examEntity);
+
+    //Return Exam with the enrollment id
+    return ExamMapper.examToExamDaiDto(examEntity, questions);
+  }
+
+  @Override
+  public void saveDaiExam(ExamDaiDto examDto) {
+    ExamEntity exam = verifyExam(examDto.id(), examDto.examType());
+
+    //Create the dai exam
+    DaiExamEntity daiExam = new DaiExamEntity();
+
+    //Add the academic exam to the exam
+    exam.addDaiExam(daiExam);
 
     //Add the responses to the exam
     exam.getResponses().put("exam", examDto.responses());
@@ -181,5 +162,87 @@ public class ExamsServiceImpl implements ExamsService {
     }
 
     return new BigDecimal(100 * questionsCorrect / questionsQuantity);
+  }
+
+  private EnrollmentEntity getEnrollmentInUse(String id, ExamType examType) {
+    //Validate Student Exists By ID
+    StudentEntity student = studentRepository.findStudentEntityByStudentPerson_IdNumber(id)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+            "Verifique su número de cédula."));
+
+    List<EnrollmentEntity> enrollments = enrollmentRepository.findAllByStudent(student);
+    EnrollmentEntity enrollmentInUse = null;
+    //Validate Student Inscriptions has an exam for today
+    for (EnrollmentEntity enrollment : enrollments) {
+      //If there is an exam for today, return the exam
+      if (enrollment.getExamDate().equals(LocalDate.now())) {
+        enrollmentInUse = enrollment;
+      }
+    }
+
+    //If there is no exam for today, validate the nearest exam date enrollment
+    if (enrollmentInUse == null) {
+      for (EnrollmentEntity enrollment : enrollments) {
+        //Validate if a ACA exam already exists
+        enrollmentInUse = enrollment;
+        for (ExamEntity exam : enrollment.getExams()) {
+          if (exam.getExamType().equals(examType)) {
+            enrollmentInUse = null;
+            break;
+          }
+        }
+        if (enrollmentInUse != null) {
+          break;
+        }
+      }
+    }
+
+    if (enrollmentInUse == null) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+          "El estudiante no tiene inscripciones activas para examen.");
+    }
+
+    return enrollmentInUse;
+  }
+
+  private int getQuestionQuantity(Configurations configurations) {
+    if (!configurations.equals(
+        Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY) && !configurations.equals(
+        Configurations.DAI_EXAM_QUESTIONS_QUANTITY)) {
+      return 0;
+    }
+
+    //Get the exam based on Grade of the enrollment and the quantity of questions
+    SystemConfigEntity config =
+        systemConfigRepository.findByConfigName(Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY)
+            .orElse(null);
+
+    if (config == null) {
+      config = new SystemConfigEntity();
+      config.setConfigName(Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY);
+      config.setConfigValue("40");
+      systemConfigRepository.save(config);
+    }
+
+    return Integer.parseInt(config.getConfigValue());
+  }
+
+  private ExamEntity verifyExam(Long id, ExamType examType) {
+    //Look for the examEntity
+    ExamEntity exam = examRepository.findById(id).orElseThrow(
+        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Examen no encontrado."));
+
+    //Validate the exam is not already answered
+    if (exam.getResponses().containsKey("exam")) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El examen ya fue respondido.");
+    }
+
+    //Validates if the exam is not Academic
+    if (!exam.getExamType().equals(examType)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+          "El examen no es del tipo correspondiente.");
+    }
+
+    return exam;
   }
 }

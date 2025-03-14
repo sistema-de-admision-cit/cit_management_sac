@@ -242,8 +242,7 @@ public class TestProvider {
 
   public static QuestionAcaDto provideQuestionAcaDto() {
     return new QuestionAcaDto(2L, QuestionType.ACA, "¿Como se calcula el area de un circulo?", null,
-        Grades.FIRST, QuestionLevel.EASY, SelectionType.SINGLE, false,
-        provideQuestionOptionAcaDtoList());
+        SelectionType.SINGLE, false, provideQuestionOptionAcaDtoList());
   }
 
   public static List<QuestionOptionAcaDto> provideQuestionOptionAcaDtoList() {
@@ -257,8 +256,7 @@ public class TestProvider {
 
   public static QuestionDaiDto provideQuestionDaiDto() {
     return new QuestionDaiDto(1L, QuestionType.DAI, "¿Cómo te sientes el día de hoy?", null,
-        Grades.SECOND, QuestionLevel.EASY, SelectionType.PARAGRAPH, false,
-        "Me siento muy bien, aunque con un poco de sueño.");
+        SelectionType.PARAGRAPH, false, "Me siento muy bien, aunque con un poco de sueño.");
   }
 
   public static ExamAcaDto provideAcaExamDto() {

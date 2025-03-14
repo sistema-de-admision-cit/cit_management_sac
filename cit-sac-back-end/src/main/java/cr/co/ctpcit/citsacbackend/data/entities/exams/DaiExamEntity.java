@@ -29,9 +29,8 @@ public class DaiExamEntity {
   @Column(name = "comment")
   private String comment;
 
-  @NotNull
   @Enumerated(EnumType.STRING)
-  @Column(name = "recommendation", nullable = false, columnDefinition = "enum('ADMIT', 'REJECT')")
+  @Column(name = "recommendation", columnDefinition = "enum('ADMIT', 'REJECT')")
   private Recommendation recommendation;
 
 }

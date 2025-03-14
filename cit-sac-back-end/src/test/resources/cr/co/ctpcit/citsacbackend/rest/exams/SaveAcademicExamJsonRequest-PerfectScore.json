@@ -9,8 +9,6 @@
       "questionType": "ACA",
       "questionText": "Teniendo como referencia la relación del par base, elija la alternativa que mantiene dicha relación análoga. SUMAR : MULTIPLICAR",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -45,8 +43,6 @@
       "questionType": "ACA",
       "questionText": "Quienes hayan leído grandes obras literarias, haciendo de ellas parte de su vida,",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -81,8 +77,6 @@
       "questionType": "ACA",
       "questionText": "Un frasco contiene cincuenta monedas de 100 colones y pesa 1400g, si el frasco vacío pesa 250g entones el peso, en gramos, de una moneda es",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -117,8 +111,6 @@
       "questionType": "ACA",
       "questionText": "Teniendo como referencia la relación del par base, elija la alternativa que mantiene dicha relación análoga. MONÁRQUICO : DESORDENADO",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -153,8 +145,6 @@
       "questionType": "ACA",
       "questionText": "Una cocina eléctrica, con dos discos encendidos consume 1200 colones al estar encendidos por 3 horas. El gasto, en colones, si se encienden los 4 discos por dos horas corresponde a",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -189,8 +179,6 @@
       "questionType": "ACA",
       "questionText": "Cinco extranjeros están colocados en fila. El mexicano está después del italiano. El argentino está antes del mexicano y justo después del jamaiquino. El jamaiquino no es el primero de la fila y está antes del italiano. Entonces, el costarricense está antes del",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -225,8 +213,6 @@
       "questionType": "ACA",
       "questionText": "A realizar el examen de admisión de CTP CIT llegaron 600 estudiantes, los cuales corresponden al 75% de los estudiantes que se esperaban. De los estudiantes que hicieron la prueba, 30% corresponden a lugares fuera de Heredia. Si se esperaban 250 estudiantes que viven en lugares fuera de Heredia, el porcentaje de estudiantes que no viven en Heredia y llegaron a hacer la prueba es de",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -261,8 +247,6 @@
       "questionType": "ACA",
       "questionText": "Dos descuentos sucesivos de 10% y 20% aplicados a un cierto artículo, equivalen a un único descuento de",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -297,8 +281,6 @@
       "questionType": "ACA",
       "questionText": "Teniendo como referencia la relación del par base, elija la alternativa que mantiene dicha relación análoga. HISTORIA : SOCIEDAD",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -333,8 +315,6 @@
       "questionType": "ACA",
       "questionText": "Hoy es domingo y Karla inicia la lectura de un libro de 290 páginas. Ella lee sólo 4 páginas cada día, excepto los domingos que lee 25 páginas. La cantidad de días que le tomará a Karla leer el libro por completo es de",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -369,8 +349,6 @@
       "questionType": "ACA",
       "questionText": "En un terreno de forma triangular, dos ángulos miden 80° y 64° respectivamente. Si la medida del lado común entre ellos mide 38 m, ¿Cuál es la medida aproximada en metros del lado menor  del terreno?",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -405,8 +383,6 @@
       "questionType": "ACA",
       "questionText": "Teniendo como referencia la relación del par base, elija la alternativa que mantiene dicha relación análoga. SIDA : SANGRE",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -441,8 +417,6 @@
       "questionType": "ACA",
       "questionText": "Juan y Pedro se reparten un pastel. Pedro se quedó con 1/3 y Juan con el resto. Para ser más equitativos, Juan cortó la cuarta parte de su porción y se la dio a Pedro. Entonces la cantidad de pastel que tiene Juan es",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -477,8 +451,6 @@
       "questionType": "ACA",
       "questionText": "Se puede argumentar que la televisión es, principalmente, beneficiosa porque",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -513,8 +485,6 @@
       "questionType": "ACA",
       "questionText": "Luisa gastó 2400 colones de sus ahorros en una entrada al cine, si esta cantidad representa las 4/7 partes de sus ahorros, determine cuánto dinero tenía ahorrado Luisa.",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -549,8 +519,6 @@
       "questionType": "ACA",
       "questionText": "En una pirámide triangular cuya base es una triángulo equilátero de área, que se detalla luego, el lado de la base corresponde con",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -585,8 +553,6 @@
       "questionType": "ACA",
       "questionText": "En un prisma cuadrangular cuyo lado de la base es 13 cm y la altura del prisma es 16 cm, el área lateral corresponde con",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -621,8 +587,6 @@
       "questionType": "ACA",
       "questionText": "La representación algebraica de la expresión “ el cuadrado de un número aumentado en seis” corresponde con",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -657,8 +621,6 @@
       "questionType": "ACA",
       "questionText": "En un prisma cuadrangular cuyo lado mide  21 cm  y la altura del prisma el doble que el lado, el área lateral corresponde con",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [
@@ -693,8 +655,6 @@
       "questionType": "ACA",
       "questionText": "Si ayer cumplí 20 años y el próximo año cumpliré 22 años ¿Cuál es la fecha de mi cumpleaños?",
       "imageUrl": null,
-      "questionGrade": "TENTH",
-      "questionLevel": "HARD",
       "selectionType": "SINGLE",
       "deleted": false,
       "questionOptions": [

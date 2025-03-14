@@ -36,5 +36,10 @@ public interface QuestionRepository
 
   @Query(
       "SELECT q FROM QuestionEntity q WHERE q.deleted = false AND q.questionGrade = :grade AND q.questionType = :type ORDER BY RAND() LIMIT :quantity")
-  List<QuestionEntity> findRandomQuestionsByGradeAndType(Grades grade, QuestionType type, int quantity);
+  List<QuestionEntity> findRandomQuestionsByGradeAndType(Grades grade, QuestionType type,
+      int quantity);
+
+  @Query(
+      "SELECT q FROM QuestionEntity q WHERE q.deleted = false AND q.questionType = :type ORDER BY q.id LIMIT :quantity")
+  List<QuestionEntity> findQuestionsByType(QuestionType type, int quantity);
 }
