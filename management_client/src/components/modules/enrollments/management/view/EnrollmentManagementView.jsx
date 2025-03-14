@@ -37,9 +37,9 @@ const EnrollmentManagementView = () => {
 
       {isModalApplicantDetailsOpen && (
         <ModalApplicantDetails
-          student={applicantSelected}
-          parentsGuardians={applicantSelected.parents}
-          enrollments={applicantSelected.enrollments}
+          student={applicantSelected[0].student}
+          parentsGuardians={applicantSelected[0].student.parents}
+          enrollments={applicantSelected}
           onClose={() => setIsModalApplicantDetailsOpen(false)}
           onDocClick={handleDocClick}
           onFileDownload={(filename) => handleFileDownload(filename, setErrorMessage)}

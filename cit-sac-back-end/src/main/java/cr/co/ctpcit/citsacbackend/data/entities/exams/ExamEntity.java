@@ -7,12 +7,12 @@ import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -45,8 +45,9 @@ public class ExamEntity {
   private ExamType examType;
 
   @Column(name = "responses")
+  @Builder.Default
   @JdbcTypeCode(SqlTypes.JSON)
-  private Map<String, Object> responses;
+  private Map<String, Object> responses = new HashMap<>();
 
   @JsonIgnore
   @OneToOne(mappedBy = "exam", cascade = CascadeType.ALL, orphanRemoval = true)

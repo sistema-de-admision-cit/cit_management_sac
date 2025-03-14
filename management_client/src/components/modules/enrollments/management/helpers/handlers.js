@@ -22,9 +22,20 @@ const getErrorMessage = (error) => {
   }
 }
 
+const getEnrollmentsByStudentIdUrl = import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_ID_ENDPOINT
 export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, setApplicantSelected) => {
-  setApplicantSelected(applicant)
-  setIsModalApplicantDetailsOpen(true)
+
+  axios.get(`${getEnrollmentsByStudentIdUrl}${applicant.person.idNumber}`,
+    {
+      timeout: 10000
+    })
+    .then(response => {
+      setApplicantSelected(response.data)
+      setIsModalApplicantDetailsOpen(true)
+    })
+    .catch(error => {
+      setErrorMessage(getErrorMessage(error))
+    })
 }
 
 const validateDataBeforeSubmit = (formData, enrollment) => {
@@ -188,7 +199,13 @@ export const handleGetAllEnrollments = (setEnrollments, setLoading, setErrorMess
   axios.get(getAllEnrollmentsUrl, { timeout: 10000 })
     .then(response => {
       const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
-      setEnrollments(enrollments)
+      const uniqueStudents = enrollments.reduce((acc, enrollment) => {
+        if (!acc.some(e => e.student.id === enrollment.student.id)) {
+          acc.push(enrollment);
+        }
+        return acc;
+      }, [])
+      setEnrollments(uniqueStudents)
     })
     .catch(error => {
       setErrorMessage(getErrorMessage(error))

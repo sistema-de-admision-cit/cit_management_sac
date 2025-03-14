@@ -5,17 +5,17 @@ const EnrollmentRow = ({ enrollment, index, onStudentIdClick }) => (
     <td>
       <Button
         className='applicant-id-button'
-        onClick={() => onStudentIdClick(enrollment)}
-        ariaLabel={`Ver detalles del estudiante con cédula ${enrollment.idNumber}`}
+        onClick={() => onStudentIdClick(enrollment.student)}
+        ariaLabel={`Ver detalles del estudiante con cédula ${enrollment.student.person.idNumber}`}
       >
-        {enrollment.idNumber}
+        {enrollment.student.person.idNumber}
       </Button>
     </td>
-    <td>{enrollment.firstName}</td>
-    <td>{enrollment.firstSurname}</td>
-    <td>{enrollment.secondSurname}</td>
-    <td>{enrollment.previousSchool}</td>
-    <td>{enrollment.hasAccommodations ? 'Sí' : 'No'}</td>
+    <td>{enrollment.student.person.firstName}</td>
+    <td>{enrollment.student.person.firstSurname}</td>
+    <td>{enrollment.student.person.secondSurname}</td>
+    <td>{enrollment.student.previousSchool}</td>
+    <td>{enrollment.student.hasAccommodations ? 'Sí' : 'No'}</td>
   </tr>
 )
 

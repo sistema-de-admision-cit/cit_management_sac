@@ -1,18 +1,25 @@
 package cr.co.ctpcit.citsacbackend.rest.exams;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
+
+import java.io.File;
+import java.io.IOException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_CLASS;
@@ -25,6 +32,9 @@ class ExamsControllerTest {
   @Autowired
   private TestRestTemplate restTemplate;
 
+  @Autowired
+  ObjectMapper objectMapper;
+
   @Test
   @Sql(scripts = {"ExamsTestRollback.sql"}, executionPhase = AFTER_TEST_METHOD)
   void getAcademicExam() {
@@ -35,7 +45,7 @@ class ExamsControllerTest {
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();
-    assertThat(examDto).isNotNull();
+    assert examDto != null;
     assertThat(examDto.examType()).isNotNull();
     assertThat(examDto.examType()).isEqualTo(ExamType.ACA);
     assertThat(examDto.responses()).isNotNull();
@@ -71,5 +81,32 @@ class ExamsControllerTest {
     //Check if the response contains the expected message
     assertThat((String) documentContext.read("$.message")).isEqualTo(
         "El estudiante no tiene inscripciones activas para examen.");
+  }
+
+  @Test
+  @Sql(scripts = {"ExamsTestRollback.sql"}, executionPhase = AFTER_TEST_METHOD)
+  void shouldSaveAcademicExamWithPerfectScore() throws IOException {
+    //Get an exam
+    ResponseEntity<ExamDto> response =
+        restTemplate.getForEntity("/api/exams/academic-exam/{id}", ExamDto.class, 200123654);
+
+    ExamDto examDto = response.getBody();
+    assert examDto != null;
+
+    ExamDto requestExamDto = objectMapper.readValue(new File(
+            "src/test/resources/cr/co/ctpcit/citsacbackend/rest/exams/SaveExamJsonRequest-PerfectScore.json"),
+        ExamDto.class);
+
+
+    ExamDto saveExamDto = ExamDto.builder().id(examDto.id()).examType(examDto.examType())
+        .enrollment(examDto.enrollment()).examDate(examDto.examDate()).examType(examDto.examType())
+        .responses(requestExamDto.responses()).build();
+
+    //Request
+    HttpEntity<ExamDto> request = new HttpEntity<>(saveExamDto);
+    ResponseEntity<Void> putResponse =
+        restTemplate.exchange("/api/exams/save-academic-exam", HttpMethod.PUT, request, Void.class);
+
+    assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
   }
 }

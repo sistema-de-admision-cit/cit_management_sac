@@ -6,4 +6,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface ExamsService {
   ExamDto getAcademicExam(String id);
+
+  void saveAcademicExam(ExamDto examDto);
 }

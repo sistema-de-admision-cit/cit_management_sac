@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionDaiDto extends Question {
+public final class QuestionDaiDto extends Question {
   private String response;
 
   public QuestionDaiDto(Long id, QuestionType questionType, String questionText, String imageUrl,

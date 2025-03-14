@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuestionAcaDto extends Question {
+public final class QuestionAcaDto extends Question {
   List<QuestionOptionAcaDto> questionOptions;
 
   public QuestionAcaDto(Long id, QuestionType questionType, String questionText, String imageUrl,

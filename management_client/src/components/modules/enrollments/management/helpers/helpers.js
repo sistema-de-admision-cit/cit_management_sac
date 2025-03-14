@@ -1,9 +1,9 @@
 export const statusText = {
-  P: 'Inscrito',
-  E: 'Permitido',
-  I: 'Inelegible',
-  A: 'Aceptado',
-  R: 'Rechazado'
+  PENDING: 'Inscrito',
+  ELIGIBLE: 'Permitido',
+  INELIGIBLE: 'Inelegible',
+  ACCEPTED: 'Aceptado',
+  REJECTED: 'Rechazado'
 }
 
 export const buildGuardianAddress = (guardianAddress) => {
@@ -64,7 +64,7 @@ export const formatDateToObj = (obj) => {
 
 // parse the object dates to "day/month/year" format
 export const formatDate = (date) => {
-  let day = date.getDate()
+  let day = date.getDay()
   let month = date.getMonth() + 1
   const year = date.getFullYear()
 
@@ -76,7 +76,7 @@ export const formatDate = (date) => {
 
 // parse the date to "year-month-day" format
 export const formatDateForApi = (date) => {
-  let day = date.getDate()
+  let day = date.getDay()
   let month = date.getMonth() + 1
   const year = date.getFullYear()
 

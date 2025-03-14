@@ -7,7 +7,7 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
   <div className='tab-content'>
     <h2>Inscripción - {enrollment.id}</h2>
     <p><strong>Estado:</strong> {statusText[enrollment.status]}</p>
-    <p><strong>Fecha del Examen:</strong> {formatDate(enrollment.examDate)}</p>
+    <p><strong>Fecha del Examen:</strong> {formatDate(new Date(enrollment.examDate))}</p>
     <p><strong>Notificación por WhatsApp:</strong> {enrollment.whatsappNotification ? 'Sí' : 'No'}</p>
     <p><strong>Consentimiento:</strong> {enrollment.consentGiven ? 'Dado' : 'No Dado'}</p>
 
@@ -34,7 +34,7 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
         <p><strong>Documento de Notas:</strong></p>
         <Button
           className='pdf-icon' onClick={() => {
-            onDocClick(enrollment.document.find((doc) => doc.documentType === 'OT'))
+            onDocClick(enrollment.documents.find((doc) => doc.documentType === 'OT'))
             setSelectedFileType('Documento de Notas')
           }}
         >
@@ -46,7 +46,7 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
           <p><strong>Documento de Adaptaciones:</strong></p>
           <Button
             className='pdf-icon' onClick={() => {
-              onDocClick(enrollment.document.find((doc) => doc.documentType === 'HC'))
+              onDocClick(enrollment.documents.find((doc) => doc.documentType === 'AC'))
               setSelectedFileType('Documento de Adaptaciones')
             }}
           >

@@ -5,10 +5,7 @@ import cr.co.ctpcit.citsacbackend.logic.services.exams.ExamsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/exams")
@@ -22,6 +19,13 @@ public class ExamsController {
     ExamDto academicExam = examsService.getAcademicExam(id);
 
     return ResponseEntity.ok(academicExam);
+  }
+
+  @PutMapping("/save-academic-exam")
+  public ResponseEntity<Void> saveAcademicExam(@RequestBody ExamDto examDto) {
+    examsService.saveAcademicExam(examDto);
+
+    return ResponseEntity.noContent().build();
   }
 
 }

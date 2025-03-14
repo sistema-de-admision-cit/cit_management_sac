@@ -5,10 +5,14 @@ import cr.co.ctpcit.citsacbackend.data.entities.exams.AcademicExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.DaiExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.EnglishExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -79,5 +83,20 @@ class ExamRepositoryTest {
     assertNotNull(saveExam.getId());
     assertNotNull(saveExam.getAcademicExam());
     assertEquals(academicExam.getExam(), saveExam);
+  }
+
+  @Test
+  void saveExamWithResponses() {
+    exam = TestProvider.provideExam();
+    Map<String, Object> responses = exam.getResponses();
+    responses.put("exam", List.of(TestProvider.provideQuestionAcaDto()));
+
+    //save
+    ExamEntity saveExam = examRepository.save(exam);
+
+    //assert
+    assertNotNull(saveExam);
+    assertNotNull(saveExam.getId());
+    assertEquals(exam.getResponses(), saveExam.getResponses());
   }
 }
