@@ -240,7 +240,7 @@ public class TestProvider {
     return AcademicExamEntity.builder().id(null).grade(new BigDecimal("85.00")).build();
   }
 
-  public static Question provideQuestionAcaDto() {
+  public static QuestionAcaDto provideQuestionAcaDto() {
     return new QuestionAcaDto(2L, QuestionType.ACA, "¿Como se calcula el area de un circulo?", null,
         Grades.FIRST, QuestionLevel.EASY, SelectionType.SINGLE, false,
         provideQuestionOptionAcaDtoList());
@@ -255,20 +255,20 @@ public class TestProvider {
     return questionOptionAcaDtoList;
   }
 
-  public static Question provideQuestionDaiDto() {
+  public static QuestionDaiDto provideQuestionDaiDto() {
     return new QuestionDaiDto(1L, QuestionType.DAI, "¿Cómo te sientes el día de hoy?", null,
         Grades.SECOND, QuestionLevel.EASY, SelectionType.PARAGRAPH, false,
         "Me siento muy bien, aunque con un poco de sueño.");
   }
 
-  public static ExamDto provideAcaExamDto() {
-    return ExamDto.builder().id(1L)
+  public static ExamAcaDto provideAcaExamDto() {
+    return ExamAcaDto.builder().id(1L)
         .enrollment(EnrollmentMapper.convertToDto(provideEnrollment()).id()).examDate(Instant.EPOCH)
         .examType(ExamType.ACA).responses(List.of(provideQuestionAcaDto())).build();
   }
 
-  public static ExamDto provideDaiExamDto() {
-    return ExamDto.builder().id(2L)
+  public static ExamDaiDto provideDaiExamDto() {
+    return ExamDaiDto.builder().id(2L)
         .enrollment(EnrollmentMapper.convertToDto(provideEnrollment()).id()).examDate(Instant.EPOCH)
         .examType(ExamType.DAI).responses(List.of(provideQuestionDaiDto())).build();
   }

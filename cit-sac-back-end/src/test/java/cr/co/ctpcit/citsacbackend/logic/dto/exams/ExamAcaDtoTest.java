@@ -11,13 +11,13 @@ import java.io.IOException;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @JsonTest
-class ExamDtoTest {
+class ExamAcaDtoTest {
   @Autowired
-  JacksonTester<ExamDto> tester;
+  JacksonTester<ExamAcaDto> tester;
 
   @Test
   void serializeJsonExamAca() throws IOException {
-    ExamDto exam = TestProvider.provideAcaExamDto();
+    ExamAcaDto exam = TestProvider.provideAcaExamDto();
 
     assertThat(tester.write(exam)).isEqualToJson("AcademicExamDtoJsonExpected.json");
     assertThat(tester.write(exam)).hasJsonPathNumberValue("@.id");
@@ -74,51 +74,9 @@ class ExamDtoTest {
         }
         """;
 
-    ExamDto examDto = TestProvider.provideAcaExamDto();
+    ExamAcaDto examDto = TestProvider.provideAcaExamDto();
 
     assertThat(tester.parseObject(expected).id()).isEqualTo(1);
-    assertThat(tester.parseObject(expected).examType()).isEqualTo(examDto.examType());
-    assertThat(tester.parseObject(expected).responses().size()).isEqualTo(
-        examDto.responses().size());
-  }
-
-  @Test
-  void serializeJsonExamDai() throws IOException {
-    ExamDto exam = TestProvider.provideDaiExamDto();
-
-    assertThat(tester.write(exam)).isEqualToJson("DaiExamDtoJsonExpected.json");
-    assertThat(tester.write(exam)).hasJsonPathNumberValue("@.id");
-    assertThat(tester.write(exam)).extractingJsonPathNumberValue("@.id").isEqualTo(2);
-    assertThat(tester.write(exam)).hasJsonPathStringValue("@.examType");
-  }
-
-  @Test
-  void deserializeJsonExamDai() throws IOException {
-    String expected = """
-        {
-          "id": 2,
-          "enrollment": 1,
-          "examDate": "1970-01-01T00:00:00Z",
-          "examType": "DAI",
-          "responses": [
-            {
-              "id": 1,
-              "questionType": "DAI",
-              "questionText": "¿Cómo te sientes el día de hoy?",
-              "imageUrl": null,
-              "questionGrade": "SECOND",
-              "questionLevel": "EASY",
-              "selectionType": "PARAGRAPH",
-              "deleted": false,
-              "response": "Me siento muy bien, aunque con un poco de sueño."
-            }
-          ]
-        }
-        """;
-
-    ExamDto examDto = TestProvider.provideDaiExamDto();
-
-    assertThat(tester.parseObject(expected).id()).isEqualTo(2);
     assertThat(tester.parseObject(expected).examType()).isEqualTo(examDto.examType());
     assertThat(tester.parseObject(expected).responses().size()).isEqualTo(
         examDto.responses().size());

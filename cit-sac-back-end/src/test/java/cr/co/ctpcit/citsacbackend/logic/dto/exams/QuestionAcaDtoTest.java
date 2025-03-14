@@ -17,13 +17,15 @@ class QuestionAcaDtoTest {
 
   @Test
   void serializeQuestionAcaDto() throws IOException {
-    Question questionAca = TestProvider.provideQuestionAcaDto();
+    QuestionAcaDto questionAca = TestProvider.provideQuestionAcaDto();
 
-    assertThat(jacksonTester.write((QuestionAcaDto) questionAca)).isStrictlyEqualToJson(
-        "QuestionAcaDtoJsonExpected.json");
-    assertThat(jacksonTester.write((QuestionAcaDto) questionAca)).hasJsonPathNumberValue("@.id");
-    assertThat(jacksonTester.write((QuestionAcaDto) questionAca)).extractingJsonPathNumberValue("@.id").isEqualTo(2);
-    assertThat(jacksonTester.write((QuestionAcaDto) questionAca)).hasJsonPathStringValue("@.questionText");
+    assertThat(
+        jacksonTester.write(questionAca)).isStrictlyEqualToJson("QuestionAcaDtoJsonExpected.json");
+    assertThat(jacksonTester.write(questionAca)).hasJsonPathNumberValue("@.id");
+    assertThat(jacksonTester.write(questionAca)).extractingJsonPathNumberValue(
+        "@.id").isEqualTo(2);
+    assertThat(jacksonTester.write(questionAca)).hasJsonPathStringValue(
+        "@.questionText");
   }
 
   @Test
@@ -67,11 +69,11 @@ class QuestionAcaDtoTest {
         }
         """;
 
-    Question questionAca = TestProvider.provideQuestionAcaDto();
+    QuestionAcaDto questionAca = TestProvider.provideQuestionAcaDto();
 
     assertThat(jacksonTester.parse(expected)).isEqualTo(questionAca);
-    assertThat(jacksonTester.parseObject(expected).getId()).isEqualTo(2);
-    assertThat(jacksonTester.parseObject(expected).getQuestionText()).isEqualTo(
+    assertThat(jacksonTester.parseObject(expected).id()).isEqualTo(2);
+    assertThat(jacksonTester.parseObject(expected).questionText()).isEqualTo(
         "¿Como se calcula el area de un circulo?");
   }
 }

@@ -1,11 +1,11 @@
 package cr.co.ctpcit.citsacbackend.logic.services.exams;
 
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamAcaDto;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface ExamsService {
-  ExamDto getAcademicExam(String id);
+  ExamAcaDto getAcademicExam(String id);
 
-  void saveAcademicExam(ExamDto examDto);
+  void saveAcademicExam(ExamAcaDto examAcaDto);
 }

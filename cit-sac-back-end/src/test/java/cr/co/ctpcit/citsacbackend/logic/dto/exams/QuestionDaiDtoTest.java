@@ -18,7 +18,7 @@ class QuestionDaiDtoTest {
 
   @Test
   void serializeJson() throws IOException {
-    Question questionDai = TestProvider.provideQuestionDaiDto();
+    QuestionDaiDto questionDai = TestProvider.provideQuestionDaiDto();
 
     assertThat(tester.write((QuestionDaiDto) questionDai)).isEqualToJson(
         "QuestionDaiDtoJsonExpected.json");
@@ -44,11 +44,11 @@ class QuestionDaiDtoTest {
         }
         """;
 
-    Question questionDai = TestProvider.provideQuestionDaiDto();
+    QuestionDaiDto questionDai = TestProvider.provideQuestionDaiDto();
 
     assertThat(tester.parse(expected)).isEqualTo((QuestionDaiDto) questionDai);
-    AssertionsForClassTypes.assertThat(tester.parseObject(expected).getId()).isEqualTo(1);
-    AssertionsForClassTypes.assertThat(tester.parseObject(expected).getQuestionText())
+    AssertionsForClassTypes.assertThat(tester.parseObject(expected).id()).isEqualTo(1);
+    AssertionsForClassTypes.assertThat(tester.parseObject(expected).questionText())
         .isEqualTo("¿Cómo te sientes el día de hoy?");
   }
 }

@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamAcaDto;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -38,10 +37,10 @@ class ExamsControllerTest {
   @Test
   @Sql(scripts = {"ExamsTestRollback.sql"}, executionPhase = AFTER_TEST_METHOD)
   void getAcademicExam() {
-    ResponseEntity<ExamDto> response =
-        restTemplate.getForEntity("/api/exams/academic-exam/{id}", ExamDto.class, 200123654);
+    ResponseEntity<ExamAcaDto> response =
+        restTemplate.getForEntity("/api/exams/academic-exam/{id}", ExamAcaDto.class, 200123654);
 
-    ExamDto examDto = response.getBody();
+    ExamAcaDto examDto = response.getBody();
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(response.getBody()).isNotNull();
@@ -87,23 +86,23 @@ class ExamsControllerTest {
   @Sql(scripts = {"ExamsTestRollback.sql"}, executionPhase = AFTER_TEST_METHOD)
   void shouldSaveAcademicExamWithPerfectScore() throws IOException {
     //Get an exam
-    ResponseEntity<ExamDto> response =
-        restTemplate.getForEntity("/api/exams/academic-exam/{id}", ExamDto.class, 200123654);
+    ResponseEntity<ExamAcaDto> response =
+        restTemplate.getForEntity("/api/exams/academic-exam/{id}", ExamAcaDto.class, 200123654);
 
-    ExamDto examDto = response.getBody();
+    ExamAcaDto examDto = response.getBody();
     assert examDto != null;
 
-    ExamDto requestExamDto = objectMapper.readValue(new File(
+    ExamAcaDto requestExamDto = objectMapper.readValue(new File(
             "src/test/resources/cr/co/ctpcit/citsacbackend/rest/exams/SaveExamJsonRequest-PerfectScore.json"),
-        ExamDto.class);
+        ExamAcaDto.class);
 
 
-    ExamDto saveExamDto = ExamDto.builder().id(examDto.id()).examType(examDto.examType())
+    ExamAcaDto saveExamDto = ExamAcaDto.builder().id(examDto.id()).examType(examDto.examType())
         .enrollment(examDto.enrollment()).examDate(examDto.examDate()).examType(examDto.examType())
         .responses(requestExamDto.responses()).build();
 
     //Request
-    HttpEntity<ExamDto> request = new HttpEntity<>(saveExamDto);
+    HttpEntity<ExamAcaDto> request = new HttpEntity<>(saveExamDto);
     ResponseEntity<Void> putResponse =
         restTemplate.exchange("/api/exams/save-academic-exam", HttpMethod.PUT, request, Void.class);
 

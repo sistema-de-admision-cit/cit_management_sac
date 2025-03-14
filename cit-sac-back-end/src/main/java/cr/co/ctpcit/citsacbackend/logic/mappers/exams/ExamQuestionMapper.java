@@ -1,7 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.mappers.exams;
 
 import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionEntity;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.Question;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.QuestionAcaDto;
 
 import java.util.List;
@@ -16,7 +15,7 @@ public class ExamQuestionMapper {
         OptionsMapper.optionsToOptionsAcaDto(questionEntity.getQuestionOptions()));
   }
 
-  public static List<Question> questionsToQuestionsAcaDto(
+  public static List<QuestionAcaDto> questionsToQuestionsAcaDto(
       List<QuestionEntity> questionEntities) {
     return questionEntities.stream().map(ExamQuestionMapper::questionToQuestionAcaDto)
         .collect(Collectors.toList());

@@ -15,8 +15,7 @@ import cr.co.ctpcit.citsacbackend.data.repositories.exams.ExamRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.EnrollmentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.StudentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.questions.QuestionRepository;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.Question;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamAcaDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.QuestionAcaDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.QuestionOptionAcaDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.exams.ExamMapper;
@@ -48,7 +47,7 @@ public class ExamsServiceImpl implements ExamsService {
    *                                 exam date or if the student does not have active inscriptions
    */
   @Override
-  public ExamDto getAcademicExam(String id) {
+  public ExamAcaDto getAcademicExam(String id) {
     //Validate Student Exists By ID
     StudentEntity student = studentRepository.findStudentEntityByStudentPerson_IdNumber(id)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -122,7 +121,7 @@ public class ExamsServiceImpl implements ExamsService {
    *                                 exam is not academic
    */
   @Override
-  public void saveAcademicExam(ExamDto examDto) {
+  public void saveAcademicExam(ExamAcaDto examDto) {
     //Look for the examEntity
     ExamEntity exam = examRepository.findById(examDto.id()).orElseThrow(
         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Examen no encontrado."));
@@ -158,26 +157,24 @@ public class ExamsServiceImpl implements ExamsService {
    * @param responses The responses of the student
    * @return The grade of the exam
    */
-  private @NotNull BigDecimal obtainAcademicExamGrade(List<Question> responses) {
+  private @NotNull BigDecimal obtainAcademicExamGrade(List<QuestionAcaDto> responses) {
     //Calculate the grade
     int questionsQuantity = responses.size();
     double questionsCorrect = 0;
 
-    for (Question question : responses) {
-      if (question instanceof QuestionAcaDto questionAcaDto) {
-        if (questionAcaDto.getSelectionType().equals(SelectionType.SINGLE)) {
-          for (QuestionOptionAcaDto option : questionAcaDto.getQuestionOptions()) {
-            if (option.isCorrect() && option.selected()) {
-              questionsCorrect++;
-              break;
-            }
+    for (QuestionAcaDto question : responses) {
+      if (question.selectionType().equals(SelectionType.SINGLE)) {
+        for (QuestionOptionAcaDto option : question.questionOptions()) {
+          if (option.isCorrect() && option.selected()) {
+            questionsCorrect++;
+            break;
           }
-        } else { //Multiple selection
-          int posibleOptions = questionAcaDto.getQuestionOptions().size();
-          for (QuestionOptionAcaDto option : questionAcaDto.getQuestionOptions()) {
-            if (option.isCorrect() && option.selected()) {
-              questionsCorrect += 1.0 / posibleOptions;
-            }
+        }
+      } else { //Multiple selection
+        int posibleOptions = question.questionOptions().size();
+        for (QuestionOptionAcaDto option : question.questionOptions()) {
+          if (option.isCorrect() && option.selected()) {
+            questionsCorrect += 1.0 / posibleOptions;
           }
         }
       }
