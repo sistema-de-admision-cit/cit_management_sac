@@ -24,27 +24,34 @@ const possibleErrors = {
 }
 
 export const handleSubmit = (formValues, setLoading, setErrorMessage, setSuccessMessage) => {
-  const startDate = formValues.startDate.toISOString().split('T')[0]
-  const endDate = formValues.endDate.toISOString().split('T')[0]
+  const getFirstAndLastDayOfYear = () => {
+    const year = new Date().getFullYear()
+    return {
+      firstDay: `${year}-01-01`,
+      lastDay: `${year}-12-31`
+    }
+  }
+
+  const { firstDay, lastDay } = getFirstAndLastDayOfYear()
+
+  const startDate = formValues.allYear ? firstDay : formValues.startDate.toISOString().split('T')[0]
+  const endDate = formValues.allYear ? lastDay : formValues.endDate.toISOString().split('T')[0]
 
   const sendingData = {
     allYear: formValues.allYear,
     startDate,
     endDate,
-    applicationDays: mapDays(formValues.applicationDays),
-    startTime: formValues.startTime
+    examDays: mapDays(formValues.applicationDays).map(day => ({
+      examDay: day,
+      startTime: formValues.startTime
+    }))
   }
-
-  console.log(sendingData)
-  console.log('Sending data to the server...')
-  console.log('Endpoint:', saveExamScheduleUrl)
   // TODO: add jwt token to the request (when implemented)
   setLoading(true)
   axios.post(
     saveExamScheduleUrl,
     sendingData
   ).then(response => {
-    console.log(response)
     setSuccessMessage('Configuración guardada correctamente')
   }).catch(error => {
     console.error(error)

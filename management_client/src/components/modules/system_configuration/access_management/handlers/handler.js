@@ -6,14 +6,14 @@ export const isEmailValid = (email) => {
 }
 
 export const isFormValid = (formValues) => {
-  const { email, role } = formValues
-  return email && role && role !== 'porDefecto'
+  const { email, realUsername, role } = formValues
+  return email && realUsername && role && role !== 'porDefecto'
 }
 
 export const handleSubmit = async (formValues, setLoading, setErrorMessage, setSuccessMessage, fetchUsers, setUsers, resetForm) => {
-  const { email, role } = formValues
+  const { email, realUsername, role } = formValues
 
-  if (!email || !role || role === 'porDefecto') {
+  if (!email || !realUsername || !role || role === 'porDefecto') {
     setErrorMessage('Por favor, complete todos los campos.')
     return
   }
@@ -24,9 +24,10 @@ export const handleSubmit = async (formValues, setLoading, setErrorMessage, setS
   }
 
   const sendingData = {
-    username: email,
-    role,
-    password: 'campus'
+    password: 'campus',
+    email: email,
+    realUsername: realUsername,
+    role
   }
 
   const createUserUrl = import.meta.env.VITE_CREATE_USER_ENDPOINT
@@ -39,7 +40,6 @@ export const handleSubmit = async (formValues, setLoading, setErrorMessage, setS
 
     // Refresca la lista de usuarios inmediatamente después de agregar uno nuevo
     await fetchUsers(setUsers, setLoading, setErrorMessage)
-
     resetForm()
   } catch (error) {
     if (error.response && error.response.status === 409) {

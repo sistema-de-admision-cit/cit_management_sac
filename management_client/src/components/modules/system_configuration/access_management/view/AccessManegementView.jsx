@@ -19,6 +19,7 @@ const AccessManagementView = () => {
 
   const { formData: formValues, setFormData: setFormValues } = useFormState({
     email: '',
+    realUsername: '',
     role: ''
   })
 
@@ -58,8 +59,10 @@ const AccessManagementView = () => {
         <div className='access-management'>
           <AccessManegementSection
             email={formValues.email}
+            realUsername={formValues.realUsername}
             role={formValues.role}
             onEmailChange={(value) => handleChange('email', value)}
+            onUsernameChange={(value) => handleChange('realUsername', value)}
             onRoleChange={(value) => handleChange('role', value)}
           />
           <div className='buttons'>

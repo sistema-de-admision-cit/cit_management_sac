@@ -2,18 +2,18 @@ import axios from '../../../../../config/axiosConfig'
 
 let initValues = {
   academicExam: 0,
-  daiExam: 0,
+  prevGradesExam: 0, // Se corrigió 'daiExam' a 'prevGradesExam'
   englishExam: 0
 }
 
 const getErrorMessage = (error) => {
   if (error.response) {
     if (error.response.status === 400) {
-      return 'Porcentajes inválidos. La suma de los porcentajes debe ser 100.'
+      return 'Porcentajes inválidos. La suma de los porcentajes debe ser 100 y no pueden ser negativos.'
     } else if (error.response.status === 500) {
       return 'Error al guardar los porcentajes.'
     } else if (error.response.status === 404) {
-      return 'Parece que no se pudo resolver la solicitud. Inténtalo de nuevo.'
+      return 'No se encontraron configuraciones de porcentaje.'
     }
   }
   return 'Error al cargar los porcentajes.'
@@ -22,40 +22,37 @@ const getErrorMessage = (error) => {
 /**
  *
  * @param {JSON Object} formValues
- * @param {JSON Object} initValues to compare with formValues (if they are the same, the save button will be disabled)
- * @returns
+ * @returns Boolean (true si los valores suman 100 y han cambiado con respecto a initValues)
  */
 export const getSaveButtonState = (formValues) => {
-  // sum all values in formValues object
   const total = Object.values(formValues).reduce((acc, value) => acc + Number(value), 0)
-  // compare formValues with initValues
   const isSame = Object.keys(formValues).every(key => formValues[key] === initValues[key])
 
-  return total === 200 && !isSame
+  return total === 100 && !isSame
 }
 
 const getExamPercentagesUrl = import.meta.env.VITE_GET_EXAM_PERCENTAGES_ENDPOINT
 
-// mappear los datos que llegan
+// Mapeo de datos entrantes desde el backend
 const mapIncomingData = (data) => {
   return data.reduce((acc, item) => {
-    if (item.configName === 'dai_weight') {
-      acc.daiExam = item.configValue * 100
-    } else if (item.configName === 'academic_weight') {
-      acc.academicExam = item.configValue * 100
-    } else if (item.configName === 'english_weight') {
-      acc.englishExam = item.configValue * 100
+    if (item.configName === 'PREV_GRADES_WEIGHT') {
+      acc.prevGradesExam = parseFloat(item.configValue) * 100
+    } else if (item.configName === 'ACADEMIC_WEIGHT') {
+      acc.academicExam = parseFloat(item.configValue) * 100
+    } else if (item.configName === 'ENGLISH_WEIGHT') {
+      acc.englishExam = parseFloat(item.configValue) * 100
     }
     return acc
-  }, { academicExam: 0, daiExam: 0, englishExam: 0 })
+  }, { academicExam: 0, prevGradesExam: 0, englishExam: 0 })
 }
 
-// mappear los datos antes de enviarlos
+// Mapeo de datos antes de enviarlos al backend
 const mapOutgoingData = (data) => {
   return {
-    academic_weight: data.academicExam / 100,
-    dai_weight: data.daiExam / 100,
-    english_weight: data.englishExam / 100
+    prevGradesWeight: data.prevGradesExam / 100,
+    academicWeight: data.academicExam / 100,
+    englishWeight: data.englishExam / 100
   }
 }
 
@@ -67,7 +64,7 @@ export const getCurrentPercentages = async () => {
     initValues = { ...data }
     return data
   } catch (error) {
-    throw new Error('Error al cargar los porcentajes.')
+    throw new Error(getErrorMessage(error))
   }
 }
 
@@ -78,7 +75,8 @@ export const updateExamPercentages = async (formValues, setFormValues, setLoadin
 
   try {
     const dataToSend = mapOutgoingData(formValues)
-    const response = await axios.put(`${saveExamPercentagesUrl}?${new URLSearchParams(dataToSend)}`, {}, { timeout: 5000 })
+    const response = await axios.put(saveExamPercentagesUrl, dataToSend, { timeout: 5000 })
+
     setSuccessMessage('Porcentajes actualizados correctamente.')
 
     const data = mapIncomingData(response.data)

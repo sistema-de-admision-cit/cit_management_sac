@@ -185,7 +185,13 @@ export const handleSearch = (search, setEnrollments) => {
   axios.get(`${searchEnrollmentUrl}?value=${search}`, { timeout: 10000 })
     .then(response => {
       const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
-      setEnrollments(enrollments)
+      const uniqueStudents = enrollments.reduce((acc, enrollment) => {
+        if (!acc.some(e => e.student.id === enrollment.student.id)) {
+          acc.push(enrollment)
+        }
+        return acc
+      }, [])
+      setEnrollments(uniqueStudents)
     })
     .catch(error => {
       console.error(error)
@@ -201,9 +207,9 @@ export const handleGetAllEnrollments = (setEnrollments, setLoading, setErrorMess
       const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
       const uniqueStudents = enrollments.reduce((acc, enrollment) => {
         if (!acc.some(e => e.student.id === enrollment.student.id)) {
-          acc.push(enrollment);
+          acc.push(enrollment)
         }
-        return acc;
+        return acc
       }, [])
       setEnrollments(uniqueStudents)
     })

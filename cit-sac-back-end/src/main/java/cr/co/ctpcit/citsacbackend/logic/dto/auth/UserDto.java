@@ -1,6 +1,7 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import cr.co.ctpcit.citsacbackend.data.entities.users.UserEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Role;
 import jakarta.validation.constraints.Pattern;
@@ -27,10 +28,14 @@ public class UserDto implements UserDetails {
   private String password;
 
   @Pattern(regexp = "^[\\w.-]+@ctpcit\\.co\\.cr$",
-      message = "El correo debe pertenecer al dominio ctpcit.co.cr")
+          message = "El correo debe pertenecer al dominio ctpcit.co.cr")
   private String email;
 
+  @JsonIgnore
   private String username;
+
+  @JsonProperty("realUsername")
+  private String realUsername;
 
   private Role role;
 
@@ -42,6 +47,7 @@ public class UserDto implements UserDetails {
     this.password = userEntity.getPassword();
     this.email = userEntity.getEmail();
     this.username = userEntity.getUsername();
+    this.realUsername = userEntity.getUsername();
     this.role = userEntity.getRole();
   }
 
@@ -60,3 +66,4 @@ public class UserDto implements UserDetails {
     return email;
   }
 }
+

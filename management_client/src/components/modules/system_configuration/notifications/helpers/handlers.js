@@ -64,17 +64,6 @@ const mapIncomingData = (data) => {
   }
 }
 
-// mappear los datos antes de enviarlos
-const mapOutgoingData = (data) => {
-  return {
-    email_contact: data.email_contact,
-    email_notifications_contact: data.email_notifications_contact,
-    whatsapp_contact: data.whatsapp_contact,
-    office_contact: data.office_contact,
-    instagram_contact: data.instagram_contact,
-    facebook_contact: data.facebook_contact
-  }
-}
 
 export const getCurrentSettings = async () => {
   try {
@@ -94,13 +83,18 @@ export const updateNotificationSettings = async (formValues, setFormValues, setL
   setLoading(true)
 
   try {
-    const dataToSend = mapOutgoingData(formValues)
-    const response = await axios.put(`${saveNotificationSettingsUrl}?${new URLSearchParams(dataToSend)}`, {}, { timeout: 5000 })
+    const dataToSend = {
+      emailContact: formValues.email_contact,
+      emailNotificationsContact: formValues.email_notifications_contact,
+      whatsappContact: formValues.whatsapp_contact,
+      officeContact: formValues.office_contact,
+      instagramContact: formValues.instagram_contact,
+      facebookContact: formValues.facebook_contact
+    }
+    await axios.put(saveNotificationSettingsUrl, dataToSend)
     setSuccessMessage('Configuraciones actualizadas correctamente.')
-
-    const data = mapIncomingData(response.data)
-    initValues = { ...data }
-    setFormValues(data)
+    const updatedData = await getCurrentSettings()
+    setFormValues(updatedData)
   } catch (error) {
     setErrorMessage(getErrorMessage(error))
   } finally {

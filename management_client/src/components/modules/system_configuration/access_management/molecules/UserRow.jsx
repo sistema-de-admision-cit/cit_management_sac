@@ -5,11 +5,12 @@ import '../../../../../assets/styles/global/buttons.css'
 const UserRow = ({ user, onDeleteClick }) => {
   return (
     <tr>
-      <td>{user.username}</td>
+      <td>{user.email}</td>
+      <td>{user.realUsername}</td>
       <td>{statusRole[user.role]}</td>
       <td>
-        <button className='delete-button' onClick={() => onDeleteClick(user.username)}>
-          <img src={trashIcon} alt='Eliminar' width='20' height='20' />
+        <button className="delete-button" onClick={() => onDeleteClick(user.email)}>
+          <img src={trashIcon} alt="Eliminar" width="20" height="20"/>
         </button>
       </td>
     </tr>

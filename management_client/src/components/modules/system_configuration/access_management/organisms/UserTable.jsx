@@ -14,7 +14,7 @@ const UserTable = ({ deletedUsers, onDeleteClick, loading }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
 
   const filteredUsers = deletedUsers?.filter(user =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
+    user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const currentUsers = filteredUsers?.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage)
@@ -36,43 +36,44 @@ const UserTable = ({ deletedUsers, onDeleteClick, loading }) => {
 
       <table className='enrollment-table'>
         <thead>
-          <tr>
-            <th>Correo</th>
-            <th>Rol</th>
-            <th>Acciones</th>
-          </tr>
+        <tr>
+          <th>Correo</th>
+          <th>Username</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
         </thead>
         {loading
           ? (
             <tbody>
-              <tr>
-                <td colSpan='3'>
-                  <Spinner />
-                </td>
-              </tr>
+            <tr>
+              <td colSpan='4'>
+                <Spinner />
+              </td>
+            </tr>
             </tbody>
-            )
+          )
           : (
             <tbody>
-              {currentUsers && currentUsers.length > 0
-                ? (
-                    currentUsers.map((user) => (
-                      <UserRow
-                        key={user.id}
-                        user={user}
-                        onDeleteClick={onDeleteClick}
-                      />
-                    ))
-                  )
-                : (
-                  <tr>
-                    <td colSpan='3' className='no-deleted-users'>
-                      No hay usuarios
-                    </td>
-                  </tr>
-                  )}
+            {currentUsers && currentUsers.length > 0
+              ? (
+                currentUsers.map((user) => (
+                  <UserRow
+                    key={user.id}
+                    user={user}
+                    onDeleteClick={onDeleteClick}
+                  />
+                ))
+              )
+              : (
+                <tr>
+                  <td colSpan='4' className='no-deleted-users'>
+                    No hay usuarios
+                  </td>
+                </tr>
+              )}
             </tbody>
-            )}
+          )}
       </table>
 
       <div className='pagination'>

@@ -18,11 +18,11 @@ export const guardianTabText = {
 }
 
 export const statusOptions = [
-  { value: 'P', label: 'Inscrito' },
-  { value: 'E', label: 'Permitido' },
-  { value: 'I', label: 'Inelegible' },
-  { value: 'A', label: 'Aceptado' },
-  { value: 'R', label: 'Rechazado' }
+  { value: 'PENDING', label: 'Inscrito' },
+  { value: 'ELIGIBLE', label: 'Permitido' },
+  { value: 'INELIGIBLE', label: 'Inelegible' },
+  { value: 'ACCEPTED', label: 'Aceptado' },
+  { value: 'REJECTED', label: 'Rechazado' }
 ]
 
 export const isCommentRequired = (formData, enrollment) => {

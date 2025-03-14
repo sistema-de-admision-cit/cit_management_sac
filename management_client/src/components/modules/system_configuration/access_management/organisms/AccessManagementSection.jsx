@@ -1,8 +1,9 @@
 import React from 'react'
 import RoleSelector from '../molecules/RoleSelector'
 import EmailInput from '../molecules/EmailInput'
+import UsernameInput from '../molecules/UsernameInput'
 
-const AccessManagementSection = ({ email, role, onEmailChange, onRoleChange }) => (
+const AccessManagementSection = ({ email, realUsername, role, onEmailChange, onUsernameChange, onRoleChange }) => (
   <div className='access-management-section'>
     <div className='form-group'>
       <RoleSelector
@@ -15,6 +16,13 @@ const AccessManagementSection = ({ email, role, onEmailChange, onRoleChange }) =
         field={{ type: 'email', name: 'email', label: 'Correo Electrónico' }}
         email={email}
         onEmailChange={onEmailChange}
+      />
+    </div>
+    <div className='form-group'>
+      <UsernameInput
+        field={{ type: 'realUsername', name: 'realUsername', label: 'Nombre Usuario' }}
+        realUsername={realUsername}
+        onUsernameChange={onUsernameChange}
       />
     </div>
   </div>
