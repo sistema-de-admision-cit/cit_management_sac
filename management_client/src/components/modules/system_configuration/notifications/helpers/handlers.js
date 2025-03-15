@@ -54,16 +54,23 @@ const getNotificationSettingsUrl = `${import.meta.env.VITE_GET_CONFIGURATION_SET
 
 // mappear los datos que llegan
 const mapIncomingData = (data) => {
-  return {
-    email_contact: data[0].configValue,
-    email_notifications_contact: data[1].configValue,
-    whatsapp_contact: data[2].configValue,
-    office_contact: data[3].configValue,
-    instagram_contact: data[4].configValue,
-    facebook_contact: data[5].configValue
+  const configMapping = {
+    EMAIL_CONTACT: 'email_contact',
+    EMAIL_NOTIFICATION_CONTACT: 'email_notifications_contact',
+    WHATSAPP_CONTACT: 'whatsapp_contact',
+    OFFICE_CONTACT: 'office_contact',
+    INSTAGRAM_CONTACT: 'instagram_contact',
+    FACEBOOK_CONTACT: 'facebook_contact'
   }
-}
 
+  return data.reduce((acc, { configName, configValue }) => {
+    const key = configMapping[configName]
+    if (key) {
+      acc[key] = configValue
+    }
+    return acc
+  }, {})
+}
 
 export const getCurrentSettings = async () => {
   try {
