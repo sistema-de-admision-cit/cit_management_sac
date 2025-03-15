@@ -22,13 +22,10 @@ export const handleTestOptionChange = (e, _questionData, setQuestionData) => {
   const { name, value } = e.target
   console.log('handleTestOptionChange', name, value)
 
-  // If you want to reset certain things only when `questionType` changes,
-  // you can conditionally handle that here. For example:
   if (name === 'questionType') {
     setQuestionData(prevState => ({
       ...prevState,
-      questionType: value,
-      correctOption: ''
+      questionType: value
     }))
   } else if (name === 'questionGrade') {
     setQuestionData(prevState => ({
