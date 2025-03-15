@@ -690,6 +690,29 @@ proc_label: BEGIN
 
 END//
 
+
+-- This procedure groups the enrollments by the known_through field
+-- and returns the count of students for each group
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS usp_Get_Students_By_Exam_Source //
+CREATE PROCEDURE usp_Get_Students_By_Exam_Source()
+BEGIN
+    SELECT 
+       CASE known_through
+            WHEN 'OH' THEN 'OpenHouse'
+            WHEN 'SM' THEN 'Redes Sociales'
+            WHEN 'FD' THEN 'Visita al Colegio'
+            WHEN 'FM' THEN 'Evento Académico'
+            ELSE 'Otros'
+       END AS examSource,
+       COUNT(*) AS studentCount
+    FROM tbl_Enrollments
+    GROUP BY known_through;
+END //
+DELIMITER ;
+
+
 -- End of the stored procedures
 -- ----------------------------------------------------- 
 DELIMITER ;
