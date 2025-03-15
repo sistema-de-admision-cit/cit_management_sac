@@ -70,6 +70,10 @@ const QuestionList = ({ onDelete, onModify, actionType, searchQuery = '', search
   const onConfirmDelete = () => {
     onDelete(selectedQuestionCode)
     setIsModalOpen(false)
+
+    setTimeout(() => {
+      fetchQuestions(currentPage)
+    }, 300) // Delay to ensure backend updates before refetching
   }
 
   const onPageChange = (page) => {
