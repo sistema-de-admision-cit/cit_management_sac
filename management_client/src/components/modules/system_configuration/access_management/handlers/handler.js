@@ -25,8 +25,8 @@ export const handleSubmit = async (formValues, setLoading, setErrorMessage, setS
 
   const sendingData = {
     password: 'campus',
-    email: email,
-    realUsername: realUsername,
+    email,
+    realUsername,
     role
   }
 
@@ -38,7 +38,6 @@ export const handleSubmit = async (formValues, setLoading, setErrorMessage, setS
     await axios.post(createUserUrl, sendingData, { timeout: 10000 })
     setSuccessMessage('Usuario creado correctamente.')
 
-    // Refresca la lista de usuarios inmediatamente después de agregar uno nuevo
     await fetchUsers(setUsers, setLoading, setErrorMessage)
     resetForm()
   } catch (error) {
@@ -72,22 +71,21 @@ export const handleDeleteUser = (email, fetchUsers, setSuccessMessage, setErrorM
   }
 
   setPendingDeleteEmail(email)
-  setShowConfirmationModal(true) // Muestra el modal de confirmación
+  setShowConfirmationModal(true)
 }
 
 export const confirmDeleteUser = async (email, fetchUsers, setSuccessMessage, setErrorMessage, setShowConfirmationModal, setUsers, setLoading) => {
   const deleteUserUrl = import.meta.env.VITE_DELETE_USER_ENDPOINT
-  setLoading(true) // Activa el estado de cargando mientras se elimina el usuario
+  setLoading(true)
   try {
     await axios.delete(`${deleteUserUrl}?email=${encodeURIComponent(email)}`)
     setSuccessMessage(`Usuario con correo ${email} eliminado`)
 
-    // Vuelve a cargar los usuarios inmediatamente después de la eliminación
     await fetchUsers(setUsers, setLoading, setErrorMessage)
   } catch (error) {
     setErrorMessage('Error al eliminar el usuario. Intente de nuevo.')
   } finally {
-    setShowConfirmationModal(false) // Cierra el modal después de confirmar
-    setLoading(false) // Desactiva el estado de cargando al finalizar
+    setShowConfirmationModal(false)
+    setLoading(false)
   }
 }

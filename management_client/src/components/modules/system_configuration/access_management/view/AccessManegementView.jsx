@@ -81,7 +81,6 @@ const AccessManagementView = () => {
           deletedUsers={users}
           onDeleteClick={(email) => handleDeleteUser(email, fetchUsers, setSuccessMessage, setErrorMessage, currentUserEmail, setShowConfirmationModal, setPendingDeleteEmail)} // Pasa el email del usuario en sesión
           currentUserEmail={currentUserEmail} // Pasa también el email para evitar borrar el usuario en sesión
-
         />
       </div>
       {renderMessages()}
