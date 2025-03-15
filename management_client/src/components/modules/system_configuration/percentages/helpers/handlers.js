@@ -75,13 +75,8 @@ export const updateExamPercentages = async (formValues, setFormValues, setLoadin
 
   try {
     const dataToSend = mapOutgoingData(formValues)
-    const response = await axios.put(saveExamPercentagesUrl, dataToSend, { timeout: 5000 })
-
+    await axios.put(saveExamPercentagesUrl, dataToSend, { timeout: 5000 })
     setSuccessMessage('Porcentajes actualizados correctamente.')
-
-    const data = mapIncomingData(response.data)
-    initValues = { ...data }
-    setFormValues(data)
   } catch (error) {
     setErrorMessage(getErrorMessage(error))
   } finally {

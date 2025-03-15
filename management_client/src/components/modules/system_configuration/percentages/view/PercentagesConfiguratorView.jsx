@@ -8,8 +8,8 @@ const PercentagesConfiguratorView = () => {
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
   const [loading, setLoading] = useState(false)
   const [formValues, setFormValues] = useState({
+    prevGradesExam: 0,
     academicExam: 0,
-    daiExam: 0,
     englishExam: 0
   })
 
