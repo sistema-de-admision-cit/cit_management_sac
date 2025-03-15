@@ -5,25 +5,21 @@ import ConfirmationModal from '../../../../ui/confirmation_modal/view/Confirmati
 import Pagination from '../../../../core/global/molecules/Pagination.jsx'
 import '../../../../../assets/styles/questions/question-list.css'
 import { handleGetAllQuestions } from '../../delete_questions/helpers/formHandlers'
-import { useAuth } from '../../../../../router/AuthProvider.jsx'
+
+const BOTH_EXAM_TYPE = null
+const ONLY_ACADEMIC_EXAM_TYPE = 'ACA'
+const ONLY_EMOTIONAL_INTELLIGENCE_EXAM_TYPE = 'DAI'
 
 const mapExamType = (examType) => {
-  const examTypeMap = {
-    both: null,
-    ACA: 'ACA',
-    DAI: 'DAI'
-  }
-
-  return examTypeMap[examType]
+  return examType === 'both' ? null : examType
 }
 
 const mapExamTypeBasedOnUserRole = (userRole) => {
-  console.log('userRole', userRole)
   const examTypeMap = {
-    SYS: null,
-    ADMIN: null,
-    PSYCHOLOGIST: 'DAI',
-    TEACHER: 'ACA'
+    SYS: BOTH_EXAM_TYPE,
+    ADMIN: BOTH_EXAM_TYPE,
+    PSYCHOLOGIST: ONLY_EMOTIONAL_INTELLIGENCE_EXAM_TYPE,
+    TEACHER: ONLY_ACADEMIC_EXAM_TYPE
   }
 
   return examTypeMap[userRole]
@@ -39,8 +35,16 @@ const QuestionList = ({ onDelete, onModify, actionType, searchQuery = '', search
   const [examType, setExamType] = useState(mapExamTypeBasedOnUserRole(userRole))
   const pageSize = 10
 
+  const updateNewExamType = (newExamType) => {
+    setExamType((prevExamType) => {
+      const newExamTypeMapped = mapExamType(newExamType)
+      console.log(`Updating from ${prevExamType} to ${newExamTypeMapped}`)
+      return newExamTypeMapped
+    })
+  }
+
   useEffect(() => {
-    setExamType(mapExamType(searchExamType))
+    updateNewExamType(searchExamType)
   }, [searchExamType])
 
   const fetchQuestions = (page = 0) => {
@@ -50,7 +54,8 @@ const QuestionList = ({ onDelete, onModify, actionType, searchQuery = '', search
   useEffect(() => {
     setCurrentPage(0)
     fetchQuestions(0)
-  }, [searchQuery, searchExamType])
+    updateNewExamType(searchExamType)
+  }, [searchQuery, examType])
 
   // Cada vez que se cambie la página, se hace la consulta
   useEffect(() => {
