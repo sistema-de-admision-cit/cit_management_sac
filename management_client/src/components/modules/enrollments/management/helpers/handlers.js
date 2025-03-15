@@ -24,7 +24,6 @@ const getErrorMessage = (error) => {
 
 const getEnrollmentsByStudentIdUrl = import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_ID_ENDPOINT
 export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, setApplicantSelected) => {
-
   axios.get(`${getEnrollmentsByStudentIdUrl}${applicant.person.idNumber}`,
     {
       timeout: 10000
