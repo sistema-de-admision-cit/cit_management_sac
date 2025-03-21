@@ -83,7 +83,7 @@ export const handleCreateQuestionSubmit = (e, questionData, setErrorMessage, set
   const formData = new FormData()
 
   const questionOptions = questionData.questionOptionsText.map((option, index) => ({
-    isCorrect: index === questionData.correctOption,
+    isCorrect: index === parseInt(questionData.correctOption),
     option
   }))
 
@@ -139,7 +139,7 @@ export const handleModifySubmit = (e, questionData, setErrorMessage, setSuccessM
   setIsLoading(true)
 
   const questionOptions = questionData.questionOptionsText.map((option, index) => ({
-    isCorrect: index === questionData.correctOption,
+    isCorrect: index === parseInt(questionData.correctOption),
     option
   }))
 
