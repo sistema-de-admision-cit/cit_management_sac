@@ -64,9 +64,9 @@ export const formatDateToObj = (obj) => {
 
 // parse the object dates to "day/month/year" format
 export const formatDate = (date) => {
-  let day = date.getDay()
-  let month = date.getMonth() + 1
-  const year = date.getFullYear()
+  let day = date.getUTCDate()
+  let month = date.getUTCMonth() + 1
+  const year = date.getUTCFullYear()
 
   day = day < 10 ? '0' + day : day
   month = month < 10 ? '0' + month : month
@@ -76,12 +76,16 @@ export const formatDate = (date) => {
 
 // parse the date to "year-month-day" format
 export const formatDateForApi = (date) => {
-  let day = date.getDay()
-  let month = date.getMonth() + 1
-  const year = date.getFullYear()
+  console.log('date', date)
+
+  let day = date.getUTCDate()
+  let month = date.getUTCMonth() + 1
+  const year = date.getUTCFullYear()
 
   day = day < 10 ? '0' + day : day
   month = month < 10 ? '0' + month : month
+
+  console.log('date', `${year}-${month}-${day}`)
 
   return `${year}-${month}-${day}`
 }
