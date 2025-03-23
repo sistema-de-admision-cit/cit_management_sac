@@ -68,7 +68,17 @@ export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setE
     return
   }
 
-  axios.put(`${updateEnrollmentUrl}/${enrollment.id}?status=${formData.status}&examDate=${formatDateForApi(formData.examDate)}&whatsappPermission=${formData.whatsappNotification}&comment=${formData.comment}&changedBy=1`,
+  const body = {
+    examDate: formatDateForApi(new Date(formData.examDate)),
+    processStatus: formData.status,
+    whatsappPermission: formData.whatsappNotification,
+    comment: formData.comment,
+    changedBy: 1
+  }
+
+  console.log('body', body)
+
+  axios.put(`${updateEnrollmentUrl}/${enrollment.id}`, body,
     { timeout: 10000 })
     .then(response => {
       setIsEditing(false)
