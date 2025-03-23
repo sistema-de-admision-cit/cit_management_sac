@@ -126,8 +126,8 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- Table `tbl_Enrollments`
 -- status:
 	-- PENDING: waiting for approval
-  -- ELEGIBLE: student is elegible to go through the admission process
-  -- INELEGIBLE: student is not elegible to go through the admission process
+  -- ELIGIBLE: student is eligible to go through the admission process
+  -- INELIGIBLE: student is not eligible to go through the admission process
   -- ACCEPTED: student is accepted and can enroll
   -- REJECTED: student is rejected and cannot enroll
   -- -----------------------------------------------------
@@ -483,7 +483,7 @@ DROP PROCEDURE IF EXISTS usp_Update_Enrollment_And_Log//
 
 CREATE PROCEDURE usp_Update_Enrollment_And_Log ( 
     IN p_enrollment_id INT,
-    IN p_new_status ENUM('PENDING', 'ELEGIBLE', 'INELEGIBLE', 'ACCEPTED', 'REJECTED'),
+    IN p_new_status ENUM('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED'),
     IN p_new_exam_date DATE,
     IN p_new_whatsapp_permission BOOLEAN,
     IN p_comment VARCHAR(255),
@@ -491,7 +491,7 @@ CREATE PROCEDURE usp_Update_Enrollment_And_Log (
 )
 
 BEGIN
-    DECLARE v_old_status ENUM('PENDING', 'ELEGIBLE', 'INELEGIBLE', 'ACCEPTED', 'REJECTED');
+    DECLARE v_old_status ENUM('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED');
     DECLARE v_old_exam_date DATE;
     DECLARE v_old_whatsapp_permission BOOLEAN;
 
