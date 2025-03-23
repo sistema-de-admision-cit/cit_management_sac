@@ -3,6 +3,9 @@ import PdfIcon from '../../../../../assets/icons/pdf-svgrepo-com.svg'
 import EditIcon from '../../../../../assets/icons/pencil-svgrepo-com.svg'
 import { formatDate, statusText } from '../helpers/helpers'
 
+const PENDING_STATUS = 'PENDING'
+const ELIGIBLE_STATUS = 'ELIGIBLE'
+
 const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileType, setIsEditing }) => (
   <div className='tab-content'>
     <h2>Inscripción - {enrollment.id}</h2>
@@ -13,18 +16,18 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
 
     <div
       className='edit-icon'
-      title={enrollment.status !== 'P' && enrollment.status !== 'E' ? `Edición no disponible: el estado actual es ${statusText[enrollment.status]}, lo que impide modificar la información de este usuario.` : ''}
+      title={enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS ? `Edición no disponible: el estado actual es ${statusText[enrollment.status]}, lo que impide modificar la información de este usuario.` : ''}
     >
       <Button
-        className={`edit-icon pseudo-btn ${enrollment.status !== 'P' && enrollment.status !== 'E' ? 'disabled' : ''}`}
+        className={`edit-icon pseudo-btn ${enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS ? 'disabled' : ''}`}
         onClick={() => setIsEditing(true)}
-        disabled={enrollment.status !== 'P' && enrollment.status !== 'E'}
+        disabled={enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS}
       >
         <img src={EditIcon} alt='icono de editar' />
       </Button>
-      {enrollment.status !== 'P' && enrollment.status !== 'E' && (
+      {enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS && (
         <div className='tooltip'>
-          Edición no disponible: el estado del usuario es {statusText[enrollment.status]}, lo que impide modificar la información.
+          Edición no disponible: el estado del usuario es {enrollment.status}, lo que impide modificar la información.
         </div>
       )}
     </div>
