@@ -5,6 +5,7 @@ import com.jayway.jsonpath.JsonPath;
 import cr.co.ctpcit.citsacbackend.TestProvider;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.ExamPeriodDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateQuantityConfigsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateWeightsConfigsDto;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,31 @@ class SystemConfigControllerTest {
 
   @Autowired
   private TestRestTemplate restTemplate;
+
+  @Test
+  void getQuestionsQuantity() {
+    ResponseEntity<String> response =
+            restTemplate.getForEntity("/api/system-config/get-questions-quantity", String.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+
+    int enrollmentCount = documentContext.read("$.length()");
+    assertThat(enrollmentCount).isEqualTo(2);
+  }
+
+  @Test
+  void updateQuestionsQuantity() {
+    UpdateQuantityConfigsDto quantityConfigsDto = new UpdateQuantityConfigsDto(20,21);
+
+    HttpEntity<UpdateQuantityConfigsDto> request = new HttpEntity<>(quantityConfigsDto);
+    ResponseEntity<String> response =
+            restTemplate.exchange("/api/system-config/update-questions-quantity",
+                    org.springframework.http.HttpMethod.PUT, request, String.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+  }
 
   @Test
   void getProcessWeights() {
