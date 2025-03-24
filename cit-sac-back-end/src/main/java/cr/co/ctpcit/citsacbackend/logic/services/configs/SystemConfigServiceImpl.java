@@ -27,6 +27,26 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   private final ExamPeriodRepository examPeriodRepository;
 
   @Override
+  public List<SystemConfigDto> getQuestionsQuantity() {
+    return SystemConfigMapper.toDtoList(systemConfigRepository.getQuestionsQuantity());
+  }
+
+  @Override
+  public void updateQuantity(int daiQuestionsQuantity, int academicQuestionsQuantity) {
+
+    if (daiQuestionsQuantity <= 0 && academicQuestionsQuantity <= 0) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La cantidad de preguntas debe ser mayor a 1");
+    }
+
+    //Update DAI_EXAM_QUESTIONS_QUANTITY
+    saveConfiguration(Configurations.DAI_EXAM_QUESTIONS_QUANTITY, String.valueOf(daiQuestionsQuantity));
+
+    //Update ACADEMIC_EXAM_QUESTIONS_QUANTITY
+    saveConfiguration(Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY, String.valueOf(academicQuestionsQuantity));
+
+  }
+
+  @Override
   public List<SystemConfigDto> getProcessWeights() {
     return SystemConfigMapper.toDtoList(systemConfigRepository.getProcessWeights());
   }
@@ -47,6 +67,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     //Update ENGLISH_WEIGHT
     saveConfiguration(Configurations.ENGLISH_WEIGHT, String.valueOf(englishWeight));
   }
+
 
   @Override
   public List<SystemConfigDto> getContactInfo() {
