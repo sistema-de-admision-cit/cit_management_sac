@@ -1,10 +1,7 @@
 package cr.co.ctpcit.citsacbackend.rest.configs;
 
 import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
-import cr.co.ctpcit.citsacbackend.logic.dto.configs.ExamPeriodDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateWeightsConfigsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.configs.*;
 import cr.co.ctpcit.citsacbackend.logic.services.configs.SystemConfigServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +19,20 @@ import java.util.List;
 public class SystemConfigController {
 
   private final SystemConfigServiceImpl systemConfigService;
+
+  @GetMapping("/get-questions-quantity")
+  public ResponseEntity<List<SystemConfigDto>> getQuestionsQuantity() {
+    List<SystemConfigDto> questionsQuantity = systemConfigService.getQuestionsQuantity();
+    return new ResponseEntity<>(questionsQuantity, HttpStatus.OK);
+  }
+
+  @PutMapping("/update-questions-quantity")
+  public ResponseEntity<String> updateQuestionsQuantity(
+          @RequestBody UpdateQuantityConfigsDto questionsConfigs) {
+    systemConfigService.updateQuantity(questionsConfigs.daiQuestionsQuantity(),questionsConfigs.academicQuestionsQuantity());
+    // return the updated questions quantity
+    return ResponseEntity.ok().build();
+  }
 
   @GetMapping("/get-process-weights")
   public ResponseEntity<List<SystemConfigDto>> getProcessWeights() {

@@ -9,8 +9,8 @@ const UserRow = ({ user, onDeleteClick }) => {
       <td>{user.realUsername}</td>
       <td>{statusRole[user.role]}</td>
       <td>
-        <button className="delete-button" onClick={() => onDeleteClick(user.email)}>
-          <img src={trashIcon} alt="Eliminar" width="20" height="20"/>
+        <button className='delete-button' onClick={() => onDeleteClick(user.email)}>
+          <img src={trashIcon} alt='Eliminar' width='20' height='20' />
         </button>
       </td>
     </tr>

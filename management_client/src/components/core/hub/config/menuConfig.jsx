@@ -26,6 +26,9 @@ import ReportsMenuPageView from '../../../modules/reports/menu/views/ReportsMenu
 import PercentagesConfiguratorView from '../../../modules/system_configuration/percentages/view/PercentagesConfiguratorView.jsx'
 import AccessManegementView from '../../../modules/system_configuration/access_management/view/AccessManegementView.jsx'
 
+// report views
+import GraphicalReportsView from '../../../modules/reports/graphical/view/GraphicalReportsView.jsx'
+
 // componente por defecto para las rutas padre
 // feature temporal
 // TODO: implementar un componente para cada padre
@@ -196,7 +199,7 @@ const menuConfig = [
             key: 'graphical-reports',
             label: 'Reportes Gráficos',
             path: '/reportes/graficos',
-            component: DefaultComponent,
+            component: GraphicalReportsView,
             description: 'Visualizar reportes en formato gráfico.'
           },
           {

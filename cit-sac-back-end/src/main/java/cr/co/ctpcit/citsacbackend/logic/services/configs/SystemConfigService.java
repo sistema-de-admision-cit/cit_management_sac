@@ -8,6 +8,11 @@ import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
 import java.util.List;
 
 public interface SystemConfigService {
+
+  List<SystemConfigDto> getQuestionsQuantity();
+
+  void updateQuantity(int daiQuantity, int academicQuantity);
+
   List<SystemConfigDto> getProcessWeights();
 
   void updateWeights(Double prevGradesWeight, Double academicWeight, Double englishWeight);

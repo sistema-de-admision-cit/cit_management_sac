@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import QuestionTypeOptions from '../molecules/QuestionTypeOptions'
+import QuestionGradeOptions from '../molecules/QuestionGradeOptions'
 import InputField from '../../../../core/global/atoms/InputField'
 import Button from '../../../../core/global/atoms/Button'
 import UniqueQuestionSection from './UniqueQuestionSection'
 import useMessages from '../../../../core/global/hooks/useMessages'
 import useFormState from '../../../../core/global/hooks/useFormState'
+import { useAuth } from '../../../../../router/AuthProvider'
 import '../../../../../assets/styles/questions/question-form.css'
 import {
   handleChange,
@@ -13,8 +15,16 @@ import {
 } from '../../helpers/formHandlers'
 import { getButtonState } from '../../helpers/helpers'
 import { EXAM_GRADE_OPTIONS, ACADEMIC_EXAM_TYPE_OPTIONS, DAI_EXAM_TYPE_OPTIONS } from '../helpers/questionFormOptions'
-import QuestionGradeOptions from '../molecules/QuestionGradeOptions'
-import { useAuth } from '../../../../../router/AuthProvider'
+
+const getExamTypeOptionsByUserRole = (userRole) => {
+  const optionsByRole = {
+    SYS: [ACADEMIC_EXAM_TYPE_OPTIONS, DAI_EXAM_TYPE_OPTIONS],
+    ADMIN: [ACADEMIC_EXAM_TYPE_OPTIONS, DAI_EXAM_TYPE_OPTIONS],
+    PSYCHOLOGIST: [DAI_EXAM_TYPE_OPTIONS],
+    TEACHER: [ACADEMIC_EXAM_TYPE_OPTIONS]
+  }
+  return optionsByRole[userRole] || [ACADEMIC_EXAM_TYPE_OPTIONS, DAI_EXAM_TYPE_OPTIONS]
+}
 
 const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAgain }) => {
   const { user } = useAuth()
@@ -26,27 +36,21 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
 
   const { questionType, questionGrade, questionText, questionOptionsText, correctOption } = questionData
 
-  const filteredExamTypeOptions =
-    userRole === 'SYS' || userRole === 'ADMIN'
-      ? [ACADEMIC_EXAM_TYPE_OPTIONS, DAI_EXAM_TYPE_OPTIONS]
-      : userRole === 'PSYCHOLOGIST'
-        ? [DAI_EXAM_TYPE_OPTIONS]
-        : userRole === 'TEACHER'
-          ? [ACADEMIC_EXAM_TYPE_OPTIONS]
-          : [ACADEMIC_EXAM_TYPE_OPTIONS, DAI_EXAM_TYPE_OPTIONS]
+  const filteredExamTypeOptions = useMemo(() => getExamTypeOptionsByUserRole(userRole), [userRole])
 
-  // Limpiar todos los datos del formulario para que parezca un nuevo formulario
-  const handleSearchAgain = () => {
+  const handleSearchAgain = useCallback(() => {
     searchAgain()
     resetForm()
-  }
+  }, [searchAgain, resetForm])
+
+  const handleInputChange = (e, isFile = false) => handleChange(e, setQuestionData, isFile)
 
   return (
     <div className='container question-form-container'>
       <div className='back-button'>
-        {/* Mostrar el ícono de "Buscar Otra Pregunta" solo si el título es "Modificar Pregunta" */}
         {title === 'Modificar Pregunta' && (
           <button
+            type='button'
             className={`search-again-button ${isLoading ? 'disabled' : ''}`}
             onClick={handleSearchAgain}
             disabled={isLoading}
@@ -59,34 +63,46 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
         )}
       </div>
       <h1>{title}</h1>
-      <form onSubmit={(e) => onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)} className='question-form'>
+      <form
+        onSubmit={(e) =>
+          onSubmit(e, questionData, setErrorMessage, setSuccessMessage, setIsLoading, setQuestionData)}
+        className='question-form'
+      >
         <h2>Información de la pregunta</h2>
         <QuestionTypeOptions
           value={questionType}
           handleChange={(e) => handleTestOptionChange(e, questionData, setQuestionData)}
           options={filteredExamTypeOptions}
         />
-
         <QuestionGradeOptions
           value={questionGrade}
           handleChange={(e) => handleTestOptionChange(e, questionData, setQuestionData)}
           options={EXAM_GRADE_OPTIONS}
         />
-
         <h2>Contenido de la pregunta</h2>
         <InputField
-          field={{ name: 'questionText', label: 'Pregunta', type: 'text', placeholder: 'Ingrese la pregunta aquí', required: true }}
+          field={{
+            name: 'questionText',
+            label: 'Pregunta',
+            type: 'text',
+            placeholder: 'Ingrese la pregunta aquí',
+            required: true
+          }}
           value={questionText}
-          handleChange={(e, isFile = false) => handleChange(e, setQuestionData, isFile)}
+          handleChange={handleInputChange}
           className='form-group'
         />
-
         <InputField
-          field={{ name: 'images', label: 'Agregar Imágenes', type: 'file', multiple: true, required: false }}
-          handleChange={(e, isFile = true) => handleChange(e, setQuestionData, isFile)}
+          field={{
+            name: 'images',
+            label: 'Agregar Imágenes',
+            type: 'file',
+            multiple: true,
+            required: false
+          }}
+          handleChange={(e, isFile = true) => handleInputChange(e, isFile)}
           className='form-group'
         />
-
         {/* Cuando el tipo de pregunta es única, se agrega el componente UniqueQuestionSection */}
         {questionType === 'ACA' && (
           <>
@@ -95,11 +111,10 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
               options={questionOptionsText}
               correctOption={correctOption}
               handleOptionChange={(index, value) => handleOptionChange(index, value, questionData, setQuestionData)}
-              handleInputChange={(e, isFile = false) => handleChange(e, setQuestionData, isFile)}
+              handleInputChange={handleInputChange}
             />
           </>
         )}
-
         <Button
           type='submit'
           className='btn btn-primary'

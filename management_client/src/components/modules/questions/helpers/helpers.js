@@ -1,52 +1,62 @@
+import {
+  ERROR_SELECT_EXAM_TYPE,
+  ERROR_ENTER_QUESTION,
+  ERROR_ENTER_OPTION,
+  ERROR_SELECT_CORRECT_OPTION,
+  NUMBER_OF_OPTIONS,
+  UNIQUE_QUESTION_TYPE
+} from './questionConstants'
+
 export const validateFields = (questionData, setErrorMessage) => {
   if (!questionData.questionType) {
-    setErrorMessage('Por favor, seleccione el tipo de examen.')
+    setErrorMessage(ERROR_SELECT_EXAM_TYPE)
     return
   }
   if (!questionData.questionText) {
-    setErrorMessage('Por favor, ingrese la pregunta.')
+    setErrorMessage(ERROR_ENTER_QUESTION)
     return
   }
-  if (questionData.questionText === 'academic') {
-    for (let i = 0; i < 4; i++) {
-      if (!questionData.options[i]) {
-        setErrorMessage(`Por favor, ingrese la opción ${i + 1}.`)
+  // Check for unique question type (e.g., 'ACA') to validate options and correct answer
+  if (questionData.questionType === UNIQUE_QUESTION_TYPE) {
+    for (let i = 0; i < NUMBER_OF_OPTIONS; i++) {
+      if (!questionData.questionOptionsText[i]) {
+        setErrorMessage(ERROR_ENTER_OPTION(i + 1))
         return
       }
     }
     if (questionData.correctOption === '') {
-      setErrorMessage('Por favor, seleccione la respuesta correcta.')
+      setErrorMessage(ERROR_SELECT_CORRECT_OPTION)
     }
   }
 }
 
 export const getButtonState = (questionData, isLoading) => {
-  // Si se está cargando, deshabilitar el botón
+  // Deshabilitar el botón si se está cargando
   if (isLoading) {
     return true
   }
 
-  // si alguno de los campos está vacío, deshabilitar el botón
+  // Deshabilitar si campos esenciales están vacíos
   if (!questionData.questionType || !questionData.questionText) {
     return true
   }
 
-  // si es seleccion unica
-  if (questionData.questionType === 'ACA') {
-    // crear un set para verificar que no haya opciones repetidas
-    const set = new Set(questionData.questionOptionsText)
-    if (set.size !== 4) {
+  // Si el tipo de pregunta es único, validar opciones y respuesta correcta
+  if (questionData.questionType === UNIQUE_QUESTION_TYPE) {
+    // Verificar que no haya opciones duplicadas
+    const optionsSet = new Set(questionData.questionOptionsText)
+    if (optionsSet.size !== NUMBER_OF_OPTIONS) {
       return true
     }
 
-    // verificar que no haya campos vacíos
-    for (let i = 0; i < 4; i++) {
+    // Verificar que todas las opciones estén completas
+    for (let i = 0; i < NUMBER_OF_OPTIONS; i++) {
       if (!questionData.questionOptionsText[i]) {
         return true
       }
     }
 
-    // verificar que la respuesta correcta no esté vacía
+    // Verificar que se haya seleccionado una respuesta correcta
     if (questionData.correctOption === '') {
       return true
     }
