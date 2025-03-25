@@ -1,5 +1,7 @@
 package cr.co.ctpcit.citsacbackend.logic.services.exams;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.co.ctpcit.citsacbackend.data.entities.configs.SystemConfigEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.AcademicExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.DaiExamEntity;
@@ -16,10 +18,7 @@ import cr.co.ctpcit.citsacbackend.data.repositories.exams.ExamRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.EnrollmentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.StudentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.questions.QuestionRepository;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamAcaDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamDaiDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.QuestionAcaDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.QuestionOptionAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.*;
 import cr.co.ctpcit.citsacbackend.logic.mappers.exams.ExamMapper;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,6 +39,7 @@ public class ExamsServiceImpl implements ExamsService {
   private final QuestionRepository questionRepository;
   private final SystemConfigRepository systemConfigRepository;
   private final ExamRepository examRepository;
+  private final ObjectMapper mapper;
 
   /**
    * Get the academic exam for the student
@@ -77,7 +78,7 @@ public class ExamsServiceImpl implements ExamsService {
    *                                 exam is not academic
    */
   @Override
-  public void saveAcademicExam(ExamAcaDto examDto) {
+  public void saveAcademicExam(ExamAcaDto examDto) throws JsonProcessingException {
     ExamEntity exam = verifyExam(examDto.id(), examDto.examType());
 
     //Create the academic exam
@@ -89,7 +90,7 @@ public class ExamsServiceImpl implements ExamsService {
     exam.addAcademicExam(academicExam);
 
     //Add the responses to the exam
-    exam.getResponses().put("exam", examDto.responses());
+    exam.getResponses().put("exam", mapper.writeValueAsString(examDto.responses()));
 
     //Save the exam
     examRepository.save(exam);
@@ -116,7 +117,7 @@ public class ExamsServiceImpl implements ExamsService {
   }
 
   @Override
-  public void saveDaiExam(ExamDaiDto examDto) {
+  public void saveDaiExam(ExamDaiDto examDto) throws JsonProcessingException {
     ExamEntity exam = verifyExam(examDto.id(), examDto.examType());
 
     //Create the dai exam
@@ -126,10 +127,32 @@ public class ExamsServiceImpl implements ExamsService {
     exam.addDaiExam(daiExam);
 
     //Add the responses to the exam
-    exam.getResponses().put("exam", examDto.responses());
+    exam.getResponses().put("exam", mapper.writeValueAsString(examDto.responses()));
 
     //Save the exam
     examRepository.save(exam);
+  }
+
+  @Override
+  public List<AcademicExamDto> getExistingAcademicExams(String id) {
+    List<EnrollmentEntity> enrollments =
+        enrollmentRepository.findAllByStudent_StudentPerson_IdNumber(id);
+
+    if (enrollments.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron exámenes.");
+    }
+
+    //Create the list of AcademicExamEntities
+    List<ExamEntity> academicExams = new ArrayList<>();
+    for (EnrollmentEntity enrollmentInUse : enrollments) {
+      for (ExamEntity exam : enrollmentInUse.getExams()) {
+        if (exam.getExamType().equals(ExamType.ACA)) {
+          academicExams.add(exam);
+        }
+      }
+    }
+
+    return ExamMapper.academicExamsToExamAcaDto(academicExams);
   }
 
   /**

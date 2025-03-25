@@ -398,7 +398,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     //Delete the last document with the same DocType
     List<DocumentEntity> documents = enrollment.getDocuments();
     for (DocumentEntity d : documents) {
-      if (d.getDocType() == document.getDocType() && !d.equals(document)) {
+      if (d.getDocumentType() == document.getDocumentType() && !d.equals(document)) {
         storageService.deleteDocumentByUrl(d.getDocumentUrl());
         enrollment.removeDocument(d);
         documentRepository.delete(d);

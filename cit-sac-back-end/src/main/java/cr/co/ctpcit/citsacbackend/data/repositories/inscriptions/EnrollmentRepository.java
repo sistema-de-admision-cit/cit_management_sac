@@ -18,6 +18,8 @@ import java.util.List;
 public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Long> {
   List<EnrollmentEntity> findAllByStudent(@NotNull StudentEntity student);
 
+  List<EnrollmentEntity> findAllByStudent_StudentPerson_IdNumber(@NotNull String idNumber);
+
   List<EnrollmentEntity> findAllByStudentIn(List<StudentEntity> students);
 
   @Modifying

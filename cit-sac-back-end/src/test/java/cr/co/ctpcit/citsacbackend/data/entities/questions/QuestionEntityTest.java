@@ -63,14 +63,12 @@ class QuestionEntityTest {
           "deleted": false,
           "questionOptions": [
             {
-              "questionId": 1,
-              "optionId": 1,
+              "id": 1,
               "option": "Falso",
               "isCorrect": false
             },
             {
-              "questionId": 1,
-              "optionId": 2,
+              "id": 2,
               "option": "Verdadero",
               "isCorrect": true
             }

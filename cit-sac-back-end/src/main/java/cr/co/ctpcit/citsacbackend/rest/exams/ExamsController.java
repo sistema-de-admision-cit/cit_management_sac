@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest.exams;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamAcaDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamDaiDto;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.ExamsService;
@@ -24,7 +25,8 @@ public class ExamsController {
   }
 
   @PutMapping("/save-academic-exam")
-  public ResponseEntity<Void> saveAcademicExam(@RequestBody @Valid ExamAcaDto examAcaDto) {
+  public ResponseEntity<Void> saveAcademicExam(@RequestBody @Valid ExamAcaDto examAcaDto)
+      throws JsonProcessingException {
     examsService.saveAcademicExam(examAcaDto);
 
     return ResponseEntity.noContent().build();
@@ -38,7 +40,8 @@ public class ExamsController {
     }
 
   @PutMapping("/save-dai-exam")
-  public ResponseEntity<Void> saveDaiExam(@RequestBody @Valid ExamDaiDto examDaiDto) {
+  public ResponseEntity<Void> saveDaiExam(@RequestBody @Valid ExamDaiDto examDaiDto)
+      throws JsonProcessingException {
     examsService.saveDaiExam(examDaiDto);
 
     return ResponseEntity.noContent().build();

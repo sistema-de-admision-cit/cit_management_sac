@@ -18,7 +18,7 @@ class DocumentMapperTest {
 
     DocumentEntity documentEntity = new DocumentEntity();
     documentEntity.setId(1L);
-    documentEntity.setDocType(DocType.OT);
+    documentEntity.setDocumentType(DocType.OT);
     documentEntity.setDocumentName("Document Name");
     documentEntity.setDocumentUrl("Document URL");
     documentEntity.setEnrollment(enrollmentEntity);
@@ -26,7 +26,7 @@ class DocumentMapperTest {
     DocumentDto documentDto = DocumentMapper.convertToDto(documentEntity);
     assertNotNull(documentDto);
     assertEquals(documentEntity.getId(), documentDto.id());
-    assertEquals(documentEntity.getDocType(), documentDto.documentType());
+    assertEquals(documentEntity.getDocumentType(), documentDto.documentType());
     assertEquals(documentEntity.getDocumentName(), documentDto.documentName());
   }
 
@@ -45,7 +45,7 @@ class DocumentMapperTest {
     DocumentEntity documentEntity = DocumentMapper.convertToEntity(documentDto);
     assertNotNull(documentEntity);
     assertEquals(documentDto.id(), documentEntity.getId());
-    assertEquals(documentDto.documentType(), documentEntity.getDocType());
+    assertEquals(documentDto.documentType(), documentEntity.getDocumentType());
     assertEquals(documentDto.documentName(), documentEntity.getDocumentName());
   }
 }

@@ -1,11 +1,14 @@
 package cr.co.ctpcit.citsacbackend.data.repositories.exams;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.co.ctpcit.citsacbackend.TestProvider;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.AcademicExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.DaiExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.EnglishExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity;
-import org.junit.jupiter.api.Disabled;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.AcademicExamDto;
+import cr.co.ctpcit.citsacbackend.logic.mappers.exams.ExamMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -14,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -22,11 +26,14 @@ class ExamRepositoryTest {
   @Autowired
   private ExamRepository examRepository;
 
+  @Autowired
+  ObjectMapper mapper;
+
   private ExamEntity exam;
 
   @Test
   void shouldSaveAnExam() {
-    exam = TestProvider.provideExam();
+    exam = TestProvider.provideNonSavedExam();
 
     //save
     ExamEntity saveExam = examRepository.save(exam);
@@ -39,8 +46,8 @@ class ExamRepositoryTest {
 
   @Test
   void shouldSaveAnEnglishExam() {
-    exam = TestProvider.provideExam();
-    EnglishExamEntity englishExam = TestProvider.provideEnglishExam();
+    exam = TestProvider.provideNonSavedExam();
+    EnglishExamEntity englishExam = TestProvider.provideNonSavedEnglishExam();
 
     //save
     exam.addEnglishExam(englishExam);
@@ -55,8 +62,8 @@ class ExamRepositoryTest {
 
   @Test
   void shouldSaveADaiExam() {
-    exam = TestProvider.provideExam();
-    DaiExamEntity daiExam = TestProvider.provideDaiExam();
+    exam = TestProvider.provideNonSavedExam();
+    DaiExamEntity daiExam = TestProvider.provideNonSavedDaiExam();
 
     //save
     exam.addDaiExam(daiExam);
@@ -71,8 +78,8 @@ class ExamRepositoryTest {
 
   @Test
   void shouldSaveAnAcademicExam() {
-    exam = TestProvider.provideExam();
-    AcademicExamEntity academicExam = TestProvider.provideAcademicExam();
+    exam = TestProvider.provideNonSavedExam();
+    AcademicExamEntity academicExam = TestProvider.provideNonSavedAcademicExam();
 
     //save
     exam.addAcademicExam(academicExam);
@@ -86,10 +93,10 @@ class ExamRepositoryTest {
   }
 
   @Test
-  void saveExamWithResponses() {
-    exam = TestProvider.provideExam();
+  void saveExamWithResponses() throws JsonProcessingException {
+    exam = TestProvider.provideNonSavedExam();
     Map<String, Object> responses = exam.getResponses();
-    responses.put("exam", List.of(TestProvider.provideQuestionAcaDto()));
+    responses.put("exam", mapper.writeValueAsString(List.of(TestProvider.provideQuestionAcaDto())));
 
     //save
     ExamEntity saveExam = examRepository.save(exam);
@@ -98,5 +105,27 @@ class ExamRepositoryTest {
     assertNotNull(saveExam);
     assertNotNull(saveExam.getId());
     assertEquals(exam.getResponses(), saveExam.getResponses());
+  }
+
+  @Test
+  void saveAcademicExam_Then_GetItAndMapItIntoAcademicExamDto() throws JsonProcessingException {
+    exam = TestProvider.provideNonSavedExam();
+    Map<String, Object> responses = exam.getResponses();
+    responses.put("exam", mapper.writeValueAsString(List.of(TestProvider.provideQuestionAcaDto())));
+
+    AcademicExamEntity academicExam = TestProvider.provideNonSavedAcademicExam();
+
+    //save
+    exam.addAcademicExam(academicExam);
+    ExamEntity saveExam = examRepository.save(exam);
+
+    //get
+    AcademicExamDto academicExamDto = ExamMapper.academicExamToExamAcaDto(exam);
+
+    //assert
+    assertThat(academicExamDto).isNotNull();
+    assert academicExamDto != null;
+    assertThat(academicExamDto.exam()).isNotNull();
+    assertThat(academicExamDto.exam().responses()).isNotNull();
   }
 }

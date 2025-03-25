@@ -1,0 +1,42 @@
+{
+  "id": 1,
+  "enrollment": 1,
+  "examDate": "1970-01-01T00:00:00Z",
+  "examType": "ACA",
+  "responses": [
+    {
+      "id": 2,
+      "questionType": "ACA",
+      "questionText": "¿Como se calcula el area de un circulo?",
+      "imageUrl": null,
+      "selectionType": "SINGLE",
+      "deleted": false,
+      "questionOptions": [
+        {
+          "id": 1,
+          "isCorrect": true,
+          "option": "π * radio^2",
+          "selected": true
+        },
+        {
+          "id": 2,
+          "isCorrect": false,
+          "option": "2 * radio",
+          "selected": false
+        },
+        {
+          "id": 3,
+          "isCorrect": false,
+          "option": "π * diámetro",
+          "selected": false
+        },
+        {
+          "id": 4,
+          "isCorrect": false,
+          "option": "radio * altura",
+          "selected": false
+        }
+      ]
+    }
+  ]
+}

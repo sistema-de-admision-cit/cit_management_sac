@@ -36,7 +36,7 @@ public class DocumentEntity {
   @NotNull
   @Enumerated(EnumType.STRING)
   @Column(name = "document_type", nullable = false, columnDefinition = "enum('AC', 'OT')")
-  private DocType docType;
+  private DocType documentType;
 
   @Size(max = 128)
   @NotNull

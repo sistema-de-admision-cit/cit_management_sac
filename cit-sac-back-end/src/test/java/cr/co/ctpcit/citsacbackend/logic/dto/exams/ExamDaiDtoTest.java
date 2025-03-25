@@ -1,7 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.exams;
 
 import cr.co.ctpcit.citsacbackend.TestProvider;
-import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
@@ -21,7 +20,7 @@ class ExamDaiDtoTest {
   void serializeJsonExamDai() throws IOException {
     ExamDaiDto exam = TestProvider.provideDaiExamDto();
 
-    assertThat(tester.write(exam)).isEqualToJson("DaiExamDtoJsonExpected.json");
+    assertThat(tester.write(exam)).isEqualToJson("ExamDaiDtoJsonExpected.json");
     assertThat(tester.write(exam)).hasJsonPathNumberValue("@.id");
     assertThat(tester.write(exam)).extractingJsonPathNumberValue("@.id").isEqualTo(2);
     assertThat(tester.write(exam)).hasJsonPathStringValue("@.examType");
@@ -41,8 +40,6 @@ class ExamDaiDtoTest {
               "questionType": "DAI",
               "questionText": "¿Cómo te sientes el día de hoy?",
               "imageUrl": null,
-              "questionGrade": "SECOND",
-              "questionLevel": "EASY",
               "selectionType": "PARAGRAPH",
               "deleted": false,
               "response": "Me siento muy bien, aunque con un poco de sueño."
@@ -53,9 +50,9 @@ class ExamDaiDtoTest {
 
     ExamDaiDto examDto = TestProvider.provideDaiExamDto();
 
-    AssertionsForClassTypes.assertThat(tester.parseObject(expected).id()).isEqualTo(2);
+    assertThat(tester.parseObject(expected).id()).isEqualTo(2);
     assertThat(tester.parseObject(expected).examType()).isEqualTo(examDto.examType());
-    AssertionsForClassTypes.assertThat(tester.parseObject(expected).responses().size())
+    assertThat(tester.parseObject(expected).responses().size())
         .isEqualTo(examDto.responses().size());
   }
 }

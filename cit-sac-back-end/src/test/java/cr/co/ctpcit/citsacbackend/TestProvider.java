@@ -1,5 +1,8 @@
 package cr.co.ctpcit.citsacbackend;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.AcademicExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.DaiExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.EnglishExamEntity;
@@ -137,7 +140,7 @@ public class TestProvider {
     DocumentEntity document = new DocumentEntity();
     document.setId(1L);
     document.setDocumentName("Other Document Sofía");
-    document.setDocType(DocType.OT);
+    document.setDocumentType(DocType.OT);
     document.setDocumentUrl("/home/user/docs/sofia_other.pdf");
 
     return document;
@@ -220,23 +223,23 @@ public class TestProvider {
     return examDayDtoList;
   }
 
-  public static ExamEntity provideExam() {
+  public static ExamEntity provideNonSavedExam() {
     return ExamEntity.builder().id(null).enrollment(provideEnrollment()).examDate(Instant.now())
         .examType(ExamType.ACA).responses(new HashMap<>()).build();
   }
 
-  public static EnglishExamEntity provideEnglishExam() {
+  public static EnglishExamEntity provideNonSavedEnglishExam() {
     return EnglishExamEntity.builder().id(null).trackTestId(1L).level(EnglishLevel.B2)
         .core((byte) 1).build();
   }
 
-  public static DaiExamEntity provideDaiExam() {
+  public static DaiExamEntity provideNonSavedDaiExam() {
     return DaiExamEntity.builder().id(null).comment(
             "El estudiante menciona una situación de acoso escolar en su institución anterior, aparte de eso, todo bien.")
         .recommendation(Recommendation.ADMIT).build();
   }
 
-  public static AcademicExamEntity provideAcademicExam() {
+  public static AcademicExamEntity provideNonSavedAcademicExam() {
     return AcademicExamEntity.builder().id(null).grade(new BigDecimal("85.00")).build();
   }
 
@@ -270,5 +273,195 @@ public class TestProvider {
         .enrollment(EnrollmentMapper.convertToDto(provideEnrollment()).id()).examDate(Instant.EPOCH)
         .examType(ExamType.DAI).responses(List.of(provideQuestionDaiDto())).build();
   }
+
+  public static AcademicExamDto provideAcademicExamDto() throws JsonProcessingException {
+    String responses = """
+          [
+           {
+             "id": 26,
+             "deleted": false,
+             "imageUrl": null,
+             "questionText": "Teniendo como referencia la relación del par base, elija la alternativa que mantiene dicha relación análoga. SUMAR : MULTIPLICAR",
+             "questionType": "ACA",
+             "selectionType": "SINGLE",
+             "questionOptions": [
+               {
+                 "id": 81,
+                 "option": "Restar : Dividir",
+                 "selected": true,
+                 "isCorrect": true
+               },
+               {
+                 "id": 82,
+                 "option": "Sumar : Restar",
+                 "selected": false,
+                 "isCorrect": false
+               },
+               {
+                 "id": 83,
+                 "option": "Multiplicar : Dividir",
+                 "selected": false,
+                 "isCorrect": false
+               },
+               {
+                 "id": 84,
+                 "option": "Sumar : Multiplicar",
+                 "selected": false,
+                 "isCorrect": false
+               }
+             ]
+           },
+           {
+             "id": 29,
+             "deleted": false,
+             "imageUrl": null,
+             "questionText": "Quienes hayan leído grandes obras literarias, haciendo de ellas parte de su vida,",
+             "questionType": "ACA",
+             "selectionType": "SINGLE",
+             "questionOptions": [
+               {
+                 "id": 93,
+                 "option": "Son personas cultas",
+                 "selected": false,
+                 "isCorrect": false
+               },
+               {
+                 "id": 94,
+                 "option": "Son personas sabias",
+                 "selected": false,
+                 "isCorrect": false
+               },
+               {
+                 "id": 95,
+                 "option": "Son personas educadas",
+                 "selected": false,
+                 "isCorrect": false
+               },
+               {
+                 "id": 96,
+                 "option": "Son personas que han enriquecido su vida",
+                 "selected": true,
+                 "isCorrect": true
+               }
+             ]
+           },
+           {
+             "id": 12,
+             "deleted": false,
+             "imageUrl": null,
+             "questionText": "Un frasco contiene cincuenta monedas de 100 colones y pesa 1400g, si el frasco vacío pesa 250g entones el peso, en gramos, de una moneda es",
+             "questionType": "ACA",
+             "selectionType": "SINGLE",
+             "questionOptions": [
+               {
+                 "id": 25,
+                 "option": "20g",
+                 "selected": false,
+                 "isCorrect": false
+               },
+               {
+                 "id": 26,
+                 "option": "25g",
+                 "selected": false,
+                 "isCorrect": false
+               },
+               {
+                 "id": 27,
+                 "option": "23g",
+                 "selected": true,
+                 "isCorrect": true
+               },
+               {
+                 "id": 28,
+                 "option": "35g",
+                 "selected": false,
+                 "isCorrect": false
+               }
+             ]
+           },
+           {
+             "id": 25,
+             "deleted": false,
+             "imageUrl": null,
+             "questionText": "Teniendo como referencia la relación del par base, elija la alternativa que mantiene dicha relación análoga. MONÁRQUICO : DESORDENADO",
+             "questionType": "ACA",
+             "selectionType": "SINGLE",
+             "questionOptions": [
+               {
+                 "id": 77,
+                 "option": "Dictador : Violento",
+                 "selected": false,
+                 "isCorrect": false
+               },
+               {
+                 "id": 78,
+                 "option": "Anarquía : Orden",
+                 "selected": false,
+                 "isCorrect": false
+               },
+               {
+                 "id": 79,
+                 "option": "Democrático : Justo",
+                 "selected": false,
+                 "isCorrect": false
+               },
+               {
+                 "id": 80,
+                 "option": "Anarquía : Desorden",
+                 "selected": true,
+                 "isCorrect": true
+               }
+             ]
+           },
+           {
+             "id": 16,
+             "deleted": false,
+             "imageUrl": null,
+             "questionText": "Una cocina eléctrica, con dos discos encendidos consume 1200 colones al estar encendidos por 3 horas. El gasto, en colones, si se encienden los 4 discos por dos horas corresponde a",
+             "questionType": "ACA",
+             "selectionType": "SINGLE",
+             "questionOptions": [
+               {
+                 "id": 41,
+                 "option": "1200 colones",
+                 "selected": false,
+                 "isCorrect": false
+               },
+               {
+                 "id": 42,
+                 "option": "1600 colones",
+                 "selected": true,
+                 "isCorrect": true
+               },
+               {
+                 "id": 43,
+                 "option": "2400 colones",
+                 "selected": false,
+                 "isCorrect": false
+               },
+               {
+                 "id": 44,
+                 "option": "3200 colones",
+                 "selected": false,
+                 "isCorrect": false
+               }
+             ]
+           }
+         ]
+        """;
+
+    ObjectMapper mapper = new ObjectMapper();
+    List<QuestionAcaDto> questions = mapper.readValue(responses,
+        mapper.getTypeFactory().constructCollectionLikeType(List.class, QuestionAcaDto.class));
+
+    ExamAcaDto examAcaDto =
+        ExamAcaDto.builder().id(1L).enrollment(10L).examType(ExamType.ACA).examDate(Instant.parse("2025-03-25T17:54:12Z"))
+            .responses(questions).build();
+
+    return AcademicExamDto.builder().id(1L).exam(examAcaDto).grade(new BigDecimal("100.00"))
+        .build();
+  }
+
+
 }
 

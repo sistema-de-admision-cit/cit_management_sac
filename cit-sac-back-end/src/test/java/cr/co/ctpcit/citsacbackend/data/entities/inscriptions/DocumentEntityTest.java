@@ -20,7 +20,7 @@ class DocumentEntityTest {
     DocumentEntity document = new DocumentEntity();
     document.setId(1L);
     document.setDocumentName("Document 1");
-    document.setDocType(DocType.OT);
+    document.setDocumentType(DocType.OT);
     document.setDocumentUrl("path/to/document");
 
     assertThat(json.write(document)).isStrictlyEqualToJson("DocumentEntityJsonExpected.json");
@@ -41,7 +41,7 @@ class DocumentEntityTest {
     DocumentEntity document = new DocumentEntity();
     document.setId(1L);
     document.setDocumentName("Document 1");
-    document.setDocType(DocType.OT);
+    document.setDocumentType(DocType.OT);
     document.setDocumentUrl("path/to/document");
 
     assertThat(json.parseObject(expected).getId()).isEqualTo(1);

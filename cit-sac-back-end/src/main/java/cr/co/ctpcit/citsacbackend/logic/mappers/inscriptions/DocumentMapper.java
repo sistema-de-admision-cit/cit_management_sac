@@ -14,7 +14,7 @@ import java.util.List;
 public class DocumentMapper {
   public static DocumentDto convertToDto(DocumentEntity documentEntity) {
     return DocumentDto.builder().id(documentEntity.getId())
-        .documentType(documentEntity.getDocType()).documentName(documentEntity.getDocumentName())
+        .documentType(documentEntity.getDocumentType()).documentName(documentEntity.getDocumentName())
         .build();
   }
 
@@ -23,7 +23,7 @@ public class DocumentMapper {
   }
 
   public static DocumentEntity convertToEntity(DocumentDto document) {
-    return DocumentEntity.builder().id(document.id()).docType(document.documentType())
+    return DocumentEntity.builder().id(document.id()).documentType(document.documentType())
         .documentName(document.documentName()).build();
   }
 }
