@@ -34,8 +34,8 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   @Override
   public void updateQuantity(int daiQuestionsQuantity, int academicQuestionsQuantity) {
 
-    if (daiQuestionsQuantity <= 0 && academicQuestionsQuantity <= 0) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La cantidad de preguntas debe ser mayor a 1");
+    if (daiQuestionsQuantity < 0 || academicQuestionsQuantity < 0) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La cantidad de preguntas debe ser mayor o igual a 0");
     }
 
     //Update DAI_EXAM_QUESTIONS_QUANTITY
