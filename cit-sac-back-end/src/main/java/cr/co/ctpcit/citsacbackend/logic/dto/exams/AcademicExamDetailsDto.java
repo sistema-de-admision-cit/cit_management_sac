@@ -10,6 +10,6 @@ import java.math.BigDecimal;
  * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.exams.AcademicExamEntity}
  */
 @Builder
-public record AcademicExamDto(Long id, ExamAcaDto exam, @NotNull BigDecimal grade)
+public record AcademicExamDetailsDto(Long id, ExamAcaDto exam, @NotNull BigDecimal grade)
     implements Serializable {
 }

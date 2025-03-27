@@ -7,11 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.AcademicExamDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamAcaDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamDaiDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.QuestionAcaDto;
-import lombok.SneakyThrows;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.*;
 
 import java.util.List;
 
@@ -31,11 +27,10 @@ public class ExamMapper {
         .responses(ExamQuestionMapper.questionsToQuestionsDaiDto(questions)).build();
   }
 
-  public static AcademicExamDto academicExamToExamAcaDto(ExamEntity examEntity)
+  public static AcademicExamDetailsDto academicExamToAcademicExamDetailsDto(ExamEntity examEntity)
       throws JsonProcessingException {
-    if (examEntity.getAcademicExam() == null || !examEntity.getExamType().equals(ExamType.ACA)) {
+    if (extracted(examEntity))
       return null;
-    }
 
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(new JavaTimeModule());
@@ -48,18 +43,58 @@ public class ExamMapper {
         .enrollment(examEntity.getEnrollment().getId()).examType(examEntity.getExamType())
         .examDate(examEntity.getExamDate()).responses(questions).build();
 
-    return AcademicExamDto.builder().id(examEntity.getId())
+    return AcademicExamDetailsDto.builder().id(examEntity.getId())
         .grade(examEntity.getAcademicExam().getGrade()).exam(exam).build();
   }
 
-  public static List<AcademicExamDto> academicExamsToExamAcaDto(List<ExamEntity> exams) {
+  public static List<AcademicExamDetailsDto> academicExamsToAcademicExamDetailsDto(
+      List<ExamEntity> exams) {
     return exams.stream().map(e -> {
       try {
-        return academicExamToExamAcaDto(e);
+        return academicExamToAcademicExamDetailsDto(e);
       } catch (JsonProcessingException e1) {
         e1.printStackTrace();
         return null;
       }
     }).toList();
+  }
+
+  public static List<DaiExamDetailsDto> daiExamsToDaiExamDetailsDto(List<ExamEntity> exams) {
+    return exams.stream().map(e -> {
+      try {
+        return daiExamToDaiExamDetailsDto(e);
+      } catch (JsonProcessingException e1) {
+        return null;
+      }
+    }).toList();
+  }
+
+  private static DaiExamDetailsDto daiExamToDaiExamDetailsDto(ExamEntity examEntity)
+      throws JsonProcessingException {
+    if (extracted(examEntity))
+      return null;
+
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    String responses = (String) examEntity.getResponses().get("exam");
+    List<QuestionDaiDto> questions = mapper.readValue(responses,
+        mapper.getTypeFactory().constructCollectionLikeType(List.class, QuestionDaiDto.class));
+
+    ExamDaiDto exam = ExamDaiDto.builder().id(examEntity.getAcademicExam().getId())
+        .enrollment(examEntity.getEnrollment().getId()).examType(examEntity.getExamType())
+        .examDate(examEntity.getExamDate()).responses(questions).build();
+
+    return DaiExamDetailsDto.builder().id(examEntity.getId())
+        .comment(examEntity.getDaiExam().getComment())
+        .recommendation(examEntity.getDaiExam().getRecommendation()).exam(exam).build();
+
+  }
+
+  private static boolean extracted(ExamEntity examEntity) {
+    if (examEntity.getAcademicExam() == null || !examEntity.getExamType().equals(ExamType.ACA)) {
+      return true;
+    }
+    return false;
   }
 }

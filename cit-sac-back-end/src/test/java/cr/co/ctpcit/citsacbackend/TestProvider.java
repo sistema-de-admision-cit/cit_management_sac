@@ -1,7 +1,6 @@
 package cr.co.ctpcit.citsacbackend;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.AcademicExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.DaiExamEntity;
@@ -274,7 +273,7 @@ public class TestProvider {
         .examType(ExamType.DAI).responses(List.of(provideQuestionDaiDto())).build();
   }
 
-  public static AcademicExamDto provideAcademicExamDto() throws JsonProcessingException {
+  public static AcademicExamDetailsDto provideAcademicExamDto() throws JsonProcessingException {
     String responses = """
           [
            {
@@ -458,7 +457,7 @@ public class TestProvider {
         ExamAcaDto.builder().id(1L).enrollment(10L).examType(ExamType.ACA).examDate(Instant.parse("2025-03-25T17:54:12Z"))
             .responses(questions).build();
 
-    return AcademicExamDto.builder().id(1L).exam(examAcaDto).grade(new BigDecimal("100.00"))
+    return AcademicExamDetailsDto.builder().id(1L).exam(examAcaDto).grade(new BigDecimal("100.00"))
         .build();
   }
 

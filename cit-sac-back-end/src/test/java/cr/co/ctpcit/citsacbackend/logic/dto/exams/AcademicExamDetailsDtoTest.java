@@ -1,6 +1,5 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.exams;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.co.ctpcit.citsacbackend.TestProvider;
 import org.assertj.core.api.AssertionsForClassTypes;
@@ -14,16 +13,16 @@ import java.io.IOException;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @JsonTest
-class AcademicExamDtoTest {
+class AcademicExamDetailsDtoTest {
   @Autowired
-  JacksonTester<AcademicExamDto> tester;
+  JacksonTester<AcademicExamDetailsDto> tester;
 
   @Autowired
   ObjectMapper mapper;
 
   @Test
   void serializeAcademicExamDto() throws IOException {
-    AcademicExamDto exam = TestProvider.provideAcademicExamDto();
+    AcademicExamDetailsDto exam = TestProvider.provideAcademicExamDto();
 
     assertThat(tester.write(exam)).isEqualToJson("AcademicExamDtoJsonExpected.json");
     assertThat(tester.write(exam)).hasJsonPathNumberValue("@.id");
@@ -218,7 +217,7 @@ class AcademicExamDtoTest {
         }
         """;
 
-    AcademicExamDto exam = TestProvider.provideAcademicExamDto();
+    AcademicExamDetailsDto exam = TestProvider.provideAcademicExamDto();
 
     assertThat(tester.parseObject(json).id()).isEqualTo(1);
     assertThat(tester.parseObject(json).exam().examType()).isEqualTo(exam.exam().examType());

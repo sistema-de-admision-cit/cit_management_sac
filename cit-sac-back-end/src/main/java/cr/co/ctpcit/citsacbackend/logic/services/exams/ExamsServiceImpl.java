@@ -19,6 +19,7 @@ import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.EnrollmentRepos
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.StudentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.questions.QuestionRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.*;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.exams.ExamMapper;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -134,13 +135,8 @@ public class ExamsServiceImpl implements ExamsService {
   }
 
   @Override
-  public List<AcademicExamDto> getExistingAcademicExams(String id) {
-    List<EnrollmentEntity> enrollments =
-        enrollmentRepository.findAllByStudent_StudentPerson_IdNumber(id);
-
-    if (enrollments.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron exámenes.");
-    }
+  public List<AcademicExamDetailsDto> getExistingAcademicExams(String idNumber) {
+    List<EnrollmentEntity> enrollments = getEnrollmentEntities(idNumber);
 
     //Create the list of AcademicExamEntities
     List<ExamEntity> academicExams = new ArrayList<>();
@@ -152,7 +148,52 @@ public class ExamsServiceImpl implements ExamsService {
       }
     }
 
-    return ExamMapper.academicExamsToExamAcaDto(academicExams);
+    return ExamMapper.academicExamsToAcademicExamDetailsDto(academicExams);
+  }
+
+  @Override
+  public List<DaiExamDetailsDto> getExistingDaiExams(String idNumber) {
+    List<EnrollmentEntity> enrollments = getEnrollmentEntities(idNumber);
+
+    //Create the list of AcademicExamEntities
+    List<ExamEntity> daiExams = new ArrayList<>();
+    for (EnrollmentEntity enrollmentInUse : enrollments) {
+      for (ExamEntity exam : enrollmentInUse.getExams()) {
+        if (exam.getExamType().equals(ExamType.DAI)) {
+          daiExams.add(exam);
+        }
+      }
+    }
+
+    return ExamMapper.daiExamsToDaiExamDetailsDto(daiExams);
+  }
+
+  @Override
+  public List<StudentExamsDto> getStudentsByExamType(ExamType examType) {
+    //Get all students
+    List<StudentEntity> students = studentRepository.findAll();
+
+    List<StudentExamsDto> studentsExams = new ArrayList<>();
+    if(examType.equals(ExamType.DAI)) {
+      List<ExamEntity> daiExams = new ArrayList<>();
+      for(StudentEntity student: students) {
+
+      }
+    } else {
+
+    }
+
+    return List.of();
+  }
+
+  private List<EnrollmentEntity> getEnrollmentEntities(String id) {
+    List<EnrollmentEntity> enrollments =
+        enrollmentRepository.findAllByStudent_StudentPerson_IdNumber(id);
+
+    if (enrollments.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron exámenes.");
+    }
+    return enrollments;
   }
 
   /**

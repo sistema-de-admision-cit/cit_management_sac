@@ -7,7 +7,7 @@ import cr.co.ctpcit.citsacbackend.data.entities.exams.AcademicExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.DaiExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.EnglishExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.AcademicExamDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.AcademicExamDetailsDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.exams.ExamMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,12 +120,12 @@ class ExamRepositoryTest {
     ExamEntity saveExam = examRepository.save(exam);
 
     //get
-    AcademicExamDto academicExamDto = ExamMapper.academicExamToExamAcaDto(exam);
+    AcademicExamDetailsDto academicExamDetailsDto = ExamMapper.academicExamToAcademicExamDetailsDto(exam);
 
     //assert
-    assertThat(academicExamDto).isNotNull();
-    assert academicExamDto != null;
-    assertThat(academicExamDto.exam()).isNotNull();
-    assertThat(academicExamDto.exam().responses()).isNotNull();
+    assertThat(academicExamDetailsDto).isNotNull();
+    assert academicExamDetailsDto != null;
+    assertThat(academicExamDetailsDto.exam()).isNotNull();
+    assertThat(academicExamDetailsDto.exam().responses()).isNotNull();
   }
 }

@@ -26,7 +26,7 @@ class AuthControllerTest {
   @Order(1)
   public void testLoginEndpoint() {
     HttpHeaders headers = new HttpHeaders();
-    headers.setBasicAuth("rocio@cit.co.cr", "Mate8520");
+    headers.setBasicAuth("rocio@cit.co.cr", "Mate8520$");
 
     HttpEntity<String> entity = new HttpEntity<>(null, headers);
     ResponseEntity<AuthResponseDto> response =
@@ -45,13 +45,16 @@ class AuthControllerTest {
   public void testChangePasswordEndpoint() {
     ResponseEntity<String> response =
         restTemplate.exchange("/api/auth/change-password", HttpMethod.PUT,
-            getChangePasswordRequest("Mate8520", "Sociales1650", "Sociales1650"), String.class);
+            getChangePasswordRequest("Mate8520$", "Sociales1650$", "Sociales1650$"), String.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("Contraseña actualizada correctamente.", response.getBody());
 
     restTemplate.exchange("/api/auth/change-password", HttpMethod.PUT,
-        getChangePasswordRequest("Sociales1650", "Mate8520", "Mate8520"), String.class);
+        getChangePasswordRequest("Sociales1650$", "Mate8520$", "Mate8520$"), String.class);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("Contraseña actualizada correctamente.", response.getBody());
   }
 
   private static HttpEntity<ChangePasswordRequestDTO> getChangePasswordRequest(
