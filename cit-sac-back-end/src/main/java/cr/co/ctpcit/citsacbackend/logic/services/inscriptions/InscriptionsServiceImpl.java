@@ -235,7 +235,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     EnrollmentEntity enrollmentEntity = EnrollmentMapper.convertToEntity(inscription);
 
     // Set student to the enrollment
-    enrollmentEntity.setStudent(student);
+    student.addEnrollment(enrollmentEntity);
 
     // Set pending status to the enrollment
     enrollmentEntity.setStatus(ProcessStatus.PENDING);

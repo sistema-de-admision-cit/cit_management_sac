@@ -3,7 +3,9 @@ package cr.co.ctpcit.citsacbackend.rest.exams;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
 import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -41,7 +43,7 @@ class ManagementExamControllerTest {
   @Order(2)
   void getAcademicExamsOfANonExistentStudent() {
     ResponseEntity<String> response =
-            restTemplate.getForEntity("/api/management-exams/academic-exams/999999999", String.class);
+        restTemplate.getForEntity("/api/management-exams/academic-exams/999999999", String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
   }
@@ -50,7 +52,7 @@ class ManagementExamControllerTest {
   @Order(3)
   void getAcademicExamsOfAStudentWithNoExams() {
     ResponseEntity<String> response =
-            restTemplate.getForEntity("/api/management-exams/academic-exams/230987654", String.class);
+        restTemplate.getForEntity("/api/management-exams/academic-exams/230987654", String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -60,4 +62,29 @@ class ManagementExamControllerTest {
     assertThat(enrollmentCount).isEqualTo(0);
   }
 
+  @Test
+  @Order(3)
+  void getAllStudentsThatHasDoneAcademicExams() {
+    ResponseEntity<String> response =
+        restTemplate.getForEntity("/api/management-exams/students/ACA", String.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+    int studentsCount = documentContext.read("$.length()");
+    assertThat(studentsCount).isEqualTo(1);
+  }
+
+  @Test
+  @Order(4)
+  void getAllStudentsThatHasDoneDaiExams() {
+    ResponseEntity<String> response =
+        restTemplate.getForEntity("/api/management-exams/students/DAI", String.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+    int studentsCount = documentContext.read("$.length()");
+    assertThat(studentsCount).isEqualTo(1);
+  }
 }

@@ -21,6 +21,7 @@ import cr.co.ctpcit.citsacbackend.data.repositories.questions.QuestionRepository
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.exams.ExamMapper;
+import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.StudentMapper;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -173,17 +174,37 @@ public class ExamsServiceImpl implements ExamsService {
     //Get all students
     List<StudentEntity> students = studentRepository.findAll();
 
-    List<StudentExamsDto> studentsExams = new ArrayList<>();
-    if(examType.equals(ExamType.DAI)) {
-      List<ExamEntity> daiExams = new ArrayList<>();
-      for(StudentEntity student: students) {
-
-      }
-    } else {
-
+    if (students.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron estudiantes.");
     }
 
-    return List.of();
+    //Create the list of StudentExamsDto
+    List<StudentExamsDto> studentExams = new ArrayList<>();
+    for (StudentEntity student : students) {
+      //Get the exams by type
+      List<ExamEntity> exams = findExamsByType(student, examType);
+
+      if (exams.isEmpty()) {
+        continue;
+      }
+
+      studentExams.add(StudentMapper.studentToStudentExamsDto(student, exams, examType));
+    }
+
+    return studentExams;
+  }
+
+  private List<ExamEntity> findExamsByType(StudentEntity student, ExamType examType) {
+    List<ExamEntity> exams = new ArrayList<>();
+    for (EnrollmentEntity enrollment : student.getEnrollments()) {
+      for (ExamEntity exam : enrollment.getExams()) {
+        if (exam.getExamType().equals(examType)) {
+          exams.add(exam);
+        }
+      }
+    }
+
+    return exams;
   }
 
   private List<EnrollmentEntity> getEnrollmentEntities(String id) {
