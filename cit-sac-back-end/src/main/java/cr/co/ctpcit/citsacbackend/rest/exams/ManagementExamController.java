@@ -6,6 +6,8 @@ import cr.co.ctpcit.citsacbackend.logic.dto.exams.DaiExamDetailsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.ExamsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,8 +45,9 @@ public class ManagementExamController {
    * Get students that have taken an academic exams
    */
   @GetMapping("/students/{examType}")
-  public ResponseEntity<Iterable<StudentExamsDto>> getStudentsByExamType(@PathVariable ExamType examType) {
-    Iterable<StudentExamsDto> students = examsService.getStudentsByExamType(examType);
+  public ResponseEntity<Iterable<StudentExamsDto>> getStudentsByExamType(
+      @PathVariable ExamType examType, @PageableDefault(page = 0, size = 25) Pageable pageable) {
+    Iterable<StudentExamsDto> students = examsService.getStudentsByExamType(examType, pageable);
 
     return ResponseEntity.ok(students);
   }

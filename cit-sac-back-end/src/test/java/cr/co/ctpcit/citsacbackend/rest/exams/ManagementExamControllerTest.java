@@ -87,4 +87,17 @@ class ManagementExamControllerTest {
     int studentsCount = documentContext.read("$.length()");
     assertThat(studentsCount).isEqualTo(1);
   }
+
+  @Test
+  @Order(4)
+  void getAllStudentsThatHasDoneDaiExams_Pageable() {
+    ResponseEntity<String> response =
+        restTemplate.getForEntity("/api/management-exams/students/DAI?page=0&size=10", String.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+    int studentsCount = documentContext.read("$.length()");
+    assertThat(studentsCount).isEqualTo(1);
+  }
 }

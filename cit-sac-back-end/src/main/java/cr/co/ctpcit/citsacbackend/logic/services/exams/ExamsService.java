@@ -7,6 +7,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.exams.DaiExamDetailsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamAcaDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamDaiDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,5 +26,5 @@ public interface ExamsService {
 
   List<DaiExamDetailsDto> getExistingDaiExams(String idNumber);
 
-  List<StudentExamsDto> getStudentsByExamType(ExamType examType);
+  List<StudentExamsDto> getStudentsByExamType(ExamType examType, Pageable pageable);
 }

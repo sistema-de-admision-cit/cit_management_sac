@@ -24,6 +24,7 @@ import cr.co.ctpcit.citsacbackend.logic.mappers.exams.ExamMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.StudentMapper;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -170,9 +171,9 @@ public class ExamsServiceImpl implements ExamsService {
   }
 
   @Override
-  public List<StudentExamsDto> getStudentsByExamType(ExamType examType) {
+  public List<StudentExamsDto> getStudentsByExamType(ExamType examType, Pageable pageable) {
     //Get all students
-    List<StudentEntity> students = studentRepository.findAll();
+    List<StudentEntity> students = studentRepository.findAll(pageable).toList();
 
     if (students.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron estudiantes.");
