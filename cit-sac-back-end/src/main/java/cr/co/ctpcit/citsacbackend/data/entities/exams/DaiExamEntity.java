@@ -33,4 +33,9 @@ public class DaiExamEntity {
   @Column(name = "recommendation", columnDefinition = "enum('ADMIT', 'REJECT')")
   private Recommendation recommendation;
 
+  @NotNull
+  @ColumnDefault("0")
+  @Column(name = "reviewed", nullable = false)
+  private Boolean reviewed = false;
+
 }

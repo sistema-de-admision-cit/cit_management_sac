@@ -3,6 +3,7 @@ package cr.co.ctpcit.citsacbackend.logic.dto.exams;
 import cr.co.ctpcit.citsacbackend.data.enums.QuestionType;
 import cr.co.ctpcit.citsacbackend.data.enums.SelectionType;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 /**
@@ -18,5 +19,5 @@ import lombok.*;
 @Builder
 public record QuestionDaiDto(Long id, @NotNull QuestionType questionType, String questionText,
                              String imageUrl, @NotNull SelectionType selectionType, boolean deleted,
-                             String response) {
+                             @Size(max = 512) String response) {
 }

@@ -31,5 +31,5 @@ public interface InscriptionsService {
 
   DocumentDto saveDocument(String documentType, Long enrollmentId, MultipartFile file);
 
-  Iterable<EnrollmentDto> findEnrollmentsByStudentId(String idNumber);
+  Iterable<EnrollmentDto> findPendingEnrollmentsByStudentId(String idNumber);
 }

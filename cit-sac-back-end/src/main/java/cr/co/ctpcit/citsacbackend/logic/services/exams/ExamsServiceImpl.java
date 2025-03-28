@@ -195,6 +195,11 @@ public class ExamsServiceImpl implements ExamsService {
     return studentExams;
   }
 
+  @Override
+  public void updateDaiExam(DaiExamDetailsDto daiExamDetailsDto) {
+
+  }
+
   private List<ExamEntity> findExamsByType(StudentEntity student, ExamType examType) {
     List<ExamEntity> exams = new ArrayList<>();
     for (EnrollmentEntity enrollment : student.getEnrollments()) {

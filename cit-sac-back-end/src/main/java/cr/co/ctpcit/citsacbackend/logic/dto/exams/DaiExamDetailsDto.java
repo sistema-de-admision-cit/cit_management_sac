@@ -11,5 +11,5 @@ import java.io.Serializable;
  */
 @Builder
 public record DaiExamDetailsDto(Long id, ExamDaiDto exam, @Size(max = 255) String comment,
-                                Recommendation recommendation) implements Serializable {
+                                Recommendation recommendation, Boolean reviewed) implements Serializable {
 }

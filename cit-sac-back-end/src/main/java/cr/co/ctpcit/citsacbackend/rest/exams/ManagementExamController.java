@@ -9,14 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/management-exams")
 @RequiredArgsConstructor
+@Validated
 public class ManagementExamController {
   private final ExamsService examsService;
 
@@ -50,5 +49,13 @@ public class ManagementExamController {
     Iterable<StudentExamsDto> students = examsService.getStudentsByExamType(examType, pageable);
 
     return ResponseEntity.ok(students);
+  }
+
+  //TODO: Search by idNumber, name, lastName, and ExamType.
+
+  @PutMapping("/dai-exams")
+  public ResponseEntity<Void> updateDaiExam(@RequestBody DaiExamDetailsDto daiExamDetailsDto) {
+    examsService.updateDaiExam(daiExamDetailsDto);
+    return ResponseEntity.ok().build();
   }
 }

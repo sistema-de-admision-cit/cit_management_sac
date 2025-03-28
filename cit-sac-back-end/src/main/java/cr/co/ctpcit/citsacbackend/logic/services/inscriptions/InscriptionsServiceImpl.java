@@ -85,22 +85,23 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     if (value.matches("\\d+")) {
       List<StudentEntity> student =
           studentRepository.findStudentByStudentPerson_IdNumberContaining(value);
-      if(!student.isEmpty()) {
-        enrollments = enrollmentRepository.findAllByStudentIn(student);
+      if (!student.isEmpty()) {
+        enrollments =
+            enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(student);
       }
     }
 
     if (enrollments.isEmpty()) {
       // Find persons by first name, first surname or second surname
       List<PersonEntity> findings =
-          personRepository.findByFirstNameContainingOrFirstSurnameContainingOrSecondSurnameContaining(
-              value, value, value);
+          personRepository.findByFirstNameFirstSurnameSecondSurnameLike(value);
 
       // Find students by persons
       List<StudentEntity> students = studentRepository.findAllByStudentPersonIn(findings);
 
       // Find enrollments by students
-      enrollments = enrollmentRepository.findAllByStudentIn(students);
+      enrollments =
+          enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(students);
     }
 
     return EnrollmentMapper.convertToDtoList(enrollments);
@@ -167,7 +168,8 @@ public class InscriptionsServiceImpl implements InscriptionsService {
         inscription.student().person().idNumber()).orElse(null);
 
     if (student != null) {
-      List<EnrollmentEntity> studentEnrollments = enrollmentRepository.findAllByStudent(student);
+      List<EnrollmentEntity> studentEnrollments =
+          enrollmentRepository.findAllByStudentPerson_IdNumber_ThatAreInProcess(student);
       if (studentEnrollments.stream()
           .anyMatch(e -> e.getExamDate().equals(inscription.examDate()))) {
         throw new EnrollmentException("El estudiante ya está inscrito para la fecha seleccionada");
@@ -416,14 +418,13 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   }
 
   @Override
-  public List<EnrollmentDto> findEnrollmentsByStudentId(String idNumber) {
-    Optional<StudentEntity> student =
-        studentRepository.findStudentEntityByStudentPerson_IdNumber(idNumber);
-    if (student.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-          "No hay un estudiante con el id " + idNumber);
-    }
-    List<EnrollmentEntity> enrollments = enrollmentRepository.findAllByStudent(student.get());
+  public List<EnrollmentDto> findPendingEnrollmentsByStudentId(String idNumber) {
+    StudentEntity student = studentRepository.findStudentEntityByStudentPerson_IdNumber(idNumber)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+            "No hay un estudiante con el id " + idNumber));
+
+    List<EnrollmentEntity> enrollments =
+        enrollmentRepository.findAllByStudentPerson_IdNumber_ThatAreInProcess(student);
 
     return EnrollmentMapper.convertToDtoList(enrollments);
   }

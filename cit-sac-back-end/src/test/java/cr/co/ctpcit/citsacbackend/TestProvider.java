@@ -72,6 +72,7 @@ public class TestProvider {
     student.setBirthDate(LocalDate.parse("2010-03-12"));
     student.setPreviousSchool("Escuela La Sabana");
     student.setHasAccommodations(false);
+    student.setPreviousGrades(new BigDecimal("0.00"));
 
     return student;
   }

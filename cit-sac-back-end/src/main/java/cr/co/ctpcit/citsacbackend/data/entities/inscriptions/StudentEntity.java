@@ -7,8 +7,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,10 @@ public class StudentEntity implements Serializable {
   @Column(name = "has_accommodations", nullable = false)
   @Builder.Default
   private Boolean hasAccommodations = false;
+
+  @ColumnDefault("0.00")
+  @Column(name = "previous_grades", nullable = false, precision = 5, scale = 2)
+  private BigDecimal previousGrades;
 
   @JsonIgnore
   @Builder.Default

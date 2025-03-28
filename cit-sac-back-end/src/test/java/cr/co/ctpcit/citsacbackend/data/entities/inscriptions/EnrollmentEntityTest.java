@@ -19,6 +19,8 @@ class EnrollmentEntityTest {
   void serializeJson() throws IOException {
     EnrollmentEntity enrollment = TestProvider.provideEnrollment();
 
+    System.out.println(json.write(enrollment).getJson());
+
     assertThat(json.write(enrollment)).isStrictlyEqualToJson("EnrollmentEntityJsonExpected.json");
     assertThat(json.write(enrollment)).hasJsonPathNumberValue("@.id");
     assertThat(json.write(enrollment)).extractingJsonPathNumberValue("@.id").isEqualTo(1);
@@ -46,6 +48,7 @@ class EnrollmentEntityTest {
             "birthDate": "2010-03-12",
             "previousSchool": "Escuela La Sabana",
             "hasAccommodations": false,
+            "previousGrades": 0.00,
             "parents": [
               {
                 "parent": {

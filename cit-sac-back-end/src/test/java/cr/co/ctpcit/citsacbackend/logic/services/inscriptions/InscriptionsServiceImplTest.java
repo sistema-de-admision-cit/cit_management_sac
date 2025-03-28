@@ -9,7 +9,6 @@ import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.StudentReposito
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.EnrollmentMapper;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -64,7 +63,7 @@ class InscriptionsServiceImplTest {
     when(studentRepository.findStudentByStudentPerson_IdNumberContaining(value)).thenReturn(
         List.of(TestProvider.provideStudent()));
     when(
-        enrollmentRepository.findAllByStudentIn(List.of(TestProvider.provideStudent()))).thenReturn(
+        enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(List.of(TestProvider.provideStudent()))).thenReturn(
         TestProvider.provideEnrollmentList());
 
     List<EnrollmentDto> inscriptions = inscriptionsService.findStudentByValue(value);

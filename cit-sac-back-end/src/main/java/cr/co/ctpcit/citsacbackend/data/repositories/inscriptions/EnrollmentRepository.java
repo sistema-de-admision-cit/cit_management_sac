@@ -18,9 +18,16 @@ import java.util.List;
 public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Long> {
   List<EnrollmentEntity> findAllByStudent(@NotNull StudentEntity student);
 
+  @Query(
+      "SELECT e FROM EnrollmentEntity e WHERE e.student = :student AND (e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE')")
+  List<EnrollmentEntity> findAllByStudentPerson_IdNumber_ThatAreInProcess(@NotNull StudentEntity student);
+
   List<EnrollmentEntity> findAllByStudent_StudentPerson_IdNumber(@NotNull String idNumber);
 
-  List<EnrollmentEntity> findAllByStudentIn(List<StudentEntity> students);
+  @Query(
+      "SELECT e FROM EnrollmentEntity e WHERE e.student IN :students AND (e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE')")
+  List<EnrollmentEntity> findAllByStudentInTheListThatHasEnrollmentsInProcess(
+      List<StudentEntity> students);
 
   @Modifying
   @Transactional

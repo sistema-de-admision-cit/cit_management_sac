@@ -87,7 +87,8 @@ public class ExamMapper {
 
     return DaiExamDetailsDto.builder().id(examEntity.getId())
         .comment(examEntity.getDaiExam().getComment())
-        .recommendation(examEntity.getDaiExam().getRecommendation()).exam(exam).build();
+        .recommendation(examEntity.getDaiExam().getRecommendation())
+        .reviewed(examEntity.getDaiExam().getReviewed()).exam(exam).build();
 
   }
 

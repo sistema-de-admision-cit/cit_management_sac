@@ -59,7 +59,7 @@ class InscriptionsControllerTest {
   void shouldReturnEnrollmentsByValueAsIdNumber() {
     //Request
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/inscriptions/search?value=191", String.class);
+        restTemplate.getForEntity("/api/inscriptions/search?value=165", String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -69,7 +69,7 @@ class InscriptionsControllerTest {
     assertThat(enrollmentCount).isEqualTo(1);
 
     JSONArray statuses = documentContext.read("$..status");
-    assertThat(statuses).containsExactlyInAnyOrder("REJECTED");
+    assertThat(statuses).containsExactlyInAnyOrder("PENDING");
   }
 
   @Test

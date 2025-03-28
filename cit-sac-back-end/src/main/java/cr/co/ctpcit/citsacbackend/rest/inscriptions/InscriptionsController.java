@@ -42,7 +42,8 @@ public class InscriptionsController {
   @GetMapping("/{id}")
   public ResponseEntity<Iterable<EnrollmentDto>> getEnrollmentsByStudentId(
       @PathVariable("id") String idNumber) {
-    Iterable<EnrollmentDto> enrollments = inscriptionsService.findEnrollmentsByStudentId(idNumber);
+    Iterable<EnrollmentDto> enrollments =
+        inscriptionsService.findPendingEnrollmentsByStudentId(idNumber);
 
     return enrollments == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(enrollments);
   }
@@ -172,7 +173,7 @@ public class InscriptionsController {
   /**
    * Delete a document
    *
-   * @param id       the id of the document
+   * @param id the id of the document
    * @return ok if the document was deleted, not found otherwise
    */
   @DeleteMapping("/documents/delete/{id}")

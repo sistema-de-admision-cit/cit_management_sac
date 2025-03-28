@@ -87,6 +87,7 @@ CREATE TABLE IF NOT EXISTS `tbl_Students` (
   `student_id` INT UNSIGNED NOT NULL,
   `birth_date` DATE NOT NULL,
   `previous_school` VARCHAR(128) NULL DEFAULT NULL,
+  `previous_grades` DECIMAL(5,2) DEFAULT 0.00,
   `has_accommodations` BOOLEAN NOT NULL,
   PRIMARY KEY (`student_id`),
   CONSTRAINT `FK_Students_Persons`

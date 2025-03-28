@@ -27,4 +27,6 @@ public interface ExamsService {
   List<DaiExamDetailsDto> getExistingDaiExams(String idNumber);
 
   List<StudentExamsDto> getStudentsByExamType(ExamType examType, Pageable pageable);
+
+  void updateDaiExam(DaiExamDetailsDto daiExamDetailsDto);
 }

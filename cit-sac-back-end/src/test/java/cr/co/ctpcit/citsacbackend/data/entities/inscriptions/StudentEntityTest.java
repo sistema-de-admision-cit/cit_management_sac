@@ -45,6 +45,7 @@ class StudentEntityTest {
           "birthDate": "2010-03-12",
           "previousSchool": "Escuela La Sabana",
           "hasAccommodations": false,
+          "previousGrades": 0.00,
           "parents": [
             {
               "parent": {
