@@ -8,6 +8,7 @@ import cr.co.ctpcit.citsacbackend.data.enums.QuestionLevel;
 import cr.co.ctpcit.citsacbackend.data.enums.QuestionType;
 import cr.co.ctpcit.citsacbackend.data.enums.SelectionType;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionFilterSpec;
 import cr.co.ctpcit.citsacbackend.logic.services.questions.QuestionsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,11 +20,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -63,18 +68,6 @@ class QuestionsControllerTest {
                 .andExpect(jsonPath("$.questionText").value(questionDto.questionText()));
     }
 
-    @Test
-    void testGetAllQuestions() throws Exception {
-        Page<QuestionDto> page = new PageImpl<>(List.of(TestProvider.provideQuestionDto()));
-
-        when(questionService.getQuestions(any(), any())).thenReturn(page);
-
-        mockMvc.perform(get("/api/questions/get-all")
-                        .param("page", "0")
-                        .param("size", "10"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].id").value(2L));
-    }
 
     @Test
     void testGetQuestionById() throws Exception {
@@ -116,17 +109,53 @@ class QuestionsControllerTest {
     }
 
     @Test
+    void testGetAllQuestions() throws Exception {
+        QuestionDto questionDto = TestProvider.provideDaiQuestionDto();
+        Page<QuestionDto> questionPage = new PageImpl<>(Collections.singletonList(questionDto), PageRequest.of(0, 10), 1);
+
+        when(questionService.getQuestions(any(QuestionFilterSpec.class), any(Pageable.class))).thenReturn(questionPage);
+
+        mockMvc.perform(get("/api/questions/get-all")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("questionText", "")
+                        .param("deleted", "false")
+                        .param("questionType", "")
+                        .param("grade", "")
+                        .param("questionLevel", ""))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].questionText").value("¿Cómo te sientes el día de hoy?"))
+                .andExpect(jsonPath("$.content[0].questionType").value("DAI"))
+                .andExpect(jsonPath("$.content[0].questionGrade").value("SECOND"))
+                .andExpect(jsonPath("$.content[0].questionLevel").value("EASY"))
+                .andExpect(jsonPath("$.content[0].selectionType").value("PARAGRAPH"))
+                .andExpect(jsonPath("$.content[0].deleted").value(false));
+    }
+
+    @Test
     void testSearchQuestion() throws Exception {
-        Page<QuestionDto> page = new PageImpl<>(List.of(TestProvider.provideQuestionDto()));
-        when(questionService.searchQuestion(anyString(), any())).thenReturn(page);
+        QuestionDto questionDto = TestProvider.provideDaiQuestionDto();
+        Page<QuestionDto> questionPage = new PageImpl<>(Collections.singletonList(questionDto), PageRequest.of(0, 10), 1);
+
+        when(questionService.searchQuestion(any(String.class), any(Pageable.class))).thenReturn(questionPage);
 
         mockMvc.perform(get("/api/questions/search")
-                        .param("questionText", "What")
+                        .param("questionText", "¿Cómo te sientes el día de hoy?")
                         .param("page", "0")
                         .param("size", "10"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].id").value(2L));
+                .andExpect(jsonPath("$.content[0].id").value(1))
+                .andExpect(jsonPath("$.content[0].questionText").value("¿Cómo te sientes el día de hoy?"))
+                .andExpect(jsonPath("$.content[0].questionType").value("DAI"))
+                .andExpect(jsonPath("$.content[0].questionGrade").value("SECOND"))
+                .andExpect(jsonPath("$.content[0].questionLevel").value("EASY"))
+                .andExpect(jsonPath("$.content[0].selectionType").value("PARAGRAPH"))
+                .andExpect(jsonPath("$.content[0].deleted").value(false));
     }
+
+
+
 
     @Test
     void testHealthCheck() throws Exception {

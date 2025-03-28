@@ -63,7 +63,43 @@ class ManagementExamControllerTest {
   }
 
   @Test
-  @Order(3)
+  @Order(4)
+  void getDaiExamsOfAStudent() {
+    ResponseEntity<String> response =
+            restTemplate.getForEntity("/api/management-exams/dai-exams/270456789", String.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+    int examCount = documentContext.read("$.length()");
+    assertThat(examCount).isEqualTo(1);
+  }
+
+  @Test
+  @Order(5)
+  void getDaiExamsOfANonExistentStudent() {
+    ResponseEntity<String> response =
+            restTemplate.getForEntity("/api/management-exams/dai-exams/999999999", String.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+  }
+
+  @Test
+  @Order(6)
+  void getDaiExamsOfAStudentWithNoExams() {
+    ResponseEntity<String> response =
+            restTemplate.getForEntity("/api/management-exams/dai-exams/230987654", String.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+    int examCount = documentContext.read("$.length()");
+    assertThat(examCount).isEqualTo(0);
+  }
+
+  @Test
+  @Order(7)
   void getAllStudentsThatHasDoneAcademicExams() {
     ResponseEntity<String> response =
         restTemplate.getForEntity("/api/management-exams/students/ACA", String.class);
@@ -76,7 +112,7 @@ class ManagementExamControllerTest {
   }
 
   @Test
-  @Order(4)
+  @Order(8)
   void getAllStudentsThatHasDoneDaiExams() {
     ResponseEntity<String> response =
         restTemplate.getForEntity("/api/management-exams/students/DAI", String.class);
@@ -89,7 +125,7 @@ class ManagementExamControllerTest {
   }
 
   @Test
-  @Order(4)
+  @Order(9)
   void getAllStudentsThatHasDoneDaiExams_Pageable() {
     ResponseEntity<String> response =
         restTemplate.getForEntity("/api/management-exams/students/DAI?page=0&size=10", String.class);

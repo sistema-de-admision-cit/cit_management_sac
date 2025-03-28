@@ -174,6 +174,20 @@ public class TestProvider {
         Grades.FIRST, QuestionLevel.EASY, SelectionType.SINGLE, false, getQuestionOptions());
   }
 
+  public static QuestionDto provideDaiQuestionDto() {
+    return new QuestionDto(
+            1L,
+            QuestionType.DAI,
+            "¿Cómo te sientes el día de hoy?",
+            null,
+            Grades.SECOND,
+            QuestionLevel.EASY,
+            SelectionType.PARAGRAPH,
+            false,
+            new ArrayList<>()
+    );
+  }
+
   private static ArrayList<QuestionOptionDto> getQuestionOptions() {
     ArrayList<QuestionOptionDto> options = new ArrayList<>();
     options.add(new QuestionOptionDto(1L, true, "π * radio^2"));
