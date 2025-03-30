@@ -1,5 +1,16 @@
 import * as XLSX from 'xlsx'
 
+export const UPLOAD_TYPES = [
+  { value: 'file', label: 'Archivo' },
+  { value: 'manual', label: 'Carga Manual' }
+]
+
+const LOG_SCORE_STATUS = {
+  SUCCESS: 'SUCCESS',
+  ERROR: 'ERROR',
+  WARNING: 'WARNING'
+}
+
 export const parseXlsxToArray = (file) => {
   return new Promise((resolve, reject) => {
     // eslint-disable-next-line no-undef
@@ -94,7 +105,7 @@ export const formatLogMessage = (log) => {
 
   // formatear segun el estado
   switch (status) {
-    case 'success':
+    case LOG_SCORE_STATUS.SUCCESS:
       if (previousScore !== newScore) {
         message = `La nota del estudiante con ID de inscripción ${enrollmentId}`
         message += previousScore ? ` se actualizó de ${previousScore} a ${newScore}.` : ` se creó con una nota de ${newScore}.`
@@ -104,7 +115,7 @@ export const formatLogMessage = (log) => {
       }
       break
 
-    case 'error':
+    case LOG_SCORE_STATUS.ERROR:
       if (enrollmentId) {
         message = `Error al actualizar la nota del estudiante con ID de inscripción ${enrollmentId}. Motivo: ${errorMessage}.`
       } else {
@@ -112,7 +123,7 @@ export const formatLogMessage = (log) => {
       }
       break
 
-    case 'warning':
+    case LOG_SCORE_STATUS.WARNING:
       if (new Date(examDate) > new Date()) {
         message = `Advertencia: El examen con ID ${trackTestExamId} tiene una fecha de examen futura (${examDate}), por lo que no se actualizó la nota.`
         status = 'warning'
