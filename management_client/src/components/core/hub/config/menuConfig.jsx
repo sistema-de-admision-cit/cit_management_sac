@@ -16,6 +16,7 @@ import EnrollmentManagementView from '../../../modules/enrollments/management/vi
 import ConfigurationMenuPageView from '../../../modules/system_configuration/menu/views/ConfigurationMenuPageView.jsx'
 import ExamScheduleConfiguratorView from '../../../modules/system_configuration/exam_schedule/view/ExamScheduleConfiguratorView.jsx'
 import NotificationSettingsView from '../../../modules/system_configuration/notifications/view/NotificationSettingsView.jsx'
+import QuestionConfiguratorView from '../../../modules/system_configuration/exam_question_quantity/view/QuestionConfiguratorView.jsx'
 
 // results views
 import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenuPageView.jsx'
@@ -91,6 +92,13 @@ const menuConfig = [
             component: PercentagesConfiguratorView,
             description: 'Definir porcentajes de evaluación y criterios.'
           },
+          {
+            key: 'questions-settings',
+            label: 'Configurar Cantidad de Preguntas',
+            path: '/configuracion/preguntas',
+            component: QuestionConfiguratorView,
+            description: 'Definir la cantidad de preguntas en los exámenes.'
+          }, 
           {
             key: 'notifications-settings',
             label: 'Configurar Notificaciones',
