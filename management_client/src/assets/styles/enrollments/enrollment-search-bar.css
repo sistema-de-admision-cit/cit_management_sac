@@ -12,10 +12,9 @@
 }
 
 .enrollment-search-bar input[type="text"] {
-  width: 100%;
+  width: 325px;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 0.25rem;
   font-size: 1rem;
-  width: 100%;
 }

@@ -8,6 +8,11 @@ import GenerateExamView from '../../../modules/questions/generate_exam/view/Gene
 import HubIcon from './HubIcon.jsx'
 import ExamMenuPageView from '../../../modules/questions/menu/view/ExamMenuPageView.jsx'
 
+// grades views
+import AcademicManagementView from '../../../modules/grades/views/AcademicManagementView.jsx'
+import EnglishGradesManagementView from '../../../modules/grades/views/EnglishManagementView.jsx'
+import DaiGradesManagementView from '../../../modules/grades/views/DaiManagementView.jsx'
+
 // enrollments views
 import EnrollmentsMenuPageView from '../../../modules/enrollments/menu/views/EnrollmentsMenuPageView.jsx'
 import EnrollmentManagementView from '../../../modules/enrollments/management/view/EnrollmentManagementView.jsx'
@@ -20,6 +25,7 @@ import NotificationSettingsView from '../../../modules/system_configuration/noti
 // results views
 import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenuPageView.jsx'
 import ExamScoreManagementView from '../../../modules/results/load_results/view/ExamScoreManagementView.jsx'
+//import GradesManagmentView from '../../../modules/results/grades_managment/view/GradesManagementView.jsx'
 
 // reports views
 import ReportsMenuPageView from '../../../modules/reports/menu/views/ReportsMenuPageView.jsx'
@@ -146,6 +152,30 @@ const menuConfig = [
             component: GenerateExamView,
             description: 'Generar exámenes a partir de las preguntas configuradas.',
             imagePath: '/images/temp-card-image-2.avif'
+          },
+          {
+            key: 'english-exam',
+            label: 'Visualizar Exámenes de Ingles',
+            path: '/examenes/english',
+            component: EnglishGradesManagementView,
+            description: 'Ver notas de los examenes de Ingles.',
+            imagePath: '/images/temp-card-image.avif'
+          },
+          {
+            key: 'academic-exam',
+            label: 'Visualizar Exámenes Académicos',
+            path: '/examenes/academicos',
+            component: AcademicManagementView,
+            description: 'Ver notas de los examenes academicos.',
+            imagePath: '/images/temp-card-image.avif'
+          },
+          {
+            key: 'dai-exam',
+            label: 'Visualizar Exámenes DAI',
+            path: '/examenes/dai',
+            component: DaiGradesManagementView,
+            description: 'Ver notas de los examenes DAI.',
+            imagePath: '/images/temp-card-image.avif'
           }
         ]
       },
@@ -158,13 +188,6 @@ const menuConfig = [
         description: 'Gestión y análisis de los resultados de los exámenes.',
         subItems: [
           {
-            key: 'store-results',
-            label: 'Almacenar Respuestas',
-            path: '/resultados/almacenar',
-            component: DefaultComponent,
-            description: 'Almacenar las respuestas obtenidas en los exámenes.'
-          },
-          {
             key: 'load-results',
             label: 'Cargar Notas',
             path: '/resultados/cargar',
@@ -173,10 +196,10 @@ const menuConfig = [
           },
           {
             key: 'analyze-results',
-            label: 'Analizar Resultados',
+            label: 'Modificar notas manualmente',
             path: '/resultados/analizar',
             component: DefaultComponent,
-            description: 'Analizar los resultados y generar informes.'
+            description: 'Modificar notas manualmente y ver notas finales.'
           },
           {
             key: 'notify-results',
