@@ -44,11 +44,10 @@ public class LogsScoreEntity {
   private Instant timestamp;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "status", columnDefinition = "enum('SUCCESS', 'ERROR', 'WARNING')")
+  @Column(name = "status")
   private LogScoreStatus status;
 
   @Lob
   @Column(name = "error_message")
   private String errorMessage;
-
 }
