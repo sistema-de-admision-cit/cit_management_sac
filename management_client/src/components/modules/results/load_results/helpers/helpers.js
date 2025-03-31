@@ -11,6 +11,8 @@ const LOG_SCORE_STATUS = {
   WARNING: 'WARNING'
 }
 
+const ENGLISH_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
+
 export const parseXlsxToArray = (file) => {
   return new Promise((resolve, reject) => {
     // eslint-disable-next-line no-undef
@@ -139,4 +141,29 @@ export const formatLogMessage = (log) => {
     status,
     message
   }
+}
+
+export const validateScore = (score) => {
+  const { id, names, lastNames, lastTest, core, level } = score
+
+  // Check if all required fields are present
+  const containsAllFields = id && names && lastNames && lastTest && core && level
+
+  // Check if the date is valid
+  const isDateValid = !isNaN(Date.parse(lastTest))
+
+  // Check if the level is valid
+  const isLevelValid = ENGLISH_LEVELS.includes(level)
+
+  // core = "10" or "10.0"
+  const isCoreValid = core && !isNaN(core) && core >= 0 && core <= 100
+
+  console.log({
+    containsAllFields,
+    isDateValid,
+    isLevelValid,
+    isCoreValid
+  })
+
+  return containsAllFields && isDateValid && isLevelValid && isCoreValid
 }
