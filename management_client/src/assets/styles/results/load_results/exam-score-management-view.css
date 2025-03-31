@@ -55,3 +55,87 @@
 .logs-section .log-info {
   color: var(--info-color);
 }
+
+.manual-notes-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 1rem;
+}
+
+/* Header principal (sección expand/collapse global) */
+.manual-notes-preview-header {
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  user-select: none;
+}
+
+.manual-notes-preview-header span:first-child {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+/* Card individual */
+.note-card {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.note-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Card header (expand/collapse individual) */
+.note-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f7f7f7;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  user-select: none;
+}
+
+.note-card-header .note-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.note-card-header .note-id {
+  font-size: 12px;
+  color: #888;
+}
+
+/* Card content (solo visible cuando expandida) */
+.note-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  padding: 12px 16px;
+  background-color: #fff;
+}
+
+.note-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 16px 12px 16px;
+}
+
+.note-actions .btn {
+  min-width: 100px;
+  padding: 8px 12px;
+}
+
+.manual-grade-section .btn {
+  margin-top: 1rem;
+}
