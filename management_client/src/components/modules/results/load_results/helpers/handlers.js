@@ -64,7 +64,13 @@ export const handleEnglishScoresFileUpload = (file, e, setEnglishScores, setLoad
 }
 
 // Validate the English scores
+/**
+ *
+ * @param {Array} scores - Array of scores to validate (e.g. [{ id: '123', names: 'John', lastNames: 'Doe', lastTest: '2023-10-01', core: 90, level: 'B2' }])
+ * @returns
+ */
 const validateEnglishScores = (scores) => {
+  console.log('scores', scores)
   const containsAllFields = scores.every((score) => {
     return score.id && score.names && score.lastNames && score.lastTest && score.core && score.level
   })
@@ -78,8 +84,13 @@ const validateEnglishScores = (scores) => {
 
 // this function is called when the user clicks the process button
 const sendEnglishExamsResultsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEND_ENGLISH_EXAM_RESULTS_ENDPOINT}`
-export const handleEnglishScoresFileProcess = (englishScores, setSuccessMessage, setErrorMessage, setLogs) => {
+export const handleEnglishScoresFileProcess = (englishScores, setSuccessMessage, setErrorMessage, setLogs, isManualProcessing) => {
   console.log('englishScores', englishScores)
+  if (isManualProcessing) {
+    mapDatesToISOString(englishScores)
+  }
+  console.log('englishScores mapped', englishScores)
+
   // Validate the scores
   if (!validateEnglishScores(englishScores)) {
     setErrorMessage('Notas inválidas.')
@@ -110,4 +121,22 @@ export const handleEnglishScoresFileProcess = (englishScores, setSuccessMessage,
       console.error(error)
       setErrorMessage('Error al procesar las notas.')
     })
+}
+
+/**
+ *
+ * @param {Array} englishScores - Array of English scores to map (e.g. [{ id: '123', names: 'John', lastNames: 'Doe', lastTest: DateObject, core: 90, level: 'B2' }])
+ *
+ * @returns {Array} - Array of English scores with mapped dates to string (e.g. [{ id: '123', names: 'John', lastNames: 'Doe', lastTest: '2023-10-01', core: 90, level: 'B2' }])
+ */
+const mapDatesToISOString = (englishScores) => {
+  // from Thu Jan 11 2024 00:00:00 GMT-0600 (Central Standard Time)
+  // to 2024-01-11
+  return englishScores.map((score) => {
+    if (score.lastTest instanceof Date) {
+      score.lastTest = score.lastTest.toISOString().split('T')[0]
+    }
+
+    return score
+  })
 }
