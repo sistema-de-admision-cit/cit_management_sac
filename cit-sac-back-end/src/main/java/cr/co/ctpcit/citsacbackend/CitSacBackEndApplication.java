@@ -1,6 +1,5 @@
 package cr.co.ctpcit.citsacbackend;
 
-import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageProperties;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -19,7 +18,6 @@ import java.util.concurrent.Executor;
 
 @EnableAsync
 @SpringBootApplication
-@EnableConfigurationProperties(StorageProperties.class)
 public class CitSacBackEndApplication {
 
   /*public static void main(String[] args)  {
@@ -91,12 +89,5 @@ public class CitSacBackEndApplication {
   public PasswordEncoder encoder() {
     return new BCryptPasswordEncoder();
   }
-
-  @Bean
-  public ObjectMapper objectMapper() {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.registerModule(new JavaTimeModule());
-    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    return mapper;
-  }
+  
 }
