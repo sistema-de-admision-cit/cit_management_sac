@@ -101,7 +101,7 @@ class InscriptionsControllerTest {
     int enrollmentCount = documentContext.read("$.length()");
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(enrollmentCount).isEqualTo(10);
+    assertThat(enrollmentCount).isEqualTo(6);
   }
 
   @Test

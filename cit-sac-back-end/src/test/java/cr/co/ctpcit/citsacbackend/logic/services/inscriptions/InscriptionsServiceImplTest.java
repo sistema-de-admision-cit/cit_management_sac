@@ -45,7 +45,7 @@ class InscriptionsServiceImplTest {
     Page<EnrollmentEntity> enrollmentEntities = TestProvider.provideEnrollmentPage();
     Pageable pageable =
         PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "student.studentPerson.idNumber"));
-    when(enrollmentRepository.findAll(pageable)).thenReturn(enrollmentEntities);
+    when(enrollmentRepository.findAllEnrollmentsInProcess(pageable)).thenReturn(enrollmentEntities);
 
     List<EnrollmentDto> inscriptions = inscriptionsService.getAllInscriptions(pageable);
 

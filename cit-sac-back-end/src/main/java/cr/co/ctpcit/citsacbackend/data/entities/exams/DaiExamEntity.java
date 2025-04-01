@@ -35,6 +35,7 @@ public class DaiExamEntity {
 
   @NotNull
   @ColumnDefault("0")
+  @Builder.Default
   @Column(name = "reviewed", nullable = false)
   private Boolean reviewed = false;
 

@@ -64,7 +64,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   @Override
   public List<EnrollmentDto> getAllInscriptions(Pageable pageable) {
     // Find all enrollments
-    Page<EnrollmentEntity> students = enrollmentRepository.findAll(
+    Page<EnrollmentEntity> students = enrollmentRepository.findAllEnrollmentsInProcess(
         PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
             pageable.getSortOr(Sort.by(Sort.Direction.ASC, "student.studentPerson.idNumber"))));
 
