@@ -18,4 +18,7 @@ public interface ExamPeriodRepository extends JpaRepository<ExamPeriodEntity, Lo
       "SELECT ep FROM ExamPeriodEntity ep WHERE :startDate BETWEEN ep.startDate AND ep.endDate OR :endDate BETWEEN ep.startDate AND ep.endDate")
   List<ExamPeriodEntity> findByStartDateBetweenOrEndDateBetween(@NotNull LocalDate startDate,
       @NotNull LocalDate endDate);
+
+  @Query("SELECT ep FROM ExamPeriodEntity ep WHERE :date BETWEEN ep.startDate AND ep.endDate")
+  List<ExamPeriodEntity> findByDateBetween(@NotNull LocalDate date);
 }
