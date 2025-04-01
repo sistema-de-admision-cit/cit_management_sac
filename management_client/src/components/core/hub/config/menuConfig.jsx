@@ -10,7 +10,6 @@ import ExamMenuPageView from '../../../modules/questions/menu/view/ExamMenuPageV
 
 // grades views
 import AcademicManagementView from '../../../modules/grades/views/AcademicManagementView.jsx'
-import EnglishGradesManagementView from '../../../modules/grades/views/EnglishManagementView.jsx'
 import DaiGradesManagementView from '../../../modules/grades/views/DaiManagementView.jsx'
 
 // enrollments views
@@ -152,14 +151,6 @@ const menuConfig = [
             component: GenerateExamView,
             description: 'Generar exámenes a partir de las preguntas configuradas.',
             imagePath: '/images/temp-card-image-2.avif'
-          },
-          {
-            key: 'english-exam',
-            label: 'Visualizar Exámenes de Ingles',
-            path: '/examenes/english',
-            component: EnglishGradesManagementView,
-            description: 'Ver notas de los examenes de Ingles.',
-            imagePath: '/images/temp-card-image.avif'
           },
           {
             key: 'academic-exam',

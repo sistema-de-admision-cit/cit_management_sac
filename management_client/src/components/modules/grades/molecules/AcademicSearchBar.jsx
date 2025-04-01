@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import '../../../../../assets/styles/results/grades/grades-search-bar.css'
-import InputField from '../../../../core/global/atoms/InputField'
+import '../../../../assets/styles/grades/grades-search-bar.css'
+import InputField from '../../../core/global/atoms/InputField'
 
-const GradesSearchBar = ({ onSearch, onCheckedEvaluados }) => {
+const AcademicSearchBar = ({onSearch}) => {
   const [search, setSearch] = useState('')
 
   const handleSearch = (e) => {
@@ -25,18 +25,8 @@ const GradesSearchBar = ({ onSearch, onCheckedEvaluados }) => {
           className='form-group'
         />
       </div>
-      <div className='grades-search-bar'>
-      <InputField
-        field={{
-          name: 'evaluados',
-          label: 'Estudiantes evaluados',
-          type: 'checkbox',
-        }}
-        className='form-group'
-      />
-      </div>
     </div>
   )
 }
 
-export default GradesSearchBar
+export default AcademicSearchBar

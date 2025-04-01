@@ -44,7 +44,8 @@ const ModalDaiExam = ({ examData, student, onClose, onSave }) => {
                             label: 'Comentarios', 
                             type: 'textArea', 
                             placeholder: 'Ingrese observaciones del examen...',
-                            required: true 
+                            required: true,
+                            maxLength: 500
                         }}
                         value={comment}
                         handleChange={(e) => setComment(e.target.value)}

@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import '../../../../../assets/styles/results/grades/grades-search-bar.css'
-import InputField from '../../../../core/global/atoms/InputField'
+import '../../../../assets/styles/grades/grades-search-bar.css'
+import InputField from '../../../core/global/atoms/InputField'
 
-const GradesSearchBar = ({ onSearch, onCheckedEvaluados }) => {
+const DaiSearchBar = ({ onSearch, onCheckedEvaluados }) => {
   const [search, setSearch] = useState('')
 
   const handleSearch = (e) => {
@@ -39,4 +39,4 @@ const GradesSearchBar = ({ onSearch, onCheckedEvaluados }) => {
   )
 }
 
-export default GradesSearchBar
+export default DaiSearchBar

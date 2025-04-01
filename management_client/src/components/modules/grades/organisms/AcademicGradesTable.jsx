@@ -7,20 +7,12 @@ import ModalAcademicExam from '../molecules/ModalAcademicExam'
 import '../../../../assets/styles/grades/grades-table.css'
 
 
-const AcademicGradesTable = ({ grades, loading }) => {
-  const [currentPage, setCurrentPage] = useState(1)
+const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, totalPages }) => {
   const [activeModal, setActiveModal] = useState(null)
   const [selectedExam, setSelectedExam] = useState(null)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const { setErrorMessage, setSuccessMessage } = useMessages()
-
-  const itemsPerPage = 10
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentGrades = grades?.slice(indexOfFirstItem, indexOfLastItem) // New
-  //const currentGrades = grades?.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage)  // Old
-  const totalPages = Math.ceil(grades?.length / itemsPerPage)
-  const paginate = (pageNumber) => setCurrentPage(pageNumber)
+  const itemsPerPage = 25
 
   const handleOpenModal = (modalType, examData, student) => {
     setSelectedExam(examData)
@@ -54,8 +46,8 @@ const AcademicGradesTable = ({ grades, loading }) => {
                 <Spinner />
               </td>
             </tr>
-          ) : currentGrades?.length > 0 ? (
-            currentGrades.map((grade, index) => (
+          ) : grades?.length > 0 ? (  
+            grades.map((grade, index) => (  
               <AcademicGradesRow
                 key={`${grade.student.id}-${index}`}
                 grade={grade}                
@@ -73,15 +65,42 @@ const AcademicGradesTable = ({ grades, loading }) => {
       </table>
       {totalPages > 1 && (
         <div className='pagination'>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-            <Button
-              key={number}
-              onClick={() => setCurrentPage(number)}
-              className={currentPage === number ? 'active' : ''}
-            >
-              {number}
-            </Button>
-          ))}
+          <Button 
+            onClick={() => onPageChange(currentPage - 1)} 
+            disabled={currentPage === 0}
+          >
+            Anterior
+          </Button>
+          
+          {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+            let pageNum;
+            if (totalPages <= 5) {
+              pageNum = i;
+            } else if (currentPage <= 2) {
+              pageNum = i;
+            } else if (currentPage >= totalPages - 3) {
+              pageNum = totalPages - 5 + i;
+            } else {
+              pageNum = currentPage - 2 + i;
+            }
+            
+            return (
+              <Button
+                key={pageNum}
+                onClick={() => onPageChange(pageNum)}
+                className={currentPage === pageNum ? 'active' : ''}
+              >
+                {pageNum + 1}
+              </Button>
+            );
+          })}
+          
+          <Button 
+            onClick={() => onPageChange(currentPage + 1)} 
+            disabled={currentPage >= totalPages - 1}
+          >
+            Siguiente
+          </Button>
         </div>
       )}
       {/* Modal */}

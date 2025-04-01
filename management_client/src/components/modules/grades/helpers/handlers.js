@@ -1,4 +1,4 @@
-  //import axios from '../../../../../config/axiosConfig'
+import { jsPDF } from "jspdf";
 
 // Manejo de errores
 const getErrorMessage = (error) => {
@@ -24,19 +24,43 @@ const getErrorMessage = (error) => {
 // Handlers that Get Data from API
 
 const getAllAcademicUrl = import.meta.env.VITE_GET_ALL_ACADEMIC_ENDPOINT
-export const handleGetAllAcademicGrades = async (setGrades, setLoading, setErrorMessage) => {
-  setLoading(true)
+export const handleGetAllAcademicGrades = async (page = 0, setGrades, setLoading, setErrorMessage) => {
   try {
-    // Simulamos un delay de red (1 segundo)
-    //await new Promise(resolve => setTimeout(resolve, 1000))
-    setGrades(mockGrades)
+    setLoading(true);
+    
+    // Reemplaza {ACA} por el tipo de examen académico correspondiente
+    const endpoint = getAllAcademicUrl.replace('{ACA}', 'ACADEMIC');
+    const response = await api.get(`${endpoint}?page=${page}`);
+    
+    if (response.data && response.data.content) {
+      // Si es la primera página, reemplazamos los datos
+      // Si es una página posterior, los agregamos
+      setGrades(prevGrades => 
+        page === 0 
+          ? response.data.content 
+          : [...prevGrades, ...response.data.content]
+      );
+      
+      return {
+        content: response.data.content,
+        totalPages: response.data.totalPages,
+        currentPage: page
+      };
+    }
+    
+    throw new Error('Formato de respuesta inesperado');
   } catch (error) {
-    setErrorMessage('Error al cargar los datos de prueba')
-    console.error('Mock data error:', error)
+    console.error('Error fetching academic grades:', error);
+    setErrorMessage('Error al cargar los resultados académicos');
+    return {
+      content: [],
+      totalPages: 0,
+      currentPage: 0
+    };
   } finally {
-    setLoading(false)
+    setLoading(false);
   }
-}
+};
 
 const getAllEnglishUrl = import.meta.env.VITE_GET_ALL_ENGLISH_ENDPOINT
 export const handleGetAllEnglishGrades = async (setGrades, setLoading, setErrorMessage) => {
@@ -97,12 +121,89 @@ export const handleDownloadDAIExam = async (enrollment, setErrorMessage) => {}
 const saveDAIUrl = import.meta.env.VITE_SAVE_DAI_BY_STUDENT_VALUES_ENDPOINT
 export const handleSaveDAIComment = async (enrollment, grade, setErrorMessage, setSuccessMessage) => {}
 
+export const generateExamPDF = (examData) => {
+  // Crear un nuevo documento PDF
+  const doc = new jsPDF();
+  
+  // Configuración inicial
+  let yPosition = 10;
+  const margin = 20;
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const maxWidth = pageWidth - margin * 2;
+  
+  // Título del documento
+  doc.setFontSize(18);
+  doc.setFont("helvetica", "bold");
+  doc.text("Examen Académico", margin, yPosition);
+  yPosition += 15;
+  
+  // Información básica del examen
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "normal");
+  doc.text(`ID del Examen: ${examData.exam.id}`, margin, yPosition);
+  yPosition += 8;
+  doc.text(`Fecha: ${new Date(examData.exam.examDate).toLocaleDateString()}`, margin, yPosition);
+  yPosition += 8;
+  doc.text(`Calificación: ${examData.grade}%`, margin, yPosition);
+  yPosition += 15;
+  
+  // Preguntas y respuestas
+  examData.exam.responses.forEach((question, index) => {
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+    
+    // Número de pregunta
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Pregunta ${index + 1}:`, margin, yPosition);
+    yPosition += 8;
+    
+    // Texto de la pregunta
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    const questionLines = doc.splitTextToSize(question.questionText, maxWidth);
+    doc.text(questionLines, margin, yPosition);
+    yPosition += questionLines.length * 7 + 10;
+    
+    // Opciones de respuesta
+    question.questionOptions.forEach((option, optIndex) => {
+      // Verificar si se necesita una nueva página para las opciones
+      if (yPosition > 270) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      
+      let optionText = `${String.fromCharCode(97 + optIndex)}) ${option.option}`;
+      
+      // Marcar la opción correcta y la seleccionada
+      if (option.isCorrect && option.selected) {
+        optionText += " ✓ (Correcta y seleccionada)";
+        doc.setTextColor(0, 128, 0); // Verde
+      } else if (option.isCorrect) {
+        optionText += " (Correcta)";
+        doc.setTextColor(0, 0, 255); // Azul
+      } else if (option.selected) {
+        optionText += " ✗ (Seleccionada)";
+        doc.setTextColor(255, 0, 0); // Rojo
+      }
+      
+      const optionLines = doc.splitTextToSize(optionText, maxWidth - 10);
+      doc.text(optionLines, margin + 10, yPosition);
+      yPosition += optionLines.length * 7 + 5;
+      
+      // Restaurar color
+      doc.setTextColor(0, 0, 0);
+    });
+    
+    yPosition += 10;
+  });
+  
+  // Guardar el PDF
+  doc.save(`Examen_Academico_${examData.exam.id}.pdf`);
+};
 
-// Data simulating English Grades
-
-// Data simulating Academic Grades
-
-// Data simulationg DAI Grades
 
 // Datos mock de ejemplo
 const mockGrades = [
