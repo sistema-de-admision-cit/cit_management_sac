@@ -14,8 +14,8 @@ FROM `tbl_documents`
 WHERE `enrollment_id` = (SELECT `enrollment_id`
                          FROM `tbl_enrollments`
                          WHERE `student_id` = '20'
-                             AND `exam_date` = '2024-12-15'
-                            OR `exam_date` = '2024-12-16');
+                             AND `exam_date` = '2025-03-14');
+
 
 
 DELETE
@@ -29,8 +29,14 @@ WHERE `student_id` IN (SELECT `student_id`
 
 DELETE
 FROM `tbl_enrollments`
-WHERE `student_id` = '20'
-  AND `exam_date` = '2024-12-15' OR `exam_date` = '2024-12-16';
+WHERE `student_id` = '21'
+  AND `exam_date` = '2025-03-14';
+
+DELETE
+FROM `tbl_enrollments`
+WHERE `student_id` = '22'
+  AND `exam_date` = '2025-03-14';
+
 
 DELETE
 FROM `tbl_parents_students`
@@ -66,4 +72,6 @@ WHERE `id_number` = '603540987'
    OR `id_number` = '100030683'
    OR `id_number` = '503690412';
 
-
+DELETE FROM `tbl_enrollments`
+WHERE `student_id` = '20'
+  AND `exam_date` = '2025-03-14';
