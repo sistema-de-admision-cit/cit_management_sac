@@ -197,7 +197,23 @@ public class ExamsServiceImpl implements ExamsService {
 
   @Override
   public void updateDaiExam(DaiExamDetailsDto daiExamDetailsDto) {
+    ExamEntity exam = examRepository.findById(daiExamDetailsDto.id())
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+            "El examen no fue encontrado."));
 
+    DaiExamEntity daiExam = exam.getDaiExam();
+    if (daiExam == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+          "El examen no fue encontrado.");
+    }
+
+    //Update the exam
+    daiExam.setComment(daiExamDetailsDto.comment());
+    daiExam.setRecommendation(daiExamDetailsDto.recommendation());
+    daiExam.setReviewed(true);
+
+    //Save the exam
+    examRepository.save(exam);
   }
 
   private List<ExamEntity> findExamsByType(StudentEntity student, ExamType examType) {

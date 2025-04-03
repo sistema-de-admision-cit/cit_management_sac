@@ -121,16 +121,27 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
   }
 
   const textAreaInput = () => {
+    const maxLength = field.maxLength || null; // Obtener maxLength de las props del field
+    const remainingChars = maxLength ? maxLength - (value?.length || 0) : null;
+  
     return (
-      <textarea
-        name={field.name}
-        placeholder={field.placeholder}
-        value={value}
-        onChange={handleChange}
-        required={field.required || false}
-        autoComplete={autoComplete || 'off'}
-        className={`${className}`}
-      />
+      <div className="textarea-container">
+        <textarea
+          name={field.name}
+          placeholder={field.placeholder}
+          value={value}
+          onChange={handleChange}
+          required={field.required || false}
+          autoComplete={autoComplete || 'off'}
+          className={`${className}`}
+          maxLength={maxLength} // Establecer límite de caracteres
+        />
+        {maxLength && (
+          <div className="char-counter">
+            {remainingChars} caracteres restantes
+          </div>
+        )}
+      </div>
     )
   }
 

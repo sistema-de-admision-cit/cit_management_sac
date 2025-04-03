@@ -5,6 +5,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.exams.AcademicExamDetailsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.DaiExamDetailsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.ExamsService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -53,9 +54,10 @@ public class ManagementExamController {
 
   //TODO: Search by idNumber, name, lastName, and ExamType.
 
-  @PutMapping("/dai-exams")
-  public ResponseEntity<Void> updateDaiExam(@RequestBody DaiExamDetailsDto daiExamDetailsDto) {
+  @PutMapping("/dai-exam")
+  public ResponseEntity<Void> updateDaiExam(@Valid @RequestBody DaiExamDetailsDto daiExamDetailsDto) {
     examsService.updateDaiExam(daiExamDetailsDto);
-    return ResponseEntity.ok().build();
+
+    return ResponseEntity.noContent().build();
   }
 }
