@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_CLASS;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -50,7 +51,7 @@ class SystemConfigControllerTest {
     HttpEntity<UpdateQuantityConfigsDto> request = new HttpEntity<>(quantityConfigsDto);
     ResponseEntity<String> response =
             restTemplate.exchange("/api/system-config/update-questions-quantity",
-                    org.springframework.http.HttpMethod.PUT, request, String.class);
+                   PUT, request, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
   }
@@ -75,7 +76,7 @@ class SystemConfigControllerTest {
     HttpEntity<UpdateWeightsConfigsDto> request = new HttpEntity<>(updateWeightsConfigsDto);
     ResponseEntity<String> response =
         restTemplate.exchange("/api/system-config/update-process-weights",
-            org.springframework.http.HttpMethod.PUT, request, String.class);
+            PUT, request, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
   }
@@ -103,7 +104,7 @@ class SystemConfigControllerTest {
     HttpEntity<UpdateContactInfoConfigsDto> request = new HttpEntity<>(updateContactInfoConfigsDto);
     ResponseEntity<String> response =
         restTemplate.exchange("/api/system-config/update-contact-info",
-            org.springframework.http.HttpMethod.PUT, request, String.class);
+            PUT, request, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
   }
