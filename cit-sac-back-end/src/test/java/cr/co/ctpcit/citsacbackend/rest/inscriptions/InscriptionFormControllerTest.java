@@ -1,6 +1,5 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,7 +7,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -34,10 +32,10 @@ class InscriptionFormControllerTest {
   @Sql(scripts = {"delete-inscription.sql"}, executionPhase = BEFORE_TEST_METHOD)
   void createInscription() throws Exception {
     HttpEntity<MultiValueMap<String, Object>> request =
-            createRequest("InscriptionNonexistentStudentJsonRequest.json");
+        createRequest("InscriptionNonexistentStudentJsonRequest.json");
 
     ResponseEntity<Void> response =
-            restTemplate.postForEntity("/api/inscription/add", request, Void.class);
+        restTemplate.postForEntity("/api/inscription/add", request, Void.class);
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
   }
@@ -47,10 +45,10 @@ class InscriptionFormControllerTest {
   @Sql(scripts = {"delete-inscription.sql"}, executionPhase = BEFORE_TEST_METHOD)
   void createInscriptionWithExistentDad() throws IOException {
     HttpEntity<MultiValueMap<String, Object>> request =
-            createRequest("InscriptionExistingDadJsonRequest.json");
+        createRequest("InscriptionExistingDadJsonRequest.json");
 
     ResponseEntity<Void> response =
-            restTemplate.postForEntity("/api/inscription/add", request, Void.class);
+        restTemplate.postForEntity("/api/inscription/add", request, Void.class);
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
   }
@@ -59,10 +57,10 @@ class InscriptionFormControllerTest {
   @Sql(scripts = {"delete-inscription.sql"}, executionPhase = AFTER_TEST_METHOD)
   void createInscriptionForExistentStudent_NonexistentDad() throws IOException {
     HttpEntity<MultiValueMap<String, Object>> request =
-            createRequest("InscriptionExistentStudentNonexistentDadJsonRequest.json");
+        createRequest("InscriptionExistentStudentNonexistentDadJsonRequest.json");
 
     ResponseEntity<Void> response =
-            restTemplate.postForEntity("/api/inscription/add", request, Void.class);
+        restTemplate.postForEntity("/api/inscription/add", request, Void.class);
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
   }
@@ -73,7 +71,7 @@ class InscriptionFormControllerTest {
   }
 
   private HttpEntity<MultiValueMap<String, Object>> createRequest(String jsonRequest)
-          throws IOException {
+      throws IOException {
     MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -82,8 +80,8 @@ class InscriptionFormControllerTest {
     bodyAttachmentHeaders.setContentType(MediaType.APPLICATION_JSON);
 
     String body = Files.readString(Paths.get(
-            String.format("src/test/resources/cr/co/ctpcit/citsacbackend/rest/inscriptions/%s",
-                    jsonRequest)), StandardCharsets.UTF_8);
+        String.format("src/test/resources/cr/co/ctpcit/citsacbackend/rest/inscriptions/%s",
+            jsonRequest)), StandardCharsets.UTF_8);
 
     HttpEntity<String> bodyAttachment = new HttpEntity<>(body, bodyAttachmentHeaders);
 
@@ -110,10 +108,11 @@ class InscriptionFormControllerTest {
     String location = "D:/temp/spring/uploads/";
     try {
       Files.walk(Paths.get(location)).filter(Files::isRegularFile).map(Path::toFile)
-              .forEach(File::delete);
+          .forEach(File::delete);
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 }
+
 
