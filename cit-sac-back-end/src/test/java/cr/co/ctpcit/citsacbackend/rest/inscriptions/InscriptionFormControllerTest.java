@@ -8,6 +8,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -22,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql(scripts = {"delete-inscription.sql"}, executionPhase = AFTER_TEST_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class InscriptionFormControllerTest {
 
@@ -31,73 +31,65 @@ class InscriptionFormControllerTest {
 
   @Test
   @Order(1)
-  @Sql(scripts = {"delete-inscription.sql"}, executionPhase = AFTER_TEST_METHOD)
+  @Sql(scripts = {"delete-inscription.sql"}, executionPhase = BEFORE_TEST_METHOD)
   void createInscription() throws Exception {
-    //Request
     HttpEntity<MultiValueMap<String, Object>> request =
-        createRequest("InscriptionNonexistentStudentJsonRequest.json");
+            createRequest("InscriptionNonexistentStudentJsonRequest.json");
 
     ResponseEntity<Void> response =
-        restTemplate.postForEntity("/api/inscription/add", request, Void.class);
+            restTemplate.postForEntity("/api/inscription/add", request, Void.class);
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
   }
 
   @Test
   @Order(2)
-  @Sql(scripts = {"delete-inscription.sql"}, executionPhase = AFTER_TEST_METHOD)
+  @Sql(scripts = {"delete-inscription.sql"}, executionPhase = BEFORE_TEST_METHOD)
   void createInscriptionWithExistentDad() throws IOException {
-    //Request
     HttpEntity<MultiValueMap<String, Object>> request =
-        createRequest("InscriptionExistingDadJsonRequest.json");
+            createRequest("InscriptionExistingDadJsonRequest.json");
 
     ResponseEntity<Void> response =
-        restTemplate.postForEntity("/api/inscription/add", request, Void.class);
+            restTemplate.postForEntity("/api/inscription/add", request, Void.class);
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
   }
 
   @Test
+  @Sql(scripts = {"delete-inscription.sql"}, executionPhase = AFTER_TEST_METHOD)
   void createInscriptionForExistentStudent_NonexistentDad() throws IOException {
-    //Request for existent student different exam date
     HttpEntity<MultiValueMap<String, Object>> request =
-        createRequest("InscriptionExistentStudentNonexistentDadJsonRequest.json");
+            createRequest("InscriptionExistentStudentNonexistentDadJsonRequest.json");
 
     ResponseEntity<Void> response =
-        restTemplate.postForEntity("/api/inscription/add", request, Void.class);
+            restTemplate.postForEntity("/api/inscription/add", request, Void.class);
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
   }
 
   @Test
   void createInscriptionWithInvalidData() {
-
+    // Implementar caso para datos inválidos
   }
 
   private HttpEntity<MultiValueMap<String, Object>> createRequest(String jsonRequest)
-      throws IOException {
+          throws IOException {
     MultiValueMap<String, Object> multipartRequest = new LinkedMultiValueMap<>();
-
-    //Main request headers
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-    //Body attachment headers
     HttpHeaders bodyAttachmentHeaders = new HttpHeaders();
     bodyAttachmentHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-    //Body attachment
     String body = Files.readString(Paths.get(
-        String.format("src/test/resources/cr/co/ctpcit/citsacbackend/rest/inscriptions/%s",
-            jsonRequest)), StandardCharsets.UTF_8);
+            String.format("src/test/resources/cr/co/ctpcit/citsacbackend/rest/inscriptions/%s",
+                    jsonRequest)), StandardCharsets.UTF_8);
 
     HttpEntity<String> bodyAttachment = new HttpEntity<>(body, bodyAttachmentHeaders);
 
-    //File attachment headers
     HttpHeaders fileAttachmentHeaders = new HttpHeaders();
     fileAttachmentHeaders.setContentType(MediaType.APPLICATION_PDF);
 
-    //File attachment
     ByteArrayResource grades = new ByteArrayResource("Some file content".getBytes()) {
       @Override
       public String getFilename() {
@@ -107,11 +99,9 @@ class InscriptionFormControllerTest {
 
     HttpEntity<ByteArrayResource> fileAttachment = new HttpEntity<>(grades, fileAttachmentHeaders);
 
-    //Add body and file to the request
     multipartRequest.add("inscription", bodyAttachment);
     multipartRequest.add("grades", fileAttachment);
 
-    //Request
     return new HttpEntity<>(multipartRequest, headers);
   }
 
@@ -120,9 +110,10 @@ class InscriptionFormControllerTest {
     String location = "D:/temp/spring/uploads/";
     try {
       Files.walk(Paths.get(location)).filter(Files::isRegularFile).map(Path::toFile)
-          .forEach(File::delete);
+              .forEach(File::delete);
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 }
+
