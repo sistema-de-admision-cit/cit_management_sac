@@ -268,7 +268,10 @@ CREATE TABLE IF NOT EXISTS `tbl_Exams` (
   CONSTRAINT `FK_Exams_Enrollments`
     FOREIGN KEY (`enrollment_id`)
     REFERENCES `tbl_Enrollments` (`enrollment_id`)
-    ON DELETE NO ACTION)
+    ON DELETE NO ACTION,
+    
+  CONSTRAINT `UQ_ExamType_Enrollment` UNIQUE (`enrollment_id`, `exam_type`)
+)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
