@@ -1,9 +1,9 @@
 package cr.co.ctpcit.citsacbackend.rest.exams;
 
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.AcademicExamDetailsDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.DaiExamDetailsDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.EnglishScoreEntryDTO;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishScoreEntryDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.logs.EnglishExamLogDto;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.ExamsService;
@@ -45,8 +45,16 @@ public class ManagementExamController {
     return ResponseEntity.ok(academicExam);
   }
 
+  /*@GetMapping("/english-exams/{idNumber}")
+  public ResponseEntity<Iterable<EnglishExamDetailsDto>> getEnglishExams(
+      @PathVariable String idNumber) {
+    Iterable<EnglishExamDetailsDto> englishExams = examsService.getExistingEnglishExams(idNumber);
+
+    return ResponseEntity.ok(englishExams);
+  }*/
+
   /**
-   * Get students that have taken an academic exams
+   * Get students that have taken academic or DAI exams
    */
   @GetMapping("/students/{examType}")
   public ResponseEntity<Iterable<StudentExamsDto>> getStudentsByExamType(
@@ -59,7 +67,8 @@ public class ManagementExamController {
   //TODO: Search by idNumber, name, lastName, and ExamType.
 
   @PutMapping("/dai-exam")
-  public ResponseEntity<Void> updateDaiExam(@Valid @RequestBody DaiExamDetailsDto daiExamDetailsDto) {
+  public ResponseEntity<Void> updateDaiExam(
+      @Valid @RequestBody DaiExamDetailsDto daiExamDetailsDto) {
     examsService.updateDaiExam(daiExamDetailsDto);
 
     return ResponseEntity.noContent().build();

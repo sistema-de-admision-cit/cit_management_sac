@@ -1,8 +1,8 @@
 package cr.co.ctpcit.citsacbackend.rest.exams;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamAcaDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.ExamDaiDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.ExamAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.ExamDaiDto;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.ExamsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

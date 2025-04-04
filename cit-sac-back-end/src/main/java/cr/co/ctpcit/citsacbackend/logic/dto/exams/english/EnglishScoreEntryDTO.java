@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.logic.dto.exams;
+package cr.co.ctpcit.citsacbackend.logic.dto.exams.english;
 
 import cr.co.ctpcit.citsacbackend.data.enums.EnglishLevel;
 import jakarta.validation.constraints.NotNull;

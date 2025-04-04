@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.logic.dto.exams;
+package cr.co.ctpcit.citsacbackend.logic.dto.exams.academic;
 
 import cr.co.ctpcit.citsacbackend.data.enums.QuestionType;
 import cr.co.ctpcit.citsacbackend.data.enums.SelectionType;

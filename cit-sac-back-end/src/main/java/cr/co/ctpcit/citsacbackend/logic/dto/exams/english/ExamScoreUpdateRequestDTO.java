@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.logic.dto.exams;
+package cr.co.ctpcit.citsacbackend.logic.dto.exams.english;
 
 import lombok.Getter;
 import lombok.Setter;

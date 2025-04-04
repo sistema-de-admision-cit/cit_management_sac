@@ -1,6 +1,7 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.exams;
 
 import cr.co.ctpcit.citsacbackend.TestProvider;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.QuestionAcaDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;

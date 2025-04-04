@@ -7,7 +7,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.*;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.ExamAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.QuestionAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.ExamDaiDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.QuestionDaiDto;
 
 import java.util.List;
 

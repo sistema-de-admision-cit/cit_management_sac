@@ -357,7 +357,6 @@ VALUES (1, 10, '2025-03-25 17:54:12', 'ACA', '{
 INSERT INTO `tbl_academic_exams` (`exam_id`, `grade`)
 VALUES (1, 100.00); -- Insert value into tbl_academic_exams
 
-
 INSERT INTO `tbl_dai_exams` (`exam_id`)
 VALUES (2); -- Insert value into tbl_dai_exams
 
