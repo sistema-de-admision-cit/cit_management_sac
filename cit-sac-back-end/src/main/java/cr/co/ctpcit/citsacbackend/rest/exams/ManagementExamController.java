@@ -3,6 +3,7 @@ package cr.co.ctpcit.citsacbackend.rest.exams;
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamDetailsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishExamDetailsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishScoreEntryDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.logs.EnglishExamLogDto;
@@ -45,13 +46,13 @@ public class ManagementExamController {
     return ResponseEntity.ok(academicExam);
   }
 
-  /*@GetMapping("/english-exams/{idNumber}")
+  @GetMapping("/english-exams/{idNumber}")
   public ResponseEntity<Iterable<EnglishExamDetailsDto>> getEnglishExams(
       @PathVariable String idNumber) {
-    Iterable<EnglishExamDetailsDto> englishExams = examsService.getExistingEnglishExams(idNumber);
+    List<EnglishExamDetailsDto> englishExams = examsService.getExistingEnglishExams(idNumber);
 
     return ResponseEntity.ok(englishExams);
-  }*/
+  }
 
   /**
    * Get students that have taken academic or DAI exams

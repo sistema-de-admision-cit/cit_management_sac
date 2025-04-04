@@ -24,6 +24,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.QuestionAcaDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.QuestionOptionAcaDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiExamDetailsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.ExamDaiDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishExamDetailsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishScoreEntryDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.logs.EnglishExamLogDto;
@@ -171,15 +172,20 @@ public class ExamsServiceImpl implements ExamsService {
 
     //Create the list of AcademicExamEntities
     List<ExamEntity> daiExams = new ArrayList<>();
+    getExamsFromEnrollmentsByExamType(enrollments, ExamType.DAI, daiExams);
+
+    return ExamMapper.daiExamsToDaiExamDetailsDto(daiExams);
+  }
+
+  private static void getExamsFromEnrollmentsByExamType(List<EnrollmentEntity> enrollments,
+      ExamType dai, List<ExamEntity> daiExams) {
     for (EnrollmentEntity enrollmentInUse : enrollments) {
       for (ExamEntity exam : enrollmentInUse.getExams()) {
-        if (exam.getExamType().equals(ExamType.DAI)) {
+        if (exam.getExamType().equals(dai)) {
           daiExams.add(exam);
         }
       }
     }
-
-    return ExamMapper.daiExamsToDaiExamDetailsDto(daiExams);
   }
 
   @Override
@@ -242,11 +248,29 @@ public class ExamsServiceImpl implements ExamsService {
       examRepository.usp_process_english_exam_and_log(normalizedNames, normalizedLastNames,
           score.lastTest(), score.id(),
           BigDecimal.valueOf(Double.parseDouble(score.core().replace("%", ""))),
-          score.level().toString(),
-          processId);
+          score.level().toString(), processId);
     }
 
     return logsScoreService.getLogsScoresByProcessId(processId);
+  }
+
+  @Override
+  public List<EnglishExamDetailsDto> getExistingEnglishExams(String idNumber) {
+    //Find students enrollments
+    List<EnrollmentEntity> enrollments = getEnrollmentEntities(idNumber);
+
+    //Create a list with Exams of ENG examType
+    List<ExamEntity> englishExams = new ArrayList<>();
+    for (EnrollmentEntity enrollment : enrollments) {
+      for (ExamEntity exam : enrollment.getExams()) {
+        if (exam.getExamType().equals(ExamType.ENG)) {
+          englishExams.add(exam);
+        }
+      }
+    }
+
+    //Map the list to EnglishExamDetailsDto
+    return ExamMapper.englishExamsToEnglishExamDetailsDto(englishExams);
   }
 
   // normalize the string to lowercase and remove accents

@@ -6,6 +6,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamDetailsDt
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.ExamAcaDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiExamDetailsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.ExamDaiDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishExamDetailsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishScoreEntryDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.logs.EnglishExamLogDto;
@@ -33,4 +34,6 @@ public interface ExamsService {
   void updateDaiExam(DaiExamDetailsDto daiExamDetailsDto);
 
   List<EnglishExamLogDto> processEnglishScores(List<EnglishScoreEntryDTO> englishScores);
+
+  List<EnglishExamDetailsDto> getExistingEnglishExams(String idNumber);
 }

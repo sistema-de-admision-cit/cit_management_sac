@@ -173,6 +173,7 @@ class ManagementExamControllerTest {
   }
 
   @Test
+  @Order(12)
   public void testUploadEnglishScores_Success() {
     List<EnglishScoreEntryDTO> scores = Arrays.asList(
         new EnglishScoreEntryDTO(1L, "Valeria", "Cordero Solano", "2024-02-01", EnglishLevel.B2,
@@ -189,5 +190,18 @@ class ManagementExamControllerTest {
     int logsCount = documentContext.read("$.length()");
 
     assertThat(logsCount).isEqualTo(2);
+  }
+
+  @Test
+  @Order(13)
+  void testGetEnglishExamsByIdNumber() {
+    ResponseEntity<String> response =
+        restTemplate.getForEntity("/api/management-exams/english-exams/270456789", String.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+    int examCount = documentContext.read("$.length()");
+    assertThat(examCount).isEqualTo(1);
   }
 }
