@@ -93,9 +93,6 @@ public class ExamMapper {
   }
 
   private static boolean extracted(ExamEntity examEntity) {
-    if (examEntity.getAcademicExam() == null || !examEntity.getExamType().equals(ExamType.ACA)) {
-      return true;
-    }
-    return false;
+    return examEntity.getAcademicExam() == null || !examEntity.getExamType().equals(ExamType.ACA);
   }
 }

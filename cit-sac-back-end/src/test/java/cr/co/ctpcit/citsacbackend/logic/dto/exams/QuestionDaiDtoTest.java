@@ -20,12 +20,12 @@ class QuestionDaiDtoTest {
   void serializeJson() throws IOException {
     QuestionDaiDto questionDai = TestProvider.provideQuestionDaiDto();
 
-    assertThat(tester.write((QuestionDaiDto) questionDai)).isEqualToJson(
+    assertThat(tester.write(questionDai)).isEqualToJson(
         "QuestionDaiDtoJsonExpected.json");
-    assertThat(tester.write((QuestionDaiDto) questionDai)).hasJsonPathNumberValue("@.id");
-    assertThat(tester.write((QuestionDaiDto) questionDai)).extractingJsonPathNumberValue("@.id")
+    assertThat(tester.write(questionDai)).hasJsonPathNumberValue("@.id");
+    assertThat(tester.write(questionDai)).extractingJsonPathNumberValue("@.id")
         .isEqualTo(1);
-    assertThat(tester.write((QuestionDaiDto) questionDai)).hasJsonPathStringValue("@.questionText");
+    assertThat(tester.write(questionDai)).hasJsonPathStringValue("@.questionText");
   }
 
   @Test
@@ -44,7 +44,7 @@ class QuestionDaiDtoTest {
 
     QuestionDaiDto questionDai = TestProvider.provideQuestionDaiDto();
 
-    assertThat(tester.parse(expected)).isEqualTo((QuestionDaiDto) questionDai);
+    assertThat(tester.parse(expected)).isEqualTo(questionDai);
     AssertionsForClassTypes.assertThat(tester.parseObject(expected).id()).isEqualTo(1);
     AssertionsForClassTypes.assertThat(tester.parseObject(expected).questionText())
         .isEqualTo("¿Cómo te sientes el día de hoy?");

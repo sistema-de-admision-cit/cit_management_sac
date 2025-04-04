@@ -20,16 +20,21 @@ import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.StudentReposito
 import cr.co.ctpcit.citsacbackend.data.repositories.questions.QuestionRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.logs.EnglishExamLogDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.exams.ExamMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.StudentMapper;
+import cr.co.ctpcit.citsacbackend.logic.services.logs.LogsScoreService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.text.Normalizer;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +48,7 @@ public class ExamsServiceImpl implements ExamsService {
   private final SystemConfigRepository systemConfigRepository;
   private final ExamRepository examRepository;
   private final ObjectMapper mapper;
+  private final LogsScoreService logsScoreService;
 
   /**
    * Get the academic exam for the student
@@ -197,14 +203,12 @@ public class ExamsServiceImpl implements ExamsService {
 
   @Override
   public void updateDaiExam(DaiExamDetailsDto daiExamDetailsDto) {
-    ExamEntity exam = examRepository.findById(daiExamDetailsDto.id())
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-            "El examen no fue encontrado."));
+    ExamEntity exam = examRepository.findById(daiExamDetailsDto.id()).orElseThrow(
+        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El examen no fue encontrado."));
 
     DaiExamEntity daiExam = exam.getDaiExam();
     if (daiExam == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-          "El examen no fue encontrado.");
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El examen no fue encontrado.");
     }
 
     //Update the exam
@@ -215,6 +219,38 @@ public class ExamsServiceImpl implements ExamsService {
     //Save the exam
     examRepository.save(exam);
   }
+
+  @Override
+  @Transactional
+  public List<EnglishExamLogDto> processEnglishScores(List<EnglishScoreEntryDTO> englishScores) {
+    Instant now = Instant.now(); // process id for the stored procedure (tbl_logs_score)
+    Integer processId = now.getNano();
+
+    for (EnglishScoreEntryDTO score : englishScores) {
+      // Normalizar nombres y apellidos
+      String normalizedNames = normalizeString(score.names());
+      String normalizedLastNames = normalizeString(score.lastNames());
+
+      // usp_process_english_exam_and_log
+      // procedure to update the score of an english exam and log the change in the database
+      examRepository.usp_process_english_exam_and_log(normalizedNames, normalizedLastNames,
+          score.lastTest(), score.id(),
+          BigDecimal.valueOf(Double.parseDouble(score.core().replace("%", ""))),
+          score.level().toString(),
+          processId);
+    }
+
+    return logsScoreService.getLogsScoresByProcessId(processId);
+  }
+
+  // normalize the string to lowercase and remove accents
+  private String normalizeString(String input) {
+    if (input == null)
+      return null;
+    String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
+    return normalized.replaceAll("\\p{M}", "").toLowerCase();
+  }
+
 
   private List<ExamEntity> findExamsByType(StudentEntity student, ExamType examType) {
     List<ExamEntity> exams = new ArrayList<>();

@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/api/reports")
 public class ReportsController {
 
-  private ReportsServiceImpl reportsService;
+  private final ReportsServiceImpl reportsService;
 
   public ReportsController(ReportsServiceImpl reportsService) {
     this.reportsService = reportsService;

@@ -46,11 +46,15 @@ public class StudentMapper {
           .person(PersonMapper.convertToDto(student.getStudentPerson()))
           .academicExams(ExamMapper.academicExamsToAcademicExamDetailsDto(exams))
           .daiExams(new ArrayList<>()).build();
-    } else {
+    } else if(examType == ExamType.DAI) {
       return StudentExamsDto.builder().id(student.getId())
           .person(PersonMapper.convertToDto(student.getStudentPerson()))
           .academicExams(new ArrayList<>()).daiExams(ExamMapper.daiExamsToDaiExamDetailsDto(exams))
           .build();
+    } else {
+        return StudentExamsDto.builder().id(student.getId())
+            .person(PersonMapper.convertToDto(student.getStudentPerson()))
+            .academicExams(new ArrayList<>()).daiExams(new ArrayList<>()).build();
     }
   }
 }

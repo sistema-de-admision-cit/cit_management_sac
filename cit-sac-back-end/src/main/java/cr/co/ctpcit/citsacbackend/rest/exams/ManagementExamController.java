@@ -3,7 +3,9 @@ package cr.co.ctpcit.citsacbackend.rest.exams;
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.AcademicExamDetailsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.DaiExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.EnglishScoreEntryDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.logs.EnglishExamLogDto;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.ExamsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/management-exams")
@@ -59,5 +63,17 @@ public class ManagementExamController {
     examsService.updateDaiExam(daiExamDetailsDto);
 
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping("/update-scores")
+  public ResponseEntity<List<EnglishExamLogDto>> uploadEnglishScores(
+      @RequestBody List<EnglishScoreEntryDTO> englishScores) {
+    List<EnglishExamLogDto> logs = examsService.processEnglishScores(englishScores);
+
+    if (logs.isEmpty()) {
+      return ResponseEntity.badRequest().body(logs);
+    }
+
+    return ResponseEntity.ok(logs);
   }
 }

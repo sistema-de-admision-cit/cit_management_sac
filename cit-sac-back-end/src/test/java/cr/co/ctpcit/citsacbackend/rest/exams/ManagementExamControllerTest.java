@@ -2,7 +2,9 @@ package cr.co.ctpcit.citsacbackend.rest.exams;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import cr.co.ctpcit.citsacbackend.data.enums.EnglishLevel;
 import cr.co.ctpcit.citsacbackend.data.enums.Recommendation;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.EnglishScoreEntryDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.UpdateDaiExamDto;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -15,6 +17,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.PUT;
@@ -165,5 +170,24 @@ class ManagementExamControllerTest {
         restTemplate.exchange("/api/management-exams/dai-exam", PUT, request, Void.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+  }
+
+  @Test
+  public void testUploadEnglishScores_Success() {
+    List<EnglishScoreEntryDTO> scores = Arrays.asList(
+        new EnglishScoreEntryDTO(1L, "Valeria", "Cordero Solano", "2024-02-01", EnglishLevel.B2,
+            "85%"),
+        new EnglishScoreEntryDTO(2L, "María Gómez", "López", "2024-09-11", EnglishLevel.C1, "90%"));
+
+    HttpEntity<List<EnglishScoreEntryDTO>> request = new HttpEntity<>(scores);
+    ResponseEntity<String> response =
+        restTemplate.postForEntity("/api/management-exams/update-scores", request, String.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+    int logsCount = documentContext.read("$.length()");
+
+    assertThat(logsCount).isEqualTo(2);
   }
 }
