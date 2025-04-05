@@ -218,12 +218,12 @@ public class TestProvider {
 
   public static ExamPeriodDto provideNonExistentExamPeriodDto() {
     return new ExamPeriodDto(null, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-03-15"),
-        provideNonExistentExamDayDtoList());
+        provideNonExistentExamDayDtoList(),true);
   }
 
   public static ExamPeriodDto provideExistentExamPeriodDto() {
     return new ExamPeriodDto(1L, LocalDate.parse("2025-01-01"), LocalDate.parse("2025-03-15"),
-        provideExistingExamDayDtoList());
+        provideExistingExamDayDtoList(),true);
   }
 
   public static List<ExamDayDto> provideExistingExamDayDtoList() {
