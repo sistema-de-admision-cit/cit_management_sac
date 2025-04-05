@@ -1,31 +1,26 @@
 import Button from '../../../core/global/atoms/Button'
 
-const AcademicGradesRow = ({ grade, onAcademicClick }) => {
-  const formatDate = (dateString) => {
-    return dateString ? new Date(dateString).toLocaleDateString() : 'N/A'
+const AcademicGradesRow = ({ grade, onAcademicClick}) => {
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-11
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`; // Formato: DD/MM/AAAA
   }
-
-  /*const getExamStatus = (exam, examType) => {
-    if (!exam) {
-      return 'No presentado'
-    }else{
-      return exam.grade ? `${exam.grade}%` : 'Pendiente'
-    }
-  }*/
-
   return (
     <tr>
-      <td>{grade.student.person.idNumber}</td>
-      <td>{grade.student.person.firstName}</td>
-      <td>{grade.student.person.firstSurname}</td>
-      <td>{grade.student.person.secondSurname || 'N/A'}</td>
-      <td>{formatDate(grade.enrollmentDate)}</td>
-      {/* Examen de Inglés */}
+      <td>{grade.person.idNumber}</td>
+      <td>{grade.person.firstName}</td>
+      <td>{grade.person.firstSurname}</td>
+      <td>{grade.person.secondSurname || 'N/A'}</td>
+      <td>{formatDate(grade.academicExams[0].exam.examDate)}</td>
+      {/* Examen de Academico */}
       <td>
         <div className="exam-cell">
           <Button
             className='exam-button'
-            onClick={() => onAcademicClick(grade.academic, grade.student)}
+            onClick={() => onAcademicClick()}
           >
             Ver resultado
           </Button>

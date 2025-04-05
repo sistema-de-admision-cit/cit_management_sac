@@ -2,20 +2,40 @@ import { useState } from 'react'
 import Button from '../../../core/global/atoms/Button'
 import InputField from '../../../core/global/atoms/InputField'
 import useMessages from '../../../core/global/hooks/useMessages'
-import {handleSaveDAIComment, handleDownloadDAIExam} from '../helpers/handlers'
+import { handleSaveDAIComment, generateDAIExamPDF } from '../helpers/handlers'
 import '../../../../assets/styles/grades/modal-grade.css'
 
-const ModalDaiExam = ({ examData, student, onClose, onSave }) => {
-    const { setErrorMessage, setSuccessMessage } = useMessages()
-    const [comment, setComment] = useState(examData?.comment || '')
-    const [status, setStatus] = useState(examData?.status || ''); // Nuevo estado para el select
-    const [loading, setLoading] = useState(false)
+const ModalDaiExam = ({ grade, onClose, setErrorMessage, setSuccessMessage }) => {
 
-    // La logogica se trabaja mediante el uso de handelers
-    const handleSubmit = () => { }
-    const handleDownload = () => { }
+    const [comment, setComment] = useState(grade.daiExams[0]?.comment || '');
+    
+    const [status, setStatus] = useState(() => {
+        const recommendation = grade.daiExams[0].recommendation;
+        if (recommendation === 'ADMIT') return 'ADMIT';
+        if (recommendation === 'REJECT') return 'REJECT';
+        return '';
+    });
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await handleSaveDAIComment(
+            grade,
+            comment,
+            status,
+            setErrorMessage,
+            setSuccessMessage,
+            setLoading,
+            onClose
+        );
+    };
+
+    const handleDownload = async () => {
+        generateDAIExamPDF(grade);
+    };
 
     return (
+
         <div className="modal-overlay">
             <div className="modal-content">
                 <div className="modal-header">
@@ -23,8 +43,8 @@ const ModalDaiExam = ({ examData, student, onClose, onSave }) => {
                 </div>
 
                 <div className="student-info">
-                    <p><strong>Cédula:</strong> {student.person.idNumber}</p>
-                    <p><strong>Estudiante:</strong> {student.person.firstName} {student.person.firstSurname}</p>
+                    <p><strong>Cédula:</strong> {grade.person.idNumber}</p>
+                    <p><strong>Estudiante:</strong> {grade.person.firstName} {grade.person.firstSurname}</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="grade-form">
@@ -39,34 +59,34 @@ const ModalDaiExam = ({ examData, student, onClose, onSave }) => {
                         </Button>
                     </div>
                     <InputField
-                        field={{ 
-                            name: 'dai_comment', 
-                            label: 'Comentarios', 
-                            type: 'textArea', 
+                        field={{
+                            name: 'dai_comment',
+                            label: 'Comentarios',
+                            type: 'textArea',
                             placeholder: 'Ingrese observaciones del examen...',
                             required: true,
-                            maxLength: 500
+                            maxLength: 255
                         }}
                         value={comment}
                         handleChange={(e) => setComment(e.target.value)}
                         className="form-group"
                     />
                     <InputField
-                        field={{ 
-                            name: 'dai_status', 
-                            label: 'Estado', 
-                            type: 'dropdown', 
+                        field={{
+                            name: 'dai_status',
+                            label: 'Estado',
+                            type: 'dropdown',
                             options: [
                                 { value: '', label: 'Seleccione un estado' },
-                                { value: 'ADMITIR', label: 'Admitir' },
-                                { value: 'RECHAZAR', label: 'Rechazar' },
+                                { value: 'ADMIT', label: 'Admitir' },
+                                { value: 'REJECT', label: 'Rechazar' },
                             ],
-                            required: true 
+                            required: true
                         }}
                         value={status}
                         handleChange={(e) => setStatus(e.target.value)}
                         className="form-group"
-                    />                    
+                    />
                     <div className="form-actions">
                         <Button
                             type="button"
@@ -86,7 +106,8 @@ const ModalDaiExam = ({ examData, student, onClose, onSave }) => {
                 </form>
             </div>
         </div>
-    )
-}
+
+    );
+};
 
 export default ModalDaiExam

@@ -1,29 +1,33 @@
 import Button from '../../../core/global/atoms/Button'
 
-const DAIGradesRow = ({ grade, onDAIClick }) => {
-  const formatDate = (dateString) => {
-    return dateString ? new Date(dateString).toLocaleDateString() : 'N/A'
+const DAIGradesRow = ({ grade, onDAIClick}) => {
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-11
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`; // Formato: DD/MM/AAAA
   }
-  // TODO: Put data on the las column
+  
   return (
     <tr>
-      <td>{grade.student.person.idNumber}</td>
-      <td>{grade.student.person.firstName}</td>
-      <td>{grade.student.person.firstSurname}</td>
-      <td>{grade.student.person.secondSurname || 'N/A'}</td>
-      <td>{formatDate(grade.enrollmentDate)}</td>
+      <td>{grade.person.idNumber}</td>
+      <td>{grade.person.firstName}</td>
+      <td>{grade.person.firstSurname}</td>
+      <td>{grade.person.secondSurname || 'N/A'}</td>
+      <td>{formatDate(grade.daiExams[0].exam.examDate)}</td>
       {/* Examen DAI */}
       <td>
         <div className="exam-cell">
           <Button
             className='exam-button dai'
-            onClick={() => onDAIClick(grade.DAI ?? 'Pendiente', grade.student)}
+            onClick={() => onDAIClick()}
           >
             Calificar
           </Button>
         </div>
       </td>
-      <td>Revisado?</td>
+      <td>{grade.daiExams[0].reviewed === true? 'Revisado' : 'No Revisado'}</td>
     </tr>
   )
 }

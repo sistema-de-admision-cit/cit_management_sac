@@ -10,20 +10,17 @@ import '../../../../assets/styles/grades/grades-table.css'
 const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, totalPages }) => {
   const [activeModal, setActiveModal] = useState(null)
   const [selectedExam, setSelectedExam] = useState(null)
-  const [selectedStudent, setSelectedStudent] = useState(null)
   const { setErrorMessage, setSuccessMessage } = useMessages()
   const itemsPerPage = 25
 
-  const handleOpenModal = (modalType, examData, student) => {
-    setSelectedExam(examData)
-    setSelectedStudent(student)
+  const handleOpenModal = (modalType, exam) => {
+    setSelectedExam(exam)
     setActiveModal(modalType)
   }
 
   const handleCloseModal = () => {
-    setActiveModal(null);
-    setSelectedExam(null);
-    setSelectedStudent(null);
+    setSelectedExam(null) 
+    setActiveModal(null)
   };
 
   return (
@@ -46,12 +43,12 @@ const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, total
                 <Spinner />
               </td>
             </tr>
-          ) : grades?.length > 0 ? (  
-            grades.map((grade, index) => (  
+          ) : Array.isArray(grades) && grades.length > 0 ? (
+            grades.map((grade, index) => (
               <AcademicGradesRow
-                key={`${grade.student.id}-${index}`}
-                grade={grade}                
-                onAcademicClick={() => handleOpenModal('academic', grade.academic, grade.student)}
+                key={`${grade.person.id}-${index}`}
+                grade={grade}
+                onAcademicClick={() => handleOpenModal('academic', grades[index])}
               />
             ))
           ) : (
@@ -65,13 +62,13 @@ const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, total
       </table>
       {totalPages > 1 && (
         <div className='pagination'>
-          <Button 
-            onClick={() => onPageChange(currentPage - 1)} 
+          <Button
+            onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 0}
           >
             Anterior
           </Button>
-          
+
           {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
             let pageNum;
             if (totalPages <= 5) {
@@ -83,7 +80,7 @@ const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, total
             } else {
               pageNum = currentPage - 2 + i;
             }
-            
+
             return (
               <Button
                 key={pageNum}
@@ -94,9 +91,9 @@ const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, total
               </Button>
             );
           })}
-          
-          <Button 
-            onClick={() => onPageChange(currentPage + 1)} 
+
+          <Button
+            onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage >= totalPages - 1}
           >
             Siguiente
@@ -106,8 +103,7 @@ const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, total
       {/* Modal */}
       {activeModal === 'academic' && (
         <ModalAcademicExam
-          examData={selectedExam}
-          student={selectedStudent}
+          grade={selectedExam}
           onClose={handleCloseModal}
         />
       )}

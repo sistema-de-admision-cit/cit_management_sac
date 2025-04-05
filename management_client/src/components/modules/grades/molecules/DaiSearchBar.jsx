@@ -29,7 +29,7 @@ const DaiSearchBar = ({ onSearch, onCheckedEvaluados }) => {
       <InputField
         field={{
           name: 'evaluados',
-          label: 'Estudiantes evaluados',
+          label: 'Revisados',
           type: 'checkbox',
         }}
         className='form-group'

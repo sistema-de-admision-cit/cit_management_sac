@@ -121,7 +121,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
   }
 
   const textAreaInput = () => {
-    const maxLength = field.maxLength || null; // Obtener maxLength de las props del field
+    const maxLength = field.maxLength || null;
     const remainingChars = maxLength ? maxLength - (value?.length || 0) : null;
   
     return (
@@ -133,8 +133,14 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
           onChange={handleChange}
           required={field.required || false}
           autoComplete={autoComplete || 'off'}
-          className={`${className}`}
-          maxLength={maxLength} // Establecer límite de caracteres
+          className={className}
+          maxLength={maxLength}
+          style={{ 
+            width: '100%',
+            minHeight: '100px',
+            maxHeight: '100px',
+            resize: 'vertical'
+          }}
         />
         {maxLength && (
           <div className="char-counter">
@@ -142,8 +148,8 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
           </div>
         )}
       </div>
-    )
-  }
+    );
+  };
 
   // map
   const inputRenderers = {

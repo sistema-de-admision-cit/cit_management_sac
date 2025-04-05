@@ -1,182 +1,305 @@
+import axiosInstance  from '../../../../config/axiosConfig'
 import { jsPDF } from "jspdf";
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 // Manejo de errores
 const getErrorMessage = (error) => {
-    if (error.code === 'ECONNABORTED') {
-        return 'La conexión al servidor tardó demasiado. Por favor, intenta de nuevo.'
-    }
+  if (error.code === 'ECONNABORTED') {
+    return 'La conexión al servidor tardó demasiado. Por favor, intenta de nuevo.'
+  }
 
-    if (error.response) {
-        if (error.response.status === 404) {
-            return 'El estudiante no se encontró. Puede que ya haya sido eliminado.'
-        } else if (error.response.status === 500) {
-            return 'Hubo un error en el servidor. Por favor, intenta de nuevo más tarde.'
-        } else {
-            return (error.response.data.message || 'Por favor, intenta de nuevo.')
-        }
-    } else if (error.request) {
-        return 'Error de red: No se pudo conectar al servidor. Por favor, verifica tu conexión.'
+  if (error.response) {
+    if (error.response.status === 404) {
+      return 'El estudiante no se encontró. Puede que ya haya sido eliminado.'
+    } else if (error.response.status === 500) {
+      return 'Hubo un error en el servidor. Por favor, intenta de nuevo más tarde.'
     } else {
-        return 'Error inesperado: ' + error.message
+      return (error.response.data.message || 'Por favor, intenta de nuevo.')
     }
+  } else if (error.request) {
+    return 'Error de red: No se pudo conectar al servidor. Por favor, verifica tu conexión.'
+  } else {
+    return 'Error inesperado: ' + error.message
+  }
 }
 
 // Handlers that Get Data from API
 
-const getAllAcademicUrl = import.meta.env.VITE_GET_ALL_ACADEMIC_ENDPOINT
-export const handleGetAllAcademicGrades = async (page = 0, setGrades, setLoading, setErrorMessage) => {
-  try {
-    setLoading(true);
+const getAllAcademicGradesUrl = import.meta.env.VITE_GET_ALL_ACADEMIC_GRADES_ENDPOINT;
+export const handleGetAllAcademicGrades = (
+  page = 0,
+  setGrades,
+  setLoading,
+  setErrorMessage,
+  setSuccessMessage
+) => {
+  const pageSize = 25;
+  const examType = 'ACA';
+  const url = `${getAllAcademicGradesUrl}/${examType}`;
+
+  setLoading(true);
+  
+  axiosInstance.get(url, {
+    params: {
+      page,
+      size: pageSize
+    }
+  })
+  .then(response => {
+    const data = response.data;
     
-    // Reemplaza {ACA} por el tipo de examen académico correspondiente
-    const endpoint = getAllAcademicUrl.replace('{ACA}', 'ACADEMIC');
-    const response = await api.get(`${endpoint}?page=${page}`);
+    setGrades(data.content || data);
     
-    if (response.data && response.data.content) {
-      // Si es la primera página, reemplazamos los datos
-      // Si es una página posterior, los agregamos
-      setGrades(prevGrades => 
-        page === 0 
-          ? response.data.content 
-          : [...prevGrades, ...response.data.content]
-      );
-      
-      return {
-        content: response.data.content,
-        totalPages: response.data.totalPages,
-        currentPage: page
-      };
+    if (setSuccessMessage) {
+      setSuccessMessage('Calificaciones académicas cargadas correctamente');
     }
     
-    throw new Error('Formato de respuesta inesperado');
-  } catch (error) {
-    console.error('Error fetching academic grades:', error);
-    setErrorMessage('Error al cargar los resultados académicos');
     return {
-      content: [],
-      totalPages: 0,
-      currentPage: 0
+      totalPages: data.totalPages || 1,
+      currentPage: data.number || page,
+      totalElements: data.totalElements || (Array.isArray(data) ? data.length : 0)
     };
-  } finally {
+  })
+  .catch(error => {
+    console.error("Error al obtener calificaciones:", error);
+    
+    let errorMsg = 'No se pudieron cargar las calificaciones académicas';
+    
+    if (error.response) {
+      if (error.response.status === 401) {
+        errorMsg = 'Sesión expirada. Por favor inicie sesión nuevamente';
+      } else if (error.response.status === 403) {
+        errorMsg = 'No tiene permisos para ver estas calificaciones';
+      } else if (error.response.data?.message) {
+        errorMsg = error.response.data.message;
+      }
+    } else if (error.request) {
+      errorMsg = 'No se recibió respuesta del servidor';
+    }
+    
+    setErrorMessage(errorMsg);
+    return null;
+  })
+  .finally(() => {
     setLoading(false);
-  }
+  });
 };
 
-const getAllEnglishUrl = import.meta.env.VITE_GET_ALL_ENGLISH_ENDPOINT
-export const handleGetAllEnglishGrades = async (setGrades, setLoading, setErrorMessage) => {
-    setLoading(true)
-    try {
-      // Simulamos un delay de red (1 segundo)  
-      //await new Promise(resolve => setTimeout(resolve, 1000))
-      setGrades(mockGrades)
-    } catch (error) {
-      setErrorMessage('Error al cargar los datos de prueba')
-      console.error('Mock data error:', error)
-    } finally {
-      setLoading(false)
-    }
-}
+const getAllDaiGradesUrl = import.meta.env.VITE_GET_ALL_DAI_GRADES_ENDPOINT;
+export const handleGetAllDaiGrades = (
+  page = 0,
+  setGrades,
+  setLoading,
+  setErrorMessage,
+  setSuccessMessage
+) => {
+  const pageSize = 25;
+  const examType = 'DAI';
+  const url = `${getAllDaiGradesUrl}/${examType}`;
 
-const getAllDAIUrl = import.meta.env.VITE_GET_ALL_ACADEMIC_ENDPOINT
-export const handleGetAllDAIGrades = async (setGrades, setLoading, setErrorMessage) => {
-    setLoading(true)
-    try {
-      // Simulamos un delay de red (1 segundo)
-      //await new Promise(resolve => setTimeout(resolve, 1000))
-      setGrades(mockGrades)
-    } catch (error) {
-      setErrorMessage('Error al cargar los datos de prueba')
-      console.error('Mock data error:', error)
-    } finally {
-      setLoading(false)
+  setLoading(true);
+  
+  axiosInstance.get(url, {
+    params: {
+      page,
+      size: pageSize
     }
-}
+  })
+  .then(response => {
+    const data = response.data;
+    
+    setGrades(data.content || data);
+    
+    if (setSuccessMessage) {
+      setSuccessMessage('Calificaciones DAI cargadas correctamente');
+    }
+    
+    return {
+      totalPages: data.totalPages || 1,
+      currentPage: data.number || page,
+      totalElements: data.totalElements || (Array.isArray(data) ? data.length : 0)
+    };
+  })
+  .catch(error => {
+    console.error("Error al obtener calificaciones:", error);
+    
+    let errorMsg = 'No se pudieron cargar las calificaciones DAI';
+    
+    if (error.response) {
+      if (error.response.status === 401) {
+        errorMsg = 'Sesión expirada. Por favor inicie sesión nuevamente';
+      } else if (error.response.status === 403) {
+        errorMsg = 'No tiene permisos para ver estas calificaciones';
+      } else if (error.response.data?.message) {
+        errorMsg = error.response.data.message;
+      }
+    } else if (error.request) {
+      errorMsg = 'No se recibió respuesta del servidor';
+    }
+    
+    setErrorMessage(errorMsg);
+    return null;
+  })
+  .finally(() => {
+    setLoading(false);
+  });
+};
 
 // Handlers that Search Data from API
 // TODO: Implementar la busqueda de datos desde el servidor
 const searchAcademicUrl = import.meta.env.VITE_SEARCH_ACADEMIC_BY_STUDENT_VALUES_ENDPOINT
-export const handleSearchAcademicGrades = async (search, setGrades) => {}
-
-const searchEnglishUrl = import.meta.env.VITE_SEARCH_ENGLISH_BY_STUDENT_VALUES_ENDPOINT
-export const handleSearchEnglishGrades = async (search, setGrades) => {}
+export const handleSearchAcademicGrades = async (search, setGrades) => { }
 
 const searchDAIUrl = import.meta.env.VITE_SEARCH_DAI_BY_STUDENT_VALUES_ENDPOINT
-export const handleSearchDAIGrades = async (search, setGrades) => {}
+export const handleSearchDAIGrades = async (search, setGrades) => { }
 
-// Handlers that Download Data from API
-// TODO: Implementar la descarga de archivos PDF desde el servidor
-const downloadAcademicUrl = import.meta.env.VITE_DOWNLOAD_ACADEMIC_BY_STUDENT_VALUES_ENDPOINT
-export const handleDownloadAcademicExam = async (examID, setErrorMessage) => {
-  // Must take the data from the API and download it as a PDF file
-}
-
-const downloadEnglishUrl = import.meta.env.VITE_DOWNLOAD_ENGLISH_BY_STUDENT_VALUES_ENDPOINT
-export const handleDownloadEnglishExam = async (enrollment, setErrorMessage) => {}
-
-const downloadDAIUrl = import.meta.env.VITE_DOWNLOAD_DAI_BY_STUDENT_VALUES_ENDPOINT
-export const handleDownloadDAIExam = async (enrollment, setErrorMessage) => {}
 
 // Handlers that Save Data from API
 // TODO: Implementar envio de comentario DAI al servidor
-const saveDAIUrl = import.meta.env.VITE_SAVE_DAI_BY_STUDENT_VALUES_ENDPOINT
-export const handleSaveDAIComment = async (enrollment, grade, setErrorMessage, setSuccessMessage) => {}
+//const saveDAIUrl = import.meta.env.VITE_PUT_DAI_COMMENT_ENDPOIN
+export const handleSaveDAIComment = (
+  grade,
+  comment,
+  status,
+  setErrorMessage,
+  setSuccessMessage,
+  setLoading,
+  onClose
+) => {
+  const saveDAIUrl = import.meta.env.VITE_PUT_DAI_COMMENT_ENDPOINT || '/management-exams/dai-exam';
+  
+  setLoading(true);
 
-export const generateExamPDF = (examData) => {
+  const daiExam = grade.daiExams[0]; // O ajusta si seleccionas otro índice
+  const payload = {
+    id: daiExam.id,
+    comment: comment,
+    recommendation: status,
+    reviewed: true,
+    exam: {
+      id: daiExam.exam.id,
+      enrollment: daiExam.exam.enrollment,
+      examDate: daiExam.exam.examDate,
+      examType: daiExam.exam.examType,
+      responses: daiExam.exam.responses.map(r => ({
+        id: r.id,
+        questionType: r.questionType,
+        questionText: r.questionText,
+        imageUrl: r.imageUrl,
+        selectionType: r.selectionType,
+        deleted: r.deleted,
+        response: r.response
+      }))
+    }
+  };
+
+  axiosInstance.put(saveDAIUrl, payload)
+    .then(response => {
+      setSuccessMessage('Comentario y estado guardados exitosamente.');
+      if (onClose) onClose(); // Cierra el modal o el formulario
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+      return response.data; // Puedes retornar los datos si los necesitas
+    })
+    .catch(error => {
+      console.error("Error al guardar comentario DAI:", error);
+      
+      let errorMessage = 'Ocurrió un error al guardar el comentario';
+      
+      if (error.response) {
+        if (error.response.status === 401) {
+          errorMessage = 'No autorizado. Por favor inicie sesión nuevamente.';
+        } else if (error.response.status === 403) {
+          errorMessage = 'No tiene permisos para realizar esta acción.';
+        } else if (error.response.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.response.data) {
+          errorMessage = `Error: ${JSON.stringify(error.response.data)}`;
+        }
+      } else if (error.request) {
+        errorMessage = 'No se recibió respuesta del servidor. Verifique su conexión.';
+      }
+      
+      setErrorMessage(errorMessage);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+};
+
+// Handlers that transfort to PDF
+export const generateAcademicExamPDF = (gradeData) => {
+  // Extraer los datos relevantes del JSON
+  const examData = gradeData.academicExams[0];
+  const exam = examData.exam;
+  const grade = examData.grade;
+
   // Crear un nuevo documento PDF
   const doc = new jsPDF();
-  
+
   // Configuración inicial
   let yPosition = 10;
   const margin = 20;
   const pageWidth = doc.internal.pageSize.getWidth();
   const maxWidth = pageWidth - margin * 2;
-  
+
   // Título del documento
   doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
   doc.text("Examen Académico", margin, yPosition);
   yPosition += 15;
-  
-  // Información básica del examen
+
+  // Información del estudiante
   doc.setFontSize(12);
   doc.setFont("helvetica", "normal");
-  doc.text(`ID del Examen: ${examData.exam.id}`, margin, yPosition);
+  doc.text(`Estudiante: ${gradeData.person.firstName} ${gradeData.person.firstSurname}`, margin, yPosition);
   yPosition += 8;
-  doc.text(`Fecha: ${new Date(examData.exam.examDate).toLocaleDateString()}`, margin, yPosition);
+  doc.text(`Documento: ${gradeData.person.idNumber}`, margin, yPosition);
   yPosition += 8;
-  doc.text(`Calificación: ${examData.grade}%`, margin, yPosition);
+
+  // Información del examen
+  doc.text(`ID del Examen: ${exam.id}`, margin, yPosition);
+  yPosition += 8;
+  doc.text(`Fecha: ${new Date(exam.examDate).toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  })}`, margin, yPosition);
+  yPosition += 8;
+  doc.text(`Calificación: ${grade}%`, margin, yPosition);
   yPosition += 15;
-  
+
   // Preguntas y respuestas
-  examData.exam.responses.forEach((question, index) => {
+  exam.responses.forEach((question, index) => {
     if (yPosition > 250) {
       doc.addPage();
       yPosition = 20;
     }
-    
+
     // Número de pregunta
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
     doc.text(`Pregunta ${index + 1}:`, margin, yPosition);
     yPosition += 8;
-    
+
     // Texto de la pregunta
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
     const questionLines = doc.splitTextToSize(question.questionText, maxWidth);
     doc.text(questionLines, margin, yPosition);
     yPosition += questionLines.length * 7 + 10;
-    
+
     // Opciones de respuesta
     question.questionOptions.forEach((option, optIndex) => {
-      // Verificar si se necesita una nueva página para las opciones
       if (yPosition > 270) {
         doc.addPage();
         yPosition = 20;
       }
-      
+
       let optionText = `${String.fromCharCode(97 + optIndex)}) ${option.option}`;
-      
+
       // Marcar la opción correcta y la seleccionada
       if (option.isCorrect && option.selected) {
         optionText += " ✓ (Correcta y seleccionada)";
@@ -188,313 +311,121 @@ export const generateExamPDF = (examData) => {
         optionText += " ✗ (Seleccionada)";
         doc.setTextColor(255, 0, 0); // Rojo
       }
-      
+
       const optionLines = doc.splitTextToSize(optionText, maxWidth - 10);
       doc.text(optionLines, margin + 10, yPosition);
       yPosition += optionLines.length * 7 + 5;
-      
+
       // Restaurar color
       doc.setTextColor(0, 0, 0);
     });
-    
+
     yPosition += 10;
   });
-  
+
   // Guardar el PDF
-  doc.save(`Examen_Academico_${examData.exam.id}.pdf`);
+  doc.save(`Examen_${gradeData.person.firstName}_${gradeData.person.firstSurname}_${exam.id}.pdf`);
 };
 
+export const generateDAIExamPDF = (gradeData) => {
+  // Extraer los datos relevantes del JSON (tomamos el primer examen DAI)
+  const examData = gradeData.daiExams[0];
+  const exam = examData.exam;
 
-// Datos mock de ejemplo
-const mockGrades = [
-  {
-    student: {
-      id: '1',
-      person: {
-        idNumber: '123456789',
-        firstName: 'María',
-        firstSurname: 'Gómez',
-        secondSurname: 'Pérez',
-      },
-    },
-    english: {
-      level: 'B1',
-    },
-    academic: {
-      grade: 92,
-    },
-    DAI: {
-      grade: "RECHAZAR",
-      comments: 'Puede mejorar',
-    },
-    finalGrade: 82,
-    enrollmentDate: '2023-10-15T00:00:00Z'
-  },
-  {
-    student: {
-      id: '2',
-      person: {
-        idNumber: '987654321',
-        firstName: 'Carlos',
-        firstSurname: 'Rodríguez',
-        secondSurname: 'López',
-      },
-    },
-    english: {
-      level: 'A2',
-    },
-    academic: {
-      grade: 85,
-    },
-    DAI: null,
-    finalGrade: 72,
-    enrollmentDate: '2023-09-20T00:00:00Z'
-  },
-  {
-    student: {
-      id: '3',
-      person: {
-        idNumber: '456789123',
-        firstName: 'Ana',
-        firstSurname: 'Martínez',
-        secondSurname: 'Sánchez',
-      },
-    },
-    english: {
-      level: 'B2',
-    },
-    academic: {
-      grade: 88,
-    },
-    DAI: {
-      grade: "ADMITIR",
-      comments: 'Excelente desempeño',
-    },
-    finalGrade: 90,
-    enrollmentDate: '2023-11-05T00:00:00Z'
-  },
-  {
-    student: {
-      id: '4',
-      person: {
-        idNumber: '321654987',
-        firstName: 'Luis',
-        firstSurname: 'Hernández',
-        secondSurname: 'García',
-      },
-    },
-    english: {
-      level: 'A1',
-    },
-    academic: {
-      grade: 78,
-    },
-    DAI: {
-      grade: "RECHAZAR",
-      comments: 'Necesita reforzar conocimientos básicos',
-    },
-    finalGrade: 65,
-    enrollmentDate: '2023-08-12T00:00:00Z'
-  },
-  {
-    student: {
-      id: '5',
-      person: {
-        idNumber: '654123987',
-        firstName: 'Sofía',
-        firstSurname: 'Díaz',
-        secondSurname: 'Fernández',
-      },
-    },
-    english: {
-      level: 'C1',
-    },
-    academic: {
-      grade: 95,
-    },
-    DAI: {
-      grade: "ADMITIR",
-      comments: 'Destacado en todas las áreas',
-    },
-    finalGrade: 96,
-    enrollmentDate: '2023-12-01T00:00:00Z'
-  },
-  {
-    student: {
-      id: '6',
-      person: {
-        idNumber: '789321654',
-        firstName: 'Javier',
-        firstSurname: 'Pérez',
-        secondSurname: 'Ramírez',
-      },
-    },
-    english: {
-      level: 'B1',
-    },
-    academic: {
-      grade: 82,
-    },
-    DAI: null,
-    finalGrade: 75,
-    enrollmentDate: '2023-10-22T00:00:00Z'
-  },
-  {
-    student: {
-      id: '7',
-      person: {
-        idNumber: '159753486',
-        firstName: 'Elena',
-        firstSurname: 'Gutiérrez',
-        secondSurname: 'Morales',
-      },
-    },
-    english: {
-      level: 'A2',
-    },
-    academic: {
-      grade: 76,
-    },
-    DAI: {
-      grade: "RECHAZAR",
-      comments: 'Falta preparación en lógica',
-    },
-    finalGrade: 68,
-    enrollmentDate: '2023-09-15T00:00:00Z'
-  },
-  {
-    student: {
-      id: '8',
-      person: {
-        idNumber: '357951468',
-        firstName: 'Pedro',
-        firstSurname: 'Jiménez',
-        secondSurname: 'Ruiz',
-      },
-    },
-    english: {
-      level: 'B2',
-    },
-    academic: {
-      grade: 89,
-    },
-    DAI: {
-      grade: "ADMITIR",
-      comments: 'Buen potencial',
-    },
-    finalGrade: 87,
-    enrollmentDate: '2023-11-18T00:00:00Z'
-  },
-  {
-    student: {
-      id: '9',
-      person: {
-        idNumber: '852963741',
-        firstName: 'Laura',
-        firstSurname: 'Moreno',
-        secondSurname: 'Alvarez',
-      },
-    },
-    english: {
-      level: 'A2',
-    },
-    academic: {
-      grade: 81,
-    },
-    DAI: null,
-    finalGrade: 74,
-    enrollmentDate: '2023-10-05T00:00:00Z'
-  },
-  {
-    student: {
-      id: '10',
-      person: {
-        idNumber: '258147369',
-        firstName: 'Diego',
-        firstSurname: 'Castro',
-        secondSurname: 'Ortega',
-      },
-    },
-    english: {
-      level: 'B1',
-    },
-    academic: {
-      grade: 84,
-    },
-    DAI: {
-      grade: "ADMITIR",
-      comments: 'Cumple con los requisitos mínimos',
-    },
-    finalGrade: 80,
-    enrollmentDate: '2023-09-30T00:00:00Z'
-  },
-  {
-    student: {
-      id: '11',
-      person: {
-        idNumber: '147258369',
-        firstName: 'Isabel',
-        firstSurname: 'Navarro',
-        secondSurname: 'Torres',
-      },
-    },
-    english: {
-      level: 'C1',
-    },
-    academic: {
-      grade: 93,
-    },
-    DAI: {
-      grade: "ADMITIR",
-      comments: 'Excelente candidata',
-    },
-    finalGrade: 94,
-    enrollmentDate: '2023-12-10T00:00:00Z'
-  },
-  {
-    student: {
-      id: '12',
-      person: {
-        idNumber: '369258147',
-        firstName: 'Miguel',
-        firstSurname: 'Romero',
-        secondSurname: 'Serrano',
-      },
-    },
-    english: {
-      level: 'A1',
-    },
-    academic: {
-      grade: 70,
-    },
-    DAI: {
-      grade: "RECHAZAR",
-      comments: 'Necesita mejorar en todas las áreas',
-    },
-    finalGrade: 62,
-    enrollmentDate: '2023-08-25T00:00:00Z'
-  },
-  {
-    student: {
-      id: '13',
-      person: {
-        idNumber: '486275193',
-        firstName: 'Carmen',
-        firstSurname: 'Vega',
-        secondSurname: 'Mendoza',
-      },
-    },
-    english: {
-      level: 'B2',
-    },
-    academic: {
-      grade: 87,
-    },
-    DAI: {
-      grade: "ADMITIR",
-      comments: 'Buena base teórica',
-    },
-    finalGrade: 85,
-    enrollmentDate: '2023-11-22T00:00:00Z'
+  // Crear un nuevo documento PDF
+  const doc = new jsPDF();
+
+  // Configuración inicial
+  let yPosition = 10;
+  const margin = 20;
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const maxWidth = pageWidth - margin * 2;
+
+  // Título del documento
+  doc.setFontSize(18);
+  doc.setFont("helvetica", "bold");
+  doc.text("Examen DAI (Desarrollo Académico Integral)", margin, yPosition);
+  yPosition += 15;
+
+  // Información del estudiante
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Estudiante: ${gradeData.person.firstName} ${gradeData.person.firstSurname} ${gradeData.person.secondSurname || ''}`, margin, yPosition);
+  yPosition += 8;
+  doc.text(`Documento: ${gradeData.person.idNumber}`, margin, yPosition);
+  yPosition += 8;
+
+  // Información del examen
+  doc.text(`ID del Examen: ${exam.id}`, margin, yPosition);
+  yPosition += 8;
+  doc.text(`Fecha: ${new Date(exam.examDate).toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  })}`, margin, yPosition);
+  yPosition += 15;
+
+  // Preguntas y respuestas
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.text("Respuestas del Estudiante:", margin, yPosition);
+  yPosition += 10;
+
+  exam.responses.forEach((question, index) => {
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
+    // Texto de la pregunta
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    const questionLines = doc.splitTextToSize(`${index + 1}. ${question.questionText}`, maxWidth);
+    doc.text(questionLines, margin, yPosition);
+    yPosition += questionLines.length * 7 + 5;
+
+    // Respuesta del estudiante
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 128); // Azul oscuro para las respuestas
+
+    const responseLines = doc.splitTextToSize(`Respuesta: ${question.response}`, maxWidth - 10);
+    doc.text(responseLines, margin + 10, yPosition);
+    yPosition += responseLines.length * 7 + 10;
+
+    // Restaurar color
+    doc.setTextColor(0, 0, 0);
+
+    yPosition += 5;
+  });
+
+  // Comentarios y recomendaciones si existen
+  if (examData.comment || examData.recommendation) {
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Observaciones:", margin, yPosition);
+    yPosition += 10;
+
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+
+    if (examData.comment) {
+      const commentLines = doc.splitTextToSize(`Comentario: ${examData.comment}`, maxWidth);
+      doc.text(commentLines, margin, yPosition);
+      yPosition += commentLines.length * 7 + 8;
+    }
+
+    if (examData.recommendation) {
+      const recommendationLines = doc.splitTextToSize(`Recomendación: ${examData.recommendation}`, maxWidth);
+      doc.text(recommendationLines, margin, yPosition);
+      yPosition += recommendationLines.length * 7 + 8;
+    }
   }
-]
+
+  // Guardar el PDF
+  doc.save(`Examen_DAI_${gradeData.person.firstName}_${gradeData.person.firstSurname}.pdf`);
+};
