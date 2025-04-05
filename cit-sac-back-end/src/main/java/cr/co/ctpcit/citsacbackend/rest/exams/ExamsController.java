@@ -1,8 +1,11 @@
 package cr.co.ctpcit.citsacbackend.rest.exams;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import cr.co.ctpcit.citsacbackend.data.entities.exams.EnglishExamEntity;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.EnglishScoreEntryDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.ExamAcaDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.ExamDaiDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.logs.EnglishExamLogDto;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.ExamsService;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.english.EnglishExamService;
 import jakarta.validation.Valid;
