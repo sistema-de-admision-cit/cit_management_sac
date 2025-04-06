@@ -1,11 +1,13 @@
-package cr.co.ctpcit.citsacbackend.logic.dto.config;
+package cr.co.ctpcit.citsacbackend.logic.dto.configs;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@AllArgsConstructor
 @Setter
 @Getter
 public class EmailConfigDto {
