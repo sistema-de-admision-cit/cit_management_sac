@@ -18,18 +18,30 @@ import cr.co.ctpcit.citsacbackend.data.repositories.exams.ExamRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.EnrollmentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.StudentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.questions.QuestionRepository;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.*;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.ExamAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.QuestionAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.QuestionOptionAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.ExamDaiDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishScoreEntryDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.logs.EnglishExamLogDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.exams.ExamMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.StudentMapper;
+import cr.co.ctpcit.citsacbackend.logic.services.logs.LogsScoreService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.text.Normalizer;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +55,7 @@ public class ExamsServiceImpl implements ExamsService {
   private final SystemConfigRepository systemConfigRepository;
   private final ExamRepository examRepository;
   private final ObjectMapper mapper;
+  private final LogsScoreService logsScoreService;
 
   /**
    * Get the academic exam for the student
@@ -159,15 +172,20 @@ public class ExamsServiceImpl implements ExamsService {
 
     //Create the list of AcademicExamEntities
     List<ExamEntity> daiExams = new ArrayList<>();
+    getExamsFromEnrollmentsByExamType(enrollments, ExamType.DAI, daiExams);
+
+    return ExamMapper.daiExamsToDaiExamDetailsDto(daiExams);
+  }
+
+  private static void getExamsFromEnrollmentsByExamType(List<EnrollmentEntity> enrollments,
+      ExamType dai, List<ExamEntity> daiExams) {
     for (EnrollmentEntity enrollmentInUse : enrollments) {
       for (ExamEntity exam : enrollmentInUse.getExams()) {
-        if (exam.getExamType().equals(ExamType.DAI)) {
+        if (exam.getExamType().equals(dai)) {
           daiExams.add(exam);
         }
       }
     }
-
-    return ExamMapper.daiExamsToDaiExamDetailsDto(daiExams);
   }
 
   @Override
@@ -197,8 +215,72 @@ public class ExamsServiceImpl implements ExamsService {
 
   @Override
   public void updateDaiExam(DaiExamDetailsDto daiExamDetailsDto) {
+    ExamEntity exam = examRepository.findById(daiExamDetailsDto.id()).orElseThrow(
+        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El examen no fue encontrado."));
 
+    DaiExamEntity daiExam = exam.getDaiExam();
+    if (daiExam == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "El examen no fue encontrado.");
+    }
+
+    //Update the exam
+    daiExam.setComment(daiExamDetailsDto.comment());
+    daiExam.setRecommendation(daiExamDetailsDto.recommendation());
+    daiExam.setReviewed(true);
+
+    //Save the exam
+    examRepository.save(exam);
   }
+
+  @Override
+  @Transactional
+  public List<EnglishExamLogDto> processEnglishScores(List<EnglishScoreEntryDTO> englishScores) {
+    Instant now = Instant.now(); // process id for the stored procedure (tbl_logs_score)
+    Integer processId = now.getNano();
+
+    for (EnglishScoreEntryDTO score : englishScores) {
+      // Normalizar nombres y apellidos
+      String normalizedNames = normalizeString(score.names());
+      String normalizedLastNames = normalizeString(score.lastNames());
+
+      // usp_process_english_exam_and_log
+      // procedure to update the score of an english exam and log the change in the database
+      examRepository.usp_process_english_exam_and_log(normalizedNames, normalizedLastNames,
+          score.lastTest(), score.id(),
+          BigDecimal.valueOf(Double.parseDouble(score.core().replace("%", ""))),
+          score.level().toString(), processId);
+    }
+
+    return logsScoreService.getLogsScoresByProcessId(processId);
+  }
+
+  @Override
+  public List<EnglishExamDetailsDto> getExistingEnglishExams(String idNumber) {
+    //Find students enrollments
+    List<EnrollmentEntity> enrollments = getEnrollmentEntities(idNumber);
+
+    //Create a list with Exams of ENG examType
+    List<ExamEntity> englishExams = new ArrayList<>();
+    for (EnrollmentEntity enrollment : enrollments) {
+      for (ExamEntity exam : enrollment.getExams()) {
+        if (exam.getExamType().equals(ExamType.ENG)) {
+          englishExams.add(exam);
+        }
+      }
+    }
+
+    //Map the list to EnglishExamDetailsDto
+    return ExamMapper.englishExamsToEnglishExamDetailsDto(englishExams);
+  }
+
+  // normalize the string to lowercase and remove accents
+  private String normalizeString(String input) {
+    if (input == null)
+      return null;
+    String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
+    return normalized.replaceAll("\\p{M}", "").toLowerCase();
+  }
+
 
   private List<ExamEntity> findExamsByType(StudentEntity student, ExamType examType) {
     List<ExamEntity> exams = new ArrayList<>();

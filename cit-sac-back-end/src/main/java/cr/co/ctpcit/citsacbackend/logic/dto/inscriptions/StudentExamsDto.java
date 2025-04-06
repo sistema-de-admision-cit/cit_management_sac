@@ -1,7 +1,7 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.AcademicExamDetailsDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.DaiExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiExamDetailsDto;
 import lombok.Builder;
 
 import java.io.Serializable;

@@ -7,7 +7,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.*;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.ExamAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.QuestionAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.ExamDaiDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.QuestionDaiDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishExamDetailsDto;
 
 import java.util.List;
 
@@ -29,7 +35,7 @@ public class ExamMapper {
 
   public static AcademicExamDetailsDto academicExamToAcademicExamDetailsDto(ExamEntity examEntity)
       throws JsonProcessingException {
-    if (extracted(examEntity))
+    if (verifyExamType(examEntity, ExamType.ACA))
       return null;
 
     ObjectMapper mapper = new ObjectMapper();
@@ -71,7 +77,7 @@ public class ExamMapper {
 
   private static DaiExamDetailsDto daiExamToDaiExamDetailsDto(ExamEntity examEntity)
       throws JsonProcessingException {
-    if (extracted(examEntity))
+    if (verifyExamType(examEntity, ExamType.DAI))
       return null;
 
     ObjectMapper mapper = new ObjectMapper();
@@ -81,7 +87,7 @@ public class ExamMapper {
     List<QuestionDaiDto> questions = mapper.readValue(responses,
         mapper.getTypeFactory().constructCollectionLikeType(List.class, QuestionDaiDto.class));
 
-    ExamDaiDto exam = ExamDaiDto.builder().id(examEntity.getAcademicExam().getId())
+    ExamDaiDto exam = ExamDaiDto.builder().id(examEntity.getId())
         .enrollment(examEntity.getEnrollment().getId()).examType(examEntity.getExamType())
         .examDate(examEntity.getExamDate()).responses(questions).build();
 
@@ -92,10 +98,28 @@ public class ExamMapper {
 
   }
 
-  private static boolean extracted(ExamEntity examEntity) {
-    if (examEntity.getAcademicExam() == null || !examEntity.getExamType().equals(ExamType.ACA)) {
-      return true;
-    }
-    return false;
+  private static boolean verifyExamType(ExamEntity examEntity, ExamType examType) {
+    return switch (examType) {
+      case ACA -> examEntity.getAcademicExam() == null || examEntity.getExamType() != ExamType.ACA;
+      case DAI -> examEntity.getDaiExam() == null || examEntity.getExamType() != ExamType.DAI;
+      case ENG -> examEntity.getEnrollment() == null || examEntity.getExamType() != ExamType.ENG;
+      default -> true;
+    };
+  }
+
+  public static EnglishExamDetailsDto englishExamToEnglishExamDetailsDto(ExamEntity examEntity) {
+    if (verifyExamType(examEntity, ExamType.ENG))
+      return null;
+
+    return EnglishExamDetailsDto.builder().examId(examEntity.getId())
+        .enrollmentId(examEntity.getEnrollment().getId()).examDate(examEntity.getExamDate())
+        .trackTestId(examEntity.getEnglishExam().getTrackTestId())
+        .level(examEntity.getEnglishExam().getLevel()).core(examEntity.getEnglishExam().getCore())
+        .build();
+  }
+
+  public static List<EnglishExamDetailsDto> englishExamsToEnglishExamDetailsDto(
+      List<ExamEntity> englishExams) {
+    return englishExams.stream().map(ExamMapper::englishExamToEnglishExamDetailsDto).toList();
   }
 }

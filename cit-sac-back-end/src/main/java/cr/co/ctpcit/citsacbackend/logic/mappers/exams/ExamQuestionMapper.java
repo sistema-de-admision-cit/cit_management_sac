@@ -1,8 +1,8 @@
 package cr.co.ctpcit.citsacbackend.logic.mappers.exams;
 
 import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionEntity;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.QuestionAcaDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.QuestionDaiDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.QuestionAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.QuestionDaiDto;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.logic.dto.exams;
+package cr.co.ctpcit.citsacbackend.logic.dto.exams.academic;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

@@ -51,7 +51,7 @@ class QuestionsControllerTest {
     @MockBean
     private QuestionsServiceImpl questionService;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void testCreateQuestion() throws Exception {

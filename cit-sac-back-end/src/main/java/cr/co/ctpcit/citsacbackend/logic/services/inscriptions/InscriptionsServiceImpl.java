@@ -1,8 +1,11 @@
 package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.data.entities.configs.ExamPeriodEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.configs.SystemConfigEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
+import cr.co.ctpcit.citsacbackend.data.repositories.configs.ExamPeriodRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
@@ -39,6 +42,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   private final EnrollmentRepository enrollmentRepository;
   private final DocumentRepository documentRepository;
   private final StudentRepository studentRepository;
+  private final ExamPeriodRepository examPeriodRepository;
 
   @Value("${storage.location}")
   private String rootLocation;
@@ -47,12 +51,13 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   @Autowired
   public InscriptionsServiceImpl(PersonRepository personRepository, StorageService storageService,
       EnrollmentRepository enrollmentRepository, DocumentRepository documentRepository,
-      StudentRepository studentRepository) {
+      StudentRepository studentRepository, ExamPeriodRepository examPeriodRepository) {
     this.personRepository = personRepository;
     this.storageService = storageService;
     this.enrollmentRepository = enrollmentRepository;
     this.documentRepository = documentRepository;
     this.studentRepository = studentRepository;
+    this.examPeriodRepository = examPeriodRepository;
   }
 
   /**
@@ -64,7 +69,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   @Override
   public List<EnrollmentDto> getAllInscriptions(Pageable pageable) {
     // Find all enrollments
-    Page<EnrollmentEntity> students = enrollmentRepository.findAll(
+    Page<EnrollmentEntity> students = enrollmentRepository.findAllEnrollmentsInProcess(
         PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
             pageable.getSortOr(Sort.by(Sort.Direction.ASC, "student.studentPerson.idNumber"))));
 
@@ -176,8 +181,10 @@ public class InscriptionsServiceImpl implements InscriptionsService {
       }
     }
 
-    // TODO: Verify examDate is between any period
-
+    List<ExamPeriodEntity> examPeriods = examPeriodRepository.findByDateBetween(inscription.examDate());
+    if (examPeriods.isEmpty()) {
+      throw new EnrollmentException("No hay un periodo de exámenes para la fecha seleccionada");
+    }
   }
 
   private EnrollmentDto createInscription(EnrollmentDto inscription, List<DocumentDto> documents) {

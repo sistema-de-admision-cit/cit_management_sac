@@ -1,7 +1,7 @@
 package cr.co.ctpcit.citsacbackend.logic.mappers.exams;
 
 import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionOptionEntity;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.QuestionOptionAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.QuestionOptionAcaDto;
 
 import java.util.List;
 import java.util.stream.Collectors;

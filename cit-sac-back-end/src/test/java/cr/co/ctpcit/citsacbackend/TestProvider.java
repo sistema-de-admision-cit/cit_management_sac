@@ -9,7 +9,12 @@ import cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.data.enums.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.*;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.*;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.ExamAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.QuestionAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.QuestionOptionAcaDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.ExamDaiDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.QuestionDaiDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionOptionDto;
@@ -213,12 +218,12 @@ public class TestProvider {
 
   public static ExamPeriodDto provideNonExistentExamPeriodDto() {
     return new ExamPeriodDto(null, LocalDate.parse("2021-01-01"), LocalDate.parse("2021-03-15"),
-        provideNonExistentExamDayDtoList());
+        provideNonExistentExamDayDtoList(),true);
   }
 
   public static ExamPeriodDto provideExistentExamPeriodDto() {
     return new ExamPeriodDto(1L, LocalDate.parse("2025-01-01"), LocalDate.parse("2025-03-15"),
-        provideExistingExamDayDtoList());
+        provideExistingExamDayDtoList(),true);
   }
 
   public static List<ExamDayDto> provideExistingExamDayDtoList() {

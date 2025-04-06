@@ -1,0 +1,148 @@
+.modal-tabs {
+    display: flex;
+    flex-wrap: wrap; 
+    border-bottom: 1px solid #ffffff;
+    margin-bottom: 16px;
+  }
+  
+  .button-container {
+    position: relative;
+  }
+  
+  /* Estilos para los botones del ModalEnglishExam */
+  .download-button,
+  .cancel-button,
+  .submit-button {
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    font-weight: 200;
+    border: 2px solid transparent;
+    font-size: 1rem;
+    outline: 0;
+    transition: all 0.2s ease-out;
+    display: inline-block;
+    cursor: pointer;
+    font-family: "Inter", sans-serif;
+    text-align: center;
+    margin: 0.5rem;
+  }
+  
+  .download-button:active,
+  .cancel-button:active,
+  .submit-button:active,
+  .download-button:target,
+  .cancel-button:target,
+  .submit-button:target {
+    transform: scale(0.95);
+  }
+  
+  .download-button[disabled]:active,
+  .cancel-button[disabled]:active,
+  .submit-button[disabled]:active,
+  .download-button[disabled]:target,
+  .cancel-button[disabled]:target,
+  .submit-button[disabled]:target {
+    transform: scale(1);
+  }
+  
+  .download-button[disabled]:hover,
+  .cancel-button[disabled]:hover,
+  .submit-button[disabled]:hover {
+    cursor: not-allowed;
+    transform: scale(1) !important;
+  }
+  
+  /* Botón de Descargar (secondary) */
+  .download-button {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+  }
+  
+  .download-button:hover {
+    border: 2px solid var(--primary-color-dark);
+    outline: 0;
+    background-color: var(--transparent-button-hover);
+  }
+  
+  .download-button[disabled] {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  
+  .download-button[disabled]:hover {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+  }
+  
+  /* Botón de Cancelar (cancel) */
+  .cancel-button {
+    background-color: var(--cancel-background-color);
+    border: 2px solid var(--cancel-border-color);
+    color: var(--cancel-text-color);
+  }
+  
+  .cancel-button:hover {
+    background-color: var(--cancel-hover-background-color);
+    border: 2px solid var(--cancel-hover-border-color);
+    color: var(--cancel-text-color);
+  }
+  
+  .cancel-button[disabled] {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  
+  .cancel-button[disabled]:hover {
+    background-color: var(--cancel-background-color);
+  }
+  
+  /* Botón de Guardar (primary) */
+  .submit-button {
+    background-color: var(--primary-color);
+    color: #ffffff;
+  }
+  
+  .submit-button:hover {
+    background-color: var(--primary-color-dark);
+    color: #ffffff;
+    outline: 0;
+  }
+  
+  .submit-button[disabled] {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  
+  .submit-button[disabled]:hover {
+    background-color: var(--primary-color);
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: center; /* Cambiado de flex-end a center */
+    gap: 1rem;
+    margin-top: 1rem;
+    width: 100%;
+  }
+
+  .textarea-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 25px;
+  }
+
+  .textarea-container textarea {
+    width: 100%;
+    height: 100px;
+    min-height: 100px;
+    max-height: 400px;
+    resize: both;
+  }
+  
+  .char-counter {
+    text-align: right;
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 0.25rem;
+  }

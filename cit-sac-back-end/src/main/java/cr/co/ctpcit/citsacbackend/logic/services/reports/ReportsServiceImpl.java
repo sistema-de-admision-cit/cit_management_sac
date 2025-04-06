@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Service
 public class ReportsServiceImpl {
-  private JdbcTemplate jdbcTemplate;
+  private final JdbcTemplate jdbcTemplate;
 
   public ReportsServiceImpl(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;

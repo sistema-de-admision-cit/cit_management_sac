@@ -1,16 +1,22 @@
 package cr.co.ctpcit.citsacbackend.rest.exams;
 
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.AcademicExamDetailsDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.DaiExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.DaiExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishExamDetailsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishScoreEntryDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.logs.EnglishExamLogDto;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.ExamsService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/management-exams")
@@ -40,8 +46,16 @@ public class ManagementExamController {
     return ResponseEntity.ok(academicExam);
   }
 
+  @GetMapping("/english-exams/{idNumber}")
+  public ResponseEntity<Iterable<EnglishExamDetailsDto>> getEnglishExams(
+      @PathVariable String idNumber) {
+    List<EnglishExamDetailsDto> englishExams = examsService.getExistingEnglishExams(idNumber);
+
+    return ResponseEntity.ok(englishExams);
+  }
+
   /**
-   * Get students that have taken an academic exams
+   * Get students that have taken academic or DAI exams
    */
   @GetMapping("/students/{examType}")
   public ResponseEntity<Iterable<StudentExamsDto>> getStudentsByExamType(
@@ -53,9 +67,23 @@ public class ManagementExamController {
 
   //TODO: Search by idNumber, name, lastName, and ExamType.
 
-  @PutMapping("/dai-exams")
-  public ResponseEntity<Void> updateDaiExam(@RequestBody DaiExamDetailsDto daiExamDetailsDto) {
+  @PutMapping("/dai-exam")
+  public ResponseEntity<Void> updateDaiExam(
+      @Valid @RequestBody DaiExamDetailsDto daiExamDetailsDto) {
     examsService.updateDaiExam(daiExamDetailsDto);
-    return ResponseEntity.ok().build();
+
+    return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping("/update-scores")
+  public ResponseEntity<List<EnglishExamLogDto>> uploadEnglishScores(
+      @RequestBody List<EnglishScoreEntryDTO> englishScores) {
+    List<EnglishExamLogDto> logs = examsService.processEnglishScores(englishScores);
+
+    if (logs.isEmpty()) {
+      return ResponseEntity.badRequest().body(logs);
+    }
+
+    return ResponseEntity.ok(logs);
   }
 }

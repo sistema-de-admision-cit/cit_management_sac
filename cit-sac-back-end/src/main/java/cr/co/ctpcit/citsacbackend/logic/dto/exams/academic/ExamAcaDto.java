@@ -1,6 +1,5 @@
-package cr.co.ctpcit.citsacbackend.logic.dto.exams;
+package cr.co.ctpcit.citsacbackend.logic.dto.exams.academic;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

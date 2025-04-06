@@ -11,6 +11,12 @@ import java.util.List;
  * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.configs.ExamPeriodEntity}
  */
 @Builder
-public record ExamPeriodDto(Long id, @NotNull LocalDate startDate, @NotNull LocalDate endDate,
-                            @NotNull List<ExamDayDto> examDays) implements Serializable {
+public record ExamPeriodDto(
+        Long id,
+        @NotNull LocalDate startDate,
+        @NotNull LocalDate endDate,
+        @NotNull List<ExamDayDto> examDays,
+        @NotNull boolean allYear
+) implements Serializable {
 }
+

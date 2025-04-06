@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.logic.dto.exams;
+package cr.co.ctpcit.citsacbackend.logic.dto.exams.dai;
 
 import cr.co.ctpcit.citsacbackend.data.enums.Recommendation;
 import jakarta.validation.constraints.Size;

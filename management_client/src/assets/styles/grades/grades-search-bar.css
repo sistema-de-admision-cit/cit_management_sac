@@ -1,0 +1,21 @@
+.search-bar-container { 
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem; /* Add space between elements */
+}
+  
+.grades-search-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+  
+.grades-search-bar input[type="text"] {
+    width: 325px;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+}
