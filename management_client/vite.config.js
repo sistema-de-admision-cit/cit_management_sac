@@ -6,6 +6,6 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir: '../cit-sac-back-end/src/main/resources/static',
-    emptyOutDir: true,
+    emptyOutDir: true
   }
 })

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import SectionLayout from '../../../core/global/molecules/SectionLayout'
 import useMessages from '../../../core/global/hooks/useMessages'
 import EnglishGradesTable from '../organisms/EnglishGradesTable'
-import {handleGetAllEnglishGrades} from '../helpers/handlers'
+import { handleGetAllEnglishGrades } from '../helpers/handlers'
 import '../../../../assets/styles/grades/grades-management-view.css'
 
 const EnglishGradesManagementView = () => {

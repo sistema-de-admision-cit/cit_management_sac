@@ -1,92 +1,90 @@
-import { useState, useEffect } from 'react';
-import SectionLayout from '../../../../core/global/molecules/SectionLayout';
-import useMessages from '../../../../core/global/hooks/useMessages';
-import InputField from '../../../../core/global/atoms/InputField';
-import Button from '../../../../core/global/atoms/Button';
-import { questionsQuantityHandler } from '../handlers/handler';
+import { useState, useEffect } from 'react'
+import SectionLayout from '../../../../core/global/molecules/SectionLayout'
+import useMessages from '../../../../core/global/hooks/useMessages'
+import InputField from '../../../../core/global/atoms/InputField'
+import Button from '../../../../core/global/atoms/Button'
+import { questionsQuantityHandler } from '../handlers/handler'
 
 const QuestionsConfiguratorView = () => {
-  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages();
-  const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
+  const [loading, setLoading] = useState(false)
+  const [initialLoading, setInitialLoading] = useState(true)
   const [formValues, setFormValues] = useState({
     daiQuestionsQuantity: '',
-    academicQuestionsQuantity: '',
-  });
+    academicQuestionsQuantity: ''
+  })
   const [placeholders, setPlaceholders] = useState({
     daiQuestionsQuantity: 'Cargando...',
-    academicQuestionsQuantity: 'Cargando...',
-  });
+    academicQuestionsQuantity: 'Cargando...'
+  })
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      setLoading(true);
+      setLoading(true)
       try {
-        const response = await questionsQuantityHandler.get();
-       
-        const academicQuantity = response.find(item => item.configName === 'ACADEMIC_EXAM_QUESTIONS_QUANTITY')?.configValue || '10';
-        const daiQuantity = response.find(item => item.configName === 'DAI_EXAM_QUESTIONS_QUANTITY')?.configValue || '10';
+        const response = await questionsQuantityHandler.get()
+
+        const academicQuantity = response.find(item => item.configName === 'ACADEMIC_EXAM_QUESTIONS_QUANTITY')?.configValue || '10'
+        const daiQuantity = response.find(item => item.configName === 'DAI_EXAM_QUESTIONS_QUANTITY')?.configValue || '10'
 
         setFormValues({
           daiQuestionsQuantity: daiQuantity,
           academicQuestionsQuantity: academicQuantity
-        });
-        
+        })
+
         setPlaceholders({
           daiQuestionsQuantity: daiQuantity,
           academicQuestionsQuantity: academicQuantity
-        });
-        
+        })
       } catch (error) {
-        setErrorMessage(error.message);
+        setErrorMessage(error.message)
         setPlaceholders({
           daiQuestionsQuantity: '10',
           academicQuestionsQuantity: '10'
-        });
+        })
       } finally {
-        setLoading(false);
-        setInitialLoading(false);
+        setLoading(false)
+        setInitialLoading(false)
       }
-    };
+    }
 
-    fetchInitialData();
-  }, [setErrorMessage]);
+    fetchInitialData()
+  }, [setErrorMessage])
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormValues(prev => ({
       ...prev,
       [name]: value === '' ? '' : parseInt(value) || 0
-    }));
-  };
+    }))
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    
+    e.preventDefault()
+    setLoading(true)
+
     try {
       await questionsQuantityHandler.update({
         daiQuestionsQuantity: formValues.daiQuestionsQuantity || placeholders.daiQuestionsQuantity,
         academicQuestionsQuantity: formValues.academicQuestionsQuantity || placeholders.academicQuestionsQuantity
-      });
-      
-      setSuccessMessage('Configuración guardada correctamente');
-      
+      })
+
+      setSuccessMessage('Configuración guardada correctamente')
+
       // Actualizar placeholders con los nuevos valores
-      const newDaiValue = formValues.daiQuestionsQuantity || placeholders.daiQuestionsQuantity;
-      const newAcademicValue = formValues.academicQuestionsQuantity || placeholders.academicQuestionsQuantity;
-      
+      const newDaiValue = formValues.daiQuestionsQuantity || placeholders.daiQuestionsQuantity
+      const newAcademicValue = formValues.academicQuestionsQuantity || placeholders.academicQuestionsQuantity
+
       setPlaceholders({
         daiQuestionsQuantity: newDaiValue,
         academicQuestionsQuantity: newAcademicValue
-      });
-      
+      })
     } catch (error) {
-      setErrorMessage(error.message);
+      setErrorMessage(error.message)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <SectionLayout title='Configurar Cantidad de Preguntas'>
@@ -128,9 +126,9 @@ const QuestionsConfiguratorView = () => {
               />
             </div>
 
-            <Button 
-              onClick={handleSubmit} 
-              className='btn btn-primary w-full' 
+            <Button
+              onClick={handleSubmit}
+              className='btn btn-primary w-full'
               disabled={loading || initialLoading}
             >
               {loading ? 'Guardando...' : 'Guardar Configuración'}
@@ -139,7 +137,7 @@ const QuestionsConfiguratorView = () => {
         </div>
       </div>
     </SectionLayout>
-  );
-};
+  )
+}
 
-export default QuestionsConfiguratorView;
+export default QuestionsConfiguratorView

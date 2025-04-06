@@ -6,7 +6,6 @@ import AcademicGradesRow from '../molecules/AcademicGradesRow'
 import ModalAcademicExam from '../molecules/ModalAcademicExam'
 import '../../../../assets/styles/grades/grades-table.css'
 
-
 const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, totalPages }) => {
   const [activeModal, setActiveModal] = useState(null)
   const [selectedExam, setSelectedExam] = useState(null)
@@ -19,9 +18,9 @@ const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, total
   }
 
   const handleCloseModal = () => {
-    setSelectedExam(null) 
+    setSelectedExam(null)
     setActiveModal(null)
-  };
+  }
 
   return (
     <div className='grades-table-container'>
@@ -37,27 +36,31 @@ const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, total
           </tr>
         </thead>
         <tbody>
-          {loading ? (
-            <tr>
-              <td colSpan='9'>
-                <Spinner />
-              </td>
-            </tr>
-          ) : Array.isArray(grades) && grades.length > 0 ? (
-            grades.map((grade, index) => (
-              <AcademicGradesRow
-                key={`${grade.person.id}-${index}`}
-                grade={grade}
-                onAcademicClick={() => handleOpenModal('academic', grades[index])}
-              />
-            ))
-          ) : (
-            <tr>
-              <td colSpan='9' className='no-students'>
-                No hay estudiantes registrados
-              </td>
-            </tr>
-          )}
+          {loading
+            ? (
+              <tr>
+                <td colSpan='9'>
+                  <Spinner />
+                </td>
+              </tr>
+              )
+            : Array.isArray(grades) && grades.length > 0
+              ? (
+                  grades.map((grade, index) => (
+                    <AcademicGradesRow
+                      key={`${grade.person.id}-${index}`}
+                      grade={grade}
+                      onAcademicClick={() => handleOpenModal('academic', grades[index])}
+                    />
+                  ))
+                )
+              : (
+                <tr>
+                  <td colSpan='9' className='no-students'>
+                    No hay estudiantes registrados
+                  </td>
+                </tr>
+                )}
         </tbody>
       </table>
       {totalPages > 1 && (
@@ -70,15 +73,15 @@ const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, total
           </Button>
 
           {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-            let pageNum;
+            let pageNum
             if (totalPages <= 5) {
-              pageNum = i;
+              pageNum = i
             } else if (currentPage <= 2) {
-              pageNum = i;
+              pageNum = i
             } else if (currentPage >= totalPages - 3) {
-              pageNum = totalPages - 5 + i;
+              pageNum = totalPages - 5 + i
             } else {
-              pageNum = currentPage - 2 + i;
+              pageNum = currentPage - 2 + i
             }
 
             return (
@@ -89,7 +92,7 @@ const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, total
               >
                 {pageNum + 1}
               </Button>
-            );
+            )
           })}
 
           <Button

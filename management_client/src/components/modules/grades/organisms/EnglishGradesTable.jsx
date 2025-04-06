@@ -5,7 +5,6 @@ import useMessages from '../../../core/global/hooks/useMessages'
 import EnglishGradesRow from '../molecules/EnglishGradesRow'
 import '../../../../assets/styles/grades/grades-table.css'
 
-
 const EnglishGradesTable = ({ grades, loading }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [activeModal, setActiveModal] = useState(null)
@@ -16,7 +15,7 @@ const EnglishGradesTable = ({ grades, loading }) => {
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
   const currentGrades = grades?.slice(indexOfFirstItem, indexOfLastItem) // New
-  //const currentGrades = grades?.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage)  // Old
+  // const currentGrades = grades?.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage)  // Old
   const totalPages = Math.ceil(grades?.length / itemsPerPage)
   const paginate = (pageNumber) => setCurrentPage(pageNumber)
 
@@ -34,26 +33,30 @@ const EnglishGradesTable = ({ grades, loading }) => {
           </tr>
         </thead>
         <tbody>
-          {loading ? (
-            <tr>
-              <td colSpan='9'>
-                <Spinner />
-              </td>
-            </tr>
-          ) : currentGrades?.length > 0 ? (
-            currentGrades.map((grade, index) => (
-              <EnglishGradesRow
-                key={`${grade.student.id}-${index}`}
-                grade={grade}                
-              />
-            ))
-          ) : (
-            <tr>
-              <td colSpan='9' className='no-students'>
-                No hay estudiantes registrados
-              </td>
-            </tr>
-          )}
+          {loading
+            ? (
+              <tr>
+                <td colSpan='9'>
+                  <Spinner />
+                </td>
+              </tr>
+              )
+            : currentGrades?.length > 0
+              ? (
+                  currentGrades.map((grade, index) => (
+                    <EnglishGradesRow
+                      key={`${grade.student.id}-${index}`}
+                      grade={grade}
+                    />
+                  ))
+                )
+              : (
+                <tr>
+                  <td colSpan='9' className='no-students'>
+                    No hay estudiantes registrados
+                  </td>
+                </tr>
+                )}
         </tbody>
       </table>
       {totalPages > 1 && (
