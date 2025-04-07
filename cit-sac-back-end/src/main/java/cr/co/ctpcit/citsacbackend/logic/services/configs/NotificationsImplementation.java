@@ -1,6 +1,9 @@
 package cr.co.ctpcit.citsacbackend.logic.services.configs;
 
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.EmailConfigDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.configs.WhatsappConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.ParentDto;
 import jakarta.mail.MessagingException;
@@ -10,11 +13,11 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailConfigImplementation implements EmailConfigService {
+public class NotificationsImplementation implements NotificationsService {
 
 private final JavaMailSender mailSender;
 
-public EmailConfigImplementation(JavaMailSender mailSender) {
+public NotificationsImplementation(JavaMailSender mailSender) {
     this.mailSender = mailSender;
 }
 
@@ -34,8 +37,12 @@ public void createEmail(EnrollmentDto inscription){
                         "</head>" +
                         "<body>" +
                         "<div class='container'>" +
-                        "<h3>Estimado/a [Nombre del Padre/Madre/Tutor],</h3>" +
-                        "<p>Nos complace informarle que el registro de su hijo/a, <strong>[Nombre del Estudiante]</strong>, ha sido exitosamente completado en <strong>Complejo Educativo CIT</strong>.</p>" +
+                        "<h3>Estimado/a " +
+                        parent.person().firstName() + " " + parent.person().firstSurname() + " " + parent.person().secondSurname() +
+                        ",</h3>" +
+                        "<p>Nos complace informarle que el registro de su hijo/a, <strong>" +
+                        inscription.student().person().firstName() + " " + inscription.student().person().firstSurname() + " " + inscription.student().person().secondSurname() +
+                        "</strong>, ha sido exitosamente completado en <strong>Complejo Educativo CIT</strong>.</p>" +
                         "<h4>📌 Detalles del Registro:</h4>" +
                         "<ul>" +
                         "<li><strong>Estudiante:</strong> [Nombre del Estudiante]</li>" +
@@ -64,5 +71,22 @@ public void sendEmail(EmailConfigDto emailConfigDto) {
         throw new RuntimeException("Error al enviar el correo: " + e.getMessage(), e);
     }
 }
+
+    public void createWhatsappMessage(EnrollmentDto inscription){
+        WhatsappConfigDto whatsappConfigDto = new WhatsappConfigDto();
+        for (ParentDto parent : inscription.student().parents()) {
+            whatsappConfigDto.setRecipient(parent.phoneNumber());
+            whatsappConfigDto.setMessage(
+                    "Hola es una prueba desde el Backend"
+            );
+        }
+    }
+
+    public void sendWhatsAppMessage(WhatsappConfigDto whatsappConfigDto){
+        Message.creator( new PhoneNumber("+"+whatsappConfigDto.getRecipient()),
+                new PhoneNumber(whatsappConfigDto.getFromWhatsAppNumber()),
+                whatsappConfigDto.getMessage()
+        ).create();
+    }
 
 }
