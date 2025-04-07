@@ -1,8 +1,10 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.logic.services.configs.NotificationsService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
@@ -26,6 +28,9 @@ class InscriptionFormControllerTest {
 
   @Autowired
   private TestRestTemplate restTemplate;
+
+  @MockBean
+  private NotificationsService notificationsService;
 
   @Test
   @Order(1)

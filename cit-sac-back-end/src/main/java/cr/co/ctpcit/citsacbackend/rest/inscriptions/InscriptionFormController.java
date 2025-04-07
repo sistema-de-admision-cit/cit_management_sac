@@ -50,7 +50,7 @@ public class InscriptionFormController {
     verifyFile(letter);
 
     EnrollmentDto enrolled = inscriptionsService.addInscription(inscription, grades, letter);
-    notificationsService.createEmail(inscription);
+    notificationsService.createEmailForInscription(inscription);
 
     //Return created status and location header
     return ResponseEntity.created(

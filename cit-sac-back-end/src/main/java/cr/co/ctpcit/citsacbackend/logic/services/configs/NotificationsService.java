@@ -6,7 +6,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 public interface NotificationsService {
 
     void sendEmail(EmailConfigDto emailConfigDto);
-    void createEmail(EnrollmentDto inscriptionDto);
+    void createEmailForInscription(EnrollmentDto inscriptionDto);
     void sendWhatsAppMessage(WhatsappConfigDto whatsappConfigDto);
     void createWhatsappMessage(EnrollmentDto inscription);
 }

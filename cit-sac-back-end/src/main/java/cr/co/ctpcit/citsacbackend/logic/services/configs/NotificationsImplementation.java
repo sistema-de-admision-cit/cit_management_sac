@@ -28,7 +28,7 @@ private final SystemConfigRepository configRepository;
 
 
     @Override
-    public void createEmail(EnrollmentDto inscription) {
+    public void createEmailForInscription(EnrollmentDto inscription) {
         String emailContact = "";
         String phoneContact = "";
         String gradoEsp = "";
@@ -57,7 +57,7 @@ private final SystemConfigRepository configRepository;
         for (ParentDto parent : inscription.student().parents()) {
             sendEmail(new EmailConfigDto(
                     parent.email(),
-                    "Confirmación de Registro - Complejo Educativo CIT",
+                    "Confirmación de Inscripción - Complejo Educativo CIT",
                     "<html>" +
                             "<head>" +
                             "<style> " +
@@ -72,9 +72,9 @@ private final SystemConfigRepository configRepository;
                             "<h3>Estimado/a " +
                             parent.person().firstName() + " " + parent.person().firstSurname() + " " + parent.person().secondSurname() +
                             ",</h3>" +
-                            "<p>Nos complace informarle que el registro de su hijo/a, <strong>" +
+                            "<p>Nos complace informarle que el registro de inscripción de su hijo/a, <strong>" +
                             inscription.student().person().firstName() + " " + inscription.student().person().firstSurname() + " " + inscription.student().person().secondSurname() +
-                            "</strong>, ha sido exitosamente completado en <strong>Complejo Educativo CIT</strong>.</p>" +
+                            "</strong>, ha sido exitosamente completado en el <strong>Complejo Educativo CIT</strong>.</p>" +
                             "<h4>📌 Detalles del Registro:</h4>" +
                             "<ul>" +
                             "<li><strong>Estudiante:</strong> " +
