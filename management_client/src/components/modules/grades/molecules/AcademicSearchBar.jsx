@@ -16,7 +16,7 @@ const AcademicSearchBar = ({ onSearch }) => {
         <InputField
           field={{
             name: 'search',
-            label: 'Buscar Inscripción',
+            label: 'Buscar resultado',
             type: 'text',
             placeholder: 'Buscar por cedula, nombre o apellidos'
           }}

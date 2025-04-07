@@ -4,10 +4,18 @@ import InputField from '../../../core/global/atoms/InputField'
 
 const DaiSearchBar = ({ onSearch, onCheckedEvaluados }) => {
   const [search, setSearch] = useState('')
+  const [onlyReviewed, setOnlyReviewed] = useState(false)
 
   const handleSearch = (e) => {
-    setSearch(e.target.value)
-    onSearch(e.target.value)
+    const value = e.target.value
+    setSearch(value)
+    onSearch(value)
+  }
+
+  const handleCheckboxChange = (e) => {
+    const checked = e.target.checked
+    setOnlyReviewed(checked)
+    onCheckedEvaluados(checked) // notificamos al padre
   }
 
   return (
@@ -16,9 +24,9 @@ const DaiSearchBar = ({ onSearch, onCheckedEvaluados }) => {
         <InputField
           field={{
             name: 'search',
-            label: 'Buscar Inscripción',
+            label: 'Buscar resultado',
             type: 'text',
-            placeholder: 'Buscar por cedula, nombre o apellidos'
+            placeholder: 'Buscar por cédula, nombre o apellidos'
           }}
           value={search}
           handleChange={handleSearch}
@@ -32,6 +40,8 @@ const DaiSearchBar = ({ onSearch, onCheckedEvaluados }) => {
             label: 'Revisados',
             type: 'checkbox'
           }}
+          checked={onlyReviewed}
+          handleChange={handleCheckboxChange}
           className='form-group'
         />
       </div>

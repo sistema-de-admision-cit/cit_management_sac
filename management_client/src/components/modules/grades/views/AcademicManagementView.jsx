@@ -3,7 +3,7 @@ import SectionLayout from '../../../core/global/molecules/SectionLayout'
 import useMessages from '../../../core/global/hooks/useMessages'
 import AcademicGradesTable from '../organisms/AcademicGradesTable'
 import AcademicSearchBar from '../molecules/AcademicSearchBar'
-import { handleGetAllAcademicGrades } from '../helpers/handlers'
+import { handleGetAllAcademicGrades, handleSearchAcademicGrades } from '../helpers/handlers'
 import '../../../../assets/styles/grades/grades-management-view.css'
 
 const AcademicGradesManagementView = () => {
@@ -46,7 +46,21 @@ const AcademicGradesManagementView = () => {
         <p className='description'>
           Aquí puedes visualizar los resultados de los exámenes academicos.
         </p>
-        <AcademicSearchBar />
+        <AcademicSearchBar
+          onSearch={(value) => {
+            if (value.trim() === '') {
+              loadGrades(0) // recarga todos si el campo se vacía
+            } else {
+              handleSearchAcademicGrades(
+                value,
+                setGrades,
+                setLoading,
+                setErrorMessage,
+                setSuccessMessage
+              )
+            }
+          }}
+        />
         <AcademicGradesTable
           grades={grades}
           loading={loading}
