@@ -36,4 +36,6 @@ public interface ExamsService {
   List<EnglishExamLogDto> processEnglishScores(List<EnglishScoreEntryDTO> englishScores);
 
   List<EnglishExamDetailsDto> getExistingEnglishExams(String idNumber);
+
+  List<StudentExamsDto> searchStudentExams(String value, ExamType examType);
 }

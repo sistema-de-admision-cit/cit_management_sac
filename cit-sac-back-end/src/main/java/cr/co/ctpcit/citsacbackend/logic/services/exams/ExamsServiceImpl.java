@@ -7,6 +7,7 @@ import cr.co.ctpcit.citsacbackend.data.entities.exams.AcademicExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.DaiExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.EnrollmentEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.PersonEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.StudentEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
@@ -16,6 +17,7 @@ import cr.co.ctpcit.citsacbackend.data.enums.SelectionType;
 import cr.co.ctpcit.citsacbackend.data.repositories.configs.SystemConfigRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.exams.ExamRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.EnrollmentRepository;
+import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.PersonRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.StudentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.questions.QuestionRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.AcademicExamDetailsDto;
@@ -197,20 +199,7 @@ public class ExamsServiceImpl implements ExamsService {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron estudiantes.");
     }
 
-    //Create the list of StudentExamsDto
-    List<StudentExamsDto> studentExams = new ArrayList<>();
-    for (StudentEntity student : students) {
-      //Get the exams by type
-      List<ExamEntity> exams = findExamsByType(student, examType);
-
-      if (exams.isEmpty()) {
-        continue;
-      }
-
-      studentExams.add(StudentMapper.studentToStudentExamsDto(student, exams, examType));
-    }
-
-    return studentExams;
+    return getStudentExamsDto(students, examType);
   }
 
   @Override
@@ -271,6 +260,41 @@ public class ExamsServiceImpl implements ExamsService {
 
     //Map the list to EnglishExamDetailsDto
     return ExamMapper.englishExamsToEnglishExamDetailsDto(englishExams);
+  }
+
+  @Override
+  public List<StudentExamsDto> searchStudentExams(String value, ExamType examType) {
+    //Validate if the value is a number
+    List<StudentEntity> students;
+    if (value.matches("\\d+")) {
+      students = studentRepository.findStudentByStudentPerson_IdNumberContaining(value);
+    } else {
+      //Search for persons by value
+      students = studentRepository.findAllByValue(value);
+    }
+
+    if (students.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron exámenes.");
+    }
+
+    return getStudentExamsDto(students, examType);
+  }
+
+  private List<StudentExamsDto> getStudentExamsDto(List<StudentEntity> students, ExamType examType) {
+    //Create the list of StudentExamsDto
+    List<StudentExamsDto> studentExams = new ArrayList<>();
+    for (StudentEntity student : students) {
+      //Get the exams by type
+      List<ExamEntity> exams = findExamsByType(student, examType);
+
+      if (exams.isEmpty()) {
+        continue;
+      }
+
+      studentExams.add(StudentMapper.studentToStudentExamsDto(student, exams, examType));
+    }
+
+    return studentExams;
   }
 
   // normalize the string to lowercase and remove accents

@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -126,6 +127,13 @@ class StudentRepositoryTest {
     StudentEntity savedStudentEntity = studentRepository.findById(studentEntity.getId()).orElse(null);
     assertThat(savedStudentEntity).isNotNull();
     assertEquals(1, savedStudentEntity.getParents().size());
+  }
+
+  @Test
+  void testFindStudentByValue() {
+    List<StudentEntity> students = studentRepository.findAllByValue("Martínez");
+
+    assertThat(students.size()).isEqualTo(2);
   }
 
   @AfterEach
