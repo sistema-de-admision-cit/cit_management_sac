@@ -32,7 +32,7 @@ const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, total
             <th>Nombre</th>
             <th>Primer Apellido</th>
             <th>Segundo Apellido</th>
-            <th>Fecha de inscripcion</th>
+            <th>Fecha de realización</th>
             <th>Examen Académico</th>
           </tr>
         </thead>
