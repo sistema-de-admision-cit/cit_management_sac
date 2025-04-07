@@ -54,6 +54,7 @@ public void createEmail(EnrollmentDto inscription){
                         "</div>" +
                         "</body>" +
                         "</html>"
+
         ));
     }
 }
