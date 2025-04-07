@@ -2,7 +2,7 @@ import { useState } from 'react'
 import '../../../../assets/styles/grades/grades-search-bar.css'
 import InputField from '../../../core/global/atoms/InputField'
 
-const AcademicSearchBar = ({onSearch}) => {
+const AcademicSearchBar = ({ onSearch }) => {
   const [search, setSearch] = useState('')
 
   const handleSearch = (e) => {
