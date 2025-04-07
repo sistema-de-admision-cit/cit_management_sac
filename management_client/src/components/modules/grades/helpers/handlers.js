@@ -110,7 +110,6 @@ export const handleGetAllDaiGrades = (
       const data = response.data
 
       setGrades(data.content || data)
-
       if (setSuccessMessage) {
         setSuccessMessage('Calificaciones DAI cargadas correctamente')
       }

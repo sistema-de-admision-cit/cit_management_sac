@@ -8,7 +8,7 @@ const DAIGradesRow = ({ grade, onDAIClick }) => {
       <td>{grade.person.firstName}</td>
       <td>{grade.person.firstSurname}</td>
       <td>{grade.person.secondSurname || 'N/A'}</td>
-      <td>{formatDate(grade.academicExams[0]?.exam.examDate || '')}</td>
+      <td>{formatDate(grade.daiExams[0]?.exam.examDate || '')}</td>
       {/* Examen DAI */}
       <td>
         <div className='exam-cell'>
