@@ -25,7 +25,7 @@ import QuestionConfiguratorView from '../../../modules/system_configuration/exam
 // results views
 import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenuPageView.jsx'
 import ExamScoreManagementView from '../../../modules/results/load_results/view/ExamScoreManagementView.jsx'
-//import GradesManagmentView from '../../../modules/results/grades_managment/view/GradesManagementView.jsx'
+// import GradesManagmentView from '../../../modules/results/grades_managment/view/GradesManagementView.jsx'
 
 // reports views
 import ReportsMenuPageView from '../../../modules/reports/menu/views/ReportsMenuPageView.jsx'
@@ -34,6 +34,7 @@ import AccessManegementView from '../../../modules/system_configuration/access_m
 
 // report views
 import GraphicalReportsView from '../../../modules/reports/graphical/view/GraphicalReportsView.jsx'
+import DashboardView from '../../../modules/dashboard/menu/view/DashboardMenuPageView.jsx'
 
 // componente por defecto para las rutas padre
 // feature temporal
@@ -54,8 +55,8 @@ const menuConfig = [
         label: 'Dashboard',
         path: '/dashboard',
         roleRequired: [ROLE_SUPERADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
-        description: 'Vista general del sistema con estadísticas y accesos rápidos.',
-        parentComponent: DefaultComponent
+        description: 'Vista general del sistema con accesos rápidos.',
+        parentComponent: DashboardView
       },
       {
         key: 'enrollments',
@@ -103,7 +104,7 @@ const menuConfig = [
             path: '/configuracion/preguntas',
             component: QuestionConfiguratorView,
             description: 'Definir la cantidad de preguntas en los exámenes.'
-          }, 
+          },
           {
             key: 'notifications-settings',
             label: 'Configurar Notificaciones',

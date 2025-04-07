@@ -13,7 +13,7 @@ const DaiGradesManagementView = () => {
   const [totalPages, setTotalPages] = useState(1)
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
-  const itemsPerPage = 25; // Número de elementos por página
+  const itemsPerPage = 25 // Número de elementos por página
 
   const loadGrades = async (page = 0) => {
     const result = await handleGetAllDaiGrades(
@@ -21,12 +21,12 @@ const DaiGradesManagementView = () => {
       setGrades,
       setLoading,
       setErrorMessage
-    );
+    )
     if (result) {
-      setTotalPages(result.totalPages);
-      setCurrentPage(result.currentPage);
+      setTotalPages(result.totalPages)
+      setCurrentPage(result.currentPage)
     }
-  };
+  }
 
   // Cargar datos iniciales
   useEffect(() => {
@@ -35,9 +35,9 @@ const DaiGradesManagementView = () => {
 
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
-      loadGrades(newPage);
+      loadGrades(newPage)
     }
-  };
+  }
 
   return (
     <SectionLayout title='Resultados de examenes DAI'>

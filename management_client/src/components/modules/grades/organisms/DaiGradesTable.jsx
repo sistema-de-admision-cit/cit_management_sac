@@ -10,7 +10,7 @@ import { handleSaveDAIComment } from '../helpers/handlers'
 const GradesTable = ({ grades, loading, onPageChange, currentPage, totalPages }) => {
   const [activeModal, setActiveModal] = useState(null)
   const [selectedExam, setSelectedExam] = useState(null)
-  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages();
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
   const itemsPerPage = 25
 
   const handleOpenModal = (modalType, examData) => {
@@ -21,7 +21,7 @@ const GradesTable = ({ grades, loading, onPageChange, currentPage, totalPages })
   const handleCloseModal = () => {
     setSelectedExam(null)
     setActiveModal(null)
-  };
+  }
 
   return (
     <>
@@ -34,33 +34,37 @@ const GradesTable = ({ grades, loading, onPageChange, currentPage, totalPages })
               <th>Nombre</th>
               <th>Primer Apellido</th>
               <th>Segundo Apellido</th>
-              <th>Fecha de inscripcion</th>
+              <th>Fecha de realización</th>
               <th>Examen DAI</th>
               <th>Estado de revision</th>
             </tr>
           </thead>
           <tbody>
-            {loading ? (
-              <tr>
-                <td colSpan='9'>
-                  <Spinner />
-                </td>
-              </tr>
-            ) : Array.isArray(grades) && grades.length > 0 ? (
-              grades.map((grade, index) => (
-                <DaiGradesRow
-                  key={`${grade.person.id}-${index}`}
-                  grade={grade}
-                  onDAIClick={() => handleOpenModal('dai', grades[index])}
-                />
-              ))
-            ) : (
-              <tr>
-                <td colSpan='9' className='no-students'>
-                  No hay estudiantes registrados
-                </td>
-              </tr>
-            )}
+            {loading
+              ? (
+                <tr>
+                  <td colSpan='9'>
+                    <Spinner />
+                  </td>
+                </tr>
+                )
+              : Array.isArray(grades) && grades.length > 0
+                ? (
+                    grades.map((grade, index) => (
+                      <DaiGradesRow
+                        key={`${grade.person.id}-${index}`}
+                        grade={grade}
+                        onDAIClick={() => handleOpenModal('dai', grades[index])}
+                      />
+                    ))
+                  )
+                : (
+                  <tr>
+                    <td colSpan='9' className='no-students'>
+                      No hay estudiantes registrados
+                    </td>
+                  </tr>
+                  )}
           </tbody>
         </table>
         {totalPages > 1 && (
@@ -73,15 +77,15 @@ const GradesTable = ({ grades, loading, onPageChange, currentPage, totalPages })
             </Button>
 
             {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              let pageNum;
+              let pageNum
               if (totalPages <= 5) {
-                pageNum = i;
+                pageNum = i
               } else if (currentPage <= 2) {
-                pageNum = i;
+                pageNum = i
               } else if (currentPage >= totalPages - 3) {
-                pageNum = totalPages - 5 + i;
+                pageNum = totalPages - 5 + i
               } else {
-                pageNum = currentPage - 2 + i;
+                pageNum = currentPage - 2 + i
               }
 
               return (
@@ -92,7 +96,7 @@ const GradesTable = ({ grades, loading, onPageChange, currentPage, totalPages })
                 >
                   {pageNum + 1}
                 </Button>
-              );
+              )
             })}
 
             <Button

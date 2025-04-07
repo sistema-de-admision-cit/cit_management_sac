@@ -121,11 +121,11 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
   }
 
   const textAreaInput = () => {
-    const maxLength = field.maxLength || null;
-    const remainingChars = maxLength ? maxLength - (value?.length || 0) : null;
-  
+    const maxLength = field.maxLength || null
+    const remainingChars = maxLength ? maxLength - (value?.length || 0) : null
+
     return (
-      <div className="textarea-container">
+      <div className='textarea-container'>
         <textarea
           name={field.name}
           placeholder={field.placeholder}
@@ -135,7 +135,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
           autoComplete={autoComplete || 'off'}
           className={className}
           maxLength={maxLength}
-          style={{ 
+          style={{
             width: '100%',
             minHeight: '100px',
             maxHeight: '100px',
@@ -143,13 +143,13 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
           }}
         />
         {maxLength && (
-          <div className="char-counter">
+          <div className='char-counter'>
             {remainingChars} caracteres restantes
           </div>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   // map
   const inputRenderers = {

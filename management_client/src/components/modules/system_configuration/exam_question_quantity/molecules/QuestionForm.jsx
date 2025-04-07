@@ -1,5 +1,5 @@
-import InputField from '../../../../core/global/atoms/InputField';
-import Button from '../../../../core/global/atoms/Button';
+import InputField from '../../../../core/global/atoms/InputField'
+import Button from '../../../../core/global/atoms/Button'
 
 const QuestionForm = ({ formValues, handleChange }) => (
   <div>
@@ -14,6 +14,6 @@ const QuestionForm = ({ formValues, handleChange }) => (
       handleChange={(e) => handleChange('academicExam', e.target.value)}
     />
   </div>
-);
+)
 
-export default QuestionForm;
+export default QuestionForm

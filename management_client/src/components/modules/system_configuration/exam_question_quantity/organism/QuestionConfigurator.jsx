@@ -1,5 +1,5 @@
-import QuestionForm from '../molecules/QuestionForm';
-import Button from '../../../../core/global/atoms/Button';
+import QuestionForm from '../molecules/QuestionForm'
+import Button from '../../../../core/global/atoms/Button'
 
 const QuestionConfigurator = ({ formValues, handleChange, onSave, loading }) => (
   <div>
@@ -8,6 +8,6 @@ const QuestionConfigurator = ({ formValues, handleChange, onSave, loading }) => 
       {loading ? 'Guardando...' : 'Guardar'}
     </Button>
   </div>
-);
+)
 
-export default QuestionConfigurator;
+export default QuestionConfigurator
