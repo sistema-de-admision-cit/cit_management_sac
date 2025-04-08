@@ -15,8 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +44,6 @@ class StorageServiceImplTest {
   @Test
   void shouldStoreFileSuccessfully() throws Exception {
     // Arrange
-    Path filePath = Paths.get(location).resolve(filename);
     when(file.getInputStream()).thenReturn(mock(InputStream.class));
 
     // Act

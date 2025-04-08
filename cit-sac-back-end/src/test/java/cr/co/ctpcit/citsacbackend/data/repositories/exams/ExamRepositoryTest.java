@@ -117,7 +117,7 @@ class ExamRepositoryTest {
 
     //save
     exam.addAcademicExam(academicExam);
-    ExamEntity saveExam = examRepository.save(exam);
+    examRepository.save(exam);
 
     //get
     AcademicExamDetailsDto academicExamDetailsDto = ExamMapper.academicExamToAcademicExamDetailsDto(exam);

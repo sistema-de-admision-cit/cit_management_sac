@@ -3,7 +3,6 @@ package cr.co.ctpcit.citsacbackend.data.repositories.configs;
 import cr.co.ctpcit.citsacbackend.data.entities.configs.SystemConfigEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -33,6 +32,9 @@ class SystemConfigRepositoryTest {
     try {
       SystemConfigEntity savedSystemConfig = systemConfigRepository.save(
           new SystemConfigEntity(null, Configurations.EMAIL_CONTACT, "ejemplo@cit.co.cr"));
+
+      assertNotNull(savedSystemConfig);
+      assertNotNull(savedSystemConfig.getId());
     } catch (Exception e) {
       assertEquals("org.springframework.dao.DataIntegrityViolationException",
           e.getClass().getName());

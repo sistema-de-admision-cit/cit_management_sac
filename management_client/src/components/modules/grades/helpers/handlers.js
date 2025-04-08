@@ -147,15 +147,111 @@ export const handleGetAllDaiGrades = (
 
 // Handlers that Search Data from API
 // TODO: Implementar la busqueda de datos desde el servidor
-const searchAcademicUrl = import.meta.env.VITE_SEARCH_ACADEMIC_BY_STUDENT_VALUES_ENDPOINT
-export const handleSearchAcademicGrades = async (search, setGrades) => { }
+const searchAcademicUrl = import.meta.env.VITE_GET_ACADEMIC_GRADES_SEARCH_ENDPOINT
+export const handleSearchAcademicGrades = async (
+  search,
+  setGrades,
+  setLoading,
+  setErrorMessage,
+  setSuccessMessage
+) => {
+  const examType = 'ACA' // suponiendo que siempre es este tipo
 
-const searchDAIUrl = import.meta.env.VITE_SEARCH_DAI_BY_STUDENT_VALUES_ENDPOINT
-export const handleSearchDAIGrades = async (search, setGrades) => { }
+  if (!search || search.trim() === '') {
+    setErrorMessage?.('Debe ingresar un valor para buscar')
+    return
+  }
+
+  const url = `${searchAcademicUrl}/${search}/${examType}`
+
+  try {
+    setLoading?.(true)
+
+    const response = await axiosInstance.get(url)
+    const data = response.data
+    setGrades(data || [])
+    //setSuccessMessage?.('Resultados de búsqueda cargados correctamente')
+  } catch (error) {
+    console.error('Error al buscar calificaciones:', error)
+
+    let errorMsg = 'No se pudieron buscar las calificaciones académicas'
+
+    if (error.response) {
+      if (error.response.status === 400) {
+        errorMsg = 'Parámetros de búsqueda inválidos'
+      } else if (error.response.status === 401) {
+        errorMsg = 'Sesión expirada. Por favor inicie sesión nuevamente'
+      } else if (error.response.status === 403) {
+        errorMsg = 'No tiene permisos para realizar esta búsqueda'
+      } else if (error.response.data?.message) {
+        errorMsg = error.response.data.message
+      }
+    } else if (error.request) {
+      errorMsg = 'No se recibió respuesta del servidor'
+    }
+
+    setErrorMessage?.(errorMsg)
+  } finally {
+    setLoading?.(false)
+  }
+}
+
+const searchDAIUrl = import.meta.env.VITE_GET_DAI_GRADES_SEARCH_ENDPOINT
+export const handleSearchDAIGrades = async (
+  search,
+  setGrades,
+  setLoading,
+  setErrorMessage,
+  setSuccessMessage
+) => {
+  const examType = 'DAI' // suponiendo que siempre es este tipo
+
+  if (!search || search.trim() === '') {
+    setErrorMessage?.('Debe ingresar un valor para buscar')
+    return
+  }
+
+  const url = `${searchDAIUrl}/${search}/${examType}`
+
+  try {
+    setLoading?.(true)
+
+    const response = await axiosInstance.get(url)
+    const data = response.data
+    setGrades(data || [])
+    //setSuccessMessage?.('Resultados de búsqueda cargados correctamente')
+  } catch (error) {
+    console.error('Error al buscar calificaciones:', error)
+
+    let errorMsg = 'No se pudieron buscar las calificaciones académicas'
+
+    if (error.response) {
+      if (error.response.status === 400) {
+        errorMsg = 'Parámetros de búsqueda inválidos'
+      } else if (error.response.status === 401) {
+        errorMsg = 'Sesión expirada. Por favor inicie sesión nuevamente'
+      } else if (error.response.status === 403) {
+        errorMsg = 'No tiene permisos para realizar esta búsqueda'
+      } else if (error.response.data?.message) {
+        errorMsg = error.response.data.message
+      }
+    } else if (error.request) {
+      errorMsg = 'No se recibió respuesta del servidor'
+    }
+
+    setErrorMessage?.(errorMsg)
+  } finally {
+    setLoading?.(false)
+  }
+}
+
+
+
+
+
+
 
 // Handlers that Save Data from API
-// TODO: Implementar envio de comentario DAI al servidor
-// const saveDAIUrl = import.meta.env.VITE_PUT_DAI_COMMENT_ENDPOIN
 export const handleSaveDAIComment = (
   grade,
   comment,
@@ -228,6 +324,7 @@ export const handleSaveDAIComment = (
 }
 
 // Handlers that transfort to PDF
+
 export const generateAcademicExamPDF = (gradeData) => {
   // Extraer los datos relevantes del JSON
   const examData = gradeData.academicExams[0]

@@ -3,7 +3,6 @@ package cr.co.ctpcit.citsacbackend.rest.auth;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.ChangePasswordRequestDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.UserDto;
-import cr.co.ctpcit.citsacbackend.logic.services.auth.UserDetailsServiceImpl;
 import cr.co.ctpcit.citsacbackend.security.DaoAuthenticationProviderCstm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 public class AuthController {
   private final JwtEncoder encoder;
   private final DaoAuthenticationProviderCstm daoAuthenticationProvider;
-  private final UserDetailsServiceImpl userDetailsServiceImpl;
 
   /**
    * Obtener el token de autenticación

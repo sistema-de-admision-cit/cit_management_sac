@@ -204,4 +204,53 @@ class ManagementExamControllerTest {
     int examCount = documentContext.read("$.length()");
     assertThat(examCount).isEqualTo(1);
   }
+
+  @Test
+  @Order(14)
+  void testGetEnglishExamsByIdNumberNotFound() {
+    ResponseEntity<String> response =
+        restTemplate.getForEntity("/api/management-exams/english-exams/999999999", String.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+  }
+
+  @Test
+  @Order(15)
+  void testSearchAcademicExamsByValueAsIdNumber() {
+    ResponseEntity<String> response =
+        restTemplate.getForEntity("/api/management-exams//search/{value}/{examType}", String.class,
+            "270456789", "ACA");
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+    int examCount = documentContext.read("$.length()");
+
+    assertThat(examCount).isEqualTo(1);
+  }
+
+  @Test
+  @Order(16)
+  void searchAcademicExamsByValueAsIdNumberNotFound() {
+    ResponseEntity<String> response =
+        restTemplate.getForEntity("/api/management-exams//search/{value}/{examType}", String.class,
+            "999999999", "ACA");
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+  }
+
+  @Test
+  @Order(17)
+  void searchAcademicExamsByValueAsPartOfFirstName() {
+    ResponseEntity<String> response =
+        restTemplate.getForEntity("/api/management-exams//search/{value}/{examType}", String.class,
+            "Valer", "ACA");
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    DocumentContext documentContext = JsonPath.parse(response.getBody());
+    int examCount = documentContext.read("$.length()");
+
+    assertThat(examCount).isEqualTo(1);
+  }
 }

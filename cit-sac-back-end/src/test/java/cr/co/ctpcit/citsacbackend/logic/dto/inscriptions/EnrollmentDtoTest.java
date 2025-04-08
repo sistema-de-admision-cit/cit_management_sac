@@ -2,14 +2,10 @@ package cr.co.ctpcit.citsacbackend.logic.dto.inscriptions;
 
 import cr.co.ctpcit.citsacbackend.TestProvider;
 import cr.co.ctpcit.citsacbackend.data.enums.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

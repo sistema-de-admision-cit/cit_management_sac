@@ -1,7 +1,5 @@
 package cr.co.ctpcit.citsacbackend.data.enums;
 
-import lombok.Getter;
-
 /**
  * This ENUM match with the DataSource GradeToEnroll enum in tbl_enrollments, and it is used to
  * determine the grade that the student is going to enroll. Every line in this enum match the grades

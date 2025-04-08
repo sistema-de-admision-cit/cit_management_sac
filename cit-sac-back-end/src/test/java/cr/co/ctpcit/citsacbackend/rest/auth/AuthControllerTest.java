@@ -18,8 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class AuthControllerTest {
   @Autowired
   private TestRestTemplate restTemplate;
-
-  private static String token;
+  
   private static AuthResponseDto authResponseDto;
 
   @Test

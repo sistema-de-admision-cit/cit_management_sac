@@ -197,20 +197,7 @@ public class ExamsServiceImpl implements ExamsService {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron estudiantes.");
     }
 
-    //Create the list of StudentExamsDto
-    List<StudentExamsDto> studentExams = new ArrayList<>();
-    for (StudentEntity student : students) {
-      //Get the exams by type
-      List<ExamEntity> exams = findExamsByType(student, examType);
-
-      if (exams.isEmpty()) {
-        continue;
-      }
-
-      studentExams.add(StudentMapper.studentToStudentExamsDto(student, exams, examType));
-    }
-
-    return studentExams;
+    return getStudentExamsDto(students, examType);
   }
 
   @Override
@@ -271,6 +258,41 @@ public class ExamsServiceImpl implements ExamsService {
 
     //Map the list to EnglishExamDetailsDto
     return ExamMapper.englishExamsToEnglishExamDetailsDto(englishExams);
+  }
+
+  @Override
+  public List<StudentExamsDto> searchStudentExams(String value, ExamType examType) {
+    //Validate if the value is a number
+    List<StudentEntity> students;
+    if (value.matches("\\d+")) {
+      students = studentRepository.findStudentByStudentPerson_IdNumberContaining(value);
+    } else {
+      //Search for persons by value
+      students = studentRepository.findAllByValue(value);
+    }
+
+    if (students.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron exámenes.");
+    }
+
+    return getStudentExamsDto(students, examType);
+  }
+
+  private List<StudentExamsDto> getStudentExamsDto(List<StudentEntity> students, ExamType examType) {
+    //Create the list of StudentExamsDto
+    List<StudentExamsDto> studentExams = new ArrayList<>();
+    for (StudentEntity student : students) {
+      //Get the exams by type
+      List<ExamEntity> exams = findExamsByType(student, examType);
+
+      if (exams.isEmpty()) {
+        continue;
+      }
+
+      studentExams.add(StudentMapper.studentToStudentExamsDto(student, exams, examType));
+    }
+
+    return studentExams;
   }
 
   // normalize the string to lowercase and remove accents

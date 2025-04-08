@@ -1,7 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.PersonEntity;
-import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import cr.co.ctpcit.citsacbackend.data.enums.IdType;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.PersonDto;
 import org.junit.jupiter.api.Test;

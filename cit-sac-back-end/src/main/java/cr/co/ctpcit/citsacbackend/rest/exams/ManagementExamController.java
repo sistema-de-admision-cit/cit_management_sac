@@ -12,9 +12,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -39,6 +41,12 @@ public class ManagementExamController {
     return ResponseEntity.ok(academicExam);
   }
 
+  /**
+   * Get the DAI exams list that a determined student has taken
+   *
+   * @param idNumber The student idNumber (Cédula)
+   * @return The list of DAI exams
+   */
   @GetMapping("/dai-exams/{idNumber}")
   public ResponseEntity<Iterable<DaiExamDetailsDto>> getDaiExams(@PathVariable String idNumber) {
     Iterable<DaiExamDetailsDto> academicExam = examsService.getExistingDaiExams(idNumber);
@@ -46,6 +54,12 @@ public class ManagementExamController {
     return ResponseEntity.ok(academicExam);
   }
 
+  /**
+   * Get the English exams list that a determined student has taken
+   *
+   * @param idNumber The student idNumber (Cédula)
+   * @return The list of English exams
+   */
   @GetMapping("/english-exams/{idNumber}")
   public ResponseEntity<Iterable<EnglishExamDetailsDto>> getEnglishExams(
       @PathVariable String idNumber) {
@@ -65,8 +79,9 @@ public class ManagementExamController {
     return ResponseEntity.ok(students);
   }
 
-  //TODO: Search by idNumber, name, lastName, and ExamType.
-
+  /**
+   * Update comment and recommendation on DAI exam.
+   */
   @PutMapping("/dai-exam")
   public ResponseEntity<Void> updateDaiExam(
       @Valid @RequestBody DaiExamDetailsDto daiExamDetailsDto) {
@@ -75,6 +90,11 @@ public class ManagementExamController {
     return ResponseEntity.noContent().build();
   }
 
+  /**
+   * Post English Exams Scores based on a CSV file provided by TrackTest.
+   *
+   * @return The list of English exam logs with the accepted or rejected scores.
+   */
   @PostMapping("/update-scores")
   public ResponseEntity<List<EnglishExamLogDto>> uploadEnglishScores(
       @RequestBody List<EnglishScoreEntryDTO> englishScores) {
@@ -85,5 +105,24 @@ public class ManagementExamController {
     }
 
     return ResponseEntity.ok(logs);
+  }
+
+  /**
+   * Search for academic or DAI exam based on IdNumber or any other value.
+   */
+  @GetMapping("/search/{value}/{examType}")
+  public ResponseEntity<Iterable<StudentExamsDto>> searchStudentExams(@PathVariable String value,
+      @PathVariable ExamType examType) {
+    if(examType.equals(ExamType.ENG)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+
+    if (value.isBlank()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
+
+    Iterable<StudentExamsDto> students = examsService.searchStudentExams(value, examType);
+
+    return ResponseEntity.ok(students);
   }
 }

@@ -5,7 +5,6 @@ import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Grades;
 import cr.co.ctpcit.citsacbackend.data.enums.QuestionLevel;
 import cr.co.ctpcit.citsacbackend.data.enums.QuestionType;
-import cr.co.ctpcit.citsacbackend.data.enums.SelectionType;
 import cr.co.ctpcit.citsacbackend.data.repositories.questions.QuestionRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionFilterSpec;

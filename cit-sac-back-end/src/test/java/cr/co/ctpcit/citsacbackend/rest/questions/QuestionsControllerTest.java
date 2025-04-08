@@ -2,11 +2,6 @@ package cr.co.ctpcit.citsacbackend.rest.questions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.co.ctpcit.citsacbackend.TestProvider;
-import cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionEntity;
-import cr.co.ctpcit.citsacbackend.data.enums.Grades;
-import cr.co.ctpcit.citsacbackend.data.enums.QuestionLevel;
-import cr.co.ctpcit.citsacbackend.data.enums.QuestionType;
-import cr.co.ctpcit.citsacbackend.data.enums.SelectionType;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionFilterSpec;
 import cr.co.ctpcit.citsacbackend.logic.services.questions.QuestionsServiceImpl;
@@ -16,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,12 +21,9 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;

@@ -25,7 +25,6 @@ import java.util.List;
 @Service
 public class QuestionsServiceImpl implements QuestionService {
   private final QuestionRepository questionRepository;
-  private final QuestionOptionRepository questionOptionRepository;
   private final FileStorageServiceImpl fileStorageService;
 
   /**
@@ -39,7 +38,6 @@ public class QuestionsServiceImpl implements QuestionService {
       QuestionOptionRepository quesitonOptionRepository) {
     this.questionRepository = questionRepository;
     this.fileStorageService = fileStorageService;
-    this.questionOptionRepository = quesitonOptionRepository;
   }
 
   /**

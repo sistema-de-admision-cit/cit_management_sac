@@ -1,6 +1,5 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;

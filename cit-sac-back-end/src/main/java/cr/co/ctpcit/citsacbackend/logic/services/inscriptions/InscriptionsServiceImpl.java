@@ -1,7 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 
 import cr.co.ctpcit.citsacbackend.data.entities.configs.ExamPeriodEntity;
-import cr.co.ctpcit.citsacbackend.data.entities.configs.SystemConfigEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
