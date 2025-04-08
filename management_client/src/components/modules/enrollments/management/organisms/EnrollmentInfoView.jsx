@@ -3,28 +3,31 @@ import PdfIcon from '../../../../../assets/icons/pdf-svgrepo-com.svg'
 import EditIcon from '../../../../../assets/icons/pencil-svgrepo-com.svg'
 import { formatDate, statusText } from '../helpers/helpers'
 
+const PENDING_STATUS = 'PENDING'
+const ELIGIBLE_STATUS = 'ELIGIBLE'
+
 const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileType, setIsEditing }) => (
   <div className='tab-content'>
     <h2>Inscripción - {enrollment.id}</h2>
     <p><strong>Estado:</strong> {statusText[enrollment.status]}</p>
-    <p><strong>Fecha del Examen:</strong> {formatDate(enrollment.examDate)}</p>
+    <p><strong>Fecha del Examen:</strong> {formatDate(new Date(enrollment.examDate))}</p>
     <p><strong>Notificación por WhatsApp:</strong> {enrollment.whatsappNotification ? 'Sí' : 'No'}</p>
     <p><strong>Consentimiento:</strong> {enrollment.consentGiven ? 'Dado' : 'No Dado'}</p>
 
     <div
       className='edit-icon'
-      title={enrollment.status !== 'P' && enrollment.status !== 'E' ? `Edición no disponible: el estado actual es ${statusText[enrollment.status]}, lo que impide modificar la información de este usuario.` : ''}
+      title={enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS ? `Edición no disponible: el estado actual es ${statusText[enrollment.status]}, lo que impide modificar la información de este usuario.` : ''}
     >
       <Button
-        className={`edit-icon pseudo-btn ${enrollment.status !== 'P' && enrollment.status !== 'E' ? 'disabled' : ''}`}
+        className={`edit-icon pseudo-btn ${enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS ? 'disabled' : ''}`}
         onClick={() => setIsEditing(true)}
-        disabled={enrollment.status !== 'P' && enrollment.status !== 'E'}
+        disabled={enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS}
       >
         <img src={EditIcon} alt='icono de editar' />
       </Button>
-      {enrollment.status !== 'P' && enrollment.status !== 'E' && (
+      {enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS && (
         <div className='tooltip'>
-          Edición no disponible: el estado del usuario es {statusText[enrollment.status]}, lo que impide modificar la información.
+          Edición no disponible: el estado del usuario es {enrollment.status}, lo que impide modificar la información.
         </div>
       )}
     </div>
@@ -34,7 +37,7 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
         <p><strong>Documento de Notas:</strong></p>
         <Button
           className='pdf-icon' onClick={() => {
-            onDocClick(enrollment.document.find((doc) => doc.documentType === 'OT'))
+            onDocClick(enrollment.documents.find((doc) => doc.documentType === 'OT'))
             setSelectedFileType('Documento de Notas')
           }}
         >
@@ -46,7 +49,7 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
           <p><strong>Documento de Adaptaciones:</strong></p>
           <Button
             className='pdf-icon' onClick={() => {
-              onDocClick(enrollment.document.find((doc) => doc.documentType === 'HC'))
+              onDocClick(enrollment.documents.find((doc) => doc.documentType === 'AC'))
               setSelectedFileType('Documento de Adaptaciones')
             }}
           >

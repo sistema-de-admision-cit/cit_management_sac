@@ -1,12 +1,16 @@
+import { useAuth } from '../../../../../router/AuthProvider'
 import QuestionForm from '../../base/organism/QuestionForm'
 import { handleCreateQuestionSubmit } from '../../helpers/formHandlers'
 
 const AddQuestionForm = () => {
   const initialData = {
-    examType: '',
-    question: '',
-    images: [],
-    options: ['', '', '', ''],
+    questionType: '',
+    questionText: '',
+    questionGrade: '',
+    imageUrl: '',
+    selectionType: '',
+    deleted: false,
+    questionOptionsText: ['', '', '', ''],
     correctOption: ''
   }
 

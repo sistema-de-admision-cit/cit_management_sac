@@ -1,10 +1,8 @@
 package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.DocumentDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.EnrollmentDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
-import jakarta.validation.constraints.NotNull;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,25 +11,25 @@ import java.util.List;
 
 @Service
 public interface InscriptionsService {
-  List<StudentDto> getAllInscriptions(Pageable pageable);
 
-  StudentDto findStudentById(@NotNull Long id);
+  List<EnrollmentDto> getAllInscriptions(Pageable pageable);
 
-  List<StudentDto> findStudentByValue(String value);
+  List<EnrollmentDto> findStudentByValue(String value);
 
-  EnrollmentDto addInscription(StudentDto inscriptionDto, MultipartFile grades,
+  EnrollmentDto addInscription(EnrollmentDto inscriptionDto, MultipartFile grades,
       MultipartFile letter);
 
-  StudentDto updateExamDate(String id, String date);
+  void updateExamDate(String id, EnrollmentUpdateDto enrollmentUpdate);
 
-  boolean changeStatus(Long id, @NotNull ProcessStatus status);
+  void updateProcessStatus(String id, EnrollmentUpdateDto enrollmentUpdate);
 
-  boolean changeWhatsappPermission(Long id, Boolean permission);
+  void updateWhatsappPermission(String id, EnrollmentUpdateDto enrollmentUpdate);
 
-  Boolean updateEnrollment(Long enrollmentId, ProcessStatus status, String examDate,
-      String whatsappPermission, String comment, Integer changedBy);
+  void updateEnrollment(String id, EnrollmentUpdateDto enrollmentUpdate);
 
-  boolean deleteDocument(Long documentId);
+  void deleteDocument(Long documentId);
 
-  DocumentDto saveDocument(String documentName, String documentType, Long enrollmentId);
+  DocumentDto saveDocument(String documentType, Long enrollmentId, MultipartFile file);
+
+  Iterable<EnrollmentDto> findPendingEnrollmentsByStudentId(String idNumber);
 }

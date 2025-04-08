@@ -1,5 +1,18 @@
 import * as XLSX from 'xlsx'
 
+export const UPLOAD_TYPES = [
+  { value: 'file', label: 'Archivo' },
+  { value: 'manual', label: 'Carga Manual' }
+]
+
+const LOG_SCORE_STATUS = {
+  SUCCESS: 'SUCCESS',
+  ERROR: 'ERROR',
+  WARNING: 'WARNING'
+}
+
+const ENGLISH_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
+
 export const parseXlsxToArray = (file) => {
   return new Promise((resolve, reject) => {
     // eslint-disable-next-line no-undef
@@ -94,7 +107,7 @@ export const formatLogMessage = (log) => {
 
   // formatear segun el estado
   switch (status) {
-    case 'success':
+    case LOG_SCORE_STATUS.SUCCESS:
       if (previousScore !== newScore) {
         message = `La nota del estudiante con ID de inscripción ${enrollmentId}`
         message += previousScore ? ` se actualizó de ${previousScore} a ${newScore}.` : ` se creó con una nota de ${newScore}.`
@@ -104,7 +117,7 @@ export const formatLogMessage = (log) => {
       }
       break
 
-    case 'error':
+    case LOG_SCORE_STATUS.ERROR:
       if (enrollmentId) {
         message = `Error al actualizar la nota del estudiante con ID de inscripción ${enrollmentId}. Motivo: ${errorMessage}.`
       } else {
@@ -112,7 +125,7 @@ export const formatLogMessage = (log) => {
       }
       break
 
-    case 'warning':
+    case LOG_SCORE_STATUS.WARNING:
       if (new Date(examDate) > new Date()) {
         message = `Advertencia: El examen con ID ${trackTestExamId} tiene una fecha de examen futura (${examDate}), por lo que no se actualizó la nota.`
         status = 'warning'
@@ -128,4 +141,29 @@ export const formatLogMessage = (log) => {
     status,
     message
   }
+}
+
+export const validateScore = (score) => {
+  const { id, names, lastNames, lastTest, core, level } = score
+
+  // Check if all required fields are present
+  const containsAllFields = id && names && lastNames && lastTest && core && level
+
+  // Check if the date is valid
+  const isDateValid = !isNaN(Date.parse(lastTest))
+
+  // Check if the level is valid
+  const isLevelValid = ENGLISH_LEVELS.includes(level)
+
+  // core = "10" or "10.0"
+  const isCoreValid = core && !isNaN(core) && core >= 0 && core <= 100
+
+  console.log({
+    containsAllFields,
+    isDateValid,
+    isLevelValid,
+    isCoreValid
+  })
+
+  return containsAllFields && isDateValid && isLevelValid && isCoreValid
 }

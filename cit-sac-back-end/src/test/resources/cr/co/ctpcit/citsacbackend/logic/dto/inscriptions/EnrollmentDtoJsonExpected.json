@@ -1,0 +1,57 @@
+{
+  "id": null,
+  "student": {
+    "id": 11,
+    "person": {
+      "id": 11,
+      "firstName": "Andrés",
+      "firstSurname": "Rodríguez",
+      "secondSurname": "Morales",
+      "idType": "CC",
+      "idNumber": "200123654"
+    },
+    "birthDate": "2010-03-12",
+    "previousSchool": "Escuela La Sabana",
+    "hasAccommodations": false,
+    "parents": [
+      {
+        "id": 1,
+        "person": {
+          "id": 1,
+          "firstName": "Carlos",
+          "firstSurname": "Rodríguez",
+          "secondSurname": "Morales",
+          "idType": "CC",
+          "idNumber": "900321654"
+        },
+        "phoneNumber": "876543210",
+        "email": "carlos.rod@example.com",
+        "relationship": "F",
+        "addresses": [
+          {
+            "id": 1,
+            "country": "Costa Rica",
+            "province": "San José",
+            "city": "San José",
+            "district": "Carmen",
+            "addressInfo": "Avenida Central 100"
+          }
+        ]
+      }
+    ]
+  },
+  "status": "PENDING",
+  "gradeToEnroll": "FIRST",
+  "knownThrough": "OT",
+  "examDate": "2024-12-15",
+  "consentGiven": true,
+  "whatsappNotification": false,
+  "documents": [
+    {
+      "id": 1,
+      "documentUrlPostfix": "grades_200123654_856332114336.pdf",
+      "documentType": "OT",
+      "documentName": "Documento de Notas"
+    }
+  ]
+}

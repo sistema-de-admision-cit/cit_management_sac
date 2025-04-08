@@ -1,23 +1,27 @@
 package cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.data.entities.inscription.StudentEntity;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
+import cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.StudentEntity;
+import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
+import cr.co.ctpcit.citsacbackend.logic.mappers.exams.ExamMapper;
 
+import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * Mapper for {@link StudentEntity} and {@link StudentDto} This class is used to convert
  * {@link StudentEntity} to {@link StudentDto}
  */
 public class StudentMapper {
+
   public static StudentDto convertToDto(StudentEntity studentEntity) {
     return StudentDto.builder().id(studentEntity.getId())
-        .enrollments(EnrollmentMapper.convertToDtoList(studentEntity.getEnrollments()))
-        .parents(ParentGuardianMapper.convertToDtoList(studentEntity.getParents()))
-        .firstName(studentEntity.getFirstName()).firstSurname(studentEntity.getFirstSurname())
-        .secondSurname(studentEntity.getSecondSurname()).birthDate(studentEntity.getBirthDate())
-        .idType(studentEntity.getIdType()).idNumber(studentEntity.getIdNumber())
-        .previousSchool(studentEntity.getPreviousSchool())
+        .person(PersonMapper.convertToDto(studentEntity.getStudentPerson()))
+        .parents(ParentMapper.convertToDtoList(studentEntity.getParents()))
+        .previousSchool(studentEntity.getPreviousSchool()).birthDate(studentEntity.getBirthDate())
         .hasAccommodations(studentEntity.getHasAccommodations()).build();
   }
 
@@ -28,11 +32,25 @@ public class StudentMapper {
     return studentEntities.stream().map(StudentMapper::convertToDto).toList();
   }
 
-  public static StudentEntity convertToEntity(StudentDto inscriptionDto) {
-    return StudentEntity.builder().firstName(inscriptionDto.firstName())
-        .firstSurname(inscriptionDto.firstSurname()).secondSurname(inscriptionDto.secondSurname())
-        .birthDate(inscriptionDto.birthDate()).idType(inscriptionDto.idType())
-        .idNumber(inscriptionDto.idNumber()).previousSchool(inscriptionDto.previousSchool())
-        .hasAccommodations(inscriptionDto.hasAccommodations()).build();
+  public static StudentEntity convertToEntity(StudentDto inscription) {
+    return StudentEntity.builder().id(inscription.id()).birthDate(inscription.birthDate())
+        .previousSchool(inscription.previousSchool())
+        .hasAccommodations(inscription.hasAccommodations()).parents(new ArrayList<>()).build();
+  }
+
+  public static StudentExamsDto studentToStudentExamsDto(StudentEntity student,
+      List<ExamEntity> exams, ExamType examType) {
+    //Map the exams to the correct type
+    if (examType == ExamType.ACA) {
+      return StudentExamsDto.builder().id(student.getId())
+          .person(PersonMapper.convertToDto(student.getStudentPerson()))
+          .academicExams(ExamMapper.academicExamsToAcademicExamDetailsDto(exams))
+          .daiExams(new ArrayList<>()).build();
+    } else {
+      return StudentExamsDto.builder().id(student.getId())
+          .person(PersonMapper.convertToDto(student.getStudentPerson()))
+          .academicExams(new ArrayList<>()).daiExams(ExamMapper.daiExamsToDaiExamDetailsDto(exams))
+          .build();
+    }
   }
 }

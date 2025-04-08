@@ -1,15 +1,13 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.DocumentDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
@@ -17,15 +15,15 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.concurrent.CompletableFuture;
+
+import static cr.co.ctpcit.citsacbackend.rest.inscriptions.InscriptionsFileVerifier.verifyFile;
 
 @RequiredArgsConstructor
 @RestController
@@ -38,14 +36,16 @@ public class InscriptionsController {
   /**
    * Get an inscription by id
    *
-   * @param id the id of the student
+   * @param idNumber the id of the student
    * @return the inscription with the given id
    */
-  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @GetMapping("/{id}")
-  public ResponseEntity<StudentDto> getInscriptionById(@PathVariable("id") Long id) {
-    StudentDto student = inscriptionsService.findStudentById(id);
-    return student == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(student);
+  public ResponseEntity<Iterable<EnrollmentDto>> getEnrollmentsByStudentId(
+      @PathVariable("id") String idNumber) {
+    Iterable<EnrollmentDto> enrollments =
+        inscriptionsService.findPendingEnrollmentsByStudentId(idNumber);
+
+    return enrollments == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(enrollments);
   }
 
   /**
@@ -54,12 +54,12 @@ public class InscriptionsController {
    * @param value the name of the student
    * @return the inscription with the given name
    */
-  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @GetMapping("/search")
-  public ResponseEntity<Iterable<StudentDto>> getInscriptionsByValue(
+  public ResponseEntity<Iterable<EnrollmentDto>> getInscriptionsByValue(
       @NotNull @RequestParam String value) {
-    List<StudentDto> student = inscriptionsService.findStudentByValue(value);
-    return student == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(student);
+    List<EnrollmentDto> enrollments = inscriptionsService.findStudentByValue(value);
+
+    return enrollments == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(enrollments);
   }
 
   /**
@@ -67,11 +67,11 @@ public class InscriptionsController {
    *
    * @return a list of all inscriptions
    */
-  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @GetMapping
-  public ResponseEntity<Iterable<StudentDto>> getInscriptions(
+  public ResponseEntity<Iterable<EnrollmentDto>> getInscriptions(
       @PageableDefault(page = 0, size = 25) Pageable pageable) {
-    List<StudentDto> inscriptions = inscriptionsService.getAllInscriptions(pageable);
+    List<EnrollmentDto> inscriptions = inscriptionsService.getAllInscriptions(pageable);
+
     return inscriptions.isEmpty() ?
         ResponseEntity.noContent().build() :
         ResponseEntity.ok(inscriptions);
@@ -80,84 +80,88 @@ public class InscriptionsController {
   /**
    * Update exam date
    *
-   * @param id   the id of the enrollment
-   * @param date the new date of the exam
-   * @return the updated enrollment
+   * @param id the id of the enrollment
    */
-  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
-  @PutMapping("/{id}/exam")
-  public ResponseEntity<StudentDto> updateExamDate(@PathVariable("id") String id, @NotNull @NotEmpty
-  @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$",
-      message = "Formato de fecha incorrecto. Use yyyy-MM-dd") @RequestParam String date) {
-    StudentDto student = inscriptionsService.updateExamDate(id, date);
-    return student == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(student);
+  @PutMapping("/update-exam-date/{id}")
+  public ResponseEntity<Void> updateExamDate(@PathVariable("id") String id,
+      @RequestBody EnrollmentUpdateDto enrollmentUpdate) {
+    inscriptionsService.updateExamDate(id, enrollmentUpdate);
+
+    return ResponseEntity.noContent().build();
   }
 
   /**
-   * @param id     the id of the enrollment
-   * @param status the new status of the enrollment
-   * @return ok if the status was updated, not found otherwise
+   * Update process status
+   *
+   * @param id the id of the enrollment
    */
-  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @PutMapping("/update-status/{id}")
-  public ResponseEntity<StudentDto> updateStatus(@PathVariable("id") Long id,
-      @RequestParam @NotNull ProcessStatus status) {
-    boolean updated = inscriptionsService.changeStatus(id, status);
-    return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+  public ResponseEntity<Void> updateStatus(@PathVariable("id") String id,
+      @RequestBody EnrollmentUpdateDto enrollmentUpdate) {
+    inscriptionsService.updateProcessStatus(id, enrollmentUpdate);
+
+    return ResponseEntity.noContent().build();
   }
 
   /**
    * Change whatsapp notification permission
    *
-   * @param id         the id of the student
-   * @param permission the new permission
-   * @return ok if the permission was updated, not found otherwise
+   * @param id the id of the student
    */
-  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @PutMapping("/update-whatsapp/{id}")
-  public ResponseEntity<StudentDto> changeWhatsappPermission(@PathVariable("id") Long id,
-      @RequestParam @NotNull Boolean permission) {
-    boolean updated = inscriptionsService.changeWhatsappPermission(id, permission);
-    return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+  public ResponseEntity<Void> changeWhatsappPermission(@PathVariable("id") String id,
+      @RequestBody EnrollmentUpdateDto enrollmentUpdate) {
+    inscriptionsService.updateWhatsappPermission(id, enrollmentUpdate);
+
+    return ResponseEntity.noContent().build();
   }
 
   /**
    * Update enrollment
    *
-   * @param enrollmentId       the id of the enrollment
-   * @param status             the new status of the enrollment
-   * @param examDate           the new date of the exam
-   * @param whatsappPermission the new permission for whatsapp notifications
-   * @param comment            a comment about the enrollment
-   * @param changedBy          the id of the user who changed the enrollment
-   * @return ok if the enrollment was updated, not found otherwise
+   * @param enrollmentId the id of the enrollment
    */
-  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @PutMapping("/update-enrollment/{enrollmentId}")
-  public ResponseEntity<String> updateEnrollment(@PathVariable("enrollmentId") Long enrollmentId,
-      @RequestParam @NotNull ProcessStatus status, @RequestParam @NotNull String examDate,
-      @RequestParam @NotNull String whatsappPermission, @RequestParam String comment,
-      @RequestParam Integer changedBy) {
-    Boolean updated =
-        inscriptionsService.updateEnrollment(enrollmentId, status, examDate, whatsappPermission,
-            comment, changedBy);
+  public ResponseEntity<String> updateEnrollment(@PathVariable("enrollmentId") String enrollmentId,
+      @RequestBody EnrollmentUpdateDto enrollmentUpdate) {
+    inscriptionsService.updateEnrollment(enrollmentId, enrollmentUpdate);
 
-    return updated ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Upload a document
+   *
+   * @param file         the file to upload
+   * @param documentType the type of the document
+   * @param enrollmentId the id of the enrollment
+   * @return the document
+   */
+  @PostMapping("/documents/upload")
+  public ResponseEntity<Void> uploadDocument(@RequestParam("file") MultipartFile file,
+      @RequestParam("documentType") String documentType,
+      @RequestParam("enrollmentId") Long enrollmentId, UriComponentsBuilder uriComponentsBuilder) {
+    verifyFile(file);
+
+    DocumentDto document = inscriptionsService.saveDocument(documentType, enrollmentId, file);
+
+    return ResponseEntity.created(
+        uriComponentsBuilder.path("/api/inscriptions/documents/download/{id}")
+            .buildAndExpand(document.id()).toUri()).build();
   }
 
   /**
    * Download documents
    *
-   * @param filename the name of the document
+   * @param id the name of the document
    * @return the document as a resource
    */
-  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
-  @GetMapping("/documents/download/{filename}")
-  public ResponseEntity<Resource> downloadDocuments(@PathVariable String filename) {
+  @GetMapping("/documents/download/{id}")
+  public ResponseEntity<Resource> downloadDocuments(@PathVariable Long id) {
     Resource resource;
 
     try {
-      resource = storageService.loadAsResource(filename);
+      resource = storageService.loadAsResource(id);
     } catch (Exception e) {
       return ResponseEntity.notFound().build();
     }
@@ -169,48 +173,14 @@ public class InscriptionsController {
   /**
    * Delete a document
    *
-   * @param id       the id of the document
-   * @param filename the path of the document in the static/files document folder
+   * @param id the id of the document
    * @return ok if the document was deleted, not found otherwise
    */
-  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
   @DeleteMapping("/documents/delete/{id}")
-  public ResponseEntity<String> deleteDocument(@PathVariable Long id,
-      @RequestParam String filename) {
-    boolean databaseDeleted = inscriptionsService.deleteDocument(id);
+  public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
+    inscriptionsService.deleteDocument(id);
 
-    boolean storageDeleted = storageService.deleteDocument(filename);
-
-    return databaseDeleted && storageDeleted ?
-        ResponseEntity.ok().build() :
-        ResponseEntity.notFound().build();
-  }
-
-  /**
-   * Upload a document
-   *
-   * @param file         the file to upload
-   * @param documentName the name of the document
-   * @param documentType the type of the document
-   * @param enrollmentId the id of the enrollment
-   * @return the document
-   */
-  @PreAuthorize("hasAuthority('SCOPE_S') or hasAuthority('SCOPE_A')")
-  @PostMapping("/documents/upload")
-  @Async
-  public CompletableFuture<ResponseEntity<DocumentDto>> uploadDocument(
-      @RequestParam("file") MultipartFile file, @RequestParam("documentName") String documentName,
-      @RequestParam("documentType") String documentType,
-      @RequestParam("enrollmentId") Long enrollmentId) {
-    if (file.isEmpty()) {
-      return CompletableFuture.completedFuture(ResponseEntity.badRequest().build());
-    }
-    DocumentDto document =
-        inscriptionsService.saveDocument(documentName, documentType, enrollmentId);
-
-    storageService.store(file, documentName);
-
-    return CompletableFuture.completedFuture(ResponseEntity.ok(document));
+    return ResponseEntity.noContent().build();
   }
 
   /**

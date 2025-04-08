@@ -14,7 +14,7 @@ const UserTable = ({ deletedUsers, onDeleteClick, loading }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
 
   const filteredUsers = deletedUsers?.filter(user =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
+    user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const currentUsers = filteredUsers?.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage)
@@ -38,6 +38,7 @@ const UserTable = ({ deletedUsers, onDeleteClick, loading }) => {
         <thead>
           <tr>
             <th>Correo</th>
+            <th>Username</th>
             <th>Rol</th>
             <th>Acciones</th>
           </tr>
@@ -46,7 +47,7 @@ const UserTable = ({ deletedUsers, onDeleteClick, loading }) => {
           ? (
             <tbody>
               <tr>
-                <td colSpan='3'>
+                <td colSpan='4'>
                   <Spinner />
                 </td>
               </tr>
@@ -66,7 +67,7 @@ const UserTable = ({ deletedUsers, onDeleteClick, loading }) => {
                   )
                 : (
                   <tr>
-                    <td colSpan='3' className='no-deleted-users'>
+                    <td colSpan='4' className='no-deleted-users'>
                       No hay usuarios
                     </td>
                   </tr>

@@ -1,8 +1,7 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.exams.english;
 
+import cr.co.ctpcit.citsacbackend.data.enums.EnglishLevel;
 import jakarta.validation.constraints.NotNull;
-
-import java.time.Instant;
 
 /**
  * This class represents the data transfer object for the English score entry.
@@ -16,7 +15,7 @@ import java.time.Instant;
  */
 public record EnglishScoreEntryDTO(@NotNull Long id, @NotNull String names,
                                    @NotNull String lastNames, @NotNull String lastTest,
-                                   @NotNull String level, @NotNull String core) {
+                                   @NotNull EnglishLevel level, @NotNull String core) {
 
     /*
     Expected flow:

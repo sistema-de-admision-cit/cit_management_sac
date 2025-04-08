@@ -54,26 +54,22 @@ const getNotificationSettingsUrl = `${import.meta.env.VITE_GET_CONFIGURATION_SET
 
 // mappear los datos que llegan
 const mapIncomingData = (data) => {
-  return {
-    email_contact: data[0].configValue,
-    email_notifications_contact: data[1].configValue,
-    whatsapp_contact: data[2].configValue,
-    office_contact: data[3].configValue,
-    instagram_contact: data[4].configValue,
-    facebook_contact: data[5].configValue
+  const configMapping = {
+    EMAIL_CONTACT: 'email_contact',
+    EMAIL_NOTIFICATION_CONTACT: 'email_notifications_contact',
+    WHATSAPP_CONTACT: 'whatsapp_contact',
+    OFFICE_CONTACT: 'office_contact',
+    INSTAGRAM_CONTACT: 'instagram_contact',
+    FACEBOOK_CONTACT: 'facebook_contact'
   }
-}
 
-// mappear los datos antes de enviarlos
-const mapOutgoingData = (data) => {
-  return {
-    email_contact: data.email_contact,
-    email_notifications_contact: data.email_notifications_contact,
-    whatsapp_contact: data.whatsapp_contact,
-    office_contact: data.office_contact,
-    instagram_contact: data.instagram_contact,
-    facebook_contact: data.facebook_contact
-  }
+  return data.reduce((acc, { configName, configValue }) => {
+    const key = configMapping[configName]
+    if (key) {
+      acc[key] = configValue
+    }
+    return acc
+  }, {})
 }
 
 export const getCurrentSettings = async () => {
@@ -94,13 +90,18 @@ export const updateNotificationSettings = async (formValues, setFormValues, setL
   setLoading(true)
 
   try {
-    const dataToSend = mapOutgoingData(formValues)
-    const response = await axios.put(`${saveNotificationSettingsUrl}?${new URLSearchParams(dataToSend)}`, {}, { timeout: 5000 })
+    const dataToSend = {
+      emailContact: formValues.email_contact,
+      emailNotificationsContact: formValues.email_notifications_contact,
+      whatsappContact: formValues.whatsapp_contact,
+      officeContact: formValues.office_contact,
+      instagramContact: formValues.instagram_contact,
+      facebookContact: formValues.facebook_contact
+    }
+    await axios.put(saveNotificationSettingsUrl, dataToSend)
     setSuccessMessage('Configuraciones actualizadas correctamente.')
-
-    const data = mapIncomingData(response.data)
-    initValues = { ...data }
-    setFormValues(data)
+    const updatedData = await getCurrentSettings()
+    setFormValues(updatedData)
   } catch (error) {
     setErrorMessage(getErrorMessage(error))
   } finally {

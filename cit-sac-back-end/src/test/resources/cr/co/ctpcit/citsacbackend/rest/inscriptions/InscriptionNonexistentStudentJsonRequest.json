@@ -1,0 +1,50 @@
+{
+  "student": {
+    "person": {
+      "firstName": "Hernán",
+      "firstSurname": "Jimenez",
+      "secondSurname": "Morales",
+      "idType": "CC",
+      "idNumber": "603540987"
+    },
+    "birthDate": "1989-12-16",
+    "previousSchool": "Escuela de Getsemaní",
+    "hasAccommodations": false,
+    "parents": [
+      {
+        "person": {
+          "firstName": "Mauricio",
+          "firstSurname": "Jimenez",
+          "secondSurname": "Elizondo",
+          "idType": "CC",
+          "idNumber": "100030683"
+        },
+        "phoneNumber": "85632364",
+        "email": "mau.jime.eli@example.com",
+        "relationship": "F",
+        "addresses": [
+          {
+            "country": "Costa Rica",
+            "province": "San José",
+            "city": "Escazú",
+            "district": "San Rafael",
+            "addressInfo": "De la iglesia católica 200 metros al sur, casa esquinera a mano derecha"
+          }
+        ]
+      }
+    ]
+  },
+  "gradeToEnroll": "NINTH",
+  "knownThrough": "OT",
+  "examDate": "2025-03-14",
+  "consentGiven": true,
+  "whatsappNotification": false,
+  "documents": [
+    {
+      "id": null,
+      "documentUrlPostfix": null,
+      "documentType": "OT",
+      "documentName": null
+    }
+  ]
+}

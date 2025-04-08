@@ -3,36 +3,27 @@ package cr.co.ctpcit.citsacbackend.rest.auth;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.ChangePasswordRequestDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.UserDto;
-import cr.co.ctpcit.citsacbackend.logic.services.auth.UserDetailsServiceImpl;
 import cr.co.ctpcit.citsacbackend.security.DaoAuthenticationProviderCstm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin("*")
 public class AuthController {
   private final JwtEncoder encoder;
   private final DaoAuthenticationProviderCstm daoAuthenticationProvider;
-  private final UserDetailsServiceImpl userDetailsServiceImpl;
 
   /**
    * Obtener el token de autenticación

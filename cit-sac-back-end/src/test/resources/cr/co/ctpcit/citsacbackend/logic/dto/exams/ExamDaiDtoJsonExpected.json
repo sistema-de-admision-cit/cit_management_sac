@@ -1,0 +1,17 @@
+{
+  "id": 2,
+  "enrollment": 1,
+  "examDate": "1970-01-01T00:00:00Z",
+  "examType": "DAI",
+  "responses": [
+    {
+      "id": 1,
+      "questionType": "DAI",
+      "questionText": "¿Cómo te sientes el día de hoy?",
+      "imageUrl": null,
+      "selectionType": "PARAGRAPH",
+      "deleted": false,
+      "response": "Me siento muy bien, aunque con un poco de sueño."
+    }
+  ]
+}

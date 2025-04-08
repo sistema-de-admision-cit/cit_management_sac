@@ -1,9 +1,9 @@
 export const statusText = {
-  P: 'Inscrito',
-  E: 'Permitido',
-  I: 'Inelegible',
-  A: 'Aceptado',
-  R: 'Rechazado'
+  PENDING: 'Inscrito',
+  ELIGIBLE: 'Permitido',
+  INELIGIBLE: 'Inelegible',
+  ACCEPTED: 'Aceptado',
+  REJECTED: 'Rechazado'
 }
 
 export const buildGuardianAddress = (guardianAddress) => {
@@ -18,11 +18,11 @@ export const guardianTabText = {
 }
 
 export const statusOptions = [
-  { value: 'P', label: 'Inscrito' },
-  { value: 'E', label: 'Permitido' },
-  { value: 'I', label: 'Inelegible' },
-  { value: 'A', label: 'Aceptado' },
-  { value: 'R', label: 'Rechazado' }
+  { value: 'PENDING', label: 'Inscrito' },
+  { value: 'ELIGIBLE', label: 'Permitido' },
+  { value: 'INELIGIBLE', label: 'Inelegible' },
+  { value: 'ACCEPTED', label: 'Aceptado' },
+  { value: 'REJECTED', label: 'Rechazado' }
 ]
 
 export const isCommentRequired = (formData, enrollment) => {
@@ -64,9 +64,9 @@ export const formatDateToObj = (obj) => {
 
 // parse the object dates to "day/month/year" format
 export const formatDate = (date) => {
-  let day = date.getDate()
-  let month = date.getMonth() + 1
-  const year = date.getFullYear()
+  let day = date.getUTCDate()
+  let month = date.getUTCMonth() + 1
+  const year = date.getUTCFullYear()
 
   day = day < 10 ? '0' + day : day
   month = month < 10 ? '0' + month : month
@@ -76,12 +76,16 @@ export const formatDate = (date) => {
 
 // parse the date to "year-month-day" format
 export const formatDateForApi = (date) => {
-  let day = date.getDate()
-  let month = date.getMonth() + 1
-  const year = date.getFullYear()
+  console.log('date', date)
+
+  let day = date.getUTCDate()
+  let month = date.getUTCMonth() + 1
+  const year = date.getUTCFullYear()
 
   day = day < 10 ? '0' + day : day
   month = month < 10 ? '0' + month : month
+
+  console.log('date', `${year}-${month}-${day}`)
 
   return `${year}-${month}-${day}`
 }

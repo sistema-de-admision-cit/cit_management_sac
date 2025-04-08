@@ -10,7 +10,13 @@ const ModalManageFiles = ({ selectedFileType, selectedFile, onFileUpload, onFile
       ? (
         <form onSubmit={(e) => onFileUpload(e)} className='file-upload-form'>
           <InputField
-            field={{ type: 'file', name: 'file', id: 'file', label: 'Subir archivo' }}
+            field={{
+              type: 'file',
+              name: 'file',
+              id: 'file',
+              label: 'Subir archivo'
+            }}
+            accept='.pdf, .doc,.docx, .jpg, .jpeg, .png'
             onChange={onFileUpload}
             className='form-group'
           />

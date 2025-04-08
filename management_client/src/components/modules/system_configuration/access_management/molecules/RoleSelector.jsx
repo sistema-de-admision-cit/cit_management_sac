@@ -9,10 +9,10 @@ const RoleSelect = ({ role, onRoleChange }) => {
       className='input-field'
     >
       <option value='porDefecto'>Seleccione un rol para el usuario</option>
-      <option value='A'>Administrador</option>
-      <option value='S'>Super Usuario</option>
-      <option value='T'>Profesor</option>
-      <option value='P'>Psicólogo</option>
+      <option value='ADMIN'>Administrador</option>
+      <option value='SYS'>Super Usuario</option>
+      <option value='TEACHER'>Profesor</option>
+      <option value='PSYCHOLOGIST'>Psicólogo</option>
     </InputField>
   )
 }

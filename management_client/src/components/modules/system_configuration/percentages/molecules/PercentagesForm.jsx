@@ -11,9 +11,9 @@ const PercentagesForm = ({ formValues, handleChange, onSave, loading }) => (
       className='form-group'
     />
     <InputField
-      field={{ name: 'daiExam', label: 'Psicológico', type: 'text', placeholder: '20', required: true }}
-      value={formValues.daiExam}
-      handleChange={(e) => handleChange('daiExam', e.target.value)}
+      field={{ name: 'prevGradesExam', label: 'Notas Anteriores', type: 'text', placeholder: '20', required: true }}
+      value={formValues.prevGradesExam}
+      handleChange={(e) => handleChange('prevGradesExam', e.target.value)}
       className='form-group'
     />
     <InputField

@@ -1,0 +1,53 @@
+{
+  "id": 10,
+  "enrollment": 1,
+  "examDate": "2025-03-14T21:06:56.027261Z",
+  "examType": "DAI",
+  "responses": [
+    {
+      "id": 1,
+      "questionType": "DAI",
+      "questionText": "¿Cómo te sientes el día de hoy?",
+      "imageUrl": null,
+      "selectionType": "PARAGRAPH",
+      "deleted": false,
+      "response": "Bien aunque un poco cansado."
+    },
+    {
+      "id": 3,
+      "questionType": "DAI",
+      "questionText": "¿Qué tipo de música prefieres?",
+      "imageUrl": null,
+      "selectionType": "PARAGRAPH",
+      "deleted": false,
+      "response": "El rock es mi favorito."
+    },
+    {
+      "id": 5,
+      "questionType": "DAI",
+      "questionText": "¿Te gusta practicar deportes?",
+      "imageUrl": null,
+      "selectionType": "PARAGRAPH",
+      "deleted": false,
+      "response": "Sí, me gusta mucho el fútbol."
+    },
+    {
+      "id": 7,
+      "questionType": "DAI",
+      "questionText": "¿Prefieres la playa o la montaña?",
+      "imageUrl": null,
+      "selectionType": "PARAGRAPH",
+      "deleted": false,
+      "response": "Prefiero la montaña."
+    },
+    {
+      "id": 9,
+      "questionType": "DAI",
+      "questionText": "¿Cuál es tu película favorita?",
+      "imageUrl": null,
+      "selectionType": "PARAGRAPH",
+      "deleted": false,
+      "response": "Mi película favorita es El Padrino."
+    }
+  ]
+}

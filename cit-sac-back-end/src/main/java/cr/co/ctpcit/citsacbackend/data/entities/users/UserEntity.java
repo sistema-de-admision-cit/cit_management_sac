@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import cr.co.ctpcit.citsacbackend.data.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.proxy.HibernateProxy;
@@ -25,16 +26,26 @@ public class UserEntity {
   @JdbcTypeCode(SqlTypes.INTEGER)
   private Long id;
 
-  @Column(name = "email", nullable = false)
+  @Size(max = 128)
+  @NotNull
+  @Column(name = "email", nullable = false, length = 128)
   private String email;
 
-  @Column(name = "user_password", nullable = false, length = 100)
+  @Size(max = 64)
+  @NotNull
+  @Column(name = "username", nullable = false, length = 64)
+  private String username;
+
+  @Size(max = 128)
+  @NotNull
+  @Column(name = "user_password", nullable = false, length = 128)
   @JsonIgnore
-  private String userPassword;
+  private String password;
 
   @NotNull
   @Enumerated(EnumType.STRING)
-  @Column(name = "role", nullable = false)
+  @Column(name = "role", nullable = false,
+      columnDefinition = "enum('SYS', 'ADMIN', 'TEACHER', 'PSYCHOLOGIST')")
   private Role role;
 
   @Override

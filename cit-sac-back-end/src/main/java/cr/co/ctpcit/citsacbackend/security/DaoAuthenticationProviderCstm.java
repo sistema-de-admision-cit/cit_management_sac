@@ -2,12 +2,8 @@ package cr.co.ctpcit.citsacbackend.security;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.ChangePasswordRequestDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.UserDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscription.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.services.auth.UserDetailsServiceImpl;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,8 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 public class DaoAuthenticationProviderCstm extends DaoAuthenticationProvider {
   @Value("${cit.app.default-password}")

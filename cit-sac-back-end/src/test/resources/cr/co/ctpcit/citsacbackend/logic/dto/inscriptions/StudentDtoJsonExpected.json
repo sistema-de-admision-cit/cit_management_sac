@@ -1,0 +1,15 @@
+{
+  "id": 11,
+  "person": {
+    "id": 11,
+    "firstName": "Andrés",
+    "firstSurname": "Rodríguez",
+    "secondSurname": "Morales",
+    "idType": "CC",
+    "idNumber": "200123654"
+  },
+  "birthDate": "2010-03-12",
+  "previousSchool": "Escuela La Sabana",
+  "hasAccommodations": false,
+  "parents": []
+}

@@ -8,6 +8,10 @@ import GenerateExamView from '../../../modules/questions/generate_exam/view/Gene
 import HubIcon from './HubIcon.jsx'
 import ExamMenuPageView from '../../../modules/questions/menu/view/ExamMenuPageView.jsx'
 
+// grades views
+import AcademicManagementView from '../../../modules/grades/views/AcademicManagementView.jsx'
+import DaiGradesManagementView from '../../../modules/grades/views/DaiManagementView.jsx'
+
 // enrollments views
 import EnrollmentsMenuPageView from '../../../modules/enrollments/menu/views/EnrollmentsMenuPageView.jsx'
 import EnrollmentManagementView from '../../../modules/enrollments/management/view/EnrollmentManagementView.jsx'
@@ -16,15 +20,21 @@ import EnrollmentManagementView from '../../../modules/enrollments/management/vi
 import ConfigurationMenuPageView from '../../../modules/system_configuration/menu/views/ConfigurationMenuPageView.jsx'
 import ExamScheduleConfiguratorView from '../../../modules/system_configuration/exam_schedule/view/ExamScheduleConfiguratorView.jsx'
 import NotificationSettingsView from '../../../modules/system_configuration/notifications/view/NotificationSettingsView.jsx'
+import QuestionConfiguratorView from '../../../modules/system_configuration/exam_question_quantity/view/QuestionConfiguratorView.jsx'
 
 // results views
 import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenuPageView.jsx'
 import ExamScoreManagementView from '../../../modules/results/load_results/view/ExamScoreManagementView.jsx'
+// import GradesManagmentView from '../../../modules/results/grades_managment/view/GradesManagementView.jsx'
 
 // reports views
 import ReportsMenuPageView from '../../../modules/reports/menu/views/ReportsMenuPageView.jsx'
 import PercentagesConfiguratorView from '../../../modules/system_configuration/percentages/view/PercentagesConfiguratorView.jsx'
 import AccessManegementView from '../../../modules/system_configuration/access_management/view/AccessManegementView.jsx'
+
+// report views
+import GraphicalReportsView from '../../../modules/reports/graphical/view/GraphicalReportsView.jsx'
+import DashboardView from '../../../modules/dashboard/menu/view/DashboardMenuPageView.jsx'
 
 // componente por defecto para las rutas padre
 // feature temporal
@@ -45,8 +55,8 @@ const menuConfig = [
         label: 'Dashboard',
         path: '/dashboard',
         roleRequired: [ROLE_SUPERADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
-        description: 'Vista general del sistema con estadísticas y accesos rápidos.',
-        parentComponent: DefaultComponent
+        description: 'Vista general del sistema con accesos rápidos.',
+        parentComponent: DashboardView
       },
       {
         key: 'enrollments',
@@ -87,6 +97,13 @@ const menuConfig = [
             path: '/configuracion/porcentajes',
             component: PercentagesConfiguratorView,
             description: 'Definir porcentajes de evaluación y criterios.'
+          },
+          {
+            key: 'questions-settings',
+            label: 'Configurar Cantidad de Preguntas',
+            path: '/configuracion/preguntas',
+            component: QuestionConfiguratorView,
+            description: 'Definir la cantidad de preguntas en los exámenes.'
           },
           {
             key: 'notifications-settings',
@@ -143,6 +160,22 @@ const menuConfig = [
             component: GenerateExamView,
             description: 'Generar exámenes a partir de las preguntas configuradas.',
             imagePath: '/images/temp-card-image-2.avif'
+          },
+          {
+            key: 'academic-exam',
+            label: 'Visualizar Exámenes Académicos',
+            path: '/examenes/academicos',
+            component: AcademicManagementView,
+            description: 'Ver notas de los examenes academicos.',
+            imagePath: '/images/temp-card-image.avif'
+          },
+          {
+            key: 'dai-exam',
+            label: 'Visualizar Exámenes DAI',
+            path: '/examenes/dai',
+            component: DaiGradesManagementView,
+            description: 'Ver notas de los examenes DAI.',
+            imagePath: '/images/temp-card-image.avif'
           }
         ]
       },
@@ -155,13 +188,6 @@ const menuConfig = [
         description: 'Gestión y análisis de los resultados de los exámenes.',
         subItems: [
           {
-            key: 'store-results',
-            label: 'Almacenar Respuestas',
-            path: '/resultados/almacenar',
-            component: DefaultComponent,
-            description: 'Almacenar las respuestas obtenidas en los exámenes.'
-          },
-          {
             key: 'load-results',
             label: 'Cargar Notas',
             path: '/resultados/cargar',
@@ -170,10 +196,10 @@ const menuConfig = [
           },
           {
             key: 'analyze-results',
-            label: 'Analizar Resultados',
+            label: 'Modificar notas manualmente',
             path: '/resultados/analizar',
             component: DefaultComponent,
-            description: 'Analizar los resultados y generar informes.'
+            description: 'Modificar notas manualmente y ver notas finales.'
           },
           {
             key: 'notify-results',
@@ -196,7 +222,7 @@ const menuConfig = [
             key: 'graphical-reports',
             label: 'Reportes Gráficos',
             path: '/reportes/graficos',
-            component: DefaultComponent,
+            component: GraphicalReportsView,
             description: 'Visualizar reportes en formato gráfico.'
           },
           {

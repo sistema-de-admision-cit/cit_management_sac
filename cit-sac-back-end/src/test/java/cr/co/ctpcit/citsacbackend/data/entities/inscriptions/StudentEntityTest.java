@@ -1,0 +1,92 @@
+package cr.co.ctpcit.citsacbackend.data.entities.inscriptions;
+
+import cr.co.ctpcit.citsacbackend.TestProvider;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.JsonTest;
+import org.springframework.boot.test.json.JacksonTester;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@JsonTest
+class StudentEntityTest {
+  @Autowired
+  private JacksonTester<StudentEntity> json;
+
+  @Test
+  void serializeJson() throws Exception {
+    StudentEntity student = TestProvider.provideStudent();
+    ParentEntity parent = TestProvider.provideParent();
+    parent.addStudent(student);
+    parent.addAddress(TestProvider.provideAddress());
+
+    assertThat(json.write(student)).isStrictlyEqualToJson("StudentEntityJsonExpected.json");
+    assertThat(json.write(student)).hasJsonPathNumberValue("@.id");
+    assertThat(json.write(student)).extractingJsonPathNumberValue("@.id").isEqualTo(11);
+    assertThat(json.write(student)).hasJsonPathStringValue("@.previousSchool");
+    assertThat(json.write(student)).extractingJsonPathStringValue("@.previousSchool")
+        .isEqualTo("Escuela La Sabana");
+  }
+
+  @Test
+  void deserializeJson() throws Exception {
+    String expected = """
+        {
+          "id": 11,
+          "studentPerson": {
+            "id": 11,
+            "firstName": "Andrés",
+            "firstSurname": "Rodríguez",
+            "secondSurname": "Morales",
+            "idType": "CC",
+            "idNumber": "200123654",
+            "fullSurname": "Rodríguez Morales"
+          },
+          "birthDate": "2010-03-12",
+          "previousSchool": "Escuela La Sabana",
+          "hasAccommodations": false,
+          "previousGrades": 0.00,
+          "parents": [
+            {
+              "parent": {
+                "id": 1,
+                "parentPerson": {
+                  "id": 1,
+                  "firstName": "Carlos",
+                  "firstSurname": "Rodríguez",
+                  "secondSurname": "Morales",
+                  "idType": "CC",
+                  "idNumber": "900321654",
+                  "fullSurname": "Rodríguez Morales"
+                },
+                "phoneNumber": "876543210",
+                "email": "carlos.rod@example.com",
+                "relationship": "F",
+                "daiExam": null,
+                "addresses": [
+                  {
+                    "id": 1,
+                    "country": "Costa Rica",
+                    "province": "San José",
+                    "city": "San José",
+                    "district": "Carmen",
+                    "addressInfo": "Avenida Central 100"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+        """;
+
+    StudentEntity student = TestProvider.provideStudent();
+
+    ParentEntity parent = TestProvider.provideParent();
+    parent.addStudent(student);
+    parent.addAddress(TestProvider.provideAddress());
+
+    assertThat(json.parse(expected)).isEqualTo(student);
+    assertThat(json.parseObject(expected).getId()).isEqualTo(11);
+    assertThat(json.parseObject(expected).getBirthDate()).isEqualTo("2010-03-12");
+  }
+}

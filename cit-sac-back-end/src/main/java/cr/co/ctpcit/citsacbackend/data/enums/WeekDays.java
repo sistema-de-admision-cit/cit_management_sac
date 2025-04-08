@@ -11,7 +11,7 @@ public enum WeekDays {
   M, K, W, T, F, S, SS;
 
   public static List<WeekDays> getWeekDays(List<String> strings) {
-    List<WeekDays> weekDays = new ArrayList<>(List.of());
+    List<WeekDays> weekDays = new ArrayList<>();
     for (String string : strings) {
       weekDays.add(WeekDays.valueOf(string));
     }

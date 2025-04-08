@@ -1,0 +1,15 @@
+{
+  "id": 1,
+  "person": {
+    "id": 1,
+    "firstName": "Carlos",
+    "firstSurname": "Rodríguez",
+    "secondSurname": "Morales",
+    "idType": "CC",
+    "idNumber": "900321654"
+  },
+  "phoneNumber": "876543210",
+  "email": "carlos.rod@example.com",
+  "relationship": "F",
+  "addresses": []
+}

@@ -1,6 +1,6 @@
 export const statusRole = {
-  A: 'Administrador',
-  S: 'Super Usuario',
-  T: 'Profesor',
-  P: 'Psicólogo'
+  ADMIN: 'Administrador',
+  SYS: 'Super Usuario',
+  TEACHER: 'Profesor',
+  PSYCHOLOGIST: 'Psicólogo'
 }

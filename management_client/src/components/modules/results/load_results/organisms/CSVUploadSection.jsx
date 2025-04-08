@@ -17,7 +17,6 @@ const CSVUploadSection = ({ handleFileLoad, processSelectedFile, setErrorMessage
 
   return (
     <div className='upload-section'>
-      <h2>Cargar Notas desde CSV o Excel</h2>
       <InputField
         field={{ type: 'file', name: 'csv', placeholder: 'Selecciona un archivo CSV' }}
         handleChange={(e) => handleLoadFile(e)}

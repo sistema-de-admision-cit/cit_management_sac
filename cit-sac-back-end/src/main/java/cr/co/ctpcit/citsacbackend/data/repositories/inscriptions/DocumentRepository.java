@@ -1,13 +1,11 @@
 package cr.co.ctpcit.citsacbackend.data.repositories.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.data.entities.inscription.DocumentEntity;
-import jakarta.validation.constraints.NotNull;
+import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.DocumentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
+import java.util.Optional;
+
 public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> {
-  boolean existsById(@NotNull Long id);
 
-  void deleteById(@NotNull Long id);
+  Optional<DocumentEntity> findByDocumentName(String documentName);
 }

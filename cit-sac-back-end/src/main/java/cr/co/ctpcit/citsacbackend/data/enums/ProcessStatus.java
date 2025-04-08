@@ -7,5 +7,5 @@ package cr.co.ctpcit.citsacbackend.data.enums;
  * administrative requirements.
  */
 public enum ProcessStatus {
-  P, E, I, A, R
+  PENDING, ELIGIBLE, INELIGIBLE, ACCEPTED, REJECTED
 }

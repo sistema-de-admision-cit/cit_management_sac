@@ -1,0 +1,26 @@
+{
+  "id": 1,
+  "parentPerson": {
+    "id": 1,
+    "firstName": "Carlos",
+    "firstSurname": "Rodríguez",
+    "secondSurname": "Morales",
+    "idType": "CC",
+    "idNumber": "900321654",
+    "fullSurname": "Rodríguez Morales"
+  },
+  "phoneNumber": "876543210",
+  "email": "carlos.rod@example.com",
+  "relationship": "F",
+  "daiExam": null,
+  "addresses": [
+    {
+      "id": 1,
+      "country": "Costa Rica",
+      "province": "San José",
+      "city": "San José",
+      "district": "Carmen",
+      "addressInfo": "Avenida Central 100"
+    }
+  ]
+}

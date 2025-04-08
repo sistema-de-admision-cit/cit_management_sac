@@ -1,65 +1,66 @@
 import { useEffect, useState } from 'react'
 import FindQuestion from '../../base/molecules/FindQuestion'
 import ModifyQuestionForm from '../organisms/ModifyQuestionForm'
-import '../../../../../assets/styles/global/view.css'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import QuestionList from '../../base/organism/QuestionList.jsx'
-import { handleGetAllQuestions } from '../../delete_questions/helpers/formHandlers'
-import { getQuestionByCode } from '../helpers/helpers'
+import { getQuestionById } from '../helpers/helpers'
 import useMessages from '../../../../core/global/hooks/useMessages'
+import '../../../../../assets/styles/global/view.css'
+import { useAuth } from '../../../../../router/AuthProvider.jsx'
+import { mapExamTypeFilter } from '../../base/helpers/questionFormOptions.js'
+
+const mapIncomingQuestionOptionsData = (questionOptions) => {
+  if (!Array.isArray(questionOptions)) return { questionOptionsText: [], correctOption: '' }
+  const questionOptionsText = questionOptions.map(q => q.option)
+  const correctIndex = questionOptions.findIndex(q => q.isCorrect)
+  return {
+    questionOptionsText,
+    correctOption: correctIndex !== -1 ? correctIndex : ''
+  }
+}
 
 const ModifyQuestionView = () => {
+  const { user } = useAuth()
   const [questionData, setQuestionData] = useState(null)
   const [incomingData, setIncomingData] = useState(null)
-  const [questions, setQuestions] = useState([])
-  const [loading, setLoading] = useState(false)
-
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchExamType, setSearchExamType] = useState(mapExamTypeFilter(user.role))
   const { setErrorMessage, renderMessages } = useMessages()
 
-  useEffect(() =>
-    handleGetAllQuestions(setQuestions, setLoading, setErrorMessage)
-  , [])
-
-  // Efecto para manejar la actualización de questionData
-  useEffect(() => {
-    if (incomingData) {
-      setQuestionData(null) // Limpiar los datos actuales
-      const timer = setTimeout(() => {
-        setQuestionData(incomingData) // Luego, establecer los nuevos datos
-      }, 0)
-
-      // Limpieza del efecto
-      return () => clearTimeout(timer)
-    }
-  }, [incomingData])
-
-  // Maneja la pregunta encontrada
   const handleQuestionFound = (data) => {
-    // getQuestionByCode is async
-    getQuestionByCode(data.code, setIncomingData, setErrorMessage, setLoading)
+    getQuestionById(data.id, setIncomingData, setErrorMessage)
   }
 
-  // si el usuario decide buscar otra pregunta, limpiar los datos actuales (esto arregla el error de que no se podia eliminar una pregunta y volve a buscar la misma)
   useEffect(() => {
-    setIncomingData(null)
-  }, [questionData])
+    if (incomingData) {
+      const transformedOptions = mapIncomingQuestionOptionsData(incomingData.questionOptions)
+      setQuestionData({
+        ...incomingData,
+        ...transformedOptions
+      })
+    }
+  }, [incomingData])
 
   return (
     <SectionLayout title='Modificar pregunta'>
       <div className='modify-question-container'>
         <div className='search-section'>
-          {!questionData &&
-            <FindQuestion
-              onResultsUpdate={setQuestions}
-            />}
+          <FindQuestion
+            query={searchQuery}
+            setQuery={setSearchQuery}
+            searchExamType={searchExamType}
+            setSearchExamType={setSearchExamType}
+            userRole={user.role}
+          />
         </div>
         {!questionData && (
           <div className='list-section'>
             <QuestionList
-              questions={questions}
-              onModify={handleQuestionFound}
-              loading={loading}
               actionType='modify'
+              onModify={handleQuestionFound}
+              searchQuery={searchQuery}
+              searchExamType={searchExamType}
+              userRole={user.role}
             />
           </div>
         )}

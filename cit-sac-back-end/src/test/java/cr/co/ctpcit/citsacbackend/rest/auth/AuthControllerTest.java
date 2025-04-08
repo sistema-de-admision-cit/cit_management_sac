@@ -1,74 +1,68 @@
 package cr.co.ctpcit.citsacbackend.rest.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cr.co.ctpcit.citsacbackend.logic.dto.auth.AuthResponseDto;
-import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import cr.co.ctpcit.citsacbackend.logic.dto.auth.ChangePasswordRequestDTO;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.*;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.Objects;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
-@Transactional
 class AuthControllerTest {
-
   @Autowired
-  MockMvc mvc;
-  @Autowired
-  ObjectMapper objectMapper;
-  @MockBean
-  StorageService storageService;
-  AuthResponseDto authResponseDto;
-  @Autowired
-  private TestRestTemplate testRestTemplate;
+  private TestRestTemplate restTemplate;
+  
+  private static AuthResponseDto authResponseDto;
 
-  @BeforeEach
-  void setUp() throws Exception {
-    // @formatter:off
-    MvcResult result = this.mvc.perform(post("/api/auth/login")
-            .with(httpBasic("sysadmin@cit.co.cr", "campus12")))
-        .andExpect(status().isOk())
-        .andReturn();
+  @Test
+  @Order(1)
+  public void testLoginEndpoint() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBasicAuth("rocio@cit.co.cr", "Mate8520$");
 
-    authResponseDto = objectMapper.readValue(result.getResponse().getContentAsString(), AuthResponseDto.class);
+    HttpEntity<String> entity = new HttpEntity<>(null, headers);
+    ResponseEntity<AuthResponseDto> response =
+        restTemplate.exchange("/api/auth/login", HttpMethod.POST, entity, AuthResponseDto.class);
+
+    //Deserialize the response body
+    authResponseDto = response.getBody();
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(Objects.requireNonNull(response.getBody()));
+    assertNotNull(response.getBody().token());
   }
 
   @Test
-  void rootWhenAuthenticatedThenSaysHelloUser() throws Exception {
-    this.mvc.perform(get("/api/questions-academic")
-            .header("Authorization", "Bearer " + authResponseDto.token()))
-        .andExpect(status().isOk())
-        .andExpect(content().json("[\n" +
-            "    {\n" +
-            "        \"id\": 1,\n" +
-            "        \"questionText\": \"¿Cual es la capital de Francia?\",\n" +
-            "        \"questionGrade\": \"SECOND\",\n" +
-            "        \"option_A\": \"Paris\",\n" +
-            "        \"option_B\": \"Madrid\",\n" +
-            "        \"option_C\": \"Londres\",\n" +
-            "        \"option_D\": \"San Jose\",\n" +
-            "        \"correctOption\": \"A\",\n" +
-            "        \"imageUrl\": null\n" +
-            "    }\n" +
-            "]"));
-    // @formatter:on
+  @Order(2)
+  public void testChangePasswordEndpoint() {
+    ResponseEntity<String> response =
+        restTemplate.exchange("/api/auth/change-password", HttpMethod.PUT,
+            getChangePasswordRequest("Mate8520$", "Sociales1650$", "Sociales1650$"), String.class);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("Contraseña actualizada correctamente.", response.getBody());
+
+    restTemplate.exchange("/api/auth/change-password", HttpMethod.PUT,
+        getChangePasswordRequest("Sociales1650$", "Mate8520$", "Mate8520$"), String.class);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("Contraseña actualizada correctamente.", response.getBody());
   }
 
-  @Test
-  void rootWhenNotAuthenticatedThenSaysHelloGuest() throws Exception {
-    this.mvc.perform(get("/api/questions-academic")).andExpect(status().isUnauthorized());
+  private static HttpEntity<ChangePasswordRequestDTO> getChangePasswordRequest(
+      String currentPassword, String newPassword, String confirmPassword) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBearerAuth(authResponseDto.token());
+
+    ChangePasswordRequestDTO request =
+        new ChangePasswordRequestDTO(currentPassword, newPassword, confirmPassword);
+    return new HttpEntity<>(request, headers);
   }
 }

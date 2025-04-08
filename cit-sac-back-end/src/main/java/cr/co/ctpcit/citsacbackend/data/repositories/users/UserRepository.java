@@ -13,6 +13,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
   Boolean existsByEmail(String email);
 
   @Modifying
-  @Query("update UserEntity u set u.userPassword = ?2 where u.email = ?1")
+  @Query("update UserEntity u set u.password = ?2 where u.email = ?1")
   void updatePassword(String userEmail, String s);
 }

@@ -1,0 +1,32 @@
+{
+  "id": 2,
+  "questionType": "ACA",
+  "questionText": "¿Como se calcula el area de un circulo?",
+  "imageUrl": null,
+  "questionGrade": "FIRST",
+  "questionLevel": "EASY",
+  "selectionType": "SINGLE",
+  "deleted": false,
+  "questionOptions": [
+    {
+      "id": 1,
+      "isCorrect": true,
+      "option": "π * radio^2"
+    },
+    {
+      "id": 2,
+      "isCorrect": false,
+      "option": "2 * radio"
+    },
+    {
+      "id": 3,
+      "isCorrect": false,
+      "option": "π * diámetro"
+    },
+    {
+      "id": 4,
+      "isCorrect": false,
+      "option": "radio * altura"
+    }
+  ]
+}

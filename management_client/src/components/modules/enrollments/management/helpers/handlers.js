@@ -22,9 +22,19 @@ const getErrorMessage = (error) => {
   }
 }
 
+const getEnrollmentsByStudentIdUrl = import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_ID_ENDPOINT
 export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, setApplicantSelected) => {
-  setApplicantSelected(applicant)
-  setIsModalApplicantDetailsOpen(true)
+  axios.get(`${getEnrollmentsByStudentIdUrl}${applicant.person.idNumber}`,
+    {
+      timeout: 10000
+    })
+    .then(response => {
+      setApplicantSelected(response.data)
+      setIsModalApplicantDetailsOpen(true)
+    })
+    .catch(error => {
+      setErrorMessage(getErrorMessage(error))
+    })
 }
 
 const validateDataBeforeSubmit = (formData, enrollment) => {
@@ -58,7 +68,17 @@ export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setE
     return
   }
 
-  axios.put(`${updateEnrollmentUrl}/${enrollment.id}?status=${formData.status}&examDate=${formatDateForApi(formData.examDate)}&whatsappPermission=${formData.whatsappNotification}&comment=${formData.comment}&changedBy=1`,
+  const body = {
+    examDate: formatDateForApi(new Date(formData.examDate)),
+    processStatus: formData.status,
+    whatsappPermission: formData.whatsappNotification,
+    comment: formData.comment,
+    changedBy: 1
+  }
+
+  console.log('body', body)
+
+  axios.put(`${updateEnrollmentUrl}/${enrollment.id}`, body,
     { timeout: 10000 })
     .then(response => {
       setIsEditing(false)
@@ -174,7 +194,13 @@ export const handleSearch = (search, setEnrollments) => {
   axios.get(`${searchEnrollmentUrl}?value=${search}`, { timeout: 10000 })
     .then(response => {
       const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
-      setEnrollments(enrollments)
+      const uniqueStudents = enrollments.reduce((acc, enrollment) => {
+        if (!acc.some(e => e.student.id === enrollment.student.id)) {
+          acc.push(enrollment)
+        }
+        return acc
+      }, [])
+      setEnrollments(uniqueStudents)
     })
     .catch(error => {
       console.error(error)
@@ -188,7 +214,13 @@ export const handleGetAllEnrollments = (setEnrollments, setLoading, setErrorMess
   axios.get(getAllEnrollmentsUrl, { timeout: 10000 })
     .then(response => {
       const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
-      setEnrollments(enrollments)
+      const uniqueStudents = enrollments.reduce((acc, enrollment) => {
+        if (!acc.some(e => e.student.id === enrollment.student.id)) {
+          acc.push(enrollment)
+        }
+        return acc
+      }, [])
+      setEnrollments(uniqueStudents)
     })
     .catch(error => {
       setErrorMessage(getErrorMessage(error))

@@ -1,8 +1,9 @@
 package cr.co.ctpcit.citsacbackend.logic.services.exams.english;
 
-import cr.co.ctpcit.citsacbackend.data.entities.exams.english.EnglishExamEntity;
-import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishScoreEntryDTO;
-import cr.co.ctpcit.citsacbackend.logic.dto.logs.englishExams.EnglishExamLogDto;
+
+import cr.co.ctpcit.citsacbackend.data.entities.exams.EnglishExamEntity;
+import cr.co.ctpcit.citsacbackend.logic.dto.exams.EnglishScoreEntryDTO;
+import cr.co.ctpcit.citsacbackend.logic.dto.logs.EnglishExamLogDto;
 
 import java.util.List;
 
