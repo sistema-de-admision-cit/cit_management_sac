@@ -22,7 +22,4 @@ public class WhatsappConfigDto {
     @Size(max = 1000, message = "El mensaje no debe exceder los 1000 caracteres")
     private String message;
 
-    @Value("${twilio.whatsapp.from}")
-    private String fromWhatsAppNumber;
-
 }

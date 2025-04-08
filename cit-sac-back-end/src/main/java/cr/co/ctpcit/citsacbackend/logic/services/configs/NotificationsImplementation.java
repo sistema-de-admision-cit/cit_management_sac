@@ -10,6 +10,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.ParentDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class NotificationsImplementation implements NotificationsService {
 private final JavaMailSender mailSender;
 
 private final SystemConfigRepository configRepository;
+
+@Value("${twilio.whatsapp.from}")
+private String fromWhatsAppNumber;
 
     public NotificationsImplementation(JavaMailSender mailSender, SystemConfigRepository configRepository) {
         this.mailSender = mailSender;
@@ -71,10 +75,8 @@ private final SystemConfigRepository configRepository;
                             "<div class='container'>" +
                             "<h3>Estimado/a " +
                             parent.person().firstName() + " " + parent.person().firstSurname() + " " + parent.person().secondSurname() +
-                            ",</h3>" +
-                            "<p>Nos complace informarle que el registro de inscripción de su hijo/a, <strong>" +
-                            inscription.student().person().firstName() + " " + inscription.student().person().firstSurname() + " " + inscription.student().person().secondSurname() +
-                            "</strong>, ha sido exitosamente completado en el <strong>Complejo Educativo CIT</strong>.</p>" +
+                            "</h3>" +
+                            "<p>Nos complace informarle que el registro de inscripción de su hijo/a, ha sido exitosamente completado en el <strong>Complejo Educativo CIT</strong>.</p>" +
                             "<h4>📌 Detalles del Registro:</h4>" +
                             "<ul>" +
                             "<li><strong>Estudiante:</strong> " +
@@ -109,18 +111,70 @@ public void sendEmail(EmailConfigDto emailConfigDto) {
 }
 
     public void createWhatsappMessage(EnrollmentDto inscription){
+        String emailContact = "";
+        String phoneContact = "";
+        String gradoEsp = "";
+
+        for (SystemConfigEntity config : configRepository.getContactInfo()) {
+            switch (config.getConfigName().name()) {
+                case "EMAIL_CONTACT" -> emailContact = config.getConfigValue();
+                case "OFFICE_CONTACT" -> phoneContact = config.getConfigValue();
+            }
+        }
+
+        switch (inscription.gradeToEnroll().name()) {
+            case "FIRST" -> gradoEsp = "Primero";
+            case "SECOND" -> gradoEsp = "Segundo";
+            case "THIRD" -> gradoEsp = "Tercero";
+            case "FOURTH" -> gradoEsp = "Cuarto";
+            case "FIFTH" -> gradoEsp = "Quinto";
+            case "SIXTH" -> gradoEsp = "Sexto";
+            case "SEVENTH" -> gradoEsp = "Sétimo";
+            case "EIGHTH" -> gradoEsp = "Octavo";
+            case "NINTH" -> gradoEsp = "Noveno";
+            case "TENTH" -> gradoEsp = "Décimo";
+            default -> gradoEsp = String.valueOf(inscription.gradeToEnroll());
+        }
+
         for (ParentDto parent : inscription.student().parents()) {
             WhatsappConfigDto whatsappConfigDto = new WhatsappConfigDto();
             whatsappConfigDto.setRecipient(parent.phoneNumber());
-            whatsappConfigDto.setMessage("Hola es una prueba desde el Backend");
+            whatsappConfigDto.setMessage("""
+📢 *Confirmación de Registro - Complejo Educativo CIT*
+
+Estimado/a %s %s %s
+
+Nos alegra informarle que el registro de su hijo/a ha sido exitosamente completado ✅
+
+👨‍🎓 *Estudiante:* %s %s %s
+📚 *Grado/Nivel:* %s
+📅 *Fecha de Examen:* %s
+
+Para más detalles, puede comunicarse con nuestra administración:
+📧 %s
+📞 %s
+
+*¡Gracias por confiar en nosotros!* 🌟
+""".formatted(
+                    parent.person().firstName(),
+                    parent.person().firstSurname(),
+                    parent.person().secondSurname(),
+                    inscription.student().person().firstName(),
+                    inscription.student().person().firstSurname(),
+                    inscription.student().person().secondSurname(),
+                    gradoEsp,
+                    inscription.examDate(),
+                    emailContact,
+                    phoneContact)
+            );
             sendWhatsAppMessage(whatsappConfigDto);
         }
     }
 
 
     public void sendWhatsAppMessage(WhatsappConfigDto whatsappConfigDto){
-        Message.creator( new PhoneNumber("+"+whatsappConfigDto.getRecipient()),
-                new PhoneNumber(whatsappConfigDto.getFromWhatsAppNumber()),
+        Message.creator( new PhoneNumber("whatsapp:+506"+whatsappConfigDto.getRecipient()),
+                new PhoneNumber(fromWhatsAppNumber),
                 whatsappConfigDto.getMessage()
         ).create();
     }
