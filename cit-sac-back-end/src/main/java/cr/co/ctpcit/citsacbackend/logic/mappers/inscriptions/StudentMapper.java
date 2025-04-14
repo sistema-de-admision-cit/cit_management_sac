@@ -18,11 +18,15 @@ import java.util.List;
 public class StudentMapper {
 
   public static StudentDto convertToDto(StudentEntity studentEntity) {
-    return StudentDto.builder().id(studentEntity.getId())
-        .person(PersonMapper.convertToDto(studentEntity.getStudentPerson()))
-        .parents(ParentMapper.convertToDtoList(studentEntity.getParents()))
-        .previousSchool(studentEntity.getPreviousSchool()).birthDate(studentEntity.getBirthDate())
-        .hasAccommodations(studentEntity.getHasAccommodations()).build();
+    return StudentDto.builder()
+            .id(studentEntity.getId())
+            .person(PersonMapper.convertToDto(studentEntity.getStudentPerson()))
+            .parents(ParentMapper.convertToDtoList(studentEntity.getParents()))
+            .previousSchool(studentEntity.getPreviousSchool())
+            .birthDate(studentEntity.getBirthDate())
+            .hasAccommodations(studentEntity.getHasAccommodations())
+            .previousGrades(studentEntity.getPreviousGrades())
+            .build();
   }
 
   public static List<StudentDto> convertToDtoList(List<StudentEntity> studentEntities) {
@@ -35,7 +39,7 @@ public class StudentMapper {
   public static StudentEntity convertToEntity(StudentDto inscription) {
     return StudentEntity.builder().id(inscription.id()).birthDate(inscription.birthDate())
         .previousSchool(inscription.previousSchool())
-        .hasAccommodations(inscription.hasAccommodations()).parents(new ArrayList<>()).build();
+        .hasAccommodations(inscription.hasAccommodations()).previousGrades(inscription.previousGrades()).parents(new ArrayList<>()).build();
   }
 
   public static StudentExamsDto studentToStudentExamsDto(StudentEntity student,

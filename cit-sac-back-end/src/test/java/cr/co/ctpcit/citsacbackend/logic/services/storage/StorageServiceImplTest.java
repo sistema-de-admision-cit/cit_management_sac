@@ -31,7 +31,7 @@ class StorageServiceImplTest {
   private MultipartFile file;
 
   @Value("${storage.location}")
-  private String location = "D:\\temp\\spring\\uploads";
+  private String location = "C:\\temp\\spring\\uploads";
 
   private final String filename = "test-file.txt";
   private final DocType docType = DocType.AC;

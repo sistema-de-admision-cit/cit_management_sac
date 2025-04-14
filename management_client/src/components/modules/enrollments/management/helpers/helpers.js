@@ -34,7 +34,8 @@ export const isCommentRequired = (formData, enrollment) => {
 export const isEnabled = (formData, enrollment) => {
   if (formData.status === enrollment.status &&
     formData.examDate === enrollment.examDate &&
-    formData.whatsappNotification === enrollment.whatsappNotification) {
+    formData.whatsappNotification === enrollment.whatsappNotification &&
+    formData.previousGrades === enrollment.student.previousGrades) {
     return false
   }
 

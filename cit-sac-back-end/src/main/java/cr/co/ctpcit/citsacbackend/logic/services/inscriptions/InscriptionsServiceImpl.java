@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -224,6 +225,9 @@ public class InscriptionsServiceImpl implements InscriptionsService {
       student = StudentMapper.convertToEntity(inscriptionStudent);
       studentPerson.addStudent(student);
 
+      // Set previousGrades to 0.00
+      student.setPreviousGrades(BigDecimal.valueOf(0.00));
+
       //Add student to the parent
       parent.addStudent(student);
 
@@ -339,10 +343,15 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     verifyPutParameters(id);
 
     // Save the enrollment
-    enrollmentRepository.usp_update_enrollment_and_log(Long.parseLong(id),
-        enrollmentUpdate.processStatus().toString(), Date.valueOf(enrollmentUpdate.examDate()),
-        enrollmentUpdate.whatsappPermission(), enrollmentUpdate.comment(),
-        enrollmentUpdate.changedBy());
+    enrollmentRepository.usp_update_enrollment_and_log(
+            Long.parseLong(id),
+            enrollmentUpdate.processStatus().toString(),
+            Date.valueOf(enrollmentUpdate.examDate()),
+            enrollmentUpdate.whatsappPermission(),
+            enrollmentUpdate.previousGrades(),
+            enrollmentUpdate.comment(),
+            enrollmentUpdate.changedBy()
+    );
   }
 
   @Override

@@ -166,7 +166,7 @@ public class TestProvider {
 
   public static StudentDto provideStudentDto() {
     return new StudentDto(11L, provideStudentPersonDto(), LocalDate.parse("2010-03-12"),
-        "Escuela La Sabana", false, new ArrayList<>());
+        "Escuela La Sabana", false,new BigDecimal("8.5"), new ArrayList<>());
   }
 
   public static AddressDto provideAddressDto() {

@@ -11,6 +11,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
     status: enrollment.status,
     examDate: enrollment.examDate,
     whatsappNotification: enrollment.whatsappNotification,
+    previousGrades: enrollment.student.previousGrades ?? '',
     comment: '',
     changedBy: 1 // todo: get the current user id
   })
@@ -50,6 +51,24 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
           className='form-group'
         />
 
+        <InputField
+          field={{
+            type: 'number',
+            name: 'previousGrades',
+            label: 'Nota Previa',
+            min: 0.0,
+            max: 100.0,
+            step: 0.1
+          }}
+          value={formData.previousGrades}
+          handleChange={(e) => {
+            const value = e.target.value
+            if (value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= 100)) {
+              setFormData({ ...formData, previousGrades: value })
+            }
+          }}
+          className='form-group'
+        />
         {isCommentRequired(formData, enrollment) && (
           <InputField
             field={{
@@ -78,5 +97,4 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
     </div>
   )
 }
-
 export default EnrollmentInfoEdit
