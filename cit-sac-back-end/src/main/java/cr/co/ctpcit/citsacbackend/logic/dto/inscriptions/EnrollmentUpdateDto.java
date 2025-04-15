@@ -7,7 +7,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
- * DTO for update {@link EnrollmentEntity}
+ * Data Transfer Object (DTO) representing the update information for an enrollment.
+ * Contains details about the updated exam date, process status, permissions, grades, comments, and the user who made the changes.
  */
 public record EnrollmentUpdateDto(LocalDate examDate,
                                   ProcessStatus processStatus,

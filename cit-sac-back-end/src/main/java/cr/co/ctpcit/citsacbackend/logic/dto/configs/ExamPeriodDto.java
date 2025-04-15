@@ -8,7 +8,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.configs.ExamPeriodEntity}
+ * Represents the Data Transfer Object (DTO) for an exam period.
+ * Contains information about the start and end dates, a list of exam days, and whether the exams span the entire year.
  */
 @Builder
 public record ExamPeriodDto(

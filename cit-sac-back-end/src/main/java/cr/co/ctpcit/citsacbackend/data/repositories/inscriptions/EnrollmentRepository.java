@@ -18,40 +18,106 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Repository interface for managing {@link EnrollmentEntity} entities.
+ * Provides custom query methods for various enrollment-related operations.
+ */
 public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Long> {
 
+  /**
+   * Retrieves all enrollments with statuses that are in process, including 'PENDING', 'ELIGIBLE', or 'INELIGIBLE'.
+   * Supports pagination.
+   *
+   * @param pageable the pagination information
+   * @return a {@link Page} containing the matching {@link EnrollmentEntity} entries
+   */
   @Query(
       "SELECT e FROM EnrollmentEntity e WHERE e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE'")
   Page<EnrollmentEntity> findAllEnrollmentsInProcess(Pageable pageable);
 
+  /**
+   * Retrieves all enrollments associated with a specific student.
+   *
+   * @param student the student entity to filter enrollments
+   * @return a list of {@link EnrollmentEntity} associated with the given student
+   */
   List<EnrollmentEntity> findAllByStudent(@NotNull StudentEntity student);
 
+  /**
+   * Retrieves all enrollments in process for a specific student. Only includes statuses 'PENDING', 'ELIGIBLE', or 'INELIGIBLE'.
+   *
+   * @param student the student entity to filter enrollments
+   * @return a list of {@link EnrollmentEntity} entries for the given student that are in process
+   */
   @Query(
       "SELECT e FROM EnrollmentEntity e WHERE e.student = :student AND (e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE')")
   List<EnrollmentEntity> findAllByStudentPerson_IdNumber_ThatAreInProcess(@NotNull StudentEntity student);
 
+  /**
+   * Retrieves all enrollments for a student identified by their student ID number.
+   *
+   * @param idNumber the ID number of the student
+   * @return a list of {@link EnrollmentEntity} entries for the student
+   */
   List<EnrollmentEntity> findAllByStudent_StudentPerson_IdNumber(@NotNull String idNumber);
 
+
+  /**
+   * Retrieves all enrollments for a list of students that have a status of 'PENDING', 'ELIGIBLE', or 'INELIGIBLE'.
+   *
+   * @param students a list of student entities to filter enrollments
+   * @return a list of {@link EnrollmentEntity} entries for students in the list that are in process
+   */
   @Query(
       "SELECT e FROM EnrollmentEntity e WHERE e.student IN :students AND (e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE')")
   List<EnrollmentEntity> findAllByStudentInTheListThatHasEnrollmentsInProcess(
       List<StudentEntity> students);
 
+  /**
+   * Updates the exam date for a specific enrollment.
+   *
+   * @param id       the ID of the enrollment to update
+   * @param examDate the new exam date to set
+   */
   @Modifying
   @Transactional
   @Query("UPDATE EnrollmentEntity e SET e.examDate = :examDate WHERE e.id = :id")
   void updateEnrollmentExamDate(Long id, LocalDate examDate);
 
+  /**
+   * Updates the status of a specific enrollment.
+   *
+   * @param id     the ID of the enrollment to update
+   * @param status the new status to set
+   */
   @Modifying
   @Transactional
   @Query("UPDATE EnrollmentEntity e SET e.status = :status WHERE e.id = :id")
   void updateEnrollmentStatus(Long id, ProcessStatus status);
 
+  /**
+   * Updates the WhatsApp notification permission for a specific enrollment.
+   *
+   * @param id                the ID of the enrollment to update
+   * @param whatsappPermission the new WhatsApp notification permission to set
+   */
   @Modifying
   @Transactional
   @Query(
       "UPDATE EnrollmentEntity e SET e.whatsappNotification = :whatsappPermission WHERE e.id = :id")
   void updateEnrollmentWhatsappPermission(Long id, Boolean whatsappPermission);
+
+  /**
+   * Calls the stored procedure {@code usp_update_enrollment_and_log} to update the enrollment status and log the changes.
+   *
+   * @param enrollmentId          the ID of the enrollment to update
+   * @param newStatus            the new status to assign to the enrollment
+   * @param newExamDate          the new exam date to set
+   * @param newWhatsappPermission the new WhatsApp notification permission
+   * @param newPreviousGrades    the new previous grades value
+   * @param comment              additional comments for the update
+   * @param changedBy            the ID of the user who made the changes
+   */
 
   @Procedure(name = "usp_update_enrollment_and_log")
   void usp_update_enrollment_and_log(

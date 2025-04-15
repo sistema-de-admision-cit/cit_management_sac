@@ -12,7 +12,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * DTO for {@link EnrollmentEntity}
+ * Data Transfer Object (DTO) representing the enrollment details for a student.
+ * Contains information about the student, their enrollment status, grades, exam date, consent, and notifications.
  */
 @Builder
 public record EnrollmentDto(Long id, @NotNull StudentDto student, ProcessStatus status,

@@ -8,7 +8,8 @@ import lombok.Builder;
 import java.io.Serializable;
 
 /**
- * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.inscriptions.PersonEntity}
+ * Data Transfer Object (DTO) representing the personal information of an individual.
+ * Includes the person's name, surname(s), identification type, and ID number.
  */
 @Builder
 public record PersonDto(Long id, @NotNull @Size(max = 32) String firstName,

@@ -10,7 +10,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.inscriptions.StudentEntity}
+ * Data Transfer Object (DTO) representing the details of a student.
+ * Contains the student's personal information, birth date, previous school details,
+ * accommodations, previous grades, and associated parents.
  */
 @Builder
 public record StudentDto(Long id,
