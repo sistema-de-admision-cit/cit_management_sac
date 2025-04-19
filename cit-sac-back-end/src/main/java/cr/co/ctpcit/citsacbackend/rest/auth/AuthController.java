@@ -26,10 +26,10 @@ public class AuthController {
   private final DaoAuthenticationProviderCstm daoAuthenticationProvider;
 
   /**
-   * Obtener el token de autenticación
+   * Get the authentication token
    *
-   * @param authentication la autenticación
-   * @return el token de autenticación
+   * @param authentication the authentication
+   * @return the authentication token
    */
   @PostMapping("/login")
   public ResponseEntity<AuthResponseDto> token(Authentication authentication) {
@@ -56,10 +56,10 @@ public class AuthController {
   }
 
   /**
-   * Cambiar la contraseña
+   * Change the password
    *
-   * @param request la solicitud de cambio de contraseña
-   * @return la respuesta de la solicitud o el error que se encuentre
+   * @param request the change password request
+   * @return the response of the request or the error found
    */
   @PutMapping("/change-password")
   public ResponseEntity<String> changePassword(

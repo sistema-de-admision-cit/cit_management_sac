@@ -18,7 +18,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
-
+/**
+ * Implementation of the SystemConfigService interface.
+ * Provides concrete functionality for managing system configurations including:
+ * - Exam question quantities
+ * - Evaluation process weights
+ * - Contact information
+ * - Exam periods
+ */
 @RequiredArgsConstructor
 @Service
 public class SystemConfigServiceImpl implements SystemConfigService {
@@ -26,11 +33,16 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   private final SystemConfigRepository systemConfigRepository;
   private final ExamPeriodRepository examPeriodRepository;
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<SystemConfigDto> getQuestionsQuantity() {
     return SystemConfigMapper.toDtoList(systemConfigRepository.getQuestionsQuantity());
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void updateQuantity(int daiQuestionsQuantity, int academicQuestionsQuantity) {
 
@@ -45,12 +57,16 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     saveConfiguration(Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY, String.valueOf(academicQuestionsQuantity));
 
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<SystemConfigDto> getProcessWeights() {
     return SystemConfigMapper.toDtoList(systemConfigRepository.getProcessWeights());
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void updateWeights(Double prevGradesWeight, Double academicWeight, Double englishWeight) {
     //Validate weights sum equals 1
@@ -67,13 +83,16 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     //Update ENGLISH_WEIGHT
     saveConfiguration(Configurations.ENGLISH_WEIGHT, String.valueOf(englishWeight));
   }
-
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<SystemConfigDto> getContactInfo() {
     return SystemConfigMapper.toDtoList(systemConfigRepository.getContactInfo());
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void updateContactInfo(UpdateContactInfoConfigsDto contactInfoConfigsDto) {
     //Update EMAIL_CONTACT
@@ -95,25 +114,33 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     //Update FACEBOOK_CONTACT
     saveConfiguration(Configurations.FACEBOOK_CONTACT, contactInfoConfigsDto.facebookContact());
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ExamPeriodDto getExamPeriod(Long id) {
     return ExamPeriodMapper.toDto(examPeriodRepository.findById(id).orElseThrow(
         () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
             "Periodo de exámenes no encontrado")));
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<ExamPeriodDto> getCurrentExamPeriods() {
     int currentYear = LocalDate.now().getYear();
     return ExamPeriodMapper.periodsToDtoList(examPeriodRepository.findByYear(currentYear));
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<ExamPeriodDto> getExamPeriodsByYear(int year) {
     return ExamPeriodMapper.periodsToDtoList(examPeriodRepository.findByYear(year));
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void createExamPeriod(ExamPeriodDto examPeriodDto) {
     //Validate if the exam period already exists
@@ -145,7 +172,9 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     //save the exam period
     examPeriodRepository.save(examPeriodEntity);
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void updateExamQuestionsQuantity(Configurations config, Integer quantity) {
     if (config != Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY && config != Configurations.DAI_EXAM_QUESTIONS_QUANTITY) {
@@ -154,7 +183,12 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
     saveConfiguration(config, String.valueOf(quantity));
   }
-
+  /**
+   * Internal method to save or update a configuration value.
+   *
+   * @param configName the configuration name/enum
+   * @param value the value to be saved
+   */
   private void saveConfiguration(Configurations configName, String value) {
     SystemConfigEntity savedConfig =
         systemConfigRepository.findByConfigName(configName).orElse(null);

@@ -31,8 +31,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Implementation of the {@link InscriptionsService} This class is used to manage the inscriptions
- * of the students
+ * Implementation of {@link InscriptionsService} for managing student enrollments and related operations.
+ * This service handles enrollment creation, updates, document management, and status tracking.
  */
 @Service
 public class InscriptionsServiceImpl implements InscriptionsService {
@@ -46,8 +46,16 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
   @Value("${storage.location}")
   private String rootLocation;
-
-
+  /**
+   * Constructs a new InscriptionsServiceImpl with required repositories and services.
+   *
+   * @param personRepository repository for person entities
+   * @param storageService service for file storage operations
+   * @param enrollmentRepository repository for enrollment entities
+   * @param documentRepository repository for document entities
+   * @param studentRepository repository for student entities
+   * @param examPeriodRepository repository for exam period entities
+   */
   @Autowired
   public InscriptionsServiceImpl(PersonRepository personRepository, StorageService storageService,
       EnrollmentRepository enrollmentRepository, DocumentRepository documentRepository,
@@ -165,7 +173,12 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     //Save inscription
     return createInscription(inscription, documents);
   }
-
+  /**
+   * Verifies enrollment input parameters including student existence and exam date validity.
+   *
+   * @param inscription the enrollment data to verify
+   * @throws EnrollmentException if validation fails
+   */
   private void verifyEnrollmentInput(EnrollmentDto inscription) {
     // Verify if the student is already enrolled
     // Get the student
@@ -186,7 +199,13 @@ public class InscriptionsServiceImpl implements InscriptionsService {
       throw new EnrollmentException("No hay un periodo de exámenes para la fecha seleccionada");
     }
   }
-
+  /**
+   * Creates a new enrollment with associated documents.
+   *
+   * @param inscription the enrollment data
+   * @param documents list of associated documents
+   * @return the created enrollment DTO
+   */
   private EnrollmentDto createInscription(EnrollmentDto inscription, List<DocumentDto> documents) {
     //Validate if the student's parent already exists
     ParentDto inscriptionParent = inscription.student().parents().getFirst();
@@ -353,7 +372,9 @@ public class InscriptionsServiceImpl implements InscriptionsService {
             enrollmentUpdate.changedBy()
     );
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void deleteDocument(Long documentId) {
 
@@ -424,14 +445,21 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
     return DocumentMapper.convertToDto(document);
   }
-
+  /**
+   * Verifies that the provided ID parameter is valid.
+   *
+   * @param id the ID to verify
+   * @throws EnrollmentException if the ID is not a valid number
+   */
   private void verifyPutParameters(String id) {
     // Validate if the id is a number
     if (!id.matches("\\d+")) {
       throw new EnrollmentException("El id no es un número válido");
     }
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<EnrollmentDto> findPendingEnrollmentsByStudentId(String idNumber) {
     StudentEntity student = studentRepository.findStudentEntityByStudentPerson_IdNumber(idNumber)
