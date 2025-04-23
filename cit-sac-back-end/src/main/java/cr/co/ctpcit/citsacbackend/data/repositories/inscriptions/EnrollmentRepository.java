@@ -2,16 +2,19 @@ package cr.co.ctpcit.citsacbackend.data.repositories.inscriptions;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.EnrollmentEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.StudentEntity;
+import cr.co.ctpcit.citsacbackend.data.enums.KnownThrough;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Pageable;
+import java.time.Instant;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -22,7 +25,7 @@ import java.util.List;
  * Repository interface for managing {@link EnrollmentEntity} entities.
  * Provides custom query methods for various enrollment-related operations.
  */
-public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Long> {
+public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Long>, JpaSpecificationExecutor<EnrollmentEntity> {
 
   /**
    * Retrieves all enrollments with statuses that are in process, including 'PENDING', 'ELIGIBLE', or 'INELIGIBLE'.
