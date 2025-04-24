@@ -32,10 +32,6 @@ public class SystemConfigEntity {
   @Column(name = "config_value", nullable = false, length = 128)
   private String configValue;
 
-  @ColumnDefault("0")
-  @Column(name = "is_sensible")
-  private Boolean isSensible;
-
   @Override
   public boolean equals(Object o) {
     if (this == o)
@@ -47,15 +43,11 @@ public class SystemConfigEntity {
       return false;
     if (!getConfigName().equals(that.getConfigName()))
       return false;
-    if (!getConfigValue().equals(that.getConfigValue()))
-      return false;
-    return getIsSensible() != null ?
-        getIsSensible().equals(that.getIsSensible()) :
-        that.getIsSensible() == null;
+    return getConfigValue().equals(that.getConfigValue());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, configName, configValue, isSensible);
+    return Objects.hash(id, configName, configValue);
   }
 }

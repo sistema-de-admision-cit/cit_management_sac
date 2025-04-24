@@ -22,7 +22,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -41,17 +43,8 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
   @Override
   public List<SystemConfigDto> getQuestionsQuantity() {
-    List<SystemConfigEntity> configs = new ArrayList<>();
-    SystemConfigEntity daiConfig = cache.get(Configurations.DAI_EXAM_QUESTIONS_QUANTITY.name());
-    SystemConfigEntity academicConfig =
-        cache.get(Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY.name());
-
-    if (daiConfig != null)
-      configs.add(daiConfig);
-    if (academicConfig != null)
-      configs.add(academicConfig);
-
-    return SystemConfigMapper.toDtoList(configs);
+    return getConfigList(Configurations.DAI_EXAM_QUESTIONS_QUANTITY,
+        Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY);
   }
 
   @Override
@@ -74,7 +67,8 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
   @Override
   public List<SystemConfigDto> getProcessWeights() {
-    return SystemConfigMapper.toDtoList(systemConfigRepository.getProcessWeights());
+    return getConfigList(Configurations.PREV_GRADES_WEIGHT, Configurations.ACADEMIC_WEIGHT,
+        Configurations.ENGLISH_WEIGHT);
   }
 
   @Override
@@ -97,7 +91,9 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
   @Override
   public List<SystemConfigDto> getContactInfo() {
-    return SystemConfigMapper.toDtoList(systemConfigRepository.getContactInfo());
+    return getConfigList(Configurations.EMAIL_CONTACT, Configurations.EMAIL_NOTIFICATION_CONTACT,
+        Configurations.WHATSAPP_CONTACT, Configurations.OFFICE_CONTACT,
+        Configurations.INSTAGRAM_CONTACT, Configurations.FACEBOOK_CONTACT);
   }
 
   @Override
@@ -184,15 +180,38 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     saveConfiguration(config, String.valueOf(quantity), false);
   }
 
+  @Override
+  public String getConfigValue(Configurations configName, boolean isSensible) {
+    SystemConfigEntity config = cache.get(configName.name());
+    if (isSensible) {
+      return encryptionUtil.decrypt(config.getConfigValue());
+    }
+
+    return config.getConfigValue();
+  }
+
   private void saveConfiguration(Configurations configName, String value, boolean isSensible) {
     if (isSensible) {
       value = encryptionUtil.encrypt(value);
     }
-    SystemConfigEntity config = new SystemConfigEntity();
-    config.setConfigName(configName);
+    SystemConfigEntity config = cache.get(configName.name());
     config.setConfigValue(value);
-    config.setIsSensible(isSensible);
-    systemConfigRepository.save(config);
+    systemConfigRepository.updateByConfigName(configName, value);
     cache.put(configName.name(), config);
+  }
+
+  private List<SystemConfigDto> getConfigList(Configurations... configNames) {
+    List<SystemConfigEntity> configs = new ArrayList<>();
+    for (Configurations configName : configNames) {
+      SystemConfigEntity config = cache.get(configName.name());
+      if (config != null) {
+        configs.add(config);
+      }
+    }
+
+    configs =
+        configs.stream().filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
+
+    return SystemConfigMapper.toDtoList(configs);
   }
 }

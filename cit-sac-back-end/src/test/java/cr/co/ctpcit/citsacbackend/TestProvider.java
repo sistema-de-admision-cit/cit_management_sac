@@ -213,7 +213,7 @@ public class TestProvider {
   }
 
   public static SystemConfigDto provideSystemConfigDto() {
-    return new SystemConfigDto(1, Configurations.EMAIL_CONTACT, "contactocit@ctpcit.co.cr");
+    return new SystemConfigDto(1, Configurations.EMAIL_CONTACT, "contactocit@ctpcit.co.cr", false);
   }
 
   public static ExamPeriodDto provideNonExistentExamPeriodDto() {

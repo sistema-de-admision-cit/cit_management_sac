@@ -21,7 +21,7 @@ public enum Configurations {
   ACADEMIC_WEIGHT,
   ENGLISH_WEIGHT,
   ACADEMIC_EXAM_QUESTIONS_QUANTITY,
-  DAI_EXAM_QUESTIONS_QUANTITY;
+  DAI_EXAM_QUESTIONS_QUANTITY, EMAIL_PASSWORD, WHATSAPP_API_KEY;
 
   public static Configurations fromString(String value) {
     for (Configurations config : Configurations.values()) {

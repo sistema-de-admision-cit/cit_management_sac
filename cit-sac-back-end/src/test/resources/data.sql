@@ -372,7 +372,9 @@ VALUES ('PREV_GRADES_WEIGHT', 0.4),
        ('INSTAGRAM_CONTACT', 'ComplejoEducativoCIT'),
        ('FACEBOOK_CONTACT', 'ComplejoEducativoCIT'),
        ('ACADEMIC_EXAM_QUESTIONS_QUANTITY', '20'),
-       ('DAI_EXAM_QUESTIONS_QUANTITY', '25');
+       ('DAI_EXAM_QUESTIONS_QUANTITY', '25'),
+       ('EMAIL_PASSWORD', '5WFg8oZOFNcv6s1c8afwKZIPWPfI+cncUeMlUuMQD00='),
+       ('WHATSAPP_API_KEY', 'ExampleApiKeyDecryptedForWhatsApp');
 
 -- Password: 'campus12' test sysadmin
 INSERT INTO `tbl_users` (`email`, `username`, `user_password`, `role`)

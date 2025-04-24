@@ -30,4 +30,6 @@ public interface SystemConfigService {
   void createExamPeriod(ExamPeriodDto examPeriodDto);
 
   void updateExamQuestionsQuantity(Configurations config, Integer quantity);
+
+  String getConfigValue(Configurations configName, boolean isSensible);
 }

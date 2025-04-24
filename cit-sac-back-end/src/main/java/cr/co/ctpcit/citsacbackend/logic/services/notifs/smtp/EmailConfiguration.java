@@ -1,5 +1,9 @@
 package cr.co.ctpcit.citsacbackend.logic.services.notifs.smtp;
 
+import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
+import cr.co.ctpcit.citsacbackend.data.repositories.configs.SystemConfigRepository;
+import cr.co.ctpcit.citsacbackend.logic.services.EncryptionUtil;
+import cr.co.ctpcit.citsacbackend.logic.services.configs.SystemConfigService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,38 +17,35 @@ import java.util.Properties;
 @PropertySource("classpath:email.properties")
 public class EmailConfiguration {
 
-    //@Value("${email.username}")
-    //private String usernameEmail;
+  @Value("${email.host}")
+  private String mailHost;
 
-    //@Value("${email.password}")
-    //private String passwordEmail;
+  @Value("${email.port}")
+  private int mailPort;
 
-    @Value("${email.host}")
-    private String mailHost;
+  @Value("${email.smtp.auth}")
+  private boolean mailAuth;
 
-    @Value("${email.port}")
-    private int mailPort;
+  @Value("${email.smtp.starttls.enable}")
+  private boolean starttlsEnable;
 
-    @Value("${email.smtp.auth}")
-    private boolean mailAuth;
+  @Bean
+  public JavaMailSender getMailSender(SystemConfigService systemConfigService) {
+    String usernameEmail = systemConfigService.getConfigValue(Configurations.EMAIL_NOTIFICATION_CONTACT, false);
+    String passwordEmail = systemConfigService.getConfigValue(Configurations.EMAIL_PASSWORD, true);
 
-    @Value("${email.smtp.starttls.enable}")
-    private boolean starttlsEnable;
+    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    mailSender.setHost(mailHost);
+    mailSender.setPort(mailPort);
+    mailSender.setUsername(usernameEmail);
+    mailSender.setPassword(passwordEmail);
+    Properties properties = mailSender.getJavaMailProperties();
+    properties.put("mail.smtp.auth", mailAuth);
+    properties.put("mail.smtp.starttls.enable", starttlsEnable);
+    properties.put("mail.transport.protocol", "smtp");
+    properties.put("mail.debug", "true");
 
-    @Bean
-    public JavaMailSender getMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(mailHost);
-        mailSender.setPort(mailPort);
-        mailSender.setUsername(usernameEmail);
-        mailSender.setPassword(passwordEmail);
-        Properties properties = mailSender.getJavaMailProperties();
-        properties.put("mail.smtp.auth", mailAuth);
-        properties.put("mail.smtp.starttls.enable", starttlsEnable);
-        properties.put("mail.transport.protocol", "smtp");
-        properties.put("mail.debug", "true");
-
-        return mailSender;
-    }
+    return mailSender;
+  }
 }
 

@@ -434,7 +434,7 @@ CREATE TABLE IF NOT EXISTS `tbl_System_Config` (
   `config_name` ENUM(
 						'EMAIL_CONTACT',                   	-- Email for the people to ask any question 
                         'EMAIL_NOTIFICATION_CONTACT', 		-- Email for the system to send notifications
-                        'EMAIL_API_KEY',					-- Email api key to send notifications
+                        'EMAIL_PASSWORD',					-- Email password to send notifications
 						'WHATSAPP_CONTACT',					-- Whatsapp phone number to send notifications
                         'WHATSAPP_API_KEY',					-- Whatsapp api key to send notifications
                         'OFFICE_CONTACT', 					-- Office phone number
@@ -447,7 +447,6 @@ CREATE TABLE IF NOT EXISTS `tbl_System_Config` (
                         'DAI_EXAM_QUESTIONS_QUANTITY'		-- DAI exam question quantity
 					) NOT NULL,
   `config_value` VARCHAR(128) NOT NULL,
-  `is_sensible` BOOLEAN DEFAULT 0,
   PRIMARY KEY (`config_id`),
   UNIQUE INDEX `UQ_Config_Name` (`config_name` ASC) VISIBLE)
 ENGINE = InnoDB
