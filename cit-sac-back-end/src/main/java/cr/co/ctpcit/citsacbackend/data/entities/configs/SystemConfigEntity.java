@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -29,4 +32,30 @@ public class SystemConfigEntity {
   @Column(name = "config_value", nullable = false, length = 128)
   private String configValue;
 
+  @ColumnDefault("0")
+  @Column(name = "is_sensible")
+  private Boolean isSensible;
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (!(o instanceof SystemConfigEntity that))
+      return false;
+
+    if (!getId().equals(that.getId()))
+      return false;
+    if (!getConfigName().equals(that.getConfigName()))
+      return false;
+    if (!getConfigValue().equals(that.getConfigValue()))
+      return false;
+    return getIsSensible() != null ?
+        getIsSensible().equals(that.getIsSensible()) :
+        that.getIsSensible() == null;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, configName, configValue, isSensible);
+  }
 }

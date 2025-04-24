@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.logic.services.configs;
+package cr.co.ctpcit.citsacbackend.logic.services.notifs;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.EmailConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.WhatsappConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;

@@ -13,7 +13,7 @@ public interface SystemConfigRepository extends JpaRepository<SystemConfigEntity
 
   @Query(
           "SELECT s FROM SystemConfigEntity s WHERE s.configName = 'DAI_EXAM_QUESTIONS_QUANTITY' OR s.configName = 'ACADEMIC_EXAM_QUESTIONS_QUANTITY'")
-  List<SystemConfigEntity> getQuestionsQuantity();
+  List<SystemConfigEntity> getDaiQuestionsQuantity();
 
   @Query(
       "SELECT s FROM SystemConfigEntity s WHERE s.configName = 'ACADEMIC_WEIGHT' OR s.configName = 'PREV_GRADES_WEIGHT' OR s.configName = 'ENGLISH_WEIGHT'")

@@ -4,7 +4,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.configs.ExamPeriodDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageFileNotFoundException;
-import cr.co.ctpcit.citsacbackend.logic.services.configs.NotificationsService;
+import cr.co.ctpcit.citsacbackend.logic.services.notifs.NotificationsService;
 import cr.co.ctpcit.citsacbackend.logic.services.configs.SystemConfigService;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import lombok.RequiredArgsConstructor;

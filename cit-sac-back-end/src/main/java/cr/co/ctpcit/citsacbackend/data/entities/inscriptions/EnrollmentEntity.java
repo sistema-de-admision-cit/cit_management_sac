@@ -27,7 +27,7 @@ import java.util.Objects;
 public class EnrollmentEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "enrollment_id", columnDefinition = "int UNSIGNED")
+  @Column(name = "enrollment_id", columnDefinition = "INT UNSIGNED")
   private Long id;
 
   @NotNull

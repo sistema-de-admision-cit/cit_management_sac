@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.entities.configs;
+package cr.co.ctpcit.citsacbackend.logic.services.notifs.smtp;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -11,13 +11,13 @@ import java.util.Properties;
 
 @Configuration
 @PropertySource("classpath:email.properties")
-public class EmailConfigEntity {
+public class EmailConfiguration {
 
-    @Value("${email.username}")
-    private String usernameEmail;
+    //@Value("${email.username}")
+    //private String usernameEmail;
 
-    @Value("${email.password}")
-    private String passwordEmail;
+    //@Value("${email.password}")
+    //private String passwordEmail;
 
     @Value("${email.host}")
     private String mailHost;

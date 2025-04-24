@@ -7,7 +7,7 @@ import cr.co.ctpcit.citsacbackend.data.entities.configs.SystemConfigEntity;
 import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
 import cr.co.ctpcit.citsacbackend.data.repositories.configs.SystemConfigRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
-import cr.co.ctpcit.citsacbackend.logic.services.configs.NotificationsImplementation;
+import cr.co.ctpcit.citsacbackend.logic.services.notifs.NotificationsImpl;
 import jakarta.mail.Session;
 import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class NotificationsImplementationTest {
+class NotificationsImplTest {
 
     @Mock
     private JavaMailSender mailSender;
@@ -33,7 +33,7 @@ class NotificationsImplementationTest {
     private SystemConfigRepository configRepository;
 
     @InjectMocks
-    private NotificationsImplementation notificationsService;
+    private NotificationsImpl notificationsService;
 
     @Test
     void testCreateEmailForInscription_FromJsonFile_SendsEmail() throws Exception {

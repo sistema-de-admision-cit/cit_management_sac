@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.logic.services.configs;
+package cr.co.ctpcit.citsacbackend.logic.services.notifs;
 
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -16,7 +16,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NotificationsImplementation implements NotificationsService {
+public class NotificationsImpl implements NotificationsService {
 
   private final JavaMailSender mailSender;
 
@@ -25,7 +25,7 @@ public class NotificationsImplementation implements NotificationsService {
   @Value("${twilio.whatsapp.from}")
   private String fromWhatsAppNumber;
 
-  public NotificationsImplementation(JavaMailSender mailSender,
+  public NotificationsImpl(JavaMailSender mailSender,
       SystemConfigRepository configRepository) {
     this.mailSender = mailSender;
     this.configRepository = configRepository;

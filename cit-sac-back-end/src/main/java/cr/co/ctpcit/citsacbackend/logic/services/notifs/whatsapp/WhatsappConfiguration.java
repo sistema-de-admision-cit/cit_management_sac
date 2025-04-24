@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.data.entities.configs;
+package cr.co.ctpcit.citsacbackend.logic.services.notifs.whatsapp;
 
 import com.twilio.Twilio;
 import jakarta.annotation.PostConstruct;
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @PropertySource("classpath:whatsapp.properties")
-public class WhatsappConfigEntity {
+public class WhatsappConfiguration {
 
     @Value("${twilio.whatsapp.from}")
     private String fromWhatsAppNumber;

@@ -1,6 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
-import cr.co.ctpcit.citsacbackend.logic.services.configs.NotificationsService;
+import cr.co.ctpcit.citsacbackend.logic.services.notifs.smtp.NotificationsService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
