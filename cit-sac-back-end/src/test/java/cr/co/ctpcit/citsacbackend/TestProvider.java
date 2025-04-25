@@ -18,6 +18,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.QuestionDaiDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionOptionDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.reports.ReportDataDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.EnrollmentMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -481,6 +482,15 @@ public class TestProvider {
         .build();
   }
 
+  public static ReportDataDto provideReportDataDto(String id, String name, String surname, String category) {
+    ReportDataDto dto = new ReportDataDto();
+    dto.setStudentId(id);
+    dto.setFirstName(name);
+    dto.setFullSurname(surname);
+    dto.setEnrollmentDate(Instant.now());
+    dto.setReportCategory(category);
+    return dto;
+  }
 
 }
 
