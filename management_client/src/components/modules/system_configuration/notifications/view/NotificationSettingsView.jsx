@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import NotificacionsForm from '../molecules/NotificacionsForm'
-import SendNotificacions from '../molecules/SendNotifications'
 import useMessages from '../../../../core/global/hooks/useMessages'
 import { getCurrentSettings, updateNotificationSettings } from '../helpers/handlers'
 
@@ -15,7 +14,9 @@ const NotificationsSettingsView = () => {
     whatsapp_contact: '',
     office_contact: '',
     instagram_contact: '',
-    facebook_contact: ''
+    facebook_contact: '',
+    email_password: '',
+    whatsapp_api_key: ''
   })
 
   useEffect(() => {

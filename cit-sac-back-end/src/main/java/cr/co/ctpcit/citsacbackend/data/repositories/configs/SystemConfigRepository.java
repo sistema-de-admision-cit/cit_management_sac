@@ -18,7 +18,7 @@ public interface SystemConfigRepository extends JpaRepository<SystemConfigEntity
   List<SystemConfigEntity> getProcessWeights();
 
   @Query(
-      "SELECT s FROM SystemConfigEntity s WHERE s.configName = 'EMAIL_CONTACT' OR s.configName = 'EMAIL_NOTIFICATION_CONTACT' OR s.configName = 'WHATSAPP_CONTACT' OR s.configName = 'OFFICE_CONTACT' OR s.configName = 'INSTAGRAM_CONTACT' OR s.configName = 'FACEBOOK_CONTACT'")
+      "SELECT s FROM SystemConfigEntity s WHERE s.configName = 'EMAIL_CONTACT' OR s.configName = 'EMAIL_NOTIFICATION_CONTACT' OR s.configName = 'WHATSAPP_CONTACT' OR s.configName = 'OFFICE_CONTACT' OR s.configName = 'INSTAGRAM_CONTACT' OR s.configName = 'FACEBOOK_CONTACT' OR s.configName = 'EMAIL_PASSWORD' OR s.configName = 'WHATSAPP_API_KEY'")
   List<SystemConfigEntity> getContactInfo();
 
   @Modifying

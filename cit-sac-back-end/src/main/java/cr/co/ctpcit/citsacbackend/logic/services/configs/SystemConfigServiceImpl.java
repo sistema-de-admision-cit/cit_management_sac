@@ -93,7 +93,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   public List<SystemConfigDto> getContactInfo() {
     return getConfigList(Configurations.EMAIL_CONTACT, Configurations.EMAIL_NOTIFICATION_CONTACT,
         Configurations.WHATSAPP_CONTACT, Configurations.OFFICE_CONTACT,
-        Configurations.INSTAGRAM_CONTACT, Configurations.FACEBOOK_CONTACT);
+        Configurations.INSTAGRAM_CONTACT, Configurations.FACEBOOK_CONTACT, Configurations.EMAIL_PASSWORD, Configurations.WHATSAPP_API_KEY);
   }
 
   @Override
@@ -119,6 +119,15 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     //Update FACEBOOK_CONTACT
     saveConfiguration(Configurations.FACEBOOK_CONTACT, contactInfoConfigsDto.facebookContact(),
         false);
+
+    //Update FACEBOOK_CONTACT
+    saveConfiguration(Configurations.EMAIL_PASSWORD, contactInfoConfigsDto.emailPassword(),
+            true);
+
+    //Update FACEBOOK_CONTACT
+    saveConfiguration(Configurations.WHATSAPP_API_KEY, contactInfoConfigsDto.whatsappApiKey()
+            ,
+            true);
   }
 
   @Override
