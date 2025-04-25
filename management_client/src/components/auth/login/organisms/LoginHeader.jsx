@@ -7,11 +7,11 @@ const LoginHeader = () => {
         <p className='kicker'>Acceso Seguro</p>
         <h1>
           Inicia Sesión<br />
-          para Gestionar Exámenes
+          para el Sistema Admisión CIT
           <span className='dot'>.</span>
         </h1>
         <p>
-          Ingresa a tu cuenta para administrar preguntas de examen, generar reportes y más de forma rápida y segura.
+          Ingresa a tu cuenta para administrar las inscripciones, gestionar exámenes, generar reportes y más de forma rápida y segura.
         </p>
       </div>
     </div>

@@ -4,7 +4,6 @@ import { ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST } from '..
 import AddQuestionView from '../../../modules/questions/add_questions/view/AddQuestionView.jsx'
 import ModifyQuestionView from '../../../modules/questions/modify_questions/view/ModifyQuestionView.jsx'
 import DeleteQuestionView from '../../../modules/questions/delete_questions/view/DeleteQuestionView.jsx'
-import GenerateExamView from '../../../modules/questions/generate_exam/view/GenerateExamView.jsx'
 import HubIcon from './HubIcon.jsx'
 import ExamMenuPageView from '../../../modules/questions/menu/view/ExamMenuPageView.jsx'
 
@@ -55,7 +54,7 @@ const menuConfig = [
         key: 'dashboard',
         label: 'Dashboard',
         path: '/dashboard',
-        roleRequired: [ROLE_SUPERADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
+        roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Vista general del sistema con accesos rápidos.',
         parentComponent: DashboardView
       },
@@ -155,14 +154,6 @@ const menuConfig = [
             imagePath: '/images/temp-card-image.avif'
           },
           {
-            key: 'generate-exam',
-            label: 'Generar Exámenes',
-            path: '/examenes/generar',
-            component: GenerateExamView,
-            description: 'Generar exámenes a partir de las preguntas configuradas.',
-            imagePath: '/images/temp-card-image-2.avif'
-          },
-          {
             key: 'academic-exam',
             label: 'Visualizar Exámenes Académicos',
             path: '/examenes/academicos',
@@ -185,7 +176,7 @@ const menuConfig = [
         label: 'Gestión de Resultados',
         path: '/resultados',
         parentComponent: ResultsMenuPageView,
-        roleRequired: [ROLE_SUPERADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
+        roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Gestión y análisis de los resultados de los exámenes.',
         subItems: [
           {
@@ -194,13 +185,6 @@ const menuConfig = [
             path: '/resultados/cargar',
             component: ExamScoreManagementView,
             description: 'Cargar y registrar las notas obtenidas.'
-          },
-          {
-            key: 'analyze-results',
-            label: 'Modificar notas manualmente',
-            path: '/resultados/analizar',
-            component: DefaultComponent,
-            description: 'Modificar notas manualmente y ver notas finales.'
           },
           {
             key: 'notify-results',
@@ -216,7 +200,7 @@ const menuConfig = [
         label: 'Reportes y Análisis',
         path: '/reportes',
         parentComponent: ReportsMenuPageView,
-        roleRequired: [ROLE_SUPERADMIN],
+        roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN],
         description: 'Generar y visualizar reportes del sistema.',
         subItems: [
           {

@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Button, 
-  Grid, 
-  Typography, 
-  FormControl, 
-  InputLabel, 
-  Select, 
-  MenuItem, 
+import React, { useState, useEffect } from 'react'
+import {
+  Button,
+  Grid,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   Box,
   useTheme,
   Alert,
   Snackbar
-} from '@mui/material';
-import DateRangePicker from '../molecules/DateRangePicker';
-import { getEnumOptions } from '../helpers/handler';
+} from '@mui/material'
+import DateRangePicker from '../molecules/DateRangePicker'
+import { getEnumOptions } from '../helpers/handler'
 
 const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
-  const theme = useTheme();
+  const theme = useTheme()
   const [request, setRequest] = useState({
     startDate: null,
     endDate: null,
@@ -26,8 +26,8 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
     statusFilter: 'ALL',
     provinceFilter: 'ALL',
     gradeTypeFilter: 'ALL'
-  });
-  
+  })
+
   const [options, setOptions] = useState({
     reportTypes: [],
     knownThroughOptions: [],
@@ -35,55 +35,54 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
     processStatusOptions: [],
     gradeTypeOptions: [],
     provinceOptions: []
-  });
+  })
 
-  const [error, setError] = useState(null);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [error, setError] = useState(null)
+  const [openSnackbar, setOpenSnackbar] = useState(false)
 
   useEffect(() => {
     const loadOptions = async () => {
       try {
-        const opts = await getEnumOptions();
+        const opts = await getEnumOptions()
         setOptions({
           ...opts,
-          // Aseguramos que todas las opciones tengan "Todos"
           gradeOptions: [{ value: 'ALL', label: 'Todos' }, ...opts.gradeOptions],
           processStatusOptions: [{ value: 'ALL', label: 'Todos' }, ...opts.processStatusOptions],
           gradeTypeOptions: [{ value: 'ALL', label: 'Todos' }, ...opts.gradeTypeOptions],
           provinceOptions: [{ value: 'ALL', label: 'Todos' }, ...(opts.provinceOptions || [])]
-        });
+        })
       } catch (err) {
-        setError('Error cargando las opciones del formulario');
-        setOpenSnackbar(true);
+        setError('Error cargando las opciones del formulario')
+        setOpenSnackbar(true)
       }
-    };
-    loadOptions();
-  }, []);
+    }
+    loadOptions()
+  }, [])
 
   const handleChange = (field, value) => {
     setRequest(prev => ({
       ...prev,
       [field]: value
-    }));
-  };
+    }))
+  }
 
   const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
+    setOpenSnackbar(false)
+  }
 
   const handleSubmit = (format) => {
     if (!request.startDate || !request.endDate) {
-      setError('Por favor seleccione ambas fechas');
-      setOpenSnackbar(true);
-      return;
+      setError('Por favor seleccione ambas fechas')
+      setOpenSnackbar(true)
+      return
     }
-    
+
     if (!request.reportType) {
-      setError('Por favor seleccione un tipo de reporte');
-      setOpenSnackbar(true);
-      return;
+      setError('Por favor seleccione un tipo de reporte')
+      setOpenSnackbar(true)
+      return
     }
-    
+
     const reportRequest = {
       startDate: request.startDate,
       endDate: request.endDate,
@@ -93,56 +92,58 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
       statusFilter: request.statusFilter === 'ALL' ? null : request.statusFilter,
       provinceFilter: request.provinceFilter === 'ALL' ? null : request.provinceFilter,
       gradeTypeFilter: request.gradeTypeFilter === 'ALL' ? null : request.gradeTypeFilter
-    };
-    
-    onGenerate(reportRequest, format);
-  };
+    }
+
+    onGenerate(reportRequest, format)
+  }
 
   return (
-    <Box sx={{ 
+    <Box sx={{
       maxWidth: 1200,
       margin: '0 auto',
       p: 3,
       backgroundColor: theme.palette.background.paper,
       borderRadius: 2,
       boxShadow: theme.shadows[1]
-    }}>
-      <Typography variant="h6" gutterBottom sx={{ 
-        color: theme.palette.text.primary,
-        mb: 3,
-        fontWeight: 'medium'
-      }}>
+    }}
+    >
+      <Typography
+        variant='h6' gutterBottom sx={{
+          color: theme.palette.text.primary,
+          mb: 3,
+          fontWeight: 'medium'
+        }}
+      >
         Configuración del Reporte
       </Typography>
-      
+
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert 
-          onClose={handleCloseSnackbar} 
-          severity="error"
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity='error'
           sx={{ width: '100%' }}
         >
           {error}
         </Alert>
       </Snackbar>
-      
+
       <Grid container spacing={3}>
         {/* Selector de Tipo de Reporte */}
         <Grid item xs={12} md={6}>
           <FormControl fullWidth>
-            <InputLabel id="report-type-label">Tipo de Reporte</InputLabel>
+            <InputLabel id='report-type-label'>Tipo de Reporte</InputLabel>
             <Select
-              labelId="report-type-label"
+              labelId='report-type-label'
               value={request.reportType}
-              label="Tipo de Reporte"
+              label='Tipo de Reporte'
               onChange={(e) => handleChange('reportType', e.target.value)}
               sx={{ minWidth: 250 }}
             >
-              <MenuItem value="ALL">Todos los reportes</MenuItem>
               {options.reportTypes.map((type) => (
                 <MenuItem key={type.value} value={type.value}>
                   {type.label}
@@ -151,7 +152,7 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
             </Select>
           </FormControl>
         </Grid>
-        
+
         {/* Selector de Rango de Fechas */}
         <Grid item xs={12}>
           <DateRangePicker
@@ -161,16 +162,16 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
             onEndDateChange={(date) => handleChange('endDate', date)}
           />
         </Grid>
-        
+
         {/* Filtros condicionales - Todos con opción "Todos" */}
         {request.reportType === 'KNOWN_THROUGH' && (
           <Grid item xs={12} md={6}>
             <FormControl fullWidth>
-              <InputLabel id="known-through-label">Conocido por</InputLabel>
+              <InputLabel id='known-through-label'>Conocido por</InputLabel>
               <Select
-                labelId="known-through-label"
+                labelId='known-through-label'
                 value={request.knownThroughFilter}
-                label="Conocido por"
+                label='Conocido por'
                 onChange={(e) => handleChange('knownThroughFilter', e.target.value)}
                 sx={{ minWidth: 250 }}
               >
@@ -183,15 +184,15 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
             </FormControl>
           </Grid>
         )}
-        
+
         {request.reportType === 'GRADE_TO_ENROLL' && (
           <Grid item xs={12} md={6}>
             <FormControl fullWidth>
-              <InputLabel id="grade-label">Grado a matricular</InputLabel>
+              <InputLabel id='grade-label'>Grado a matricular</InputLabel>
               <Select
-                labelId="grade-label"
+                labelId='grade-label'
                 value={request.gradeFilter}
-                label="Grado a matricular"
+                label='Grado a matricular'
                 onChange={(e) => handleChange('gradeFilter', e.target.value)}
                 sx={{ minWidth: 250 }}
               >
@@ -204,15 +205,15 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
             </FormControl>
           </Grid>
         )}
-        
+
         {request.reportType === 'PROCESS_STATUS' && (
           <Grid item xs={12} md={6}>
             <FormControl fullWidth>
-              <InputLabel id="status-label">Estado del proceso</InputLabel>
+              <InputLabel id='status-label'>Estado del proceso</InputLabel>
               <Select
-                labelId="status-label"
+                labelId='status-label'
                 value={request.statusFilter}
-                label="Estado del proceso"
+                label='Estado del proceso'
                 onChange={(e) => handleChange('statusFilter', e.target.value)}
                 sx={{ minWidth: 250 }}
               >
@@ -225,15 +226,15 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
             </FormControl>
           </Grid>
         )}
-        
+
         {request.reportType === 'PROVINCE' && (
           <Grid item xs={12} md={6}>
             <FormControl fullWidth>
-              <InputLabel id="province-label">Provincia</InputLabel>
+              <InputLabel id='province-label'>Provincia</InputLabel>
               <Select
-                labelId="province-label"
+                labelId='province-label'
                 value={request.provinceFilter}
-                label="Provincia"
+                label='Provincia'
                 onChange={(e) => handleChange('provinceFilter', e.target.value)}
                 sx={{ minWidth: 250 }}
               >
@@ -246,15 +247,15 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
             </FormControl>
           </Grid>
         )}
-        
+
         {request.reportType === 'GRADES' && (
           <Grid item xs={12} md={6}>
             <FormControl fullWidth>
-              <InputLabel id="grade-type-label">Tipo de calificación</InputLabel>
+              <InputLabel id='grade-type-label'>Tipo de calificación</InputLabel>
               <Select
-                labelId="grade-type-label"
+                labelId='grade-type-label'
                 value={request.gradeTypeFilter}
-                label="Tipo de calificación"
+                label='Tipo de calificación'
                 onChange={(e) => handleChange('gradeTypeFilter', e.target.value)}
                 sx={{ minWidth: 250 }}
               >
@@ -267,24 +268,25 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
             </FormControl>
           </Grid>
         )}
-        
+
         {/* Botones de Generación */}
         <Grid item xs={12}>
-          <Box sx={{ 
-            display: 'flex', 
-            gap: 2, 
+          <Box sx={{
+            display: 'flex',
+            gap: 2,
             justifyContent: 'center',
             mt: 3,
             flexWrap: 'wrap'
-          }}>
+          }}
+          >
             <Button
-              variant="contained"
+              variant='contained'
               onClick={() => handleSubmit('PDF')}
               disabled={isLoading}
               sx={{
                 backgroundColor: '#2ba98e',
                 '&:hover': {
-                  backgroundColor: '#238f77',
+                  backgroundColor: '#238f77'
                 },
                 px: 4,
                 py: 1.5,
@@ -295,14 +297,14 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
               {isLoading ? 'Generando...' : 'Exportar a PDF'}
             </Button>
             <Button
-              variant="outlined"
+              variant='outlined'
               onClick={() => handleSubmit('CSV')}
               disabled={isLoading}
               sx={{
                 color: '#2ba98e',
                 borderColor: '#2ba98e',
                 '&:hover': {
-                  borderColor: '#238f77',
+                  borderColor: '#238f77'
                 },
                 px: 4,
                 py: 1.5,
@@ -316,7 +318,7 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
         </Grid>
       </Grid>
     </Box>
-  );
-};
+  )
+}
 
-export default ReportGeneratorForm;
+export default ReportGeneratorForm
