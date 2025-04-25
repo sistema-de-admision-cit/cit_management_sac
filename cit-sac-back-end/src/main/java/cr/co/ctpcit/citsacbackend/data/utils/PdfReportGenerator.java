@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 
 @Component
 public class PdfReportGenerator {
-    
+
     private static final Font TITLE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.DARK_GRAY);
     private static final Font SUBTITLE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.GRAY);
     private static final Font HEADER_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.WHITE);
@@ -319,7 +319,7 @@ public class PdfReportGenerator {
                         " (" + translateReportValue(request.getKnownThroughFilter().name(), ReportType.KNOWN_THROUGH) + ")" : " (Todos)");
             case GRADE_TO_ENROLL:
                 return "Grado a inscribir" + (request.getGradeFilter() != null ?
-                        " (" + request.getGradeFilter() + ")" : " (Todos)");
+                        " (" + translateReportValue(request.getGradeFilter().name(),ReportType.GRADE_TO_ENROLL) + ")" : " (Todos)");
             case PROCESS_STATUS:
                 return "Estado del proceso" + (request.getStatusFilter() != null ?
                         " (" + translateReportValue(request.getStatusFilter().name(), ReportType.PROCESS_STATUS) + ")" : " (Todos)");

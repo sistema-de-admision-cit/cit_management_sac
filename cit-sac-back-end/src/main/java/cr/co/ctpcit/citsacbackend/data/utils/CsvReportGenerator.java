@@ -104,7 +104,7 @@ public class CsvReportGenerator {
                             switch (request.getGradeTypeFilter()) {
                                 case ENGLISH:
                                     categoryValue = item.getEnglishGrade() != null ?
-                                            translateGradeValue(item.getEnglishGrade(), request.getReportType()) : "N/A";
+                                            item.getEnglishGrade() : "N/A";
                                     break;
                                 case ACADEMIC:
                                     categoryValue = item.getAcademicGrade() != null ?
@@ -206,29 +206,10 @@ public class CsvReportGenerator {
                 default: return value;
             }
         } else if (reportType == ReportType.GRADES) {
-            return translateGradeValue(value, reportType);
+            return value;
         }
         return value;
     }
 
-    /**
-     * Special translation for grade values
-     */
-    private String translateGradeValue(String value, ReportType reportType) {
-        // Puedes agregar traducciones específicas para valores de notas si es necesario
-        return value;
-    }
 
-    /**
-     * Gets description for grade type
-     */
-    private String getGradeTypeDescription(GradeType gradeType) {
-        switch (gradeType) {
-            case ENGLISH: return "Inglés";
-            case ACADEMIC: return "Académico";
-            case PREVIOUS: return "Anteriores";
-            case ALL: return "Todas";
-            default: return "";
-        }
-    }
 }

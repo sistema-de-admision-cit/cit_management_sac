@@ -20,9 +20,13 @@ const ReportsView = () => {
       const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
+      const now = new Date()
+      const dateStr = now.toISOString().slice(0, 10)
+      const timeStr = `${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`
+
       link.setAttribute(
         'download',
-        `reporte_${request.reportType}_${new Date().toISOString().slice(0, 10)}.${format.toLowerCase()}`
+        `reporte_${request.reportType}_${dateStr}_${timeStr}.${format.toLowerCase()}`
       )
       document.body.appendChild(link)
       link.click()
