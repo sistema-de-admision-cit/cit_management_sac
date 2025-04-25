@@ -122,11 +122,13 @@ class ReportControllerTest {
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(MediaType.TEXT_PLAIN, response.getHeaders().getContentType());
+        assertEquals(MediaType.parseMediaType("text/csv; charset=UTF-8"),
+                response.getHeaders().getContentType());
         assertEquals("attachment; filename=report.csv",
                 response.getHeaders().getFirst(HttpHeaders.CONTENT_DISPOSITION));
         assertArrayEquals(mockCsvBytes, response.getBody());
     }
+
 
     @Test
     void generateCsvReport_withoutStatusFilter_shouldReturnAllStatuses() throws Exception {

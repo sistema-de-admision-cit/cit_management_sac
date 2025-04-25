@@ -20,12 +20,13 @@ const ReportsView = () => {
       const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.setAttribute('download', `reporte_${request.reportType}_${new Date().toISOString().slice(0, 10)}.${format.toLowerCase()}`)
+      link.setAttribute(
+        'download',
+        `reporte_${request.reportType}_${new Date().toISOString().slice(0, 10)}.${format.toLowerCase()}`
+      )
       document.body.appendChild(link)
       link.click()
       link.remove()
-
-      window.open(url, '_blank')
 
       setSuccess(`Reporte ${format} generado exitosamente`)
     } catch (err) {

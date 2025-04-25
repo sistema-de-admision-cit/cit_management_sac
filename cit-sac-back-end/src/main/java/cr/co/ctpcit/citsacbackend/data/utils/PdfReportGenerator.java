@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 
 @Component
 public class PdfReportGenerator {
-    // Fuentes predefinidas para reutilización
+    
     private static final Font TITLE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18, BaseColor.DARK_GRAY);
     private static final Font SUBTITLE_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.GRAY);
     private static final Font HEADER_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, BaseColor.WHITE);
@@ -160,7 +160,6 @@ public class PdfReportGenerator {
                     addTableCell(table, item.getAcademicGrade() != null ? item.getAcademicGrade() : "N/A");
                     addTableCell(table, item.getPreviousGrade() != null ? item.getPreviousGrade() : "N/A");
                 } else {
-                    // Mostrar solo la columna de categoría según el filtro
                     String cellValue;
                     if (request.getReportType() == ReportType.GRADES) {
                         switch (request.getGradeTypeFilter()) {
@@ -185,7 +184,7 @@ public class PdfReportGenerator {
 
             document.add(table);
 
-            // Nota al pie (opcional)
+            // Nota al pie
             Paragraph note = new Paragraph("* Reporte generado automáticamente por el sistema de admisiones", FOOTER_FONT);
             note.setAlignment(Element.ALIGN_CENTER);
             document.add(note);

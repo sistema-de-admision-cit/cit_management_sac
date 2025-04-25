@@ -58,6 +58,8 @@ public class CsvReportGenerator {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
              OutputStreamWriter writer = new OutputStreamWriter(baos, StandardCharsets.UTF_8)) {
 
+            writer.write('\uFEFF');
+
             CSVFormat csvFormat;
             boolean isFullGradesReport = request.getReportType() == ReportType.GRADES &&
                     (request.getGradeTypeFilter() == null ||

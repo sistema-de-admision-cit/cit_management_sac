@@ -102,7 +102,7 @@ public class ReportsController {
 
     return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=report.csv")
-            .contentType(MediaType.TEXT_PLAIN)
+            .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
             .body(csvBytes);
   }
 
