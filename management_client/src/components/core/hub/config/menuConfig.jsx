@@ -34,6 +34,7 @@ import AccessManegementView from '../../../modules/system_configuration/access_m
 
 // report views
 import GraphicalReportsView from '../../../modules/reports/graphical/view/GraphicalReportsView.jsx'
+import ReportsView from '../../../modules/reports/pdf_csv/view/ReportsView.jsx'
 import DashboardView from '../../../modules/dashboard/menu/view/DashboardMenuPageView.jsx'
 
 // componente por defecto para las rutas padre
@@ -229,7 +230,7 @@ const menuConfig = [
             key: 'pdf-reports',
             label: 'Reportes PDF/CSV',
             path: '/reportes/pdf',
-            component: DefaultComponent,
+            component: ReportsView,
             description: 'Generar reportes en formatos PDF y CSV.'
           }
         ]
