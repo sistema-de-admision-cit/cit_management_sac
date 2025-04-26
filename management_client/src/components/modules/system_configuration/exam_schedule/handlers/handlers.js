@@ -96,3 +96,31 @@ export const handleCheckboxChange = (day, setFormValues) => {
     }
   })
 }
+
+
+export const handleGetAllExamPeriods = (setExamPeriods, setLoading, setErrorMessage) => {
+  const getAllExamPeriodsUrl = import.meta.env.VITE_GET_CURRENT_EXAM_PERIODS_ENDPOINT
+
+  setLoading(true)
+  axios.get(getAllExamPeriodsUrl, { timeout: 10000 })
+    .then(response => {
+      if (response.data.length === 0) {
+        setErrorMessage('No se encontraron periodos de examen para este año.')
+        return
+      }
+      const periods = response.data?.map(period => ({
+        id: period.id,
+        startDate: new Date(period.startDate),
+        endDate: new Date(period.endDate),
+        days: period.examDays.map(day => day.examDay)
+      }));
+      setExamPeriods(periods)
+    })
+    .catch(error => {
+      console.error(error)
+      setErrorMessage('No se pudieron obtener los periodos de examen para este año.')
+    })
+    .finally(() => {
+      setLoading(false)
+    })
+}

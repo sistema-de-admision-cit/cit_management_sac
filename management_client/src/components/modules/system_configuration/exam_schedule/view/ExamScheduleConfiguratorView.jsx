@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import '../../../../../assets/styles/global/view.css'
 import '../../../../../assets/styles/sytem_config/exam_schedule_configurator.css'
@@ -8,11 +8,13 @@ import HoursSection from '../organisms/HoursSection'
 import DateApplicationSection from '../organisms/DateApplicationSection'
 import useMessages from '../../../../core/global/hooks/useMessages'
 import useFormState from '../../../../core/global/hooks/useFormState'
-import { handleSubmit, onStartDateChange, onEndDateChange, isFormValid, handleCheckboxChange } from '../handlers/handlers'
+import ExamPeriodsTable from '../organisms/ExamPeriodsTable'
+import { handleSubmit, onStartDateChange, onEndDateChange, isFormValid, handleCheckboxChange, handleGetAllExamPeriods } from '../handlers/handlers'
 
 const ExamScheduleConfiguratorView = () => {
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
-  const [loading, setLoading] = useState(false)
+  const [ loading, setLoading ] = useState(false)
+  const [ examPeriods, setExamPeriods ] = useState([])
 
   const { formData: formValues, setFormData: setFormValues } = useFormState({
     allYear: false,
@@ -21,6 +23,10 @@ const ExamScheduleConfiguratorView = () => {
     applicationDays: [],
     startTime: ''
   })
+
+  useEffect(() =>
+      handleGetAllExamPeriods(setExamPeriods, setLoading, setErrorMessage)
+    , [])
 
   const handleChange = (field, value) => {
     setFormValues({
@@ -71,7 +77,12 @@ const ExamScheduleConfiguratorView = () => {
             <Button className='btn btn-secondary'>Cancelar</Button>
           </div>
         </div>
-
+        <ExamPeriodsTable
+          examPeriods={examPeriods}
+          onDelete={() => { }}
+          onCreate={() => { }}
+          loading={loading}
+        />
       </div>
       {renderMessages()}
     </SectionLayout>

@@ -6,7 +6,7 @@ const UPDATE_QUESTIONS_QUANTITY_ENDPOINT = import.meta.env.VITE_UPDATE_EXAMS_QUE
 
 export const getQuestionsQuantity = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}${GET_QUESTIONS_QUANTITY_ENDPOINT}`)
+    const response = await axios.get(`${GET_QUESTIONS_QUANTITY_ENDPOINT}`)
     return response.data // Devuelve el array completo de configuración
   } catch (error) {
     console.error('Error getting questions quantity:', error)
@@ -16,7 +16,7 @@ export const getQuestionsQuantity = async () => {
 
 export const updateQuestionsQuantity = async (formValues) => {
   try {
-    await axios.put(`${API_BASE_URL}${UPDATE_QUESTIONS_QUANTITY_ENDPOINT}`, {
+    await axios.put(`${UPDATE_QUESTIONS_QUANTITY_ENDPOINT}`, {
       daiQuestionsQuantity: formValues.daiQuestionsQuantity,
       academicQuestionsQuantity: formValues.academicQuestionsQuantity
     })
