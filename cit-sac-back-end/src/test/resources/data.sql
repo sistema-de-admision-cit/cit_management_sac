@@ -381,3 +381,45 @@ VALUES ('sysadmin@cit.co.cr', 'Sysadmin', '$2a$10$x2PgQcVgktD6SS6wtJonwOlWpnLj24
        ('jorge@cit.co.cr', 'Jorge', '$2a$10$RFPObfy6ro87gLXQalrEiuGehgDsyWfETW4h9h51eg1ZUWlpMnrIG', 'PSYCHOLOGIST'),
        ('rocio@cit.co.cr', 'Rocio', '$2a$10$VjpaCQ9OkiyJYJ28kzGm1OSjKpKE337EdtJgUrq.aACa2JCJHLU7W',
         'TEACHER'); -- Password Rocío: 'Mate8520$'
+
+
+
+--- Data for testing reports (BI)
+-- api/reports/exam-attendance?startDate=2025-01-01&endDate=2025-01-31&grade=FIRST,SECOND&sector=Primaria
+
+-- 1) Personas (serán también estudiantes)
+INSERT INTO tbl_Persons (person_id, first_name, first_surname, second_surname, id_type, id_number)
+VALUES
+    (1, 'Alice',  'Smith',    'Johnson', 'CC', '1001'),
+    (2, 'Bob',    'Brown',    NULL,      'CC', '1002'),
+    (3, 'Carlos', 'Garcia',   'Lopez',   'CC', '1003'),
+    (4, 'Diana',  'Mendez',   'Rodriguez','CC','1004'),
+    (5, 'Elena',  'Pérez',    'Gómez',   'CC', '1005');
+
+-- 2) Estudiantes (student_id = person_id)
+INSERT INTO tbl_Students (student_id, birth_date, previous_school, previous_grades, has_accommodations)
+VALUES
+    (1, '2015-06-01', 'Escuela A', 85.50, 0),
+    (2, '2014-09-15', 'Escuela B', 78.00, 1),
+    (3, '2015-11-20', 'Escuela A', 92.00, 0),
+    (4, '2013-02-10', 'Escuela C', 88.75, 0),
+    (5, '2015-03-30', 'Escuela D', 80.25, 0);
+
+-- 3) Inscripciones (enrollment_date es la fecha de registro; exam_date la cita)
+INSERT INTO tbl_Enrollments (
+    enrollment_id, student_id, status,           enrollment_date,       grade_to_enroll, known_through, exam_date,          consent_given, whatsapp_notification
+) VALUES
+      (1,             1,          'ELIGIBLE',       '2025-01-05 09:00:00', 'FIRST',         'SM',           '2025-01-10',        1,             1),
+      (2,             2,          'ELIGIBLE',       '2025-01-05 10:30:00', 'SECOND',        'OH',           '2025-01-11',        1,             0),
+      (3,             3,          'ELIGIBLE',       '2025-01-12 08:45:00', 'FIRST',         'FD',           '2025-01-15',        1,             1),
+      (4,             4,          'ELIGIBLE',       '2025-02-03 09:30:00', 'TENTH',         'FM',           '2025-02-07',        1,             1),
+      (5,             5,          'ELIGIBLE',       '2025-01-05 11:15:00', 'FIRST',         'FM',           '2025-01-12',        1,             0);
+
+-- 4) Exámenes (cualquiera de tipo ACA/DAI/ENG cuenta como “asistencia”)
+INSERT INTO tbl_Exams (exam_id, enrollment_id, exam_date,           exam_type, responses)
+VALUES
+    (1,       1,             '2025-01-10 09:00:00', 'ACA',     NULL),
+    (2,       2,             '2025-01-11 10:30:00', 'DAI',     NULL),
+    (3,       3,             '2025-01-15 08:45:00', 'ACA',     NULL),
+    (4,       4,             '2025-02-07 09:30:00', 'ACA',     NULL),
+    (5,       5,             '2025-01-12 11:15:00', 'ACA',     NULL);
