@@ -724,6 +724,47 @@ BEGIN
 END //
 DELIMITER ;
 
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS usp_Get_Enrollment_Attendance_Stats_Filters //
+CREATE PROCEDURE usp_Get_Enrollment_Attendance_Stats_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT, 
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    DATE(e.enrollment_date)          AS enrollmentDate,
+    e.grade_to_enroll                AS grade,
+    CASE
+      WHEN e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH')
+        THEN 'Primaria'
+      ELSE 'Secundaria'
+    END                               AS sector,
+    COUNT(*)                         AS totalEnrolled,
+    COUNT(DISTINCT ex.enrollment_id) AS totalAttended
+  FROM tbl_Enrollments e
+  LEFT JOIN tbl_Exams ex
+    ON ex.enrollment_id = e.enrollment_id
+    /* opcionalmente: AND ex.exam_type IN ('ACA','DAI') */
+  WHERE 
+    (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
+    AND (
+      p_grades = 'All'
+      OR FIND_IN_SET(e.grade_to_enroll, p_grades)
+    )
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND e.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  GROUP BY enrollmentDate, grade, sector
+  ORDER BY enrollmentDate, grade;
+END //
+DELIMITER ;
+
 
 -- End of the stored procedures
 -- ----------------------------------------------------- 
