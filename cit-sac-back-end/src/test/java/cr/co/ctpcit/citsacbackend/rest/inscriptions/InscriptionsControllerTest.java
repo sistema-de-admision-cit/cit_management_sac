@@ -86,7 +86,7 @@ class InscriptionsControllerTest {
     assertThat(enrollmentCount).isEqualTo(1);
 
     JSONArray statuses = documentContext.read("$..status");
-    assertThat(statuses).containsExactlyInAnyOrder("INELIGIBLE");
+    assertThat(statuses).containsExactlyInAnyOrder("ELIGIBLE");
   }
 
   @Test

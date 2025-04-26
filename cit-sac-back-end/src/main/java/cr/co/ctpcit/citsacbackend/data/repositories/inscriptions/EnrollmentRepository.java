@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Long> {
 
@@ -24,6 +25,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
   Page<EnrollmentEntity> findAllEnrollmentsInProcess(Pageable pageable);
 
   List<EnrollmentEntity> findAllByStudent(@NotNull StudentEntity student);
+
 
   @Query(
       "SELECT e FROM EnrollmentEntity e WHERE e.student = :student AND (e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE')")
@@ -57,4 +59,35 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
       @Param("p_new_status") String newStatus, @Param("p_new_exam_date") Date newExamDate,
       @Param("p_new_whatsapp_permission") Boolean newWhatsappPermission,
       @Param("p_comment") String comment, @Param("p_changed_by") Integer changedBy);
+
+  Page<EnrollmentEntity> findAllByStatusIn(List<ProcessStatus> statuses, Pageable pageable);
+
+
+  @Query("SELECT e FROM EnrollmentEntity e WHERE e.student.studentPerson.idNumber LIKE %:idNumber% AND e.status IN :statuses")
+  Page<EnrollmentEntity> findByIdNumberAndStatusIn(
+          @Param("idNumber") String idNumber,
+          @Param("statuses") List<ProcessStatus> statuses,
+          Pageable pageable
+  );
+
+
+  @Query("SELECT e FROM EnrollmentEntity e WHERE e.student IN :students AND e.status IN :statuses")
+  Page<EnrollmentEntity> findAllByStudentsWithStatusIn(
+          @Param("students") List<StudentEntity> students,
+          @Param("statuses") List<ProcessStatus> statuses,
+          Pageable pageable
+  );
+
+  @Query("SELECT e FROM EnrollmentEntity e WHERE e.student.studentPerson.idNumber = :idNumber AND e.status = :status")
+  Optional<EnrollmentEntity> findByStudentStudentPersonIdNumberAndStatus(
+          @Param("idNumber") String idNumber,
+          @Param("status") ProcessStatus status);
+
+  @Query("SELECT e FROM EnrollmentEntity e WHERE e.student.studentPerson.idNumber = :idNumber")
+  Optional<EnrollmentEntity> findByStudentStudentPersonIdNumber(@Param("idNumber") String idNumber);
+
+  @Query("SELECT e FROM EnrollmentEntity e WHERE e.student.studentPerson.idNumber = :idNumber AND e.status IN :statuses")
+  Optional<EnrollmentEntity> findByStudentStudentPersonIdNumberAndStatusIn(
+          @Param("idNumber") String idNumber,
+          @Param("statuses") List<ProcessStatus> statuses);
 }
