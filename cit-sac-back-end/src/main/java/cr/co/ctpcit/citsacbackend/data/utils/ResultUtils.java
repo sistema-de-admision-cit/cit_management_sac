@@ -14,11 +14,26 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+/**
+ * Utility class for handling operations related to exam results,
+ * such as converting English levels to scores, retrieving exam entities,
+ * and fetching configuration values for weighted calculations.
+ */
+
 @Component
 @RequiredArgsConstructor
 public class ResultUtils {
 
     private final SystemConfigRepository systemConfigRepository;
+
+
+    /**
+     * Converts an English level to a corresponding score based on predefined criteria.
+     * The score is returned as a BigDecimal value.
+     *
+     * @param level The English level to be converted (e.g., C2, C1, B2, etc.).
+     * @return The BigDecimal score corresponding to the given English level.
+     */
 
     public static BigDecimal convertEnglishLevelToScore(EnglishLevel level) {
         return switch (level) {
@@ -31,6 +46,13 @@ public class ResultUtils {
         };
     }
 
+    /**
+     * Retrieves the DAI exam associated with a given enrollment, if available.
+     *
+     * @param enrollment The enrollment entity containing exam details.
+     * @return The DAI exam entity if present, otherwise null.
+     */
+
     public static  DaiExamEntity getDaiExam(EnrollmentEntity enrollment) {
         return enrollment.getExams().stream()
                 .filter(e -> e.getExamType() == ExamType.DAI)
@@ -38,6 +60,13 @@ public class ResultUtils {
                 .map(ExamEntity::getDaiExam)
                 .orElse(null);
     }
+
+    /**
+     * Retrieves the English exam associated with a given enrollment.
+     *
+     * @param enrollment The enrollment entity containing exam details.
+     * @return The English exam entity.
+     */
 
     public static EnglishExamEntity getEnglishExam(EnrollmentEntity enrollment) {
         return enrollment.getExams().stream()
@@ -47,6 +76,13 @@ public class ResultUtils {
                 .orElseThrow();
     }
 
+    /**
+     * Retrieves the Academic exam associated with a given enrollment.
+     *
+     * @param enrollment The enrollment entity containing exam details.
+     * @return The Academic exam entity.
+     */
+
     public static AcademicExamEntity getAcademicExam(EnrollmentEntity enrollment) {
         return enrollment.getExams().stream()
                 .filter(e -> e.getExamType() == ExamType.ACA)
@@ -54,6 +90,15 @@ public class ResultUtils {
                 .map(ExamEntity::getAcademicExam)
                 .orElseThrow();
     }
+
+    /**
+     * Retrieves the configuration value for a given configuration name from the system settings.
+     * The configuration value is expected to be a numeric string that is converted to a BigDecimal.
+     *
+     * @param configName The name of the configuration (e.g., "englishWeight", "academicWeight").
+     * @return The configuration value as a BigDecimal.
+     * @throws RuntimeException If the configuration cannot be found in the system.
+     */
 
     public  BigDecimal getConfigValue(String configName) {
         return systemConfigRepository.findByConfigName(Configurations.valueOf(configName))

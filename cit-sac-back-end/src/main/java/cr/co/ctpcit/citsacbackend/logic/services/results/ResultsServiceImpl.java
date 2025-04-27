@@ -29,6 +29,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for managing exam results and enrollments.
+ */
+
 @Service
 @RequiredArgsConstructor
 public class ResultsServiceImpl implements ResultsService {
@@ -39,7 +43,12 @@ public class ResultsServiceImpl implements ResultsService {
     private final ResultUtils resultUtils;
 
 
-
+    /**
+     * Retrieves a paginated list of exam results for students whose enrollment status is accepted, rejected, or eligible.
+     *
+     * @param pageable the pagination information
+     * @return a page of {@link ResultDTO} containing the exam results
+     */
     public Page<ResultDTO> getExamResults(Pageable pageable) {
         BigDecimal englishWeight = resultUtils.getConfigValue("ENGLISH_WEIGHT");
         BigDecimal academicWeight = resultUtils.getConfigValue("ACADEMIC_WEIGHT");
@@ -57,6 +66,15 @@ public class ResultsServiceImpl implements ResultsService {
 
         return new PageImpl<>(content, pageable, enrollmentsPage.getTotalElements());
     }
+
+
+    /**
+     * Searches for exam results by student ID number or name.
+     *
+     * @param query the ID number or name to search
+     * @param pageable the pagination information
+     * @return a page of {@link ResultDTO} matching the search criteria
+     */
 
     public Page<ResultDTO> searchResults(String query, Pageable pageable) {
         Page<EnrollmentEntity> enrollments = Page.empty(pageable);
@@ -91,6 +109,14 @@ public class ResultsServiceImpl implements ResultsService {
 
         return new PageImpl<>(content, pageable, enrollments.getTotalElements());
     }
+
+    /**
+     * Retrieves detailed exam results for a specific student by their ID number.
+     *
+     * @param idNumber the student's ID number
+     * @return a {@link StudentResultsDetailsDTO} containing the detailed results
+     * @throws RuntimeException if the student is not found
+     */
 
     public StudentResultsDetailsDTO getStudentExamDetails(String idNumber) {
         EnrollmentEntity enrollment = enrollmentRepository.findByStudentStudentPersonIdNumberAndStatusIn(
@@ -131,7 +157,13 @@ public class ResultsServiceImpl implements ResultsService {
         );
     }
 
-
+    /**
+     * Updates the enrollment status of a student by their ID number.
+     *
+     * @param idNumber the student's ID number
+     * @param updateStatusDTO the new status to set
+     * @throws RuntimeException if the student is not found or the status is not allowed
+     */
 
     @Transactional
     public void updateEnrollmentStatus(String idNumber, UpdateStatusDTO updateStatusDTO) {
@@ -147,7 +179,12 @@ public class ResultsServiceImpl implements ResultsService {
         enrollmentRepository.save(enrollment);
     }
 
-
+    /**
+     * Checks whether an enrollment has both an English and an Academic exam completed.
+     *
+     * @param enrollment the enrollment entity to check
+     * @return true if both exams are completed, false otherwise
+     */
 
     private boolean hasCompleteExams(EnrollmentEntity enrollment) {
         return enrollment.getExams().stream()

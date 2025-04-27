@@ -1,7 +1,5 @@
 import axiosInstance from '../../../../../config/axiosConfig'
-import { jsPDF } from 'jspdf'
-
-const baseUrl = import.meta.env.VITE_API_BASE_URL
+import { formatDateToObj } from '../../../enrollments/management/helpers/helpers.js'
 
 // Manejo de errores
 const getErrorMessage = (error) => {
@@ -53,7 +51,7 @@ export const handleGetAllResults = (
       if (setSuccessMessage) {
         setSuccessMessage('Resultados finales cargados correctamente')
       }
-      //console.log('Resultados finales:', data)
+      // console.log('Resultados finales:', data)
       return {
         totalPages: data.totalPages || 1,
         currentPage: data.number || page,
@@ -101,13 +99,10 @@ export const handleGetStudentDetails = async (
       const data = response.data
 
       setDetails(data.content || data)
-      //console.log('Detalles del estudiante:', data)
 
       if (setSuccessMessage) {
-        //setSuccessMessage('Detalles finales cargados correctamente')
+        // setSuccessMessage('Detalles finales cargados correctamente')
       }
-
-      return
     })
     .catch(error => {
       console.error('Error al obtener los resultados:', error)
@@ -134,40 +129,33 @@ export const handleGetStudentDetails = async (
     })
 }
 
-
 // Handlers that Search Data from API
-const searchResultUrl = import.meta.env.VITE_GET_RESULTS_BY_SEARCH_ENDPOINT;
-export const handleSearchResults = async (
-  search,
+const searchResultUrl = import.meta.env.VITE_GET_RESULTS_BY_SEARCH_ENDPOINT
+export const handleSearchResults = (search,
   setResults,
   setLoading,
   setErrorMessage,
   setTotalPages,
-  setCurrentPage
-) => {
-  try {
-    setLoading(true);
-    const response = await fetch(`${searchResultUrl}?value=${encodeURIComponent(search)}`);
-    
-    if (!response.ok) {
-      throw new Error('Error al buscar resultados');
-    }
-    
-    const data = await response.json();
-    setResults(data);
-    
-    setLoading(false);
-    return data;
-  } catch (error) {
-    setErrorMessage(error.message);
-    setLoading(false);
-    return null;
-  }
-};
-
+  setCurrentPage) => {
+  axiosInstance.get(`${searchResultUrl}?value=${search}`, { timeout: 10000 })
+    .then(response => {
+      const results = response.data.map(setResults => formatDateToObj(setResults))
+      const uniqueStudents = results.reduce((acc, setResults) => {
+        if (!acc.some(e => e.student.id === setResults.student.id)) {
+          acc.push(setResults)
+        }
+        return acc
+      }, [])
+      setResults(uniqueStudents)
+    })
+    .catch(error => {
+      console.error(error)
+      setErrorMessage(getErrorMessage())
+    })
+}
 // Handlers that Save Data from API
 
-const saveStudentStatusUrl = import.meta.env.VITE_UPDATE_STUDENT_RESULT_ENDPOINT;
+const saveStudentStatusUrl = import.meta.env.VITE_UPDATE_STUDENT_RESULT_ENDPOINT
 export const handleSaveStatus = async (
   idNumber,
   updateStatusDTO,
@@ -176,29 +164,28 @@ export const handleSaveStatus = async (
   setLoading,
   onClose
 ) => {
-  setLoading(true);
+  setLoading(true)
 
   try {
-    const url = `${saveStudentStatusUrl}/${idNumber}`;
+    const url = `${saveStudentStatusUrl}/${idNumber}`
 
     const response = await axiosInstance.put(url, updateStatusDTO, {
       headers: {
         'Content-Type': 'application/json'
       }
-    });
+    })
 
     setSuccessMessage('Comentario y estado guardados exitosamente.')
 
-    if (onClose) onClose();
+    if (onClose) onClose()
 
     setTimeout(() => {
-      window.location.reload();
-    }, 1500);
+      window.location.reload()
+    }, 1500)
 
-    return response.data;
+    return response.data
   } catch (error) {
-    // ... (manejo de errores igual que antes)
   } finally {
-    setLoading(false);
+    setLoading(false)
   }
-};
+}

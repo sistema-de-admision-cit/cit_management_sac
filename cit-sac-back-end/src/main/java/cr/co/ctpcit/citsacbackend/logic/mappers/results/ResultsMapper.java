@@ -10,8 +10,22 @@ import cr.co.ctpcit.citsacbackend.logic.dto.results.ResultDTO;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ * Utility class responsible for mapping enrollment entities to result data transfer objects (DTOs).
+ */
+
 public class ResultsMapper {
 
+    /**
+     * Maps an {@link EnrollmentEntity} to a {@link ResultDTO} by calculating the final grade
+     * based on English exam results, academic exam results, and previous grades, applying the corresponding weights.
+     *
+     * @param enrollment the enrollment entity containing student and exam data
+     * @param englishWeight the weight to apply to the English exam score
+     * @param academicWeight the weight to apply to the academic exam score
+     * @param prevGradesWeight the weight to apply to the student's previous grades
+     * @return a {@link ResultDTO} containing the mapped result information
+     */
 
     public static ResultDTO mapToExamResultDTO(
             EnrollmentEntity enrollment,
