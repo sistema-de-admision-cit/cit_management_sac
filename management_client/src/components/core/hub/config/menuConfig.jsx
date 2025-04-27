@@ -26,6 +26,7 @@ import QuestionConfiguratorView from '../../../modules/system_configuration/exam
 import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenuPageView.jsx'
 import ExamScoreManagementView from '../../../modules/results/load_results/view/ExamScoreManagementView.jsx'
 // import GradesManagmentView from '../../../modules/results/grades_managment/view/GradesManagementView.jsx'
+import AnalyzeResultsView from '../../../modules/results/analyze_results/view/AnalyzeResultsView.jsx'
 
 // reports views
 import ReportsMenuPageView from '../../../modules/reports/menu/views/ReportsMenuPageView.jsx'
@@ -205,7 +206,7 @@ const menuConfig = [
             key: 'notify-results',
             label: 'Notificar Resultados',
             path: '/resultados/notificar',
-            component: DefaultComponent,
+            component: AnalyzeResultsView,
             description: 'Notificar a los usuarios sobre los resultados obtenidos.'
           }
         ]
