@@ -2,8 +2,8 @@ import React, { useState, useMemo, useEffect } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import ExamSourceSection from '../organisms/ExamSourceSection'
 import AttendanceSection from '../organisms/AttendanceSection'
-import '../../../../../assets/styles/reports/graphical-report-styles.css'
 import AdmissionFinalSection from '../organisms/AdmissionFinalSection'
+import '../../../../../assets/styles/reports/graphical-report-styles.css'
 
 // Map of grade enums to their display labels
 const GRADE_MAPPINGS = {
@@ -34,35 +34,41 @@ const SECTOR_OPTIONS = [
 ]
 
 export default function GraphicalReportsView () {
-  // Filter state
-  const [startDate, setStartDate] = useState(new Date('2025-04-01'))
-  const [endDate, setEndDate] = useState(new Date('2025-04-30'))
-  const [sector, setSector] = useState('All')
-  const [grade, setGrade] = useState('All')
+  // Attendance filters state
+  const [attendanceStartDate, setAttendanceStartDate] = useState(new Date('2025-04-01'))
+  const [attendanceEndDate, setAttendanceEndDate] = useState(new Date('2025-04-30'))
+  const [attendanceSector, setAttendanceSector] = useState('All')
+  const [attendanceGrade, setAttendanceGrade] = useState('All')
 
-  // Compute grade options based on selected sector
-  const gradeOptions = useMemo(() => {
-    let options = []
+  // Admission-final filters state
+  const [admissionStartDate, setAdmissionStartDate] = useState(new Date('2025-04-01'))
+  const [admissionEndDate, setAdmissionEndDate] = useState(new Date('2025-04-30'))
+  const [admissionSector, setAdmissionSector] = useState('All')
+  const [admissionGrade, setAdmissionGrade] = useState('All')
 
-    if (sector === 'Primaria') {
-      options = GRADE_MAPPINGS.Primaria
-    } else if (sector === 'Secundaria') {
-      options = GRADE_MAPPINGS.Secundaria
-    } else {
-      options = ALL_GRADES
-    }
+  // Compute grade options based on sector for attendance
+  const attendanceGradeOptions = useMemo(() => {
+    const opts = attendanceSector === 'Primaria'
+      ? GRADE_MAPPINGS.Primaria
+      : attendanceSector === 'Secundaria'
+        ? GRADE_MAPPINGS.Secundaria
+        : ALL_GRADES
+    return [{ value: 'All', label: 'All' }, ...opts]
+  }, [attendanceSector])
 
-    // Always include the 'All' option at the top
-    return [
-      { value: 'All', label: 'All' },
-      ...options
-    ]
-  }, [sector])
+  useEffect(() => { setAttendanceGrade('All') }, [attendanceSector])
 
-  // Reset grade to 'All' whenever sector changes
-  useEffect(() => {
-    setGrade('All')
-  }, [sector])
+  // Compute grade options for admission-final
+  const admissionGradeOptions = useMemo(() => {
+    const opts = admissionSector === 'Primaria'
+      ? GRADE_MAPPINGS.Primaria
+      : admissionSector === 'Secundaria'
+        ? GRADE_MAPPINGS.Secundaria
+        : ALL_GRADES
+    return [{ value: 'All', label: 'All' }, ...opts]
+  }, [admissionSector])
+
+  useEffect(() => { setAdmissionGrade('All') }, [admissionSector])
 
   return (
     <SectionLayout title='Reportes Gráficos'>
@@ -73,31 +79,31 @@ export default function GraphicalReportsView () {
 
         <div className='attendance-section'>
           <AttendanceSection
-            startDate={startDate}
-            endDate={endDate}
-            sector={sector}
-            grade={grade}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-            setSector={setSector}
-            setGrade={setGrade}
+            startDate={attendanceStartDate}
+            endDate={attendanceEndDate}
+            sector={attendanceSector}
+            grade={attendanceGrade}
+            setStartDate={setAttendanceStartDate}
+            setEndDate={setAttendanceEndDate}
+            setSector={setAttendanceSector}
+            setGrade={setAttendanceGrade}
             sectorOptions={SECTOR_OPTIONS}
-            gradeOptions={gradeOptions}
+            gradeOptions={attendanceGradeOptions}
           />
         </div>
 
         <div className='admission-final-section'>
           <AdmissionFinalSection
-            startDate={startDate}
-            endDate={endDate}
-            sector={sector}
-            grade={grade}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-            setSector={setSector}
-            setGrade={setGrade}
+            startDate={admissionStartDate}
+            endDate={admissionEndDate}
+            sector={admissionSector}
+            grade={admissionGrade}
+            setStartDate={setAdmissionStartDate}
+            setEndDate={setAdmissionEndDate}
+            setSector={setAdmissionSector}
+            setGrade={setAdmissionGrade}
             sectorOptions={SECTOR_OPTIONS}
-            gradeOptions={gradeOptions}
+            gradeOptions={admissionGradeOptions}
           />
         </div>
       </div>
