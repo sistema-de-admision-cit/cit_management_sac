@@ -13,35 +13,42 @@ const FiltersPanel = ({
   sectorOptions,
   gradeOptions
 }) => (
-  <div className='filters flex space-x-4'>
-    <InputField
-      field={{ name: 'startDate', type: 'date' }}
-      value={startDate}
-      handleChange={onStartDateChange}
-      className='w-full'
-      showLabel={false}
-    />
-    <InputField
-      field={{ name: 'endDate', type: 'date' }}
-      value={endDate}
-      handleChange={onEndDateChange}
-      className='w-full'
-      showLabel={false}
-    />
-    <InputField
-      field={{ name: 'sector', type: 'dropdown', options: sectorOptions }}
-      value={sector}
-      handleChange={onSectorChange}
-      className='w-full'
-      showLabel={false}
-    />
-    <InputField
-      field={{ name: 'grade', type: 'dropdown', options: gradeOptions }}
-      value={grade}
-      handleChange={onGradeChange}
-      className='w-full'
-      showLabel={false}
-    />
+  <div className='filters-panel'>
+    <div className='filter-group'>
+      <label htmlFor='startDate'>Start Date</label>
+      <InputField
+        field={{ name: 'startDate', type: 'date' }}
+        value={startDate}
+        handleChange={onStartDateChange}
+      />
+    </div>
+
+    <div className='filter-group'>
+      <label htmlFor='endDate'>End Date</label>
+      <InputField
+        field={{ name: 'endDate', type: 'date' }}
+        value={endDate}
+        handleChange={onEndDateChange}
+      />
+    </div>
+
+    <div className='filter-group'>
+      <label htmlFor='sector'>Sector</label>
+      <InputField
+        field={{ name: 'sector', type: 'dropdown', options: sectorOptions }}
+        value={sector}
+        handleChange={onSectorChange}
+      />
+    </div>
+
+    <div className='filter-group'>
+      <label htmlFor='grade'>Grade</label>
+      <InputField
+        field={{ name: 'grade', type: 'dropdown', options: gradeOptions }}
+        value={grade}
+        handleChange={onGradeChange}
+      />
+    </div>
   </div>
 )
 

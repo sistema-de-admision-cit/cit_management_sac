@@ -39,6 +39,7 @@ const AttendanceSection = ({
 
   return (
     <div className='attendance-chart-container'>
+      <ChartTitle>Exam Attendance</ChartTitle>
       <FiltersPanel
         startDate={startDate}
         endDate={endDate}
@@ -51,7 +52,6 @@ const AttendanceSection = ({
         sectorOptions={sectorOptions}
         gradeOptions={gradeOptions}
       />
-      <ChartTitle>Exam Attendance</ChartTitle>
       <AttendanceChart data={data} />
     </div>
   )
