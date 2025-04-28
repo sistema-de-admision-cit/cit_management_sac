@@ -20,4 +20,4 @@ const ExamPieChart = ({ data, title }) => (
   </div>
 )
 
-export default ExamPieChart
+export default React.memo(ExamPieChart)

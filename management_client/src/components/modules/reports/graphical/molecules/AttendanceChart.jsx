@@ -30,4 +30,4 @@ const AttendanceChart = ({ data, title }) => (
   </div>
 )
 
-export default AttendanceChart
+export default React.memo(AttendanceChart)
