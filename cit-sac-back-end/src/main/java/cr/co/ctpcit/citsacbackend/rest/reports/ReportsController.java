@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest.reports;
 
+import cr.co.ctpcit.citsacbackend.logic.dto.reports.AdmissionFinalDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.reports.EnrollmentAttendanceDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.reports.ExamSourceDTO;
 import cr.co.ctpcit.citsacbackend.logic.services.reports.ReportsServiceImpl;
@@ -53,6 +54,27 @@ public class ReportsController {
   @GetMapping("/exam-source")
   public ResponseEntity<List<ExamSourceDTO>> getExamSourceStatistics() {
     List<ExamSourceDTO> result = reportsService.getExamSourceStatistics();
+    return ResponseEntity.ok(result);
+  }
+
+  /**
+   * Example: GET /api/reports/admission-final?startDate=2025-01-01&endDate=2025-01-31
+   * @param startDate
+   * @param endDate
+   * @param grade
+   * @param sector
+   * @return
+   */
+  @GetMapping("/admission-final")
+  public ResponseEntity<List<AdmissionFinalDTO>> getAdmissionFinal(@RequestParam String startDate,
+      @RequestParam String endDate, @RequestParam(defaultValue = "All") String grade,
+      @RequestParam(defaultValue = "All") String sector) {
+    LocalDate sd = startDate.isBlank() ? null : LocalDate.parse(startDate.trim());
+    LocalDate ed = endDate.isBlank() ? null : LocalDate.parse(endDate.trim());
+    List<String> grades =
+        "All".equalsIgnoreCase(grade) ? List.of() : Arrays.asList(grade.split("\\s*,\\s*"));
+    List<AdmissionFinalDTO> result =
+        reportsService.getAdmissionFinalStats(sd, ed, grades, sector.trim());
     return ResponseEntity.ok(result);
   }
 }

@@ -3,6 +3,7 @@ import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import ExamSourceSection from '../organisms/ExamSourceSection'
 import AttendanceSection from '../organisms/AttendanceSection'
 import '../../../../../assets/styles/reports/graphical-report-styles.css'
+import AdmissionFinalSection from '../organisms/AdmissionFinalSection'
 
 // Map of grade enums to their display labels
 const GRADE_MAPPINGS = {
@@ -72,6 +73,21 @@ export default function GraphicalReportsView () {
 
         <div className='attendance-section'>
           <AttendanceSection
+            startDate={startDate}
+            endDate={endDate}
+            sector={sector}
+            grade={grade}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+            setSector={setSector}
+            setGrade={setGrade}
+            sectorOptions={SECTOR_OPTIONS}
+            gradeOptions={gradeOptions}
+          />
+        </div>
+
+        <div className='admission-final-section'>
+          <AdmissionFinalSection
             startDate={startDate}
             endDate={endDate}
             sector={sector}

@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.services.reports;
 
+import cr.co.ctpcit.citsacbackend.logic.dto.reports.AdmissionFinalDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.reports.EnrollmentAttendanceDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.reports.ExamSourceDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,10 +32,10 @@ public class ReportsServiceImpl {
   }
 
   /**
-   * @param startDate fecha inicial de inscripción (o null para no filtrar)
-   * @param endDate   fecha final de inscripción (o null para no filtrar)
-   * @param grades    lista de grados a incluir (e.g. ["FIRST","SECOND"]) o empty para todos
-   * @param sector    "All", "Primaria" o "Secundaria"
+   * @param startDate starting date for the enrollment (or null to not filter)
+   * @param endDate ending date for the enrollment (or null to not filter)
+   * @param grades list of grades to include (e.g. ["FIRST","SECOND"]) or empty for all
+   * @param sector "All", "Primaria" or "Secundaria"
    */
   public List<EnrollmentAttendanceDTO> getEnrollmentAttendanceStats(
       LocalDate startDate,
@@ -53,6 +54,32 @@ public class ReportsServiceImpl {
             rs.getString("sector"),
             rs.getInt("totalEnrolled"),
             rs.getInt("totalAttended")
+        ));
+  }
+
+  /**
+   * Get admission final statistics based on the provided filters.
+   * @param startDate starting date for the enrollment (or null to not filter)
+   * @param endDate ending date for the enrollment (or null to not filter)
+   * @param grades list of grades to include (e.g. ["FIRST","SECOND"]) or empty for all
+   * @param sector "All", "Primaria" or "Secundaria"
+   * @return a list of AdmissionFinalDTO objects containing the statistics
+   */
+  public List<AdmissionFinalDTO> getAdmissionFinalStats(
+      LocalDate startDate,
+      LocalDate endDate,
+      List<String> grades,
+      String sector
+  ) {
+    String gradesCsv = grades.isEmpty() ? "All" : String.join(",", grades);
+    String sql = "CALL usp_Get_Admission_Final_Stats_Filters(?, ?, ?, ?)";
+    return jdbcTemplate.query(sql, new Object[]{startDate, endDate, gradesCsv, sector},
+        (rs, rowNum) -> new AdmissionFinalDTO(
+            rs.getDate("enrollmentDate").toLocalDate(),
+            rs.getString("grade"),
+            rs.getString("sector"),
+            rs.getInt("totalAccepted"),
+            rs.getInt("totalRejected")
         ));
   }
 }

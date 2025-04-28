@@ -18,3 +18,11 @@ export const fetchExamAttendance = async (
   })
   return data
 }
+
+/** Fetch data for the exam-grade bar chart */
+export const fetchAdmissionFinal = async (startDate, endDate, gradeCsv = 'All', sector = 'All') => {
+  const { data } = await axios.get('reports/admission-final', {
+    params: { startDate, endDate, grade: gradeCsv, sector }
+  })
+  return data
+}
