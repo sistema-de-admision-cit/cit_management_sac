@@ -1,7 +1,7 @@
 import React from 'react'
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28CF2']
+const COLORS = ['#003A7D', '#008DFF', '#FF73B6', '#C701FF', '#4ECB8D', '#FF9D3A']
 
 const ExamPieChart = ({ data, title }) => (
   <div className='exam-pie-chart'>
