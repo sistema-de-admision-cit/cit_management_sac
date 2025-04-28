@@ -5,8 +5,8 @@ import ErrorMessage from '../atoms/ErrorMessage'
 import ChartTitle from '../atoms/ChartTitle'
 import { useChartData } from '../hooks/useChartData'
 import { fetchExamSource, fetchExamAttendance } from '../helpers/handlers'
-import ExamPieChart from '../molecules/ExamPieChart'
-import AttendanceChart from '../molecules/AttendanceChart'
+import ExamPieChart from '../molecules/charts/ExamPieChart'
+import AttendanceChart from '../molecules/charts/AttendanceChart'
 import InputField from '../../../../core/global/atoms/InputField'
 
 function GraphicalReportsView () {
