@@ -375,7 +375,8 @@ CREATE TABLE IF NOT EXISTS `tbl_Exam_Days` (
 
   CONSTRAINT `FK_ExamDays_ExamPeriods`
     FOREIGN KEY (`exam_period_id`)
-    REFERENCES `tbl_Exam_Periods` (`exam_period_id`))
+    REFERENCES `tbl_Exam_Periods` (`exam_period_id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;

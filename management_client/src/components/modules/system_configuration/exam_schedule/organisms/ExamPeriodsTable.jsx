@@ -3,14 +3,19 @@ import Button from '../../../../core/global/atoms/Button'
 import InputField from '../../../../core/global/atoms/InputField'
 import Spinner from '../../../../core/global/atoms/Spinner'
 
-const ExamPeriodsTable = ({ examPeriods, onDelete, onCreate, loading }) => {
-    const { selectedItems, setSelectedItems } = useState([])
+const ExamPeriodsTable = ({ examPeriods, onDelete, loading }) => {
+    const [ selectedItems, setSelectedItems ] = useState([])
 
+    const handleCheckboxChange = (period) => {
+        if (selectedItems.includes(period.id)) {
+            setSelectedItems(selectedItems.filter(item => item !== period.id))
+        } else {
+            setSelectedItems([...selectedItems, period.id])
+        }
+    }
     return (
         <div className="exam-periods-table-container">
-            <div className="exam-periods-button-container">
-                <Button onClick={onCreate} className='active'>+</Button>
-            </div>
+            <h1>Citas para el año en curso</h1>
             <table className="exam-periods-table">
                 <thead>
                     <tr>
@@ -36,15 +41,9 @@ const ExamPeriodsTable = ({ examPeriods, onDelete, onCreate, loading }) => {
                                 <tr key={period.id}>
                                     <td>
                                         <InputField
-                                            field={{ type: 'checkbox', name: 'selector', label: '' }}
-                                            value={period.id}
-                                            handleChange={(e) => {
-                                                if (e.target.checked) {
-                                                    setSelectedItems([...selectedItems, period.id])
-                                                } else {
-                                                    setSelectedItems(selectedItems.filter(item => item !== period.id))
-                                                }
-                                            }}
+                                            field={{ type: 'checkbox', name: 'toDelete', label: '' }}
+                                            value={selectedItems.includes(period.id)}
+                                            handleChange={() => handleCheckboxChange(period)}
                                         />
                                     </td>
                                     <td>{new Date(period.startDate).toLocaleDateString()}</td>
@@ -55,6 +54,12 @@ const ExamPeriodsTable = ({ examPeriods, onDelete, onCreate, loading }) => {
                         </tbody>
                     )}
             </table>
+            <div className="exam-periods-button-container">
+                <Button onClick={() => {
+                    onDelete(selectedItems, setSelectedItems)
+                    setSelectedItems([])
+                }} className='btn btn-primary' disabled={selectedItems.length == 0}>Borrar Selección</Button>
+            </div>
         </div>
     )
 }

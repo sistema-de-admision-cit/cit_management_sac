@@ -9,12 +9,12 @@ import DateApplicationSection from '../organisms/DateApplicationSection'
 import useMessages from '../../../../core/global/hooks/useMessages'
 import useFormState from '../../../../core/global/hooks/useFormState'
 import ExamPeriodsTable from '../organisms/ExamPeriodsTable'
-import { handleSubmit, onStartDateChange, onEndDateChange, isFormValid, handleCheckboxChange, handleGetAllExamPeriods } from '../handlers/handlers'
+import { handleSubmit, onStartDateChange, onEndDateChange, isFormValid, handleCheckboxChange, handleGetAllExamPeriods, onDeleteSelectedItems } from '../handlers/handlers'
 
 const ExamScheduleConfiguratorView = () => {
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
-  const [ loading, setLoading ] = useState(false)
-  const [ examPeriods, setExamPeriods ] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [examPeriods, setExamPeriods] = useState([])
 
   const { formData: formValues, setFormData: setFormValues } = useFormState({
     allYear: false,
@@ -25,7 +25,7 @@ const ExamScheduleConfiguratorView = () => {
   })
 
   useEffect(() =>
-      handleGetAllExamPeriods(setExamPeriods, setLoading, setErrorMessage)
+    handleGetAllExamPeriods(setExamPeriods, setLoading, setErrorMessage, setSuccessMessage)
     , [])
 
   const handleChange = (field, value) => {
@@ -72,17 +72,20 @@ const ExamScheduleConfiguratorView = () => {
               onClick={() => handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage)}
               disabled={!isFormValid(formValues) || loading}
             >
-              {loading ? 'Guardando...' : 'Guardar'}
+              {loading ? 'Creanando...' : 'Crear'}
             </Button>
             <Button className='btn btn-secondary'>Cancelar</Button>
           </div>
+          <ExamPeriodsTable
+            examPeriods={examPeriods}
+            onDelete={(selectedItems, setSelectedItems) => {
+              onDeleteSelectedItems(selectedItems, setSelectedItems, setLoading, setErrorMessage)
+              setExamPeriods(examPeriods.filter(period => !selectedItems.includes(period.id)))
+            }}
+            onCreate={() => { }}
+            loading={loading}
+          />
         </div>
-        <ExamPeriodsTable
-          examPeriods={examPeriods}
-          onDelete={() => { }}
-          onCreate={() => { }}
-          loading={loading}
-        />
       </div>
       {renderMessages()}
     </SectionLayout>

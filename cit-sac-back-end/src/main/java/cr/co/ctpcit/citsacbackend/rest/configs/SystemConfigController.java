@@ -28,8 +28,9 @@ public class SystemConfigController {
 
   @PutMapping("/update-questions-quantity")
   public ResponseEntity<String> updateQuestionsQuantity(
-          @RequestBody UpdateQuantityConfigsDto questionsConfigs) {
-    systemConfigService.updateQuantity(questionsConfigs.daiQuestionsQuantity(),questionsConfigs.academicQuestionsQuantity());
+      @RequestBody UpdateQuantityConfigsDto questionsConfigs) {
+    systemConfigService.updateQuantity(questionsConfigs.daiQuestionsQuantity(),
+        questionsConfigs.academicQuestionsQuantity());
     // return the updated questions quantity
     return ResponseEntity.ok().build();
   }
@@ -123,6 +124,12 @@ public class SystemConfigController {
             .buildAndExpand(examPeriodDto.id()).toUri()).build();
   }
 
+  @DeleteMapping("/delete-exam-period/{id}")
+  public ResponseEntity<Void> deleteExamPeriod(@PathVariable Long id) {
+    systemConfigService.deleteExamPeriod(id);
+
+    return ResponseEntity.noContent().build();
+  }
 
   @PutMapping("/academic-exam-questions-quantity/{quantity}")
   public ResponseEntity<String> updateAcademicExamQuestionsQuantity(

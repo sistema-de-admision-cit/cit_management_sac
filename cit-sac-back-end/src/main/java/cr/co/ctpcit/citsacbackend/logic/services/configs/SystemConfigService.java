@@ -32,4 +32,6 @@ public interface SystemConfigService {
   void updateExamQuestionsQuantity(Configurations config, Integer quantity);
 
   String getConfigValue(Configurations configName, boolean isSensible);
+
+  void deleteExamPeriod(Long id);
 }

@@ -199,6 +199,11 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     return config.getConfigValue();
   }
 
+  @Override
+  public void deleteExamPeriod(Long id) {
+    examPeriodRepository.deleteById(id);
+  }
+
   private void saveConfiguration(Configurations configName, String value, boolean isSensible) {
     if (isSensible) {
       value = encryptionUtil.encrypt(value);
