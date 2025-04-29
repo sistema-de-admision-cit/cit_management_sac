@@ -35,6 +35,11 @@ const ExamScheduleConfiguratorView = () => {
     })
   }
 
+  const handleOnDelete = (selectedItems, setSelectedItems) => {
+    onDeleteSelectedItems(selectedItems, setSelectedItems, setLoading, setErrorMessage)
+    setExamPeriods(examPeriods.filter(period => !selectedItems.includes(period.id)))
+  }
+
   return (
     <SectionLayout title='Configurar Citas'>
       <div className='container'>
@@ -78,10 +83,7 @@ const ExamScheduleConfiguratorView = () => {
           </div>
           <ExamPeriodsTable
             examPeriods={examPeriods}
-            onDelete={(selectedItems, setSelectedItems) => {
-              onDeleteSelectedItems(selectedItems, setSelectedItems, setLoading, setErrorMessage)
-              setExamPeriods(examPeriods.filter(period => !selectedItems.includes(period.id)))
-            }}
+            onDelete={handleOnDelete}
             onCreate={() => { }}
             loading={loading}
           />

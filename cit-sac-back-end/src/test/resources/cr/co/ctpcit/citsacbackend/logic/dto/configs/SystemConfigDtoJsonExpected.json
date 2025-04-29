@@ -1,6 +1,5 @@
 {
   "id": 1,
   "configName": "EMAIL_CONTACT",
-  "configValue": "contactocit@ctpcit.co.cr",
-  "isSensible": false
+  "configValue": "contactocit@ctpcit.co.cr"
 }

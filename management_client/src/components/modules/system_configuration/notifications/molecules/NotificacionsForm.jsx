@@ -20,6 +20,20 @@ const NotificationForm = ({ formValues, handleChange, onSave, loading }) => (
       />
       <InputField
         field={{
+          name: 'office_contact',
+          label: 'Número de Contacto',
+          type: 'text',
+          placeholder: '88886666',
+          required: true
+        }}
+        value={formValues.office_contact}
+        handleChange={(e) => handleChange('office_contact', e.target.value)}
+        className='form-group'
+      />
+    </div>
+    <div className='form-row'>
+      <InputField
+        field={{
           name: 'email_notifications_contact',
           label: 'Correo de Notificaciones',
           type: 'text',
@@ -28,6 +42,18 @@ const NotificationForm = ({ formValues, handleChange, onSave, loading }) => (
         }}
         value={formValues.email_notifications_contact}
         handleChange={(e) => handleChange('email_notifications_contact', e.target.value)}
+        className='form-group'
+      />
+      <InputField
+        field={{
+          name: 'email_password',
+          label: 'Contraseña de Correo',
+          type: 'password',
+          placeholder: 'Password',
+          required: true
+        }}
+        value={formValues.email_password}
+        handleChange={(e) => handleChange('email_password', e.target.value)}
         className='form-group'
       />
     </div>
@@ -46,14 +72,14 @@ const NotificationForm = ({ formValues, handleChange, onSave, loading }) => (
       />
       <InputField
         field={{
-          name: 'office_contact',
-          label: 'Número de Contacto',
-          type: 'text',
-          placeholder: '88886666',
+          name: 'whatsapp_api_key',
+          label: 'WhatsApp Api Key',
+          type: 'password',
+          placeholder: 'Api Key Whatsapp',
           required: true
         }}
-        value={formValues.office_contact}
-        handleChange={(e) => handleChange('office_contact', e.target.value)}
+        value={formValues.whatsapp_api_key}
+        handleChange={(e) => handleChange('whatsapp_api_key', e.target.value)}
         className='form-group'
       />
     </div>
@@ -80,32 +106,6 @@ const NotificationForm = ({ formValues, handleChange, onSave, loading }) => (
         }}
         value={formValues.facebook_contact}
         handleChange={(e) => handleChange('facebook_contact', e.target.value)}
-        className='form-group'
-      />
-    </div>
-    <div className='form-row'>
-      <InputField
-        field={{
-          name: 'email_password',
-          label: 'Password Email',
-          type: 'text',
-          placeholder: 'Password',
-          required: true
-        }}
-        value={formValues.email_password}
-        handleChange={(e) => handleChange('email_password', e.target.value)}
-        className='form-group'
-      />
-      <InputField
-        field={{
-          name: 'whatsapp_api_key',
-          label: 'Api Key WhatsApp',
-          type: 'text',
-          placeholder: 'Api Key Whatsapp',
-          required: true
-        }}
-        value={formValues.whatsapp_api_key}
-        handleChange={(e) => handleChange('whatsapp_api_key', e.target.value)}
         className='form-group'
       />
     </div>

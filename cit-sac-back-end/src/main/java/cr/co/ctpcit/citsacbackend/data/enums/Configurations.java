@@ -31,4 +31,15 @@ public enum Configurations {
     }
     return null;
   }
+
+  public static boolean isSensible(Configurations configurations) {
+    switch (configurations) {
+      case EMAIL_PASSWORD, WHATSAPP_API_KEY -> {
+        return true;
+      }
+      default -> {
+        return false;
+      }
+    }
+  }
 }
