@@ -1,8 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.services.notifs.smtp;
 
 import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
-import cr.co.ctpcit.citsacbackend.data.repositories.configs.SystemConfigRepository;
-import cr.co.ctpcit.citsacbackend.logic.services.EncryptionUtil;
 import cr.co.ctpcit.citsacbackend.logic.services.configs.SystemConfigService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

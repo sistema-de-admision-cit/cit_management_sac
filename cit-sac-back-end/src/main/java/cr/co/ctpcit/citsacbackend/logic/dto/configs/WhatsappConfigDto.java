@@ -1,4 +1,5 @@
 package cr.co.ctpcit.citsacbackend.logic.dto.configs;
+
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -6,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.validation.constraints.NotBlank;
-import org.springframework.beans.factory.annotation.Value;
 
 @NoArgsConstructor
 @AllArgsConstructor
