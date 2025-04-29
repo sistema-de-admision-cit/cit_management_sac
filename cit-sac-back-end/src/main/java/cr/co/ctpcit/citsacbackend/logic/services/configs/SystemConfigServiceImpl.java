@@ -27,10 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
- * Implementation of the SystemConfigService interface.
- * This service provides methods for managing system configurations, including
- * question quantities, process weights, contact information, and exam periods.
- * It uses a cache to store configuration values for faster access.
+ * Implementation of the SystemConfigService interface. This service provides methods for managing
+ * system configurations, including question quantities, process weights, contact information, and
+ * exam periods. It uses a cache to store configuration values for faster access.
  */
 @RequiredArgsConstructor
 @Service
@@ -47,8 +46,8 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   private final ExamPeriodRepository examPeriodRepository;
 
   /**
-   * Cache for storing system configuration entities for faster access.
-   * The key is the configuration name and the value is the configuration entity.
+   * Cache for storing system configuration entities for faster access. The key is the configuration
+   * name and the value is the configuration entity.
    */
   private final Map<String, SystemConfigEntity> cache = new ConcurrentHashMap<>();
 
@@ -58,8 +57,8 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   private final EncryptionUtil encryptionUtil;
 
   /**
-   * Loads all system configurations from the database into the cache.
-   * This method is called automatically after the bean is constructed.
+   * Loads all system configurations from the database into the cache. This method is called
+   * automatically after the bean is constructed.
    */
   @PostConstruct
   public void loadConfigFromDB() {
@@ -70,7 +69,8 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   /**
    * Retrieves the configured question quantities for different exam types.
    *
-   * @return a list of system configuration DTOs containing question quantities for DAI and academic exams
+   * @return a list of system configuration DTOs containing question quantities for DAI and academic
+   * exams
    */
   @Override
   public List<SystemConfigDto> getQuestionsQuantity() {
@@ -81,7 +81,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   /**
    * Updates the question quantities for different exam types.
    *
-   * @param daiQuestionsQuantity the new number of questions for DAI exams
+   * @param daiQuestionsQuantity      the new number of questions for DAI exams
    * @param academicQuestionsQuantity the new number of questions for academic exams
    * @throws ResponseStatusException if any of the quantities is negative
    */
@@ -106,7 +106,8 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   /**
    * Retrieves the configured process weights for different evaluation components.
    *
-   * @return a list of system configuration DTOs containing weights for previous grades, academic, and English components
+   * @return a list of system configuration DTOs containing weights for previous grades, academic,
+   * and English components
    */
   @Override
   public List<SystemConfigDto> getProcessWeights() {
@@ -115,12 +116,12 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   }
 
   /**
-   * Updates the process weights for different evaluation components.
-   * The sum of all weights must equal 1.
+   * Updates the process weights for different evaluation components. The sum of all weights must
+   * equal 1.
    *
    * @param prevGradesWeight the weight for previous grades component
-   * @param academicWeight the weight for academic component
-   * @param englishWeight the weight for English component
+   * @param academicWeight   the weight for academic component
+   * @param englishWeight    the weight for English component
    * @throws ResponseStatusException if the sum of weights is not equal to 1
    */
   @Override
@@ -150,13 +151,13 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   public List<SystemConfigDto> getContactInfo() {
     return getConfigList(Configurations.EMAIL_CONTACT, Configurations.EMAIL_NOTIFICATION_CONTACT,
         Configurations.WHATSAPP_CONTACT, Configurations.OFFICE_CONTACT,
-        Configurations.INSTAGRAM_CONTACT, Configurations.FACEBOOK_CONTACT, Configurations.EMAIL_PASSWORD,
-        Configurations.WHATSAPP_API_KEY);
+        Configurations.INSTAGRAM_CONTACT, Configurations.FACEBOOK_CONTACT,
+        Configurations.EMAIL_PASSWORD, Configurations.WHATSAPP_API_KEY);
   }
 
   /**
-   * Updates the contact information with the provided values.
-   * Some values are stored as sensitive information and will be encrypted.
+   * Updates the contact information with the provided values. Some values are stored as sensitive
+   * information and will be encrypted.
    *
    * @param contactInfoConfigsDto DTO containing the new contact information values
    */
@@ -185,13 +186,11 @@ public class SystemConfigServiceImpl implements SystemConfigService {
         false);
 
     //Update EMAIL_PASSWORD (sensitive)
-    saveConfiguration(Configurations.EMAIL_PASSWORD, contactInfoConfigsDto.emailPassword(),
-            true);
+    saveConfiguration(Configurations.EMAIL_PASSWORD, contactInfoConfigsDto.emailPassword(), true);
 
     //Update WHATSAPP_API_KEY (sensitive)
-    saveConfiguration(Configurations.WHATSAPP_API_KEY, contactInfoConfigsDto.whatsappApiKey()
-            ,
-            true);
+    saveConfiguration(Configurations.WHATSAPP_API_KEY, contactInfoConfigsDto.whatsappApiKey(),
+        true);
   }
 
   /**
@@ -231,11 +230,12 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   }
 
   /**
-   * Creates a new exam period with its associated exam days.
-   * Validates that the exam period doesn't already exist and doesn't overlap with existing periods.
+   * Creates a new exam period with its associated exam days. Validates that the exam period doesn't
+   * already exist and doesn't overlap with existing periods.
    *
    * @param examPeriodDto the exam period DTO containing the period details and exam days
-   * @throws ResponseStatusException if the exam period already exists or overlaps with another period
+   * @throws ResponseStatusException if the exam period already exists or overlaps with another
+   *                                 period
    */
   @Override
   public void createExamPeriod(ExamPeriodDto examPeriodDto) {
@@ -272,7 +272,8 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   /**
    * Updates the number of questions for a specific exam type.
    *
-   * @param config the configuration to update (must be ACADEMIC_EXAM_QUESTIONS_QUANTITY or DAI_EXAM_QUESTIONS_QUANTITY)
+   * @param config   the configuration to update (must be ACADEMIC_EXAM_QUESTIONS_QUANTITY or
+   *                 DAI_EXAM_QUESTIONS_QUANTITY)
    * @param quantity the new number of questions
    * @throws ResponseStatusException if the configuration is not valid for exam questions quantity
    */
@@ -286,8 +287,8 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   }
 
   /**
-   * Retrieves the value of a configuration.
-   * If the configuration is marked as sensitive, the value will be decrypted before returning.
+   * Retrieves the value of a configuration. If the configuration is marked as sensitive, the value
+   * will be decrypted before returning.
    *
    * @param configName the name of the configuration to retrieve
    * @param isSensible whether the configuration value is sensitive and needs decryption
@@ -314,11 +315,11 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   }
 
   /**
-   * Saves a configuration value to the database and updates the cache.
-   * If the configuration is marked as sensitive, the value will be encrypted before saving.
+   * Saves a configuration value to the database and updates the cache. If the configuration is
+   * marked as sensitive, the value will be encrypted before saving.
    *
    * @param configName the name of the configuration to save
-   * @param value the value to save
+   * @param value      the value to save
    * @param isSensible whether the configuration value is sensitive and needs encryption
    */
   private void saveConfiguration(Configurations configName, String value, boolean isSensible) {
@@ -332,8 +333,8 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   }
 
   /**
-   * Retrieves a list of configuration DTOs for the specified configuration names.
-   * Configurations that don't exist in the cache will be filtered out.
+   * Retrieves a list of configuration DTOs for the specified configuration names. Configurations
+   * that don't exist in the cache will be filtered out.
    *
    * @param configNames the names of the configurations to retrieve
    * @return a list of system configuration DTOs

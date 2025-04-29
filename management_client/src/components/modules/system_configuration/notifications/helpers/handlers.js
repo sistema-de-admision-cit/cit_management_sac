@@ -81,9 +81,6 @@ export const getCurrentSettings = async () => {
   try {
     const response = await axios.get(getNotificationSettingsUrl, { timeout: 5000 })
     const data = mapIncomingData(response.data)
-
-    console.log(response.data, 'response.data')
-
     initValues = { ...data }
     return data
   } catch (error) {
@@ -107,11 +104,6 @@ export const updateNotificationSettings = async (formValues, setFormValues, setL
       emailPassword: formValues.email_password,
       whatsappApiKey: formValues.whatsapp_api_key
     }
-
-    
-    Console.log('dataToSend', dataToSend)
-
-
     await axios.put(saveNotificationSettingsUrl, dataToSend)
     setSuccessMessage('Configuraciones actualizadas correctamente.')
     const updatedData = await getCurrentSettings()
