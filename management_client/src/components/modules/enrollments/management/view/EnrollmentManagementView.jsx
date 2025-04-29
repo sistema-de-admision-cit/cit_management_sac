@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import EnrollmentTable from '../organisms/EnrollmentTable'
 import '../../../../../assets/styles/enrollments/enrollment-management-view.css'
-import EnrollemntSearchBar from '../molecules/EnrollmentSearchBar'
 import ModalApplicantDetails from '../organisms/ModalApplicantDetails'
 import { handleEnrollmentEdit, handleDocClick, handleFileDownload, handleStudendIdClick, handleSearch, handleFileDelete, handleFileUpload } from '../helpers/handlers'
 import useMessages from '../../../../core/global/hooks/useMessages'
@@ -17,8 +16,6 @@ const EnrollmentManagementView = () => {
       <div className='enrollment-management-view'>
         <h1>Consultar Inscripciones</h1>
         <p className='description'>Aquí puedes consultar y gestionar las inscripciones de los aspirantes.</p>
-
-        <EnrollemntSearchBar onSearch={(search) => handleSearch(search, setEnrollments)} />
         <EnrollmentTable
           onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen, setApplicantSelected)}
           setErrorMessage={setErrorMessage}

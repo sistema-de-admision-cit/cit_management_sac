@@ -103,7 +103,7 @@ export const handleFileDownload = (file, student, setErrorMessage) => {
     })
     .then(response => {
       const contentDisposition = response.headers['content-disposition'];
-      const filename = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '') 
+      const filename = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '')
         : `${file.documentName}-${student.person.firstName} ${student.person.firstSurname}.pdf`;
 
       const url = window.URL.createObjectURL(new Blob([response.data]))
