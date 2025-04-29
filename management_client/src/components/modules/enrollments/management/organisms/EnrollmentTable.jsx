@@ -1,20 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import EnrollmentRow from '../molecules/EnrollmentRow'
 import '../../../../../assets/styles/enrollments/enrollment-table.css'
 import Button from '../../../../core/global/atoms/Button'
 import Spinner from '../../../../core/global/atoms/Spinner'
+import { handleGetEnrollments, handleGetTotalPages } from '../helpers/handlers'
 
-const EnrollmentTable = ({ enrollments, onStudentIdClick, loading }) => {
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 10
+const EnrollmentTable = ({ onStudentIdClick, setErrorMessage }) => {
+  const [currentPage, setCurrentPage] = useState(0)
+  const [pageSize] = useState(25)
+  const [totalPages, setTotalPages] = useState(0)
+  const [enrollments, setEnrollments] = useState([])
+  const [loading, setLoading] = useState(false)
 
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentEnrollments = enrollments?.slice(indexOfFirstItem, indexOfFirstItem + itemsPerPage)
+  useEffect(() => {
+    handleGetEnrollments(currentPage, pageSize, setEnrollments, setLoading, setErrorMessage)
+  }, [])
 
-  const totalPages = Math.ceil(enrollments?.length / itemsPerPage)
+  useEffect(() => {
+    handleGetEnrollments(currentPage, pageSize, setEnrollments, setLoading, setErrorMessage)
+  }, [currentPage])
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber)
+  useEffect(() => {
+    handleGetTotalPages(setTotalPages, pageSize)
+  }, [enrollments])
 
   return (
     <div className='enrollment-table-container'>
@@ -38,35 +46,34 @@ const EnrollmentTable = ({ enrollments, onStudentIdClick, loading }) => {
                 </td>
               </tr>
             </tbody>
-            )
+          )
           : (
             <tbody>
-              {currentEnrollments
+              {enrollments
                 ? (
-                    currentEnrollments.map((enrollment, index) => (
-                      <EnrollmentRow
-                        key={enrollment.id}
-                        enrollment={enrollment}
-                        index={indexOfFirstItem + index}
-                        onStudentIdClick={onStudentIdClick}
-                      />
-                    ))
-                  )
+                  enrollments?.map((enrollment, index) => (
+                    <EnrollmentRow
+                      key={enrollment.id}
+                      enrollment={enrollment}
+                      onStudentIdClick={onStudentIdClick}
+                    />
+                  ))
+                )
                 : (
                   <tr>
                     <td colSpan='6' className='no-applicants'>
                       No hay aspirantes
                     </td>
                   </tr>
-                  )}
+                )}
             </tbody>
-            )}
+          )}
       </table>
       <div className='pagination'>
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
           <Button
             key={number}
-            onClick={() => paginate(number)}
+            onClick={() => setCurrentPage(number - 1)}
             className={currentPage === number ? 'active' : ''}
           >
             {number}

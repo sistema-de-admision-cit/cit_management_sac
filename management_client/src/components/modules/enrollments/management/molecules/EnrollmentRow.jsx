@@ -1,6 +1,6 @@
 import Button from '../../../../core/global/atoms/Button'
 
-const EnrollmentRow = ({ enrollment, index, onStudentIdClick }) => (
+const StudentRow = ({ enrollment, onStudentIdClick }) => (
   <tr>
     <td>
       <Button
@@ -19,4 +19,4 @@ const EnrollmentRow = ({ enrollment, index, onStudentIdClick }) => (
   </tr>
 )
 
-export default EnrollmentRow
+export default StudentRow

@@ -3,7 +3,14 @@ import InputField from '../../../../core/global/atoms/InputField'
 import Modal from '../../../../core/global/molecules/Modal'
 import '../../../../../assets/styles/enrollments/modal-manage-files.css'
 
-const ModalManageFiles = ({ selectedFileType, selectedFile, onFileUpload, onFileDownload, onFileDelete, onClose }) => (
+const ModalManageFiles = ({ 
+  selectedFileType, 
+  selectedFile, 
+  onFileUpload, 
+  onFileDownload, 
+  onFileDelete, 
+  onClose 
+}) => (
   <Modal onClose={onClose} className='modal-manage-files'>
     <h2>Gestionar {selectedFileType}</h2>
     {!selectedFile
@@ -27,7 +34,7 @@ const ModalManageFiles = ({ selectedFileType, selectedFile, onFileUpload, onFile
             Subir
           </Button>
         </form>
-        )
+      )
       : (
         <div className='file-list-container'>
           <ul className='file-list'>
@@ -35,7 +42,7 @@ const ModalManageFiles = ({ selectedFileType, selectedFile, onFileUpload, onFile
             <li className='file-list-item'>
               {selectedFile.documentName}
               <Button
-                onClick={() => onFileDownload(selectedFile.documentUrl)}
+                onClick={() => onFileDownload(selectedFile)}
                 className='btn btn-primary'
               >
                 Descargar
@@ -49,7 +56,7 @@ const ModalManageFiles = ({ selectedFileType, selectedFile, onFileUpload, onFile
             </li>
           </ul>
         </div>
-        )}
+      )}
 
   </Modal>
 )

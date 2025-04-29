@@ -85,8 +85,11 @@ const ModalApplicantDetails = ({
           selectedFileType={selectedFileType}
           selectedFile={selectedFile}
           onFileUpload={(e) => onFileUpload(e, selectedFileType, setSelectedFile, enrollment, student.idNumber)}
-          onFileDownload={onFileDownload}
-          onFileDelete={((selectedFile) => onFileDelete(selectedFile, setSelectedFile, student.id, enrollment.id))}
+          onFileDownload={(file) => onFileDownload(file, student)}
+          onFileDelete={(selectedFile) => {
+            onFileDelete(selectedFile)
+            setSelectedFile(null)
+          }}
           onClose={() => setIsDocModalOpen(false)}
         />
       )}

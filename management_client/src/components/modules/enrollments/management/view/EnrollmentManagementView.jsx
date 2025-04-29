@@ -4,22 +4,13 @@ import EnrollmentTable from '../organisms/EnrollmentTable'
 import '../../../../../assets/styles/enrollments/enrollment-management-view.css'
 import EnrollemntSearchBar from '../molecules/EnrollmentSearchBar'
 import ModalApplicantDetails from '../organisms/ModalApplicantDetails'
-import { handleEnrollmentEdit, handleDocClick, handleFileDownload, handleStudendIdClick, handleSearch, handleGetAllEnrollments, handleFileDelete, handleFileUpload } from '../helpers/handlers'
+import { handleEnrollmentEdit, handleDocClick, handleFileDownload, handleStudendIdClick, handleSearch, handleFileDelete, handleFileUpload } from '../helpers/handlers'
 import useMessages from '../../../../core/global/hooks/useMessages'
 
 const EnrollmentManagementView = () => {
-  const [loading, setLoading] = useState(false)
-
-  const [enrollments, setEnrollments] = useState()
   const [applicantSelected, setApplicantSelected] = useState({})
-
   const [isModalApplicantDetailsOpen, setIsModalApplicantDetailsOpen] = useState(false)
-
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
-
-  useEffect(() =>
-    handleGetAllEnrollments(setEnrollments, setLoading, setErrorMessage)
-  , [])
 
   return (
     <SectionLayout title='Consultar Inscripciones'>
@@ -29,9 +20,8 @@ const EnrollmentManagementView = () => {
 
         <EnrollemntSearchBar onSearch={(search) => handleSearch(search, setEnrollments)} />
         <EnrollmentTable
-          enrollments={enrollments}
           onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen, setApplicantSelected)}
-          loading={loading}
+          setErrorMessage={setErrorMessage}
         />
       </div>
 
@@ -42,9 +32,9 @@ const EnrollmentManagementView = () => {
           enrollments={applicantSelected}
           onClose={() => setIsModalApplicantDetailsOpen(false)}
           onDocClick={handleDocClick}
-          onFileDownload={(filename) => handleFileDownload(filename, setErrorMessage)}
+          onFileDownload={(file, student) => handleFileDownload(file, student, setErrorMessage)}
           onFileDelete={
-            (selectedFile, setSelectedFile, enrollmentId, studentId) => handleFileDelete(selectedFile, setSelectedFile, setErrorMessage, setSuccessMessage, setEnrollments, enrollmentId, studentId)
+            (selectedFile) => handleFileDelete(selectedFile, setErrorMessage, setSuccessMessage)
           }
           onFileUpload={
             (e, selectedFileType, setSelectedFile, enrollment, studentId) => handleFileUpload(e, selectedFileType, setSelectedFile, enrollment, studentId, setErrorMessage, setSuccessMessage)

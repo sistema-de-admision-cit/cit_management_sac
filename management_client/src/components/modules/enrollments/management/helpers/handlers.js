@@ -95,14 +95,17 @@ export const handleDocClick = (file, setSelectedFile, setIsDocModalOpen) => {
   setIsDocModalOpen(true)
 }
 
-const downloadFileUrl = import.meta.env.VITE_DOWNLOAD_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT
-export const handleFileDownload = (filename, setErrorMessage) => {
-  axios.get(`${downloadFileUrl}/${filename}`,
+const downloadFileUrl = import.meta.env.VITE_DOWNLOAD_DOCUMENT_BY_DOCUMENT_ID_ENDPOINT
+export const handleFileDownload = (file, student, setErrorMessage) => {
+  axios.get(`${downloadFileUrl}/${file.id}`,
     {
-      responseType: 'blob',
-      timeout: 10000
+      responseType: 'blob'
     })
     .then(response => {
+      const contentDisposition = response.headers['content-disposition'];
+      const filename = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '') 
+        : `${file.documentName}-${student.person.firstName} ${student.person.firstSurname}.pdf`;
+
       const url = window.URL.createObjectURL(new Blob([response.data]))
       const link = document.createElement('a')
       link.href = url
@@ -116,31 +119,11 @@ export const handleFileDownload = (filename, setErrorMessage) => {
     })
 }
 
-const deleteFileUrl = import.meta.env.VITE_DELETE_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT
-export const handleFileDelete = (selectedFile, setSelectedFile, setErrorMessage, setSuccessMessage, setEnrollments, enrollmentId, studentId) => {
-  axios.delete(`${deleteFileUrl}/${selectedFile.id}?filename=${selectedFile.documentUrl}`, { timeout: 10000 }) // 10 segundos
+const deleteFileUrl = import.meta.env.VITE_DELETE_DOCUMENT_BY_DOCUMENT_ID_ENDPOINT
+export const handleFileDelete = (selectedFile, setErrorMessage, setSuccessMessage) => {
+  axios.delete(`${deleteFileUrl}/${selectedFile.id}`, { timeout: 10000 }) // 10 segundos
     .then(response => {
       setSuccessMessage('El documento se eliminó correctamente.')
-      setSelectedFile(null)
-      setEnrollments(prevEnrollments =>
-        prevEnrollments.map(student => {
-          if (student.id === studentId) {
-            return {
-              ...student,
-              enrollments: student.enrollments.map(enrollment => {
-                if (enrollment.id === enrollmentId) {
-                  return {
-                    ...enrollment,
-                    document: enrollment.document.filter(doc => doc.id !== selectedFile.id)
-                  }
-                }
-                return enrollment
-              })
-            }
-          }
-          return student
-        })
-      )
     })
     .catch(error => {
       setErrorMessage(getErrorMessage(error))
@@ -208,12 +191,12 @@ export const handleSearch = (search, setEnrollments) => {
 }
 
 const getAllEnrollmentsUrl = import.meta.env.VITE_GET_ALL_ENROLLMENTS_ENDPOINT
-export const handleGetAllEnrollments = (setEnrollments, setLoading, setErrorMessage) => {
+export const handleGetEnrollments = (currentPage, pageSize, setEnrollments, setLoading, setErrorMessage) => {
   setLoading(true)
 
-  axios.get(getAllEnrollmentsUrl, { timeout: 10000 })
+  axios.get(`${getAllEnrollmentsUrl}?page=${currentPage}&size=${pageSize}`, { timeout: 10000 })
     .then(response => {
-      const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
+      const enrollments = response.data?.map(enrollment => formatDateToObj(enrollment))
       const uniqueStudents = enrollments.reduce((acc, enrollment) => {
         if (!acc.some(e => e.student.id === enrollment.student.id)) {
           acc.push(enrollment)
@@ -227,5 +210,16 @@ export const handleGetAllEnrollments = (setEnrollments, setLoading, setErrorMess
     })
     .finally(() => {
       setLoading(false)
+    })
+}
+
+const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_ENDPOINT
+export const handleGetTotalPages = (setTotalPages, pageSize) => {
+  axios.get(getTotalPagesUrl, { timeout: 10000 })
+    .then(response => {
+      setTotalPages(response.data / pageSize)
+    })
+    .catch(error => {
+      console.error('Error al obtener el total de páginas:', error)
     })
 }
