@@ -1,12 +1,15 @@
 import axios from '../../../../../config/axiosConfig'
 
+// eslint-disable-next-line no-unused-vars
 let initValues = {
   email_contact: 'ejemplo@ctpcit.co.cr',
   email_notifications_contact: 'ejemplo@ctpcit.co.cr',
   whatsapp_contact: 88887777,
   office_contact: 88886666,
   instagram_contact: 'complejoeducativocit',
-  facebook_contact: 'complejoeducativocit'
+  facebook_contact: 'complejoeducativocit',
+  email_password: 'password',
+  api_whatsapp: 'apiKeyWhatsapp'
 }
 
 const getErrorMessage = (error) => {
@@ -60,7 +63,9 @@ const mapIncomingData = (data) => {
     WHATSAPP_CONTACT: 'whatsapp_contact',
     OFFICE_CONTACT: 'office_contact',
     INSTAGRAM_CONTACT: 'instagram_contact',
-    FACEBOOK_CONTACT: 'facebook_contact'
+    FACEBOOK_CONTACT: 'facebook_contact',
+    EMAIL_PASSWORD: 'email_password',
+    WHATSAPP_API_KEY: 'whatsapp_api_key'
   }
 
   return data.reduce((acc, { configName, configValue }) => {
@@ -76,7 +81,6 @@ export const getCurrentSettings = async () => {
   try {
     const response = await axios.get(getNotificationSettingsUrl, { timeout: 5000 })
     const data = mapIncomingData(response.data)
-
     initValues = { ...data }
     return data
   } catch (error) {
@@ -96,7 +100,9 @@ export const updateNotificationSettings = async (formValues, setFormValues, setL
       whatsappContact: formValues.whatsapp_contact,
       officeContact: formValues.office_contact,
       instagramContact: formValues.instagram_contact,
-      facebookContact: formValues.facebook_contact
+      facebookContact: formValues.facebook_contact,
+      emailPassword: formValues.email_password,
+      whatsappApiKey: formValues.whatsapp_api_key
     }
     await axios.put(saveNotificationSettingsUrl, dataToSend)
     setSuccessMessage('Configuraciones actualizadas correctamente.')

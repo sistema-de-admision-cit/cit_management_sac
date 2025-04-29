@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import '../../../../../assets/styles/global/view.css'
 import '../../../../../assets/styles/sytem_config/exam_schedule_configurator.css'
@@ -8,11 +8,13 @@ import HoursSection from '../organisms/HoursSection'
 import DateApplicationSection from '../organisms/DateApplicationSection'
 import useMessages from '../../../../core/global/hooks/useMessages'
 import useFormState from '../../../../core/global/hooks/useFormState'
-import { handleSubmit, onStartDateChange, onEndDateChange, isFormValid, handleCheckboxChange } from '../handlers/handlers'
+import ExamPeriodsTable from '../organisms/ExamPeriodsTable'
+import { handleSubmit, onStartDateChange, onEndDateChange, isFormValid, handleCheckboxChange, handleGetAllExamPeriods, onDeleteSelectedItems } from '../handlers/handlers'
 
 const ExamScheduleConfiguratorView = () => {
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
   const [loading, setLoading] = useState(false)
+  const [examPeriods, setExamPeriods] = useState([])
 
   const { formData: formValues, setFormData: setFormValues } = useFormState({
     allYear: false,
@@ -22,11 +24,20 @@ const ExamScheduleConfiguratorView = () => {
     startTime: ''
   })
 
+  useEffect(() =>
+    handleGetAllExamPeriods(setExamPeriods, setLoading, setErrorMessage, setSuccessMessage)
+    , [])
+
   const handleChange = (field, value) => {
     setFormValues({
       ...formValues,
       [field]: value
     })
+  }
+
+  const handleOnDelete = (selectedItems, setSelectedItems) => {
+    onDeleteSelectedItems(selectedItems, setSelectedItems, setLoading, setErrorMessage)
+    setExamPeriods(examPeriods.filter(period => !selectedItems.includes(period.id)))
   }
 
   return (
@@ -66,12 +77,17 @@ const ExamScheduleConfiguratorView = () => {
               onClick={() => handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage)}
               disabled={!isFormValid(formValues) || loading}
             >
-              {loading ? 'Guardando...' : 'Guardar'}
+              {loading ? 'Creanando...' : 'Crear'}
             </Button>
             <Button className='btn btn-secondary'>Cancelar</Button>
           </div>
+          <ExamPeriodsTable
+            examPeriods={examPeriods}
+            onDelete={handleOnDelete}
+            onCreate={() => { }}
+            loading={loading}
+          />
         </div>
-
       </div>
       {renderMessages()}
     </SectionLayout>

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import NotificacionsForm from '../molecules/NotificacionsForm'
-import SendNotificacions from '../molecules/SendNotifications'
 import useMessages from '../../../../core/global/hooks/useMessages'
 import { getCurrentSettings, updateNotificationSettings } from '../helpers/handlers'
 
@@ -12,10 +11,12 @@ const NotificationsSettingsView = () => {
   const [formValues, setFormValues] = useState({
     email_contact: '',
     email_notifications_contact: '',
+    email_password: '',
     whatsapp_contact: '',
+    whatsapp_api_key: '',
     office_contact: '',
     instagram_contact: '',
-    facebook_contact: ''
+    facebook_contact: '',
   })
 
   useEffect(() => {
@@ -45,9 +46,8 @@ const NotificationsSettingsView = () => {
     <SectionLayout title='Configurar Porcentajes'>
       <div className='container'>
         {renderMessages()}
-        <h1>Configuración de notificaciones</h1>
+        <h1>Configuración de Contactos</h1>
         <div className='notifications-configurator'>
-          <p className='description'><b>Puntos de control.</b></p>
           <NotificacionsForm
             formValues={formValues}
             handleChange={handleChange}

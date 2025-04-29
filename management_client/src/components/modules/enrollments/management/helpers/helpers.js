@@ -25,6 +25,12 @@ export const statusOptions = [
   { value: 'REJECTED', label: 'Rechazado' }
 ]
 
+export const statusOptionsForEnrollment = [
+  { value: 'PENDING', label: 'Inscrito' },
+  { value: 'ELIGIBLE', label: 'Permitido' },
+  { value: 'INELIGIBLE', label: 'Inelegible' },
+]
+
 export const isCommentRequired = (formData, enrollment) => {
   if (formData.status !== enrollment.status || formData.examDate !== enrollment.examDate) {
     return true

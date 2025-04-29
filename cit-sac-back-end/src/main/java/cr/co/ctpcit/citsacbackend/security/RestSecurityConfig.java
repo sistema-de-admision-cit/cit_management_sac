@@ -83,6 +83,7 @@ public class RestSecurityConfig {
   public DaoAuthenticationProviderCstm daoProvider() {
     DaoAuthenticationProviderCstm authProvider =
         new DaoAuthenticationProviderCstm(passwordEncoder, userDetailsService);
+    System.out.println();
     return authProvider;
   }
 }

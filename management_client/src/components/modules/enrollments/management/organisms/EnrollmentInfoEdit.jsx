@@ -2,7 +2,7 @@ import '../../../../../assets/styles/enrollments/enrollment-info-edit.css'
 import Button from '../../../../core/global/atoms/Button'
 import InputField from '../../../../core/global/atoms/InputField'
 import DatePicker from '../../../../core/global/atoms/DatePicker'
-import { statusOptions, isCommentRequired, isEnabled } from '../helpers/helpers'
+import { statusOptionsForEnrollment, isCommentRequired, isEnabled } from '../helpers/helpers'
 import { useState } from 'react'
 
 const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) => {
@@ -25,7 +25,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
             type: 'dropdown',
             name: 'status',
             label: 'Estado',
-            options: statusOptions
+            options: statusOptionsForEnrollment
           }}
           value={formData.status}
           handleChange={(e) => setFormData({ ...formData, status: e.target.value })}

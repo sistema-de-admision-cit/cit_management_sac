@@ -5,6 +5,8 @@ import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
 
 import java.util.List;
 
+import static cr.co.ctpcit.citsacbackend.data.enums.Configurations.isSensible;
+
 public class SystemConfigMapper {
   public static SystemConfigEntity toEntity(SystemConfigDto systemConfigDto) {
     return new SystemConfigEntity(systemConfigDto.id(), systemConfigDto.configName(),
@@ -12,8 +14,10 @@ public class SystemConfigMapper {
   }
 
   public static SystemConfigDto toDto(SystemConfigEntity savedEntity) {
-    return new SystemConfigDto(savedEntity.getId(), savedEntity.getConfigName(),
-        savedEntity.getConfigValue());
+    String configValue =
+        isSensible(savedEntity.getConfigName()) ? "******** oculto" : savedEntity.getConfigValue();
+
+    return new SystemConfigDto(savedEntity.getId(), savedEntity.getConfigName(), configValue);
   }
 
   public static List<SystemConfigDto> toDtoList(List<SystemConfigEntity> processWeights) {
