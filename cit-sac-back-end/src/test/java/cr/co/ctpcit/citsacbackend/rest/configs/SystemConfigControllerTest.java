@@ -91,7 +91,7 @@ class SystemConfigControllerTest {
     DocumentContext documentContext = JsonPath.parse(response.getBody());
 
     int enrollmentCount = documentContext.read("$.length()");
-    assertThat(enrollmentCount).isEqualTo(6);
+    assertThat(enrollmentCount).isEqualTo(8);
   }
 
   @Test
@@ -99,7 +99,7 @@ class SystemConfigControllerTest {
     UpdateContactInfoConfigsDto updateContactInfoConfigsDto =
         new UpdateContactInfoConfigsDto("emailContact@cit.co.cr",
             "emailNotificationsContact@cit.co.cr", "88556396", "22276565", "CitEsGrande",
-            "CitNoEsGrande");
+            "CitNoEsGrande","campus15","ApiKeyWhatsapp");
 
     HttpEntity<UpdateContactInfoConfigsDto> request = new HttpEntity<>(updateContactInfoConfigsDto);
     ResponseEntity<String> response =

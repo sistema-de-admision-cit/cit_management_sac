@@ -17,19 +17,30 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+/**
+ * REST controller for handling authentication-related endpoints.
+ * Provides endpoints for user login and password management.
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin("*")
 public class AuthController {
+  /**
+   * JWT encoder for generating authentication tokens.
+   */
   private final JwtEncoder encoder;
+
+  /**
+   * Custom authentication provider for user authentication and password management.
+   */
   private final DaoAuthenticationProviderCstm daoAuthenticationProvider;
 
   /**
-   * Obtener el token de autenticación
+   * Generates an authentication token for the authenticated user.
    *
-   * @param authentication la autenticación
-   * @return el token de autenticación
+   * @param authentication the authentication object containing user details
+   * @return a response entity containing the authentication token and related information
    */
   @PostMapping("/login")
   public ResponseEntity<AuthResponseDto> token(Authentication authentication) {
@@ -56,10 +67,10 @@ public class AuthController {
   }
 
   /**
-   * Cambiar la contraseña
+   * Changes the user's password.
    *
-   * @param request la solicitud de cambio de contraseña
-   * @return la respuesta de la solicitud o el error que se encuentre
+   * @param request the password change request containing the old and new passwords
+   * @return a response entity indicating success or failure
    */
   @PutMapping("/change-password")
   public ResponseEntity<String> changePassword(

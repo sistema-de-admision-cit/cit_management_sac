@@ -109,10 +109,10 @@ VALUES ('Documento de Notas', 'OT', 'grades_200123654_856332114336.pdf', 1),
        ('Documento de Notas', 'OT', 'file_example.pdf', 10);
 
 -- Insert value into tbl_examperiods
-INSERT INTO `tbl_exam_periods` (`start_date`, `end_date`)
-VALUES ('2025-01-01', '2025-03-15'),
-       ('2025-04-01', '2025-06-15'),
-       ('2025-07-01', '2025-09-15');
+INSERT INTO `tbl_exam_periods` (`exam_period_id`, `start_date`, `end_date`)
+VALUES (1,'2025-01-01', '2025-03-15'),
+       (2,'2025-04-01', '2025-06-15'),
+       (3, '2025-07-01', '2025-09-15');
 
 -- Insert value into tbl_examdays
 INSERT INTO `tbl_exam_days` (exam_period_id, exam_day, start_time)
@@ -372,7 +372,9 @@ VALUES ('PREV_GRADES_WEIGHT', 0.4),
        ('INSTAGRAM_CONTACT', 'ComplejoEducativoCIT'),
        ('FACEBOOK_CONTACT', 'ComplejoEducativoCIT'),
        ('ACADEMIC_EXAM_QUESTIONS_QUANTITY', '20'),
-       ('DAI_EXAM_QUESTIONS_QUANTITY', '25');
+       ('DAI_EXAM_QUESTIONS_QUANTITY', '25'),
+       ('EMAIL_PASSWORD', 'ContrasenaDeEjemplo'),
+       ('WHATSAPP_API_KEY', 'WhatsappApiKeyDeEjemplo');
 
 -- Password: 'campus12' test sysadmin
 INSERT INTO `tbl_users` (`email`, `username`, `user_password`, `role`)

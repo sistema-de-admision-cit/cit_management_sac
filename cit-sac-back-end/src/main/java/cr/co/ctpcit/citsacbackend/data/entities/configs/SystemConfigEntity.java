@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @Builder
@@ -29,4 +31,22 @@ public class SystemConfigEntity {
   @Column(name = "config_value", nullable = false, length = 128)
   private String configValue;
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (!(o instanceof SystemConfigEntity that))
+      return false;
+
+    if (!getId().equals(that.getId()))
+      return false;
+    if (!getConfigName().equals(that.getConfigName()))
+      return false;
+    return getConfigValue().equals(that.getConfigValue());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, configName, configValue);
+  }
 }

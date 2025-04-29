@@ -198,6 +198,7 @@ class InscriptionsControllerTest {
       return "test.pdf";
     }
   };
+
   static String testDocumentLocation;
 
   @Test
