@@ -64,6 +64,22 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   public void loadConfigFromDB() {
     systemConfigRepository.findAll()
         .forEach(config -> cache.put(config.getConfigName().name(), config));
+
+    if (!cache.containsKey(Configurations.WHATSAPP_API_KEY.name())) {
+      String whatsappApiKey = encryptionUtil.encrypt("WhatsappApiKeyDeEjemplo");
+      SystemConfigEntity config =
+          new SystemConfigEntity(null, Configurations.WHATSAPP_API_KEY, whatsappApiKey);
+      systemConfigRepository.save(config);
+      cache.put(Configurations.WHATSAPP_API_KEY.name(), config);
+    }
+
+    if (!cache.containsKey(Configurations.EMAIL_PASSWORD.name())) {
+      String emailPassword = encryptionUtil.encrypt("EmailPasswordDeEjemplo");
+      SystemConfigEntity config =
+          new SystemConfigEntity(null, Configurations.EMAIL_PASSWORD, emailPassword);
+      systemConfigRepository.save(config);
+        cache.put(Configurations.EMAIL_PASSWORD.name(), config);
+    }
   }
 
   /**

@@ -16,7 +16,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NotificationsImpl implements NotificationsService {
+public class NotificationsServiceImpl implements NotificationsService {
 
   private final JavaMailSender mailSender;
 
@@ -25,7 +25,7 @@ public class NotificationsImpl implements NotificationsService {
   @Value("${twilio.whatsapp.from}")
   private String fromWhatsAppNumber;
 
-  public NotificationsImpl(JavaMailSender mailSender,
+  public NotificationsServiceImpl(JavaMailSender mailSender,
       SystemConfigRepository configRepository) {
     this.mailSender = mailSender;
     this.configRepository = configRepository;

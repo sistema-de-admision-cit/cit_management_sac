@@ -372,9 +372,7 @@ VALUES ('PREV_GRADES_WEIGHT', 0.4),
        ('INSTAGRAM_CONTACT', 'ComplejoEducativoCIT'),
        ('FACEBOOK_CONTACT', 'ComplejoEducativoCIT'),
        ('ACADEMIC_EXAM_QUESTIONS_QUANTITY', '20'),
-       ('DAI_EXAM_QUESTIONS_QUANTITY', '25'),
-       ('EMAIL_PASSWORD', 'ContrasenaDeEjemplo'),
-       ('WHATSAPP_API_KEY', 'WhatsappApiKeyDeEjemplo');
+       ('DAI_EXAM_QUESTIONS_QUANTITY', '25');
 
 -- Password: 'campus12' test sysadmin
 INSERT INTO `tbl_users` (`email`, `username`, `user_password`, `role`)
