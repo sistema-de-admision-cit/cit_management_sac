@@ -37,7 +37,6 @@ export const getEnumOptions = async () => {
       { value: 'GRADES', label: 'Calificaciones' }
     ],
     knownThroughOptions: [
-      { value: 'ALL', label: 'Todos' },
       { value: 'SM', label: 'Redes Sociales' },
       { value: 'OH', label: 'Open House' },
       { value: 'FD', label: 'Amigos' },

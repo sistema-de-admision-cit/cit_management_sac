@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react'
 import {
   Button,
   Grid,
-  Typography,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   Box,
   useTheme,
-  Alert,
-  Snackbar
+  Stack
 } from '@mui/material'
 import DateRangePicker from '../molecules/DateRangePicker'
 import { getEnumOptions } from '../helpers/handler'
@@ -20,7 +18,7 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
   const [request, setRequest] = useState({
     startDate: null,
     endDate: null,
-    reportType: 'ALL',
+    reportType: '',
     knownThroughFilter: 'ALL',
     gradeFilter: 'ALL',
     statusFilter: 'ALL',
@@ -37,27 +35,24 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
     provinceOptions: []
   })
 
-  const [error, setError] = useState(null)
-  const [openSnackbar, setOpenSnackbar] = useState(false)
-
   useEffect(() => {
     const loadOptions = async () => {
       try {
         const opts = await getEnumOptions()
         setOptions({
-          ...opts,
+          reportTypes: opts.reportTypes,
+          knownThroughOptions: [{ value: 'ALL', label: 'Todos' }, ...opts.knownThroughOptions],
           gradeOptions: [{ value: 'ALL', label: 'Todos' }, ...opts.gradeOptions],
           processStatusOptions: [{ value: 'ALL', label: 'Todos' }, ...opts.processStatusOptions],
           gradeTypeOptions: [{ value: 'ALL', label: 'Todos' }, ...opts.gradeTypeOptions],
-          provinceOptions: [{ value: 'ALL', label: 'Todos' }, ...(opts.provinceOptions || [])]
+          provinceOptions: [{ value: 'ALL', label: 'Todos' }, ...(opts.provinceOptions || [])],
         })
       } catch (err) {
-        setError('Error cargando las opciones del formulario')
-        setOpenSnackbar(true)
+        onGenerate(null, null, 'Error cargando las opciones del formulario')
       }
     }
     loadOptions()
-  }, [])
+  }, [onGenerate])
 
   const handleChange = (field, value) => {
     setRequest(prev => ({
@@ -66,27 +61,44 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
     }))
   }
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false)
+  const validateRequest = () => {
+    const { startDate, endDate, reportType } = request
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    if (!startDate || !endDate) {
+      return 'Por favor seleccione ambas fechas'
+    }
+
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+
+    if (start > end) {
+      return 'La fecha de inicio no puede ser posterior a la fecha de fin'
+    }
+
+    if (start > today || end > today) {
+      return 'No se pueden seleccionar fechas futuras'
+    }
+
+    if (!reportType) {
+      return 'Por favor seleccione un tipo de reporte'
+    }
+
+    return null
   }
 
   const handleSubmit = (format) => {
-    if (!request.startDate || !request.endDate) {
-      setError('Por favor seleccione ambas fechas')
-      setOpenSnackbar(true)
-      return
-    }
-
-    if (!request.reportType) {
-      setError('Por favor seleccione un tipo de reporte')
-      setOpenSnackbar(true)
+    const validationError = validateRequest()
+    if (validationError) {
+      onGenerate(null, null, validationError)
       return
     }
 
     const reportRequest = {
       startDate: request.startDate,
       endDate: request.endDate,
-      reportType: request.reportType === 'ALL' ? null : request.reportType,
+      reportType: request.reportType,
       knownThroughFilter: request.knownThroughFilter === 'ALL' ? null : request.knownThroughFilter,
       gradeFilter: request.gradeFilter === 'ALL' ? null : request.gradeFilter,
       statusFilter: request.statusFilter === 'ALL' ? null : request.statusFilter,
@@ -97,6 +109,122 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
     onGenerate(reportRequest, format)
   }
 
+  const getVisibleFilters = () => {
+    const filters = []
+
+    if (request.reportType === 'KNOWN_THROUGH') {
+      filters.push(
+        <Grid item xs={12} md={6} key="knownThrough">
+          <FormControl fullWidth>
+            <InputLabel id='known-through-label'>Conocido por</InputLabel>
+            <Select
+              labelId='known-through-label'
+              value={request.knownThroughFilter}
+              label='Conocido por'
+              onChange={(e) => handleChange('knownThroughFilter', e.target.value)}
+            >
+              {options.knownThroughOptions.map((opt) => (
+                <MenuItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      )
+    }
+
+    if (request.reportType === 'GRADE_TO_ENROLL') {
+      filters.push(
+        <Grid item xs={12} md={6} key="grade">
+          <FormControl fullWidth>
+            <InputLabel id='grade-filter-label'>Grado a matricular</InputLabel>
+            <Select
+              labelId='grade-filter-label'
+              value={request.gradeFilter}
+              label='Grado a matricular'
+              onChange={(e) => handleChange('gradeFilter', e.target.value)}
+            >
+              {options.gradeOptions.map((opt) => (
+                <MenuItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      )
+    }
+
+    if (request.reportType === 'GRADES') {
+      filters.push(
+        <Grid item xs={12} md={6} key="gradeType">
+          <FormControl fullWidth>
+            <InputLabel id='grade-type-filter-label'>Tipo de calificación</InputLabel>
+            <Select
+              labelId='grade-type-filter-label'
+              value={request.gradeTypeFilter}
+              label='Tipo de calificación'
+              onChange={(e) => handleChange('gradeTypeFilter', e.target.value)}
+            >
+              {options.gradeTypeOptions.map((opt) => (
+                <MenuItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      )
+    }
+
+    if (request.reportType === 'PROCESS_STATUS') {
+      filters.push(
+        <Grid item xs={12} md={6} key="status">
+          <FormControl fullWidth>
+            <InputLabel id='status-filter-label'>Estado del proceso</InputLabel>
+            <Select
+              labelId='status-filter-label'
+              value={request.statusFilter}
+              label='Estado del proceso'
+              onChange={(e) => handleChange('statusFilter', e.target.value)}
+            >
+              {options.processStatusOptions.map((opt) => (
+                <MenuItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      )
+    }
+
+    if (request.reportType === 'PROVINCE') {
+      filters.push(
+        <Grid item xs={12} md={6} key="province">
+          <FormControl fullWidth>
+            <InputLabel id='province-filter-label'>Provincia</InputLabel>
+            <Select
+              labelId='province-filter-label'
+              value={request.provinceFilter}
+              label='Provincia'
+              onChange={(e) => handleChange('provinceFilter', e.target.value)}
+            >
+              {options.provinceOptions.map((opt) => (
+                <MenuItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+      )
+    }
+
+    return filters
+  }
+
   return (
     <Box sx={{
       maxWidth: 1200,
@@ -105,33 +233,7 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
       backgroundColor: theme.palette.background.paper,
       borderRadius: 2,
       boxShadow: theme.shadows[1]
-    }}
-    >
-      <Typography
-        variant='h6' gutterBottom sx={{
-          color: theme.palette.text.primary,
-          mb: 3,
-          fontWeight: 'medium'
-        }}
-      >
-        Configuración del Reporte
-      </Typography>
-
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity='error'
-          sx={{ width: '100%' }}
-        >
-          {error}
-        </Alert>
-      </Snackbar>
-
+    }}>
       <Grid container spacing={3}>
         {/* Selector de Tipo de Reporte */}
         <Grid item xs={12} md={6}>
@@ -152,7 +254,7 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
             </Select>
           </FormControl>
         </Grid>
-
+  
         {/* Selector de Rango de Fechas */}
         <Grid item xs={12}>
           <DateRangePicker
@@ -162,159 +264,58 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
             onEndDateChange={(date) => handleChange('endDate', date)}
           />
         </Grid>
-
-        {/* Filtros condicionales - Todos con opción "Todos" */}
-        {request.reportType === 'KNOWN_THROUGH' && (
-          <Grid item xs={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id='known-through-label'>Conocido por</InputLabel>
-              <Select
-                labelId='known-through-label'
-                value={request.knownThroughFilter}
-                label='Conocido por'
-                onChange={(e) => handleChange('knownThroughFilter', e.target.value)}
-                sx={{ minWidth: 250 }}
-              >
-                {options.knownThroughOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        )}
-
-        {request.reportType === 'GRADE_TO_ENROLL' && (
-          <Grid item xs={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id='grade-label'>Grado a matricular</InputLabel>
-              <Select
-                labelId='grade-label'
-                value={request.gradeFilter}
-                label='Grado a matricular'
-                onChange={(e) => handleChange('gradeFilter', e.target.value)}
-                sx={{ minWidth: 250 }}
-              >
-                {options.gradeOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        )}
-
-        {request.reportType === 'PROCESS_STATUS' && (
-          <Grid item xs={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id='status-label'>Estado del proceso</InputLabel>
-              <Select
-                labelId='status-label'
-                value={request.statusFilter}
-                label='Estado del proceso'
-                onChange={(e) => handleChange('statusFilter', e.target.value)}
-                sx={{ minWidth: 250 }}
-              >
-                {options.processStatusOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        )}
-
-        {request.reportType === 'PROVINCE' && (
-          <Grid item xs={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id='province-label'>Provincia</InputLabel>
-              <Select
-                labelId='province-label'
-                value={request.provinceFilter}
-                label='Provincia'
-                onChange={(e) => handleChange('provinceFilter', e.target.value)}
-                sx={{ minWidth: 250 }}
-              >
-                {options.provinceOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        )}
-
-        {request.reportType === 'GRADES' && (
-          <Grid item xs={12} md={6}>
-            <FormControl fullWidth>
-              <InputLabel id='grade-type-label'>Tipo de calificación</InputLabel>
-              <Select
-                labelId='grade-type-label'
-                value={request.gradeTypeFilter}
-                label='Tipo de calificación'
-                onChange={(e) => handleChange('gradeTypeFilter', e.target.value)}
-                sx={{ minWidth: 250 }}
-              >
-                {options.gradeTypeOptions.map((opt) => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        )}
-
-        {/* Botones de Generación */}
+  
+        {/* Filtros dinámicos */}
+        {getVisibleFilters()}
+  
+        {/* Espacio adicional entre filtros y botones */}
+        <Grid item xs={12} sx={{ mb: 4 }} />
+  
+        {/* Botones para Generar Reporte */}
         <Grid item xs={12}>
-          <Box sx={{
-            display: 'flex',
-            gap: 2,
-            justifyContent: 'center',
-            mt: 3,
-            flexWrap: 'wrap'
-          }}
+          <Stack 
+            direction="row" 
+            spacing={2} 
+            justifyContent="center"
+            sx={{ mt: 6 }} // Margen superior aumentado
           >
             <Button
-              variant='contained'
+              variant="contained"
               onClick={() => handleSubmit('PDF')}
               disabled={isLoading}
               sx={{
                 backgroundColor: '#2ba98e',
-                '&:hover': {
-                  backgroundColor: '#238f77'
-                },
-                px: 4,
-                py: 1.5,
+                minWidth: 200,
+                padding: '10px 24px',
+                fontSize: '1rem', 
                 fontWeight: 'bold',
-                minWidth: 180
+                '&:hover': {
+                  backgroundColor: '#228f75'
+                }
               }}
             >
-              {isLoading ? 'Generando...' : 'Exportar a PDF'}
+              {isLoading ? 'Generando...' : 'Generar PDF'}
             </Button>
-            <Button
-              variant='outlined'
-              onClick={() => handleSubmit('CSV')}
-              disabled={isLoading}
-              sx={{
-                color: '#2ba98e',
+            <Button 
+              variant="outlined" 
+              onClick={() => handleSubmit('CSV')} 
+              disabled={isLoading} 
+              sx={{ 
+                minWidth: 200, 
+                padding: '10px 24px', 
+                fontSize: '1rem', 
+                fontWeight: 'bold',
                 borderColor: '#2ba98e',
+                color: '#2ba98e',
                 '&:hover': {
-                  borderColor: '#238f77'
-                },
-                px: 4,
-                py: 1.5,
-                fontWeight: 'bold',
-                minWidth: 180
+                  borderColor: '#228f75',
+                  color: '#228f75'
+                }
               }}
             >
-              {isLoading ? 'Generando...' : 'Exportar a CSV'}
+              {isLoading ? 'Generando...' : 'Generar CSV'}
             </Button>
-          </Box>
+          </Stack>
         </Grid>
       </Grid>
     </Box>

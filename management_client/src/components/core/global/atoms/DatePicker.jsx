@@ -1,16 +1,56 @@
-import InputField from './InputField'
+import React from 'react';
+import { TextField } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import es from 'date-fns/locale/es';
 
-const DatePicker = ({ name, label, placeholder, value, onChange, availableDates, required = false, showLabel }) => (
-  <div className='date-picker-container'>
-    <InputField
-      field={{ name, label, placeholder, type: 'date', required }}
-      value={value}
-      handleChange={onChange}
-      className='date-picker'
-      availableDates={availableDates}
-      showLabel={showLabel}
-    />
-  </div>
-)
+const today = new Date(Date.now())
 
-export default DatePicker
+const MuiDatePicker = ({ 
+  name, 
+  label, 
+  value, 
+  onChange, 
+  required = false, 
+  showLabel = true,
+  disabled = false,
+  minDate,
+  maxDate
+}) => {
+  const handleDateChange = (newValue) => {
+    onChange({
+      target: {
+        name,
+        value: newValue
+      }
+    });
+  };
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
+      <DatePicker
+        label={showLabel ? label : ''}
+        value={value}
+        onChange={handleDateChange}
+        disabled={disabled}
+        minDate={minDate}
+        maxDate={today}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            fullWidth
+            required={required}
+            size="small"
+            variant="outlined"
+            name={name}
+            error={params.error}
+            helperText={params.helperText}
+          />
+        )}
+      />
+    </LocalizationProvider>
+  );
+};
+
+export default MuiDatePicker;
