@@ -24,69 +24,123 @@ export const statusOptions = [
   { value: 'ACCEPTED', label: 'Aceptado' },
   { value: 'REJECTED', label: 'Rechazado' }
 ]
-
 export const isCommentRequired = (formData, enrollment) => {
-  if (formData.status !== enrollment.status || formData.examDate !== enrollment.examDate) {
-    return true
+  // Verificar si hay cambios en el estado
+  if (formData.status !== enrollment.status) {
+    return true;
   }
-}
+
+  // Comparación segura de fechas
+  const currentDate = formData.examDate;
+  const originalDate = enrollment.examDate ? new Date(enrollment.examDate) : null;
+
+  if (!currentDate && !originalDate) {
+    return false;
+  }
+
+  if ((!currentDate && originalDate) || (currentDate && !originalDate)) {
+    return true;
+  }
+
+  try {
+    const currentDateStr = currentDate.toISOString().split('T')[0];
+    const originalDateStr = originalDate.toISOString().split('T')[0];
+    return currentDateStr !== originalDateStr;
+  } catch (error) {
+    console.error('Error al comparar fechas:', error);
+    return true; // Por seguridad, considera que hay cambio si hay error
+  }
+};
 
 export const isEnabled = (formData, enrollment) => {
-  if (formData.status === enrollment.status &&
-    formData.examDate === enrollment.examDate &&
-    formData.whatsappNotification === enrollment.whatsappNotification &&
-    formData.previousGrades === enrollment.student.previousGrades) {
-    return false
+  // Verificar si hay cambios
+  const hasChanges = 
+    formData.status !== enrollment.status ||
+    !areDatesEqual(formData.examDate, enrollment.examDate) ||
+    formData.whatsappNotification !== enrollment.whatsappNotification ||
+    formData.previousGrades !== (enrollment.student.previousGrades ?? '');
+
+  if (!hasChanges) return false;
+
+  if (isCommentRequired(formData, enrollment) && !formData.comment.trim()) {
+    return false;
   }
 
-  if (isCommentRequired(formData, enrollment) && formData.comment === '') {
-    return false
-  }
-  return true
-}
+  return true;
+};
 
-// formtDates: parse the dates in the object to Date objects
+// Función auxiliar para comparar fechas de forma segura
+export const areDatesEqual = (date1, date2) => {
+  if (!date1 && !date2) return true;
+  if (!date1 || !date2) return false;
+
+  try {
+    const d1 = date1 instanceof Date ? date1 : new Date(date1);
+    const d2 = date2 instanceof Date ? date2 : new Date(date2);
+    
+    return d1.toISOString().split('T')[0] === d2.toISOString().split('T')[0];
+  } catch (error) {
+    console.error('Error al comparar fechas:', error);
+    return false;
+  }
+};
+
+// Función para convertir fechas en strings a objetos Date
 export const formatDateToObj = (obj) => {
-  if (obj.birthDate) {
-    obj.birthDate = new Date(obj.birthDate)
+  if (!obj) return obj;
+
+  // Clonar el objeto para no modificar el original directamente
+  const newObj = {...obj};
+
+  if (newObj.birthDate) {
+    newObj.birthDate = new Date(newObj.birthDate);
   }
 
-  // if the object has enrollments, parse the examDate to Date objects
-  if (obj.enrollments && Array.isArray(obj.enrollments)) {
-    obj.enrollments.forEach(enrollment => {
+  if (newObj.enrollments && Array.isArray(newObj.enrollments)) {
+    newObj.enrollments = newObj.enrollments.map(enrollment => {
       if (enrollment.examDate) {
-        enrollment.examDate = new Date(enrollment.examDate)
+        return {
+          ...enrollment,
+          examDate: new Date(enrollment.examDate)
+        };
       }
-    })
+      return enrollment;
+    });
   }
 
-  return obj
-}
+  return newObj;
+};
 
-// parse the object dates to "day/month/year" format
+// Función para formatear fecha a "day/month/year"
 export const formatDate = (date) => {
-  let day = date.getUTCDate()
-  let month = date.getUTCMonth() + 1
-  const year = date.getUTCFullYear()
+  if (!date) return '';
+  
+  // Asegurarse que es un objeto Date
+  const dateObj = date instanceof Date ? date : new Date(date);
+  
+  // Si es inválido, retornar string vacío
+  if (isNaN(dateObj.getTime())) return '';
 
-  day = day < 10 ? '0' + day : day
-  month = month < 10 ? '0' + month : month
+  const day = dateObj.getUTCDate();
+  const month = dateObj.getUTCMonth() + 1;
+  const year = dateObj.getUTCFullYear();
 
-  return `${day}/${month}/${year}`
-}
+  const formattedDay = day < 10 ? `0${day}` : day;
+  const formattedMonth = month < 10 ? `0${month}` : month;
 
-// parse the date to "year-month-day" format
+  return `${formattedDay}/${formattedMonth}/${year}`;
+};
+
+// Función para formatear fecha a "year-month-day" (API)
 export const formatDateForApi = (date) => {
-  console.log('date', date)
+  if (!date) return null;
+  
+  const dateObj = date instanceof Date ? date : new Date(date);
+  if (isNaN(dateObj.getTime())) return null;
 
-  let day = date.getUTCDate()
-  let month = date.getUTCMonth() + 1
-  const year = date.getUTCFullYear()
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getDate()).padStart(2, '0');
 
-  day = day < 10 ? '0' + day : day
-  month = month < 10 ? '0' + month : month
-
-  console.log('date', `${year}-${month}-${day}`)
-
-  return `${year}-${month}-${day}`
-}
+  return `${year}-${month}-${day}`;
+};

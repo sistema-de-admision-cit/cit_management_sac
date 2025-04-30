@@ -5,7 +5,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import es from 'date-fns/locale/es';
 
-const today = new Date(Date.now())
+const today = new Date(Date.now());
 
 const MuiDatePicker = ({ 
   name, 
@@ -35,19 +35,71 @@ const MuiDatePicker = ({
         onChange={handleDateChange}
         disabled={disabled}
         minDate={minDate}
-        maxDate={today}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            fullWidth
-            required={required}
-            size="small"
-            variant="outlined"
-            name={name}
-            error={params.error}
-            helperText={params.helperText}
-          />
-        )}
+        maxDate={maxDate || today}
+        slots={{
+          textField: (params) => (
+            <TextField
+              {...params}
+              fullWidth
+              required={required}
+              size="small"
+              variant="outlined"
+              name={name}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '&:hover fieldset': {
+                    borderColor: '#2ba98e',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#2ba98e',
+                  },
+                },
+                '& .MuiInputLabel-root.Mui-focused': {
+                  color: '#2ba98e',
+                },
+              }}
+            />
+          ),
+        }}
+        slotProps={{
+          layout: {
+            sx: {
+              '& .MuiPickersDay-root': {
+                '&.Mui-selected': {
+                  backgroundColor: '#2ba98e',
+                  '&:hover': {
+                    backgroundColor: '#2ba98e',
+                  },
+                },
+                '&.MuiPickersDay-today': {
+                  borderColor: '#2ba98e',
+                },
+              },
+              '& .MuiPickersCalendarHeader-label': {
+                color: '#2ba98e',
+              },
+              '& .MuiIconButton-root': {
+                color: '#2ba98e',
+                '&:hover': {
+                  backgroundColor: 'rgba(43, 169, 142, 0.1)',
+                },
+              },
+            },
+          },
+          actionBar: {
+            actions: ['today', 'cancel', 'accept'],
+            sx: {
+              '& .MuiButton-root': {
+                '&:hover': {
+                  backgroundColor: 'rgba(43, 169, 142, 0.1)',
+                },
+                '&.MuiButton-textPrimary': {
+                  color: '#2ba98e',
+                },
+              },
+            },
+          },
+        }}
       />
     </LocalizationProvider>
   );
