@@ -65,6 +65,7 @@ const menuConfig = [
         parentComponent: EnrollmentsMenuPageView,
         roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN],
         description: 'Módulo para gestionar el proceso de inscripción de estudiantes.',
+        imagePath: '/images/inscripciones.JPG',
         subItems: [
           {
             key: 'visit-requests',
@@ -72,7 +73,7 @@ const menuConfig = [
             path: '/inscripciones/consultar',
             component: EnrollmentManagementView,
             description: 'Consultar y revisar las inscripciones existentes.',
-            imagePath: '/images/temp-card-image.avif'
+            imagePath: '/images/inscripciones.JPG'
           }
         ]
       },
@@ -83,41 +84,47 @@ const menuConfig = [
         parentComponent: ConfigurationMenuPageView,
         roleRequired: [ROLE_SUPERADMIN],
         description: 'Configuraciones generales del sistema.',
+        imagePath: '/images/configuracion.JPG',
         subItems: [
           {
             key: 'appointment-settings',
             label: 'Configurar Citas',
             path: '/configuracion/citas',
             component: ExamScheduleConfiguratorView,
-            description: 'Configurar horarios y citas para exámenes y reuniones.'
+            description: 'Configurar horarios y citas para exámenes y reuniones.',
+            imagePath: '/images/configuracion_2.JPG'
           },
           {
             key: 'percentages-settings',
             label: 'Configurar Porcentajes',
             path: '/configuracion/porcentajes',
             component: PercentagesConfiguratorView,
-            description: 'Definir porcentajes de evaluación y criterios.'
+            description: 'Definir porcentajes de evaluación y criterios.',
+            imagePath: '/images/configuracion_2.JPG'
           },
           {
             key: 'questions-settings',
             label: 'Configurar Cantidad de Preguntas',
             path: '/configuracion/preguntas',
             component: QuestionConfiguratorView,
-            description: 'Definir la cantidad de preguntas en los exámenes.'
+            description: 'Definir la cantidad de preguntas en los exámenes.',
+            imagePath: '/images/configuracion_2.JPG'
           },
           {
             key: 'notifications-settings',
             label: 'Configurar Notificaciones',
             path: '/configuracion/notificaciones',
             component: NotificationSettingsView,
-            description: 'Configurar las notificaciones automáticas del sistema.'
+            description: 'Configurar las notificaciones automáticas del sistema.',
+            imagePath: '/images/configuracion_2.JPG'
           },
           {
             key: 'manage-access',
             label: 'Gestionar Accesos',
             path: '/configuracion/accesos',
             component: AccessManegementView,
-            description: 'Gestionar accesos y permisos de los usuarios en el sistema.'
+            description: 'Gestionar accesos y permisos de los usuarios en el sistema.',
+            imagePath: '/images/configuracion_2.JPG'
           }
         ]
       },
@@ -128,6 +135,7 @@ const menuConfig = [
         parentComponent: ExamMenuPageView,
         roleRequired: [ROLE_SUPERADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Gestión y configuración de exámenes y preguntas.',
+        imagePath: '/images/examenes.JPG',
         subItems: [
           {
             key: 'add-question',
@@ -135,7 +143,7 @@ const menuConfig = [
             path: '/examenes/ingresar',
             component: AddQuestionView,
             description: 'Agregar nuevas preguntas a los exámenes.',
-            imagePath: '/images/temp-card-image.avif'
+            imagePath: '/images/examenes_2.JPG'
           },
           {
             key: 'modify-question',
@@ -143,7 +151,7 @@ const menuConfig = [
             path: '/examenes/modificar',
             component: ModifyQuestionView,
             description: 'Modificar preguntas existentes en los exámenes.',
-            imagePath: '/images/temp-card-image.avif'
+            imagePath: '/images/examenes_2.JPG'
           },
           {
             key: 'delete-question',
@@ -151,7 +159,7 @@ const menuConfig = [
             path: '/examenes/eliminar',
             component: DeleteQuestionView,
             description: 'Eliminar preguntas de los exámenes.',
-            imagePath: '/images/temp-card-image.avif'
+            imagePath: '/images/examenes_2.JPG'
           },
           {
             key: 'academic-exam',
@@ -159,7 +167,7 @@ const menuConfig = [
             path: '/examenes/academicos',
             component: AcademicManagementView,
             description: 'Ver notas de los examenes academicos.',
-            imagePath: '/images/temp-card-image.avif'
+            imagePath: '/images/examenes_2.JPG'
           },
           {
             key: 'dai-exam',
@@ -167,7 +175,7 @@ const menuConfig = [
             path: '/examenes/dai',
             component: DaiGradesManagementView,
             description: 'Ver notas de los examenes DAI.',
-            imagePath: '/images/temp-card-image.avif'
+            imagePath: '/images/examenes_2.JPG'
           }
         ]
       },
@@ -178,20 +186,23 @@ const menuConfig = [
         parentComponent: ResultsMenuPageView,
         roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Gestión y análisis de los resultados de los exámenes.',
+        imagePath: '/images/analisis.JPG',
         subItems: [
           {
             key: 'load-results',
             label: 'Cargar Notas',
             path: '/resultados/cargar',
             component: ExamScoreManagementView,
-            description: 'Cargar y registrar las notas obtenidas.'
+            description: 'Cargar y registrar las notas obtenidas.',
+            imagePath: '/images/analisis_2.JPG'
           },
           {
             key: 'notify-results',
             label: 'Notificar Resultados',
             path: '/resultados/notificar',
             component: DefaultComponent,
-            description: 'Notificar a los usuarios sobre los resultados obtenidos.'
+            description: 'Notificar a los usuarios sobre los resultados obtenidos.',
+            imagePath: '/images/analisis_2.JPG'
           }
         ]
       },
@@ -202,20 +213,23 @@ const menuConfig = [
         parentComponent: ReportsMenuPageView,
         roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN],
         description: 'Generar y visualizar reportes del sistema.',
+        imagePath: '/images/reporte.JPG',
         subItems: [
           {
             key: 'graphical-reports',
             label: 'Reportes Gráficos',
             path: '/reportes/graficos',
             component: GraphicalReportsView,
-            description: 'Visualizar reportes en formato gráfico.'
+            description: 'Visualizar reportes en formato gráfico.',
+            imagePath: '/images/reporte_2.JPG'
           },
           {
             key: 'pdf-reports',
             label: 'Reportes PDF/CSV',
             path: '/reportes/pdf',
             component: ReportsView,
-            description: 'Generar reportes en formatos PDF y CSV.'
+            description: 'Generar reportes en formatos PDF y CSV.',
+            imagePath: '/images/reporte_2.JPG'
           }
         ]
       }
