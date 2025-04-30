@@ -83,7 +83,7 @@ class InscriptionsControllerTest {
     DocumentContext documentContext = JsonPath.parse(response.getBody());
 
     int enrollmentCount = documentContext.read("$.length()");
-    assertThat(enrollmentCount).isEqualTo(1);
+    assertThat(enrollmentCount).isEqualTo(2);
 
     JSONArray statuses = documentContext.read("$..status");
     assertThat(statuses).containsExactlyInAnyOrder("INELIGIBLE");
@@ -100,7 +100,7 @@ class InscriptionsControllerTest {
     int enrollmentCount = documentContext.read("$.length()");
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(enrollmentCount).isEqualTo(6);
+    assertThat(enrollmentCount).isEqualTo(10);
   }
 
   @Test

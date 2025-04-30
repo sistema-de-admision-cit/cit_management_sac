@@ -444,4 +444,9 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     // Get the count of enrollments
     return enrollmentRepository.countEnrollmentsInProcess();
   }
+
+  @Override
+  public Long getSearchCount(String value) {
+    return enrollmentRepository.countEnrollmentsInProcessByValue();
+  }
 }

@@ -62,4 +62,9 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
   @Query(
       "SELECT COUNT(DISTINCT(e.student)) FROM EnrollmentEntity e WHERE e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE'")
   Long countEnrollmentsInProcess();
+
+  @Query(
+      "SELECT COUNT(DISTINCT(e.student)) FROM EnrollmentEntity e WHERE e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE'" +
+          "AND e.student.studentPerson.idNumber LIKE %:value% OR e.student.studentPerson.firstName LIKE %:value% OR e.student.studentPerson.firstSurname LIKE %:value% OR e.student.studentPerson.secondSurname LIKE %:value%")
+  Long countEnrollmentsInProcessByValue();
 }

@@ -62,6 +62,14 @@ public class InscriptionsController {
     return enrollments == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(enrollments);
   }
 
+  @GetMapping("/search-count")
+  public ResponseEntity<Long> getInscriptionsByValue(
+      @NotNull @RequestParam String value) {
+    Long count = inscriptionsService.getSearchCount(value);
+
+    return count == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(count);
+  }
+
   /**
    * Get all inscriptions
    *

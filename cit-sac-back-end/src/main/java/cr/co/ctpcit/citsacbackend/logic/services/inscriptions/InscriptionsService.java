@@ -3,6 +3,7 @@ package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,4 +35,6 @@ public interface InscriptionsService {
   Iterable<EnrollmentDto> findPendingEnrollmentsByStudentId(String idNumber);
 
   Long getEnrollmentsCount();
+
+  Long getSearchCount(@NotNull String value);
 }

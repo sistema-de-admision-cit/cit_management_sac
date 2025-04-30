@@ -172,9 +172,11 @@ export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollmen
     })
 }
 
-const searchEnrollmentUrl = import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT
-export const handleSearch = (search, setEnrollments, pageSize, setTotalPages) => {
-  axios.get(`${searchEnrollmentUrl}?value=${search}`, { timeout: 10000 })
+export const handleSearch = (currentSearchPage, pageSize, search, setEnrollments, setLoading, setErrorMessage) => {
+  setLoading(true)
+
+  const searchEnrollmentUrl = import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT
+  axios.get(`${searchEnrollmentUrl}?value=${search}&page=${currentSearchPage}&size=${pageSize}`, { timeout: 10000 })
     .then(response => {
       const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
       const uniqueStudents = enrollments.reduce((acc, enrollment) => {
@@ -186,9 +188,11 @@ export const handleSearch = (search, setEnrollments, pageSize, setTotalPages) =>
       setEnrollments(uniqueStudents)
     })
     .catch(error => {
-      console.error(error)
-    });
-  
+      setErrorMessage(getErrorMessage(error))
+    })
+    .finally(() => {
+      setLoading(false)
+    })
 }
 
 export const handleGetEnrollments = (currentPage, pageSize, setEnrollments, setLoading, setErrorMessage) => {
@@ -214,12 +218,24 @@ export const handleGetEnrollments = (currentPage, pageSize, setEnrollments, setL
     })
 }
 
-const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_ENDPOINT
 export const handleGetTotalPages = (setTotalPages, pageSize) => {
+
+  const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_ENDPOINT
   axios.get(getTotalPagesUrl, { timeout: 10000 })
     .then(response => {
       console.log('response.data', response.data)
 
+      setTotalPages(response.data % pageSize === 0 ? response.data / pageSize : Math.floor(response.data / pageSize) + 1)
+    })
+    .catch(error => {
+      console.error('Error al obtener el total de páginas:', error)
+    })
+}
+
+export const handleGetTotalPagesForSearch = (search, pageSize, setTotalPages) => {
+  const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_FOR_SEARCH_ENDPOINT
+  axios.get(`${getTotalPagesUrl}?value=${search}`, { timeout: 10000 })
+    .then(response => {
       setTotalPages(response.data % pageSize === 0 ? response.data / pageSize : Math.floor(response.data / pageSize) + 1)
     })
     .catch(error => {
