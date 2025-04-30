@@ -112,7 +112,7 @@ public class ManagementExamController {
    */
   @GetMapping("/search/{value}/{examType}")
   public ResponseEntity<Iterable<StudentExamsDto>> searchStudentExams(@PathVariable String value,
-      @PathVariable ExamType examType) {
+      @PathVariable ExamType examType, @PageableDefault(page = 0, size = 25) Pageable pageable) {
     if(examType.equals(ExamType.ENG)) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
@@ -121,7 +121,7 @@ public class ManagementExamController {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
-    Iterable<StudentExamsDto> students = examsService.searchStudentExams(value, examType);
+    Iterable<StudentExamsDto> students = examsService.searchStudentExams(value, examType, pageable);
 
     return ResponseEntity.ok(students);
   }

@@ -14,20 +14,16 @@ const EnrollmentTable = ({ onStudentIdClick, setErrorMessage }) => {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    handleGetEnrollments(currentPage, pageSize, setEnrollments, setLoading, setErrorMessage)
+    handleGetEnrollments(currentPage, pageSize, setEnrollments, setLoading, setErrorMessage, setTotalPages)
   }, [])
 
   useEffect(() => {
     handleGetEnrollments(currentPage, pageSize, setEnrollments, setLoading, setErrorMessage)
   }, [currentPage])
 
-  useEffect(() => {
-    handleGetTotalPages(setTotalPages, pageSize)
-  }, [])
-
   return (
     <>
-      <EnrollemntSearchBar onSearch={(search) => {handleSearch(search, setEnrollments)}} />
+      <EnrollemntSearchBar onSearch={(search) => { handleSearch(search, setEnrollments, pageSize, setTotalPages)}} />
       <div className='enrollment-table-container'>
         <table className='enrollment-table'>
           <thead>

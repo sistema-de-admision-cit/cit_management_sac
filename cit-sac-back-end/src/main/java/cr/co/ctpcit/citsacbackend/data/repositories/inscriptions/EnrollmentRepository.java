@@ -27,14 +27,15 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
 
   @Query(
       "SELECT e FROM EnrollmentEntity e WHERE e.student = :student AND (e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE')")
-  List<EnrollmentEntity> findAllByStudentPerson_IdNumber_ThatAreInProcess(@NotNull StudentEntity student);
+  List<EnrollmentEntity> findAllByStudentPerson_IdNumber_ThatAreInProcess(
+      @NotNull StudentEntity student);
 
   List<EnrollmentEntity> findAllByStudent_StudentPerson_IdNumber(@NotNull String idNumber);
 
   @Query(
       "SELECT e FROM EnrollmentEntity e WHERE e.student IN :students AND (e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE')")
   List<EnrollmentEntity> findAllByStudentInTheListThatHasEnrollmentsInProcess(
-      List<StudentEntity> students);
+      List<StudentEntity> students, Pageable pageable);
 
   @Modifying
   @Transactional
@@ -57,4 +58,8 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
       @Param("p_new_status") String newStatus, @Param("p_new_exam_date") Date newExamDate,
       @Param("p_new_whatsapp_permission") Boolean newWhatsappPermission,
       @Param("p_comment") String comment, @Param("p_changed_by") Integer changedBy);
+
+  @Query(
+      "SELECT COUNT(DISTINCT(e.student)) FROM EnrollmentEntity e WHERE e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE'")
+  Long countEnrollmentsInProcess();
 }

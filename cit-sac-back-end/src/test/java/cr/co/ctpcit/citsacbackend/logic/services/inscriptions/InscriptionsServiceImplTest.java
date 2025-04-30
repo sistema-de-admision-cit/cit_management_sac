@@ -59,14 +59,17 @@ class InscriptionsServiceImplTest {
   @Test
   void findStudentByValueTest() {
     //Configure the mock objects
+    Pageable pageable =
+        PageRequest.of(0, 10);
     String value = "200123654";
-    when(studentRepository.findStudentByStudentPerson_IdNumberContaining(value)).thenReturn(
+    when(studentRepository.findStudentByStudentPerson_IdNumberContaining(value, pageable)).thenReturn(
         List.of(TestProvider.provideStudent()));
     when(
-        enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(List.of(TestProvider.provideStudent()))).thenReturn(
+        enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(List.of(TestProvider.provideStudent()),
+            pageable)).thenReturn(
         TestProvider.provideEnrollmentList());
 
-    List<EnrollmentDto> inscriptions = inscriptionsService.findStudentByValue(value);
+    List<EnrollmentDto> inscriptions = inscriptionsService.findStudentByValue(value, pageable);
 
     assertThat(inscriptions).isNotNull();
     assertThat(inscriptions.size()).isEqualTo(1);

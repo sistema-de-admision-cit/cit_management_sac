@@ -14,7 +14,7 @@ public interface InscriptionsService {
 
   List<EnrollmentDto> getAllInscriptions(Pageable pageable);
 
-  List<EnrollmentDto> findStudentByValue(String value);
+  List<EnrollmentDto> findStudentByValue(String value, Pageable pageable);
 
   EnrollmentDto addInscription(EnrollmentDto inscriptionDto, MultipartFile grades,
       MultipartFile letter);
@@ -32,4 +32,6 @@ public interface InscriptionsService {
   DocumentDto saveDocument(String documentType, Long enrollmentId, MultipartFile file);
 
   Iterable<EnrollmentDto> findPendingEnrollmentsByStudentId(String idNumber);
+
+  Long getEnrollmentsCount();
 }

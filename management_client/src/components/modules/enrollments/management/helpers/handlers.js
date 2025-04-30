@@ -173,7 +173,7 @@ export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollmen
 }
 
 const searchEnrollmentUrl = import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT
-export const handleSearch = (search, setEnrollments) => {
+export const handleSearch = (search, setEnrollments, pageSize, setTotalPages) => {
   axios.get(`${searchEnrollmentUrl}?value=${search}`, { timeout: 10000 })
     .then(response => {
       const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
@@ -187,13 +187,14 @@ export const handleSearch = (search, setEnrollments) => {
     })
     .catch(error => {
       console.error(error)
-    })
+    });
+  
 }
 
-const getAllEnrollmentsUrl = import.meta.env.VITE_GET_ALL_ENROLLMENTS_ENDPOINT
-export const handleGetEnrollments = (currentPage, pageSize, setEnrollments, setLoading, setErrorMessage) => {
+export const handleGetEnrollments = (currentPage, pageSize, setEnrollments, setLoading, setErrorMessage, setTotalPages) => {
   setLoading(true)
 
+  const getAllEnrollmentsUrl = import.meta.env.VITE_GET_ALL_ENROLLMENTS_ENDPOINT
   axios.get(`${getAllEnrollmentsUrl}?page=${currentPage}&size=${pageSize}`, { timeout: 10000 })
     .then(response => {
       const enrollments = response.data?.map(enrollment => formatDateToObj(enrollment))
@@ -207,10 +208,10 @@ export const handleGetEnrollments = (currentPage, pageSize, setEnrollments, setL
     })
     .catch(error => {
       setErrorMessage(getErrorMessage(error))
-    })
-    .finally(() => {
-      setLoading(false)
-    })
+    });
+
+  handleGetTotalPages(setTotalPages, pageSize)
+  setLoading(false)
 }
 
 const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_ENDPOINT

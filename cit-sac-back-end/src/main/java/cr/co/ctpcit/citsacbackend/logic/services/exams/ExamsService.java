@@ -37,5 +37,5 @@ public interface ExamsService {
 
   List<EnglishExamDetailsDto> getExistingEnglishExams(String idNumber);
 
-  List<StudentExamsDto> searchStudentExams(String value, ExamType examType);
+  List<StudentExamsDto> searchStudentExams(String value, ExamType examType, Pageable pageable);
 }

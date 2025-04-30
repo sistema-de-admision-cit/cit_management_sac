@@ -56,8 +56,8 @@ public class InscriptionsController {
    */
   @GetMapping("/search")
   public ResponseEntity<Iterable<EnrollmentDto>> getInscriptionsByValue(
-      @NotNull @RequestParam String value) {
-    List<EnrollmentDto> enrollments = inscriptionsService.findStudentByValue(value);
+      @NotNull @RequestParam String value, @PageableDefault(page = 0, size = 25) Pageable pageable) {
+    List<EnrollmentDto> enrollments = inscriptionsService.findStudentByValue(value, pageable);
 
     return enrollments == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(enrollments);
   }
@@ -75,6 +75,13 @@ public class InscriptionsController {
     return inscriptions.isEmpty() ?
         ResponseEntity.noContent().build() :
         ResponseEntity.ok(inscriptions);
+  }
+
+  @GetMapping("/enrollments-count")
+  public ResponseEntity<Long> getEnrollmentsCount() {
+    Long count = inscriptionsService.getEnrollmentsCount();
+
+    return count == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(count);
   }
 
   /**

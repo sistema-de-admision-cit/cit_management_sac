@@ -261,11 +261,12 @@ public class ExamsServiceImpl implements ExamsService {
   }
 
   @Override
-  public List<StudentExamsDto> searchStudentExams(String value, ExamType examType) {
+  public List<StudentExamsDto> searchStudentExams(String value, ExamType examType,
+      Pageable pageable) {
     //Validate if the value is a number
     List<StudentEntity> students;
     if (value.matches("\\d+")) {
-      students = studentRepository.findStudentByStudentPerson_IdNumberContaining(value);
+      students = studentRepository.findStudentByStudentPerson_IdNumberContaining(value, pageable);
     } else {
       //Search for persons by value
       students = studentRepository.findAllByValue(value);

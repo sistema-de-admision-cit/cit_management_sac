@@ -79,19 +79,20 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   /**
    * Get an inscription by value
    *
-   * @param value of the idNumber, the name of the student or first surname or previous school
+   * @param value    of the idNumber, the name of the student or first surname or previous school
+   * @param pageable
    * @return a list of inscriptions that match the value
    */
   @Override
-  public List<EnrollmentDto> findStudentByValue(String value) {
+  public List<EnrollmentDto> findStudentByValue(String value, Pageable pageable) {
     List<EnrollmentEntity> enrollments = new ArrayList<>();
     // Validate if the value is a number
     if (value.matches("\\d+")) {
       List<StudentEntity> student =
-          studentRepository.findStudentByStudentPerson_IdNumberContaining(value);
+          studentRepository.findStudentByStudentPerson_IdNumberContaining(value, pageable);
       if (!student.isEmpty()) {
         enrollments =
-            enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(student);
+            enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(student, pageable);
       }
     }
 
@@ -105,7 +106,8 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
       // Find enrollments by students
       enrollments =
-          enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(students);
+          enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(students,
+              pageable);
     }
 
     return EnrollmentMapper.convertToDtoList(enrollments);
@@ -435,5 +437,11 @@ public class InscriptionsServiceImpl implements InscriptionsService {
         enrollmentRepository.findAllByStudentPerson_IdNumber_ThatAreInProcess(student);
 
     return EnrollmentMapper.convertToDtoList(enrollments);
+  }
+
+  @Override
+  public Long getEnrollmentsCount() {
+    // Get the count of enrollments
+    return enrollmentRepository.countEnrollmentsInProcess();
   }
 }
