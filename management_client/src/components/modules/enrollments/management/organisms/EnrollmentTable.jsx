@@ -8,13 +8,14 @@ import { handleGetEnrollments, handleGetTotalPages, handleSearch } from '../help
 
 const EnrollmentTable = ({ onStudentIdClick, setErrorMessage }) => {
   const [currentPage, setCurrentPage] = useState(0)
-  const [pageSize] = useState(25)
+  const [pageSize] = useState(10)
   const [totalPages, setTotalPages] = useState(0)
   const [enrollments, setEnrollments] = useState([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    handleGetEnrollments(currentPage, pageSize, setEnrollments, setLoading, setErrorMessage, setTotalPages)
+    handleGetEnrollments(currentPage, pageSize, setEnrollments, setLoading, setErrorMessage)
+    handleGetTotalPages(setTotalPages, pageSize)
   }, [])
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const EnrollmentTable = ({ onStudentIdClick, setErrorMessage }) => {
             <Button
               key={number}
               onClick={() => setCurrentPage(number - 1)}
-              className={currentPage === number ? 'active' : ''}
+              className={currentPage + 1 === number ? 'active' : ''}
             >
               {number}
             </Button>

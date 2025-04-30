@@ -191,7 +191,7 @@ export const handleSearch = (search, setEnrollments, pageSize, setTotalPages) =>
   
 }
 
-export const handleGetEnrollments = (currentPage, pageSize, setEnrollments, setLoading, setErrorMessage, setTotalPages) => {
+export const handleGetEnrollments = (currentPage, pageSize, setEnrollments, setLoading, setErrorMessage) => {
   setLoading(true)
 
   const getAllEnrollmentsUrl = import.meta.env.VITE_GET_ALL_ENROLLMENTS_ENDPOINT
@@ -208,17 +208,19 @@ export const handleGetEnrollments = (currentPage, pageSize, setEnrollments, setL
     })
     .catch(error => {
       setErrorMessage(getErrorMessage(error))
-    });
-
-  handleGetTotalPages(setTotalPages, pageSize)
-  setLoading(false)
+    })
+    .finally(() => {
+      setLoading(false)
+    })
 }
 
 const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_ENDPOINT
 export const handleGetTotalPages = (setTotalPages, pageSize) => {
   axios.get(getTotalPagesUrl, { timeout: 10000 })
     .then(response => {
-      setTotalPages(response.data / pageSize)
+      console.log('response.data', response.data)
+
+      setTotalPages(response.data % pageSize === 0 ? response.data / pageSize : Math.floor(response.data / pageSize) + 1)
     })
     .catch(error => {
       console.error('Error al obtener el total de páginas:', error)
