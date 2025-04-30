@@ -18,14 +18,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotificationsServiceImpl implements NotificationsService {
 
-  private final JavaMailSender mailSender;
+  private final RefreshableJavaMailSender mailSender;
 
   private final SystemConfigRepository configRepository;
 
   @Value("${twilio.whatsapp.from}")
   private String fromWhatsAppNumber;
 
-  public NotificationsServiceImpl(JavaMailSender mailSender,
+  public NotificationsServiceImpl(RefreshableJavaMailSender mailSender,
       SystemConfigRepository configRepository) {
     this.mailSender = mailSender;
     this.configRepository = configRepository;

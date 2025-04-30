@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -224,10 +225,10 @@ public class InscriptionsServiceImpl implements InscriptionsService {
       student = StudentMapper.convertToEntity(inscriptionStudent);
       studentPerson.addStudent(student);
 
+      student.setPreviousGrades(BigDecimal.valueOf(0.00));
+
       //Add student to the parent
       parent.addStudent(student);
-
-
 
       // Save the student
       studentRepository.save(student);
