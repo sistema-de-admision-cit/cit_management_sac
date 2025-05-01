@@ -94,7 +94,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
     if (students.isEmpty()) {
       // Find students by value
-      students = studentRepository.findAllByValueWithEnrollmentInProcess(value);
+      students = studentRepository.findAllByValueWithEnrollmentInProcess(value, pageable);
     }
 
     return StudentMapper.convertToDtoList(students);

@@ -39,7 +39,7 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
           "WHERE LOWER(p.firstName) LIKE %:value% OR LOWER(p.fullSurname) LIKE %:value% " +
           "AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')" +
           "GROUP BY s.id")
-  List<StudentEntity> findAllByValueWithEnrollmentInProcess(String value);
+  List<StudentEntity> findAllByValueWithEnrollmentInProcess(String value, Pageable pageable);
 
   @Query(
       "SELECT COUNT(DISTINCT s.id) " +

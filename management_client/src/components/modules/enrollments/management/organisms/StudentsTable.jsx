@@ -5,6 +5,7 @@ import '../../../../../assets/styles/enrollments/enrollment-table.css'
 import Button from '../../../../core/global/atoms/Button'
 import Spinner from '../../../../core/global/atoms/Spinner'
 import { handleGetStudents, handleGetTotalPages, handleSearch, handleGetTotalPagesForSearch } from '../helpers/handlers'
+import { use } from 'react'
 
 const StudentsTable = ({ onStudentIdClick, setErrorMessage }) => {
   const [currentPage, setCurrentPage] = useState(0)
@@ -21,6 +22,10 @@ const StudentsTable = ({ onStudentIdClick, setErrorMessage }) => {
     handleGetStudents(currentPage, pageSize, setStudents, setLoading, setErrorMessage)
     handleGetTotalPages(setTotalPages, pageSize)
   }, [currentPage])
+
+  useEffect(() => {
+    onSearch(searchValue)
+  }, [currentSearchPage])
 
   const onSearch = (search) => {
     if (search === '') {
@@ -39,8 +44,7 @@ const StudentsTable = ({ onStudentIdClick, setErrorMessage }) => {
 
   const onClickPage = (number) => {
     if (searching) {
-      setCurrentSearchPage(prev => number + 1)
-      onSearch(searchValue)
+      setCurrentSearchPage(number + 1)
     } else {
       setCurrentPage(number + 1)
     }

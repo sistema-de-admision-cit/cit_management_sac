@@ -269,7 +269,7 @@ public class ExamsServiceImpl implements ExamsService {
       students = studentRepository.findStudentByLikeIdNumberWithEnrollmentInProcess(value, pageable);
     } else {
       //Search for persons by value
-      students = studentRepository.findAllByValueWithEnrollmentInProcess(value);
+      students = studentRepository.findAllByValueWithEnrollmentInProcess(value, pageable);
     }
 
     if (students.isEmpty()) {

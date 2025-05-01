@@ -134,7 +134,8 @@ class StudentRepositoryTest {
 
   @Test
   void testFindStudentByValue() {
-    List<StudentEntity> students = studentRepository.findAllByValueWithEnrollmentInProcess("and");
+    Pageable pageable = Pageable.ofSize(50);
+    List<StudentEntity> students = studentRepository.findAllByValueWithEnrollmentInProcess("and", pageable);
 
     assertThat(students.size()).isEqualTo(4);
   }
