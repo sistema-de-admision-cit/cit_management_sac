@@ -482,5 +482,12 @@ public class TestProvider {
   }
 
 
+  public static List<StudentEntity> provideStudentList() {
+    return List.of(provideStudent());
+  }
+
+  public static Page<StudentEntity> provideStudentPage() {
+    return new PageImpl<>(provideStudentList());
+  }
 }
 

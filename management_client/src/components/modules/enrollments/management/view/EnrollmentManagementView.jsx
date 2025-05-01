@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
-import EnrollmentTable from '../organisms/EnrollmentTable'
+import StudentsTable from '../organisms/StudentsTable'
 import '../../../../../assets/styles/enrollments/enrollment-management-view.css'
 import ModalApplicantDetails from '../organisms/ModalApplicantDetails'
-import { handleEnrollmentEdit, handleDocClick, handleFileDownload, handleStudendIdClick, handleSearch, handleFileDelete, handleFileUpload } from '../helpers/handlers'
+import { handleEnrollmentEdit, handleDocClick, handleFileDownload, handleStudendIdClick, handleFileDelete, handleFileUpload } from '../helpers/handlers'
 import useMessages from '../../../../core/global/hooks/useMessages'
 
 const EnrollmentManagementView = () => {
@@ -16,7 +16,7 @@ const EnrollmentManagementView = () => {
       <div className='enrollment-management-view'>
         <h1>Consultar Inscripciones</h1>
         <p className='description'>Aquí puedes consultar y gestionar las inscripciones de los aspirantes.</p>
-        <EnrollmentTable
+        <StudentsTable
           onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen, setApplicantSelected)}
           setErrorMessage={setErrorMessage}
         />

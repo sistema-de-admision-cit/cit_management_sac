@@ -3,6 +3,7 @@ package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import java.util.List;
 @Service
 public interface InscriptionsService {
 
-  List<EnrollmentDto> getAllInscriptions(Pageable pageable);
+  List<StudentDto> getAllInscriptions(Pageable pageable);
 
   List<EnrollmentDto> findStudentByValue(String value, Pageable pageable);
 

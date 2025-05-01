@@ -1,13 +1,15 @@
 package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 
 import cr.co.ctpcit.citsacbackend.TestProvider;
-import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.EnrollmentEntity;
+import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.StudentEntity;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.DocumentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.EnrollmentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.PersonRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.StudentRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.EnrollmentMapper;
+import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.StudentMapper;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,18 +44,18 @@ class InscriptionsServiceImplTest {
   @Test
   void getAllInscriptionsTest() {
     //Configure the mock objects
-    Page<EnrollmentEntity> enrollmentEntities = TestProvider.provideEnrollmentPage();
+    Page<StudentEntity> studentEntities = TestProvider.provideStudentPage();
     Pageable pageable =
-        PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "student.studentPerson.idNumber"));
-    when(enrollmentRepository.findAllEnrollmentsInProcess(pageable)).thenReturn(enrollmentEntities);
+        PageRequest.of(0, 50, Sort.by(Sort.Direction.ASC, "student.studentPerson.idNumber"));
+    when(studentRepository.findAllWithEnrollmentsInProcess(pageable)).thenReturn(studentEntities);
 
-    List<EnrollmentDto> inscriptions = inscriptionsService.getAllInscriptions(pageable);
+    List<StudentDto> inscriptions = inscriptionsService.getAllInscriptions(pageable);
 
     //Verify the results
     assertThat(inscriptions).isNotNull();
     assertThat(inscriptions.size()).isEqualTo(1);
     assertThat(inscriptions.getFirst()).isEqualTo(
-        EnrollmentMapper.convertToDto(TestProvider.provideEnrollment()));
+        StudentMapper.convertToDto(TestProvider.provideStudent()));
   }
 
   @Test

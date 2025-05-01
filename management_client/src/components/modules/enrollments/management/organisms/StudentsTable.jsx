@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
-import EnrollmentRow from '../molecules/EnrollmentRow'
-import EnrollemntSearchBar from '../molecules/EnrollmentSearchBar'
+import StudentRow from '../molecules/StudentRow'
+import StudentSearchBar from '../molecules/StudentSearchBar'
 import '../../../../../assets/styles/enrollments/enrollment-table.css'
 import Button from '../../../../core/global/atoms/Button'
 import Spinner from '../../../../core/global/atoms/Spinner'
-import { handleGetEnrollments, handleGetTotalPages, handleSearch, handleGetTotalPagesForSearch } from '../helpers/handlers'
+import { handleGetStudents, handleGetTotalPages, handleSearch, handleGetTotalPagesForSearch } from '../helpers/handlers'
 
-const EnrollmentTable = ({ onStudentIdClick, setErrorMessage }) => {
+const StudentsTable = ({ onStudentIdClick, setErrorMessage }) => {
   const [currentPage, setCurrentPage] = useState(0)
   const [pageSize] = useState(10)
   const [totalPages, setTotalPages] = useState(0)
-  const [enrollments, setEnrollments] = useState([])
+  const [students, setStudents] = useState([])
   const [loading, setLoading] = useState(false)
 
   const [currentSearchPage, setCurrentSearchPage] = useState(0)
@@ -18,33 +18,28 @@ const EnrollmentTable = ({ onStudentIdClick, setErrorMessage }) => {
   const [searchValue, setSearchValue] = useState('')
 
   useEffect(() => {
-    handleGetEnrollments(currentPage, pageSize, setEnrollments, setLoading, setErrorMessage)
-    handleGetTotalPages(setTotalPages, pageSize)
-  }, [])
-
-  useEffect(() => {
-    handleGetEnrollments(currentPage, pageSize, setEnrollments, setLoading, setErrorMessage)
+    handleGetStudents(currentPage, pageSize, setStudents, setLoading, setErrorMessage)
     handleGetTotalPages(setTotalPages, pageSize)
   }, [currentPage])
 
   const onSearch = (search) => {
-    if(search === '') {
+    if (search === '') {
       setSearching(false)
       setCurrentSearchPage(0)
       setSearchValue('')
-      handleGetEnrollments(currentPage, pageSize, setEnrollments, setLoading, setErrorMessage)
+      handleGetStudents(currentPage, pageSize, setStudents, setLoading, setErrorMessage)
       handleGetTotalPages(setTotalPages, pageSize)
       return;
     }
     setSearching(true)
     setSearchValue(search)
-    handleSearch(currentSearchPage, pageSize, search, setEnrollments, setLoading, setErrorMessage)
+    handleSearch(currentSearchPage, pageSize, search, setStudents, setLoading, setErrorMessage)
     handleGetTotalPagesForSearch(search, pageSize, setTotalPages)
   }
 
   const onClickPage = (number) => {
     if (searching) {
-      setCurrentSearchPage(number + 1)
+      setCurrentSearchPage(prev => number + 1)
       onSearch(searchValue)
     } else {
       setCurrentPage(number + 1)
@@ -53,7 +48,7 @@ const EnrollmentTable = ({ onStudentIdClick, setErrorMessage }) => {
 
   return (
     <>
-      <EnrollemntSearchBar onSearch={onSearch} />
+      <StudentSearchBar onSearch={onSearch} />
       <div className='enrollment-table-container'>
         <table className='enrollment-table'>
           <thead>
@@ -78,12 +73,12 @@ const EnrollmentTable = ({ onStudentIdClick, setErrorMessage }) => {
             )
             : (
               <tbody>
-                {enrollments
+                {students.length > 0
                   ? (
-                    enrollments?.map((enrollment) => (
-                      <EnrollmentRow
-                        key={enrollment.id}
-                        enrollment={enrollment}
+                    students?.map((student) => (
+                      <StudentRow
+                        key={student.id}
+                        student={student}
                         onStudentIdClick={onStudentIdClick}
                       />
                     ))
@@ -91,7 +86,7 @@ const EnrollmentTable = ({ onStudentIdClick, setErrorMessage }) => {
                   : (
                     <tr>
                       <td colSpan='6' className='no-applicants'>
-                        No hay aspirantes
+                        No hay estudiantes inscritos
                       </td>
                     </tr>
                   )}
@@ -111,13 +106,13 @@ const EnrollmentTable = ({ onStudentIdClick, setErrorMessage }) => {
               </Button>
               ...
               {Array.from({ length: 18 }, (_, i) => currentPage + 2 + i < totalPages - 18 ? currentPage + 2 + i : totalPages - 18 + i).map((number) => (
-              <Button
-                key={number}
+                <Button
+                  key={number}
                   onClick={() => onClickPage(number - 2)}
-                className={currentPage + 1 === number ? 'active' : ''}
-              >
-                {number}
-              </Button>
+                  className={currentPage + 1 === number ? 'active' : ''}
+                >
+                  {number}
+                </Button>
               ))}
               ...
               <Button
@@ -130,22 +125,22 @@ const EnrollmentTable = ({ onStudentIdClick, setErrorMessage }) => {
               </Button>
             </>
           )
-        :
-          (
-            Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-              <Button
-                key={number}
-                onClick={() => onClickPage(number - 2)}
-                className={currentPage + 1 === number ? 'active' : ''}
-              >
-                {number}
-              </Button>
-            ))
-          )}
+            :
+            (
+              Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                <Button
+                  key={number}
+                  onClick={() => onClickPage(number - 2)}
+                  className={searching ? currentSearchPage + 1 === number ? 'active' : '' : currentPage + 1 === number ? 'active' : ''}
+                >
+                  {number}
+                </Button>
+              ))
+            )}
         </div>
       </div>
     </>
   )
 }
 
-export default EnrollmentTable
+export default StudentsTable

@@ -2,6 +2,7 @@ package cr.co.ctpcit.citsacbackend.data.repositories.inscriptions;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.PersonEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.StudentEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,11 +14,23 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
 
   Optional<StudentEntity> findStudentEntityByStudentPerson_IdNumber(String idNumber);
 
-  List<StudentEntity> findStudentByStudentPerson_IdNumberContaining(String value, Pageable pageable);
+  List<StudentEntity> findStudentByStudentPerson_IdNumberContaining(String value,
+      Pageable pageable);
 
   List<StudentEntity> findAllByStudentPersonIn(List<PersonEntity> persons);
 
   @Query(
-      "SELECT s FROM StudentEntity s JOIN PersonEntity p ON p.id = s.id WHERE p.firstName LIKE %:value% OR p.firstSurname LIKE %:value% OR p.secondSurname LIKE %:value%")
+      "SELECT s FROM StudentEntity s " +
+          "JOIN EnrollmentEntity e ON s.id = e.student.id " +
+          "WHERE e.status IN ('PENDING','ELIGIBLE','INELIGIBLE') " +
+          "GROUP BY s.id")
+  Page<StudentEntity> findAllWithEnrollmentsInProcess(Pageable pageable);
+
+  @Query(
+      "SELECT DISTINCT s " + "FROM StudentEntity s " + "JOIN PersonEntity p ON p.id = s.id " + "JOIN EnrollmentEntity e ON s.id = e.student.id " + "WHERE LOWER(p.firstName) LIKE %:value% OR LOWER(p.fullSurname) LIKE %:value% " + "AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
   List<StudentEntity> findAllByValue(String value);
+
+  @Query(
+      "SELECT COUNT(DISTINCT s.id) " + "FROM StudentEntity s " + "JOIN PersonEntity p ON p.id = s.id " + "JOIN EnrollmentEntity e ON s.id = e.student.id " + "WHERE LOWER(p.firstName) LIKE %:value% OR LOWER(p.fullSurname) LIKE %:value% " + "AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
+  Long countEnrollmentsInProcessByValue(String value);
 }

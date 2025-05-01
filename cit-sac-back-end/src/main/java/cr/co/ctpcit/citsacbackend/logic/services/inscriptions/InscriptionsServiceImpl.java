@@ -66,14 +66,14 @@ public class InscriptionsServiceImpl implements InscriptionsService {
    * @return a list of all inscriptions
    */
   @Override
-  public List<EnrollmentDto> getAllInscriptions(Pageable pageable) {
+  public List<StudentDto> getAllInscriptions(Pageable pageable) {
     // Find all enrollments
-    Page<EnrollmentEntity> students = enrollmentRepository.findAllEnrollmentsInProcess(
+    Page<StudentEntity> enrollments = studentRepository.findAllWithEnrollmentsInProcess(
         PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-            pageable.getSortOr(Sort.by(Sort.Direction.ASC, "student.studentPerson.idNumber"))));
+            pageable.getSortOr(Sort.by(Sort.Direction.ASC, "studentPerson.idNumber"))));
 
     // Convert enrollments to DTOs
-    return EnrollmentMapper.convertToDtoList(students.getContent());
+    return StudentMapper.convertToDtoList(enrollments.getContent());
   }
 
   /**
@@ -447,6 +447,6 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
   @Override
   public Long getSearchCount(String value) {
-    return enrollmentRepository.countEnrollmentsInProcessByValue();
+    return studentRepository.countEnrollmentsInProcessByValue(value);
   }
 }

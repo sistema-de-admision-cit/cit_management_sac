@@ -20,20 +20,20 @@ import java.util.List;
 public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Long> {
 
   @Query(
-      "SELECT e FROM EnrollmentEntity e WHERE e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE'")
+      "SELECT e FROM EnrollmentEntity e WHERE e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
   Page<EnrollmentEntity> findAllEnrollmentsInProcess(Pageable pageable);
 
   List<EnrollmentEntity> findAllByStudent(@NotNull StudentEntity student);
 
   @Query(
-      "SELECT e FROM EnrollmentEntity e WHERE e.student = :student AND (e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE')")
+      "SELECT e FROM EnrollmentEntity e WHERE e.student = :student AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
   List<EnrollmentEntity> findAllByStudentPerson_IdNumber_ThatAreInProcess(
       @NotNull StudentEntity student);
 
   List<EnrollmentEntity> findAllByStudent_StudentPerson_IdNumber(@NotNull String idNumber);
 
   @Query(
-      "SELECT e FROM EnrollmentEntity e WHERE e.student IN :students AND (e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE')")
+      "SELECT e FROM EnrollmentEntity e WHERE e.student IN :students AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
   List<EnrollmentEntity> findAllByStudentInTheListThatHasEnrollmentsInProcess(
       List<StudentEntity> students, Pageable pageable);
 
@@ -60,11 +60,6 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
       @Param("p_comment") String comment, @Param("p_changed_by") Integer changedBy);
 
   @Query(
-      "SELECT COUNT(DISTINCT(e.student)) FROM EnrollmentEntity e WHERE e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE'")
+      "SELECT COUNT(DISTINCT(e.student)) FROM EnrollmentEntity e WHERE e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
   Long countEnrollmentsInProcess();
-
-  @Query(
-      "SELECT COUNT(DISTINCT(e.student)) FROM EnrollmentEntity e WHERE e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE'" +
-          "AND e.student.studentPerson.idNumber LIKE %:value% OR e.student.studentPerson.firstName LIKE %:value% OR e.student.studentPerson.firstSurname LIKE %:value% OR e.student.studentPerson.secondSurname LIKE %:value%")
-  Long countEnrollmentsInProcessByValue();
 }

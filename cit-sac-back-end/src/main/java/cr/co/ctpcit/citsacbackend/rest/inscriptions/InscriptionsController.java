@@ -3,6 +3,7 @@ package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
@@ -76,9 +77,9 @@ public class InscriptionsController {
    * @return a list of all inscriptions
    */
   @GetMapping
-  public ResponseEntity<Iterable<EnrollmentDto>> getInscriptions(
+  public ResponseEntity<Iterable<StudentDto>> getInscriptions(
       @PageableDefault(page = 0, size = 25) Pageable pageable) {
-    List<EnrollmentDto> inscriptions = inscriptionsService.getAllInscriptions(pageable);
+    List<StudentDto> inscriptions = inscriptionsService.getAllInscriptions(pageable);
 
     return inscriptions.isEmpty() ?
         ResponseEntity.noContent().build() :
