@@ -56,9 +56,10 @@ public class InscriptionsController {
    * @return the inscription with the given name
    */
   @GetMapping("/search")
-  public ResponseEntity<Iterable<EnrollmentDto>> getInscriptionsByValue(
+  public ResponseEntity<Iterable<StudentDto>> getInscriptionsByValue(
       @NotNull @RequestParam String value, @PageableDefault(page = 0, size = 25) Pageable pageable) {
-    List<EnrollmentDto> enrollments = inscriptionsService.findStudentByValue(value, pageable);
+
+    List<StudentDto> enrollments = inscriptionsService.findStudentByValue(value.toLowerCase(), pageable);
 
     return enrollments == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(enrollments);
   }

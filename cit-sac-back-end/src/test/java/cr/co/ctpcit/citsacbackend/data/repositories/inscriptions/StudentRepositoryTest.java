@@ -134,14 +134,14 @@ class StudentRepositoryTest {
 
   @Test
   void testFindStudentByValue() {
-    List<StudentEntity> students = studentRepository.findAllByValue("and");
+    List<StudentEntity> students = studentRepository.findAllByValueWithEnrollmentInProcess("and");
 
     assertThat(students.size()).isEqualTo(4);
   }
 
   @Test
   void testCountStudentsByValue() {
-    Long count = studentRepository.countEnrollmentsInProcessByValue("and");
+    Long count = studentRepository.countStudentsWithEnrollmentsInProcessByValue("and");
 
     assertThat(count).isEqualTo(4);
   }
@@ -153,6 +153,16 @@ class StudentRepositoryTest {
     Page<StudentEntity> students = studentRepository.findAllWithEnrollmentsInProcess(pageable);
 
     assertThat(students.getContent().size()).isEqualTo(35);
+  }
+
+  @Test
+  void testFindStudentByLikeIdNumberWithEnrollmentInProcess() {
+    // Create a new student and save it
+    Pageable pageable = Pageable.ofSize(50);
+    List<StudentEntity> students =
+        studentRepository.findStudentByLikeIdNumberWithEnrollmentInProcess("2", pageable);
+
+    assertThat(students.size()).isEqualTo(35);
   }
 
   @AfterEach

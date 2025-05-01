@@ -178,14 +178,8 @@ export const handleSearch = (currentSearchPage, pageSize, search, setEnrollments
   const searchEnrollmentUrl = import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT
   axios.get(`${searchEnrollmentUrl}?value=${search.toLowerCase()}&page=${currentSearchPage}&size=${pageSize}`, { timeout: 1000 })
     .then(response => {
-      const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
-      const uniqueStudents = enrollments.reduce((acc, enrollment) => {
-        if (!acc.some(e => e.student.id === enrollment.student.id)) {
-          acc.push(enrollment)
-        }
-        return acc
-      }, [])
-      setEnrollments(uniqueStudents)
+      console.log('response', response.data)
+      setEnrollments(response.data)
     })
     .catch(error => {
       setErrorMessage(getErrorMessage(error))
@@ -198,7 +192,7 @@ export const handleSearch = (currentSearchPage, pageSize, search, setEnrollments
 export const handleGetStudents = (currentPage, pageSize, setStudents, setLoading, setErrorMessage) => {
   setLoading(true)
   const getAllStudentsUrl = import.meta.env.VITE_GET_ALL_ENROLLMENTS_ENDPOINT
-  
+
   axios.get(`${getAllStudentsUrl}?page=${currentPage}&size=${pageSize}`, { timeout: 10000 })
     .then(response => {      
       setStudents(response.data)

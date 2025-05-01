@@ -67,8 +67,8 @@ class InscriptionsControllerTest {
     int enrollmentCount = documentContext.read("$.length()");
     assertThat(enrollmentCount).isEqualTo(1);
 
-    JSONArray statuses = documentContext.read("$..status");
-    assertThat(statuses).containsExactlyInAnyOrder("PENDING");
+    JSONArray statuses = documentContext.read("$..idNumber");
+    assertThat(statuses).containsExactlyInAnyOrder("201654987", "900654321");
   }
 
   @Test
@@ -85,8 +85,8 @@ class InscriptionsControllerTest {
     int enrollmentCount = documentContext.read("$.length()");
     assertThat(enrollmentCount).isEqualTo(2);
 
-    JSONArray statuses = documentContext.read("$..status");
-    assertThat(statuses).containsExactlyInAnyOrder("INELIGIBLE", "PENDING");
+    JSONArray id = documentContext.read("$..idNumber");
+    assertThat(id).containsExactlyInAnyOrder("270456789", "940123789", "201234025", "970456123");
   }
 
   @Test

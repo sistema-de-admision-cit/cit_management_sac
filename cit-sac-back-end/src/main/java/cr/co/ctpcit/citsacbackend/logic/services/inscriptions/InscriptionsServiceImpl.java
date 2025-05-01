@@ -84,33 +84,20 @@ public class InscriptionsServiceImpl implements InscriptionsService {
    * @return a list of inscriptions that match the value
    */
   @Override
-  public List<EnrollmentDto> findStudentByValue(String value, Pageable pageable) {
-    List<EnrollmentEntity> enrollments = new ArrayList<>();
+  public List<StudentDto> findStudentByValue(String value, Pageable pageable) {
+    List<StudentEntity> students = new ArrayList<>();
     // Validate if the value is a number
     if (value.matches("\\d+")) {
-      List<StudentEntity> student =
-          studentRepository.findStudentByStudentPerson_IdNumberContaining(value, pageable);
-      if (!student.isEmpty()) {
-        enrollments =
-            enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(student, pageable);
-      }
+      students =
+          studentRepository.findStudentByLikeIdNumberWithEnrollmentInProcess(value, pageable);
     }
 
-    if (enrollments.isEmpty()) {
-      // Find persons by first name, first surname or second surname
-      List<PersonEntity> findings =
-          personRepository.findByFirstNameFirstSurnameSecondSurnameLike(value);
-
-      // Find students by persons
-      List<StudentEntity> students = studentRepository.findAllByStudentPersonIn(findings);
-
-      // Find enrollments by students
-      enrollments =
-          enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(students,
-              pageable);
+    if (students.isEmpty()) {
+      // Find students by value
+      students = studentRepository.findAllByValueWithEnrollmentInProcess(value);
     }
 
-    return EnrollmentMapper.convertToDtoList(enrollments);
+    return StudentMapper.convertToDtoList(students);
   }
 
   /**
@@ -447,6 +434,6 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
   @Override
   public Long getSearchCount(String value) {
-    return studentRepository.countEnrollmentsInProcessByValue(value);
+    return studentRepository.countStudentsWithEnrollmentsInProcessByValue(value);
   }
 }

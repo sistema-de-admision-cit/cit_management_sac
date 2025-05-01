@@ -6,7 +6,6 @@ import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.DocumentReposit
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.EnrollmentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.PersonRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.StudentRepository;
-import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.EnrollmentMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.StudentMapper;
@@ -64,18 +63,14 @@ class InscriptionsServiceImplTest {
     Pageable pageable =
         PageRequest.of(0, 10);
     String value = "200123654";
-    when(studentRepository.findStudentByStudentPerson_IdNumberContaining(value, pageable)).thenReturn(
+    when(studentRepository.findStudentByLikeIdNumberWithEnrollmentInProcess(value, pageable)).thenReturn(
         List.of(TestProvider.provideStudent()));
-    when(
-        enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(List.of(TestProvider.provideStudent()),
-            pageable)).thenReturn(
-        TestProvider.provideEnrollmentList());
 
-    List<EnrollmentDto> inscriptions = inscriptionsService.findStudentByValue(value, pageable);
+    List<StudentDto> inscriptions = inscriptionsService.findStudentByValue(value, pageable);
 
     assertThat(inscriptions).isNotNull();
     assertThat(inscriptions.size()).isEqualTo(1);
     assertThat(inscriptions.getFirst()).isEqualTo(
-        EnrollmentMapper.convertToDto(TestProvider.provideEnrollment()));
+        StudentMapper.convertToDto(TestProvider.provideStudent()));
   }
 }

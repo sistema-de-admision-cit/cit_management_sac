@@ -14,7 +14,12 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
 
   Optional<StudentEntity> findStudentEntityByStudentPerson_IdNumber(String idNumber);
 
-  List<StudentEntity> findStudentByStudentPerson_IdNumberContaining(String value,
+  @Query("SELECT s FROM StudentEntity s " +
+      "JOIN EnrollmentEntity e ON s.id = e.student.id " +
+      "WHERE e.status IN ('PENDING','ELIGIBLE','INELIGIBLE') " +
+      "AND s.studentPerson.idNumber LIKE CONCAT('%', ?1, '%')" +
+      "GROUP BY s.id")
+  List<StudentEntity> findStudentByLikeIdNumberWithEnrollmentInProcess(String value,
       Pageable pageable);
 
   List<StudentEntity> findAllByStudentPersonIn(List<PersonEntity> persons);
@@ -27,10 +32,21 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
   Page<StudentEntity> findAllWithEnrollmentsInProcess(Pageable pageable);
 
   @Query(
-      "SELECT DISTINCT s " + "FROM StudentEntity s " + "JOIN PersonEntity p ON p.id = s.id " + "JOIN EnrollmentEntity e ON s.id = e.student.id " + "WHERE LOWER(p.firstName) LIKE %:value% OR LOWER(p.fullSurname) LIKE %:value% " + "AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
-  List<StudentEntity> findAllByValue(String value);
+      "SELECT s " +
+          "FROM StudentEntity s " +
+          "JOIN PersonEntity p ON p.id = s.id " +
+          "JOIN EnrollmentEntity e ON s.id = e.student.id " +
+          "WHERE LOWER(p.firstName) LIKE %:value% OR LOWER(p.fullSurname) LIKE %:value% " +
+          "AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')" +
+          "GROUP BY s.id")
+  List<StudentEntity> findAllByValueWithEnrollmentInProcess(String value);
 
   @Query(
-      "SELECT COUNT(DISTINCT s.id) " + "FROM StudentEntity s " + "JOIN PersonEntity p ON p.id = s.id " + "JOIN EnrollmentEntity e ON s.id = e.student.id " + "WHERE LOWER(p.firstName) LIKE %:value% OR LOWER(p.fullSurname) LIKE %:value% " + "AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
-  Long countEnrollmentsInProcessByValue(String value);
+      "SELECT COUNT(DISTINCT s.id) " +
+          "FROM StudentEntity s " +
+          "JOIN PersonEntity p ON p.id = s.id " +
+          "JOIN EnrollmentEntity e ON s.id = e.student.id " +
+          "WHERE LOWER(p.firstName) LIKE %:value% OR LOWER(p.fullSurname) LIKE %:value% " +
+          "AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
+  Long countStudentsWithEnrollmentsInProcessByValue(String value);
 }

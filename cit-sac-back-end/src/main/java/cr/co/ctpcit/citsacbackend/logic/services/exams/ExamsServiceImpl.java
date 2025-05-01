@@ -266,10 +266,10 @@ public class ExamsServiceImpl implements ExamsService {
     //Validate if the value is a number
     List<StudentEntity> students;
     if (value.matches("\\d+")) {
-      students = studentRepository.findStudentByStudentPerson_IdNumberContaining(value, pageable);
+      students = studentRepository.findStudentByLikeIdNumberWithEnrollmentInProcess(value, pageable);
     } else {
       //Search for persons by value
-      students = studentRepository.findAllByValue(value);
+      students = studentRepository.findAllByValueWithEnrollmentInProcess(value);
     }
 
     if (students.isEmpty()) {
