@@ -3,6 +3,7 @@ package cr.co.ctpcit.citsacbackend.rest.results;
 import cr.co.ctpcit.citsacbackend.logic.dto.results.ResultDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.results.StudentResultsDetailsDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.results.UpdateStatusDTO;
+import cr.co.ctpcit.citsacbackend.logic.services.notifs.NotificationsService;
 import cr.co.ctpcit.citsacbackend.logic.services.results.ResultsServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,8 @@ import java.util.List;
 public class ResultsController {
 
     private final ResultsServiceImpl resultsServiceImpl;
+
+    private final NotificationsService notificationsService;
 
     /**
      * Retrieves a paginated list of exam results.
@@ -92,6 +95,7 @@ public class ResultsController {
             @Valid @RequestBody UpdateStatusDTO updateStatusDTO) {
 
         resultsServiceImpl.updateEnrollmentStatus(idNumber, updateStatusDTO);
+        notificationsService.createEmailForAdmissionDecision(idNumber);
         return ResponseEntity.ok().build();
     }
 

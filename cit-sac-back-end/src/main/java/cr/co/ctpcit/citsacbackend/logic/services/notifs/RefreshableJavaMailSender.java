@@ -14,21 +14,72 @@ import org.springframework.stereotype.Component;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * A refreshable implementation of {@link JavaMailSender} that dynamically updates email credentials
+ * from the system configuration before sending emails.
+ * This component decorates a {@link JavaMailSenderImpl} delegate and provides the ability
+ * to refresh SMTP credentials at runtime without restarting the application. Credentials
+ * are automatically checked and updated before each email sending operation.
+ * <p><b>Thread Safety:</b> This class is thread-safe for sending emails as it refreshes
+ * credentials for each operation, though the underlying JavaMailSender implementation
+ * should also be thread-safe.</p>
+ */
 
 @Component
 public class RefreshableJavaMailSender implements JavaMailSender {
 
 
+    /**
+     * Service for retrieving current system configuration values
+     */
     private final SystemConfigService systemConfigService;
+
+    /**
+     * The underlying JavaMailSender implementation that handles actual email operations
+     */
     private final JavaMailSenderImpl delegate;
 
+    /**
+     * SMTP server hostname configured from application properties
+     */
     private final String host;
+
+    /**
+     * SMTP server port configured from application properties
+     */
     private final int port;
+
+    /**
+     * SMTP authentication flag configured from application properties
+     */
     private final boolean smtpAuth;
+
+    /**
+     * STARTTLS enablement flag configured from application properties
+     */
     private final boolean starttlsEnable;
+
+    /**
+     * Email transport protocol configured from application properties
+     */
     private final String protocol;
+
+    /**
+     * JavaMail debug flag configured from application properties
+     */
     private final String debug;
 
+    /**
+     * Constructs a new RefreshableJavaMailSender with the specified configuration.
+     *
+     * @param systemConfigService the service for accessing system configuration
+     * @param host the SMTP server hostname
+     * @param port the SMTP server port
+     * @param smtpAuth whether SMTP authentication is required
+     * @param starttlsEnable whether STARTTLS should be enabled
+     * @param protocol the email transport protocol to use
+     * @param debug whether JavaMail debugging is enabled ("true"/"false")
+     */
     public RefreshableJavaMailSender(
             SystemConfigService systemConfigService,
             @Value("${email.host}") String host,
@@ -50,6 +101,17 @@ public class RefreshableJavaMailSender implements JavaMailSender {
         configureDelegate();
     }
 
+    /**
+     * Configures the underlying JavaMailSender delegate with current settings.
+     * <p>
+     * This method initializes the delegate with:
+     * <ul>
+     *   <li>SMTP server connection details (host/port)</li>
+     *   <li>Current credentials from system configuration</li>
+     *   <li>JavaMail properties for authentication and encryption</li>
+     * </ul>
+     */
+
     private void configureDelegate() {
         // Obtener valores actualizados de configuración
         String username = systemConfigService.getConfigValue(Configurations.EMAIL_NOTIFICATION_CONTACT, false);
@@ -68,6 +130,13 @@ public class RefreshableJavaMailSender implements JavaMailSender {
         props.put("mail.debug", debug);
 
     }
+
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Refreshes credentials before creating the message to ensure current credentials are used.
+     */
 
     @Override
     public MimeMessage createMimeMessage() {
@@ -116,6 +185,13 @@ public class RefreshableJavaMailSender implements JavaMailSender {
         refreshCredentials();
         delegate.send(simpleMailMessages);
     }
+
+    /**
+     * Refreshes the SMTP credentials from system configuration if they have changed.
+     * Compares current delegate credentials with system configuration and updates
+     * them if different. This ensures email operations always use the most recent
+     * credentials without requiring application restart.
+     */
 
     private void refreshCredentials() {
         String currentEmail = systemConfigService.getConfigValue(Configurations.EMAIL_NOTIFICATION_CONTACT, false);

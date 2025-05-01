@@ -4,11 +4,13 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
+import cr.co.ctpcit.citsacbackend.logic.services.notifs.NotificationsService;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
@@ -22,6 +24,8 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_CLASS;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
@@ -34,6 +38,8 @@ class InscriptionsControllerTest {
   @Autowired
   private TestRestTemplate restTemplate;
 
+  @MockBean
+  private NotificationsService notificationsService;  // This will mock the actual service
 
   @Test
   @Order(1)
@@ -172,6 +178,10 @@ class InscriptionsControllerTest {
   @Order(8)
   @Sql(scripts = {"rollback-update-inscriptions.sql"}, executionPhase = BEFORE_TEST_METHOD)
   void shouldUpdateEnrollmentSavingCommentsAndActionPerformerLog() {
+
+    doNothing().when(notificationsService).createEmailForEnrollmentUpdate(anyLong(), any(EnrollmentUpdateDto.class));
+
+
     //Get enrollments of person with id 200123654
     ResponseEntity<String> response =
         restTemplate.getForEntity("/api/inscriptions/200123654", String.class);
@@ -190,6 +200,9 @@ class InscriptionsControllerTest {
             Void.class, enrollmentId);
 
     assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+    verify(notificationsService, times(1))
+            .createEmailForEnrollmentUpdate(eq(Long.valueOf(enrollmentId)), eq(updatedEnrollment));
   }
 
   ByteArrayResource fileContent = new ByteArrayResource("Dummy file content".getBytes()) {

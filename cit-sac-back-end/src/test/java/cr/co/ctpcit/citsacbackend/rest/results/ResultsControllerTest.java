@@ -7,14 +7,15 @@ import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.data.enums.Recommendation;
 import cr.co.ctpcit.citsacbackend.logic.dto.results.StudentResultsDetailsDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.results.UpdateStatusDTO;
+import cr.co.ctpcit.citsacbackend.logic.services.notifs.NotificationsService;
 import cr.co.ctpcit.citsacbackend.logic.services.results.ResultsServiceImpl;
-import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +36,9 @@ public class ResultsControllerTest {
 
     @Mock
     private ResultsServiceImpl resultsService;
+
+    @Mock
+    private NotificationsService notificationsService;
 
     @InjectMocks
     private ResultsController resultsController;
@@ -200,6 +204,8 @@ public class ResultsControllerTest {
 
         doNothing().when(resultsService)
                 .updateEnrollmentStatus(eq(idNumber), any(UpdateStatusDTO.class));
+        doNothing().when(notificationsService)
+                .createEmailForAdmissionDecision(eq(idNumber));
 
         // Act
         ResponseEntity<Void> response =
@@ -211,6 +217,8 @@ public class ResultsControllerTest {
 
         verify(resultsService, times(1))
                 .updateEnrollmentStatus(idNumber, updateStatusDTO);
+        verify(notificationsService, times(1))
+                .createEmailForAdmissionDecision(idNumber);
     }
 
     @Test
