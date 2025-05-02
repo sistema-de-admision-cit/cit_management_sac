@@ -160,22 +160,6 @@ const menuConfig = [
             component: DeleteQuestionView,
             description: 'Eliminar preguntas de los exámenes.',
             imagePath: '/images/examenes_2.JPG'
-          },
-          {
-            key: 'academic-exam',
-            label: 'Visualizar Exámenes Académicos',
-            path: '/examenes/academicos',
-            component: AcademicManagementView,
-            description: 'Ver notas de los examenes academicos.',
-            imagePath: '/images/examenes_2.JPG'
-          },
-          {
-            key: 'dai-exam',
-            label: 'Visualizar Exámenes DAI',
-            path: '/examenes/dai',
-            component: DaiGradesManagementView,
-            description: 'Ver notas de los examenes DAI.',
-            imagePath: '/images/examenes_2.JPG'
           }
         ]
       },
@@ -190,11 +174,27 @@ const menuConfig = [
         subItems: [
           {
             key: 'load-results',
-            label: 'Cargar Notas',
+            label: 'Cargar Notas de Inglés',
             path: '/resultados/cargar',
             component: ExamScoreManagementView,
             description: 'Cargar y registrar las notas obtenidas.',
             imagePath: '/images/analisis_2.JPG'
+          },
+          {
+            key: 'academic-exam',
+            label: 'Visualizar Exámenes Académicos',
+            path: '/resultados/academicos',
+            component: AcademicManagementView,
+            description: 'Ver notas de los examenes academicos.',
+            imagePath: '/images/examenes_2.JPG'
+          },
+          {
+            key: 'dai-exam',
+            label: 'Visualizar Exámenes DAI',
+            path: '/resultados/dai',
+            component: DaiGradesManagementView,
+            description: 'Ver notas de los examenes DAI.',
+            imagePath: '/images/examenes_2.JPG'
           },
           {
             key: 'notify-results',
