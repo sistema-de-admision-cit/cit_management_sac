@@ -39,3 +39,5 @@ src/main/resources/static/files/
 
 src/main/resources/pubkey.pem
 src/main/resources/privykey.pem
+
+src/main/resources/static/*
