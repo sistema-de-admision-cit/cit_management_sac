@@ -7,7 +7,8 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
- * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.configs.SystemConfigEntity}
+ * Represents the Data Transfer Object (DTO) for system configuration settings.
+ * Contains information about the configuration name and its value.
  */
 public record SystemConfigDto(Integer id, Configurations configName,
                               @NotNull @Size(max = 128) String configValue)

@@ -12,6 +12,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.PersonDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -68,7 +69,7 @@ class EnrollmentMapperTest {
     //Arrange
     EnrollmentDto enrollment = new EnrollmentDto(1L,
         new StudentDto(1L, new PersonDto(1L, "John", "Doe", "Smith", IdType.CC, "123456789"),
-            LocalDate.parse("2000-01-01"), "School", true, new ArrayList<>()),
+            LocalDate.parse("2000-01-01"), "School", true,new BigDecimal("8.5"), new ArrayList<>()),
         ProcessStatus.PENDING, Grades.FIRST, KnownThrough.OT, LocalDate.parse("2000-01-01"), true,
         true, new ArrayList<>());
 

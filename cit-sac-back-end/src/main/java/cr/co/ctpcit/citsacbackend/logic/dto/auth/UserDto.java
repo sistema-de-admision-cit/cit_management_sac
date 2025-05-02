@@ -14,6 +14,12 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.List;
 
+
+/**
+ * Represents the Data Transfer Object (DTO) for a user.
+ * This class implements {@link UserDetails} to provide user details for authentication in Spring Security.
+ */
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -27,6 +33,9 @@ public class UserDto implements UserDetails {
   @JsonIgnore
   private String password;
 
+  /**
+   * The email address of the user, which must belong to the domain 'ctpcit.co.cr'.
+   */
   @Pattern(regexp = "^[\\w.-]+@ctpcit\\.co\\.cr$",
           message = "El correo debe pertenecer al dominio ctpcit.co.cr")
   private String email;

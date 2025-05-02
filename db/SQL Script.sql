@@ -492,46 +492,70 @@ CREATE PROCEDURE usp_Update_Enrollment_And_Log (
     IN p_new_status ENUM('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED'),
     IN p_new_exam_date DATE,
     IN p_new_whatsapp_permission BOOLEAN,
+    IN p_new_previous_grades DECIMAL(5,2),
     IN p_comment VARCHAR(255),
     IN p_changed_by INT
 )
-
 BEGIN
     DECLARE v_old_status ENUM('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED');
     DECLARE v_old_exam_date DATE;
     DECLARE v_old_whatsapp_permission BOOLEAN;
+    DECLARE v_old_previous_grades DECIMAL(5,2);
+    DECLARE v_student_id INT;
 
-    -- Obtener los valores actuales
-    SELECT `status`, `exam_date`, `whatsapp_notification`
-    INTO v_old_status, v_old_exam_date, v_old_whatsapp_permission
+    -- Obtener datos actuales de la inscripción
+    SELECT `status`, `exam_date`, `whatsapp_notification`, `student_id`
+    INTO v_old_status, v_old_exam_date, v_old_whatsapp_permission, v_student_id
     FROM `tbl_Enrollments`
     WHERE `enrollment_id` = p_enrollment_id;
 
-    -- Actualizar los valores
+    -- Obtener la nota previa del estudiante
+    SELECT `previous_grades`
+    INTO v_old_previous_grades
+    FROM `tbl_Students`
+    WHERE `student_id` = v_student_id;
+
+    -- Actualizar inscripción
     UPDATE `tbl_Enrollments`
     SET `status` = p_new_status,
         `exam_date` = p_new_exam_date,
         `whatsapp_notification` = p_new_whatsapp_permission
     WHERE `enrollment_id` = p_enrollment_id;
 
+    -- Actualizar calificaciones previas si es diferente
+    IF v_old_previous_grades != p_new_previous_grades THEN
+        UPDATE `tbl_Students`
+        SET `previous_grades` = p_new_previous_grades
+        WHERE `student_id` = v_student_id;
 
-    -- Si el status ha cambiado, registrar en la tabla de logs
+        INSERT INTO `tbl_Logs` 
+            (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
+        VALUES 
+            ('tbl_Students', 'previous_grades', v_old_previous_grades, p_new_previous_grades, p_changed_by, 
+             CONCAT('UPDATE tbl_Students SET previous_grades = ', p_new_previous_grades, ' WHERE student_id = ', v_student_id), 
+             p_comment);
+    END IF;
+
+    -- Registrar cambios si los valores fueron modificados
     IF v_old_status != p_new_status THEN
         INSERT INTO `tbl_Logs` 
             (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
         VALUES 
-            ('tbl_Enrollments', 'status', v_old_status, p_new_status, p_changed_by, CONCAT('UPDATE tbl_Enrollments SET status = ', p_new_status, ' WHERE enrollment_id = ', p_enrollment_id), p_comment);
+            ('tbl_Enrollments', 'status', v_old_status, p_new_status, p_changed_by, 
+             CONCAT('UPDATE tbl_Enrollments SET status = ', p_new_status, ' WHERE enrollment_id = ', p_enrollment_id), 
+             p_comment);
     END IF;
 
-    -- Si la fecha de examen ha cambiado, registrar en la tabla de logs
     IF v_old_exam_date != p_new_exam_date THEN
         INSERT INTO `tbl_Logs` 
             (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
         VALUES 
-            ('tbl_Enrollments', 'exam_date', v_old_exam_date, p_new_exam_date, p_changed_by, CONCAT('UPDATE tbl_Enrollments SET exam_date = ', p_new_exam_date, ' WHERE enrollment_id = ', p_enrollment_id), p_comment);
+            ('tbl_Enrollments', 'exam_date', v_old_exam_date, p_new_exam_date, p_changed_by, 
+             CONCAT('UPDATE tbl_Enrollments SET exam_date = ', p_new_exam_date, ' WHERE enrollment_id = ', p_enrollment_id), 
+             p_comment);
     END IF;
-    
-    -- No se requiere log para whatsapp_permission
+
+    -- No se registra el cambio de whatsapp_notification en logs
 END//
 
 -- -----------------------------------------------------

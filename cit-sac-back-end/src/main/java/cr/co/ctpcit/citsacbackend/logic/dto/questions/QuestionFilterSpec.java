@@ -13,6 +13,11 @@ import org.springframework.data.jpa.domain.Specification;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Specification class for filtering {@link QuestionEntity} objects based on various criteria such as
+ * question text, deletion status, question type, grade, and question level.
+ * Implements the {@link Specification} interface to build a dynamic query for filtering questions.
+ */
 public record QuestionFilterSpec(String questionText, Boolean deleted, QuestionType questionType,
                                  Grades grade, QuestionLevel questionLevel)
     implements Specification<QuestionEntity> {

@@ -54,6 +54,7 @@ class EnrollmentDtoTest {
             "birthDate": "2010-03-12",
             "previousSchool": "Escuela La Sabana",
             "hasAccommodations": false,
+            "previousGrades": 8.5,
             "parents": [
               {
                 "id": 1,

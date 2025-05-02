@@ -2,6 +2,10 @@ package cr.co.ctpcit.citsacbackend.logic.dto.reports;
 
 import java.util.Date;
 
+/**
+ * Data Transfer Object (DTO) representing the attendance details of a student for a particular exam.
+ * This DTO contains the student's ID, full name, exam date, and attendance status.
+ */
 public class ExamAttendanceDTO {
   private Long studentId;
   private String fullName;

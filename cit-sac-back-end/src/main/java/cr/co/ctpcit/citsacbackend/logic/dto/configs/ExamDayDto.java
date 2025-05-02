@@ -8,7 +8,8 @@ import java.io.Serializable;
 import java.time.LocalTime;
 
 /**
- * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.configs.ExamDayEntity}
+ * Represents the Data Transfer Object (DTO) for an exam day.
+ * Contains information about the day of the week and the start time of the exam.
  */
 @Builder
 public record ExamDayDto(Long id, @NotNull WeekDays examDay, @NotNull LocalTime startTime)

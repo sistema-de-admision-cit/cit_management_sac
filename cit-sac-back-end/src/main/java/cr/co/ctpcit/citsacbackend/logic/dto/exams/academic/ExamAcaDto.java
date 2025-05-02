@@ -9,7 +9,8 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.exams.ExamEntity}
+ * Represents the Data Transfer Object (DTO) for an academic exam.
+ * Contains information about the enrollment, exam date, type, and responses.
  */
 @Builder
 public record ExamAcaDto(Long id, @NotNull Long enrollment,

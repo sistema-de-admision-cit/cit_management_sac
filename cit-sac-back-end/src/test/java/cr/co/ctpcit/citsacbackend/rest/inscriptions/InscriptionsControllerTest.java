@@ -18,6 +18,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,7 +115,7 @@ class InscriptionsControllerTest {
     Integer enrollmentId = documentContext.read("$[0].id");
 
     EnrollmentUpdateDto updatedEnrollment =
-        new EnrollmentUpdateDto(LocalDate.parse("2025-02-28"), null, null, null, null);
+        new EnrollmentUpdateDto(LocalDate.parse("2025-02-28"), null, null,new BigDecimal("8.5"), null, null);
 
     //Request
     HttpEntity<EnrollmentUpdateDto> request = new HttpEntity<>(updatedEnrollment);
@@ -136,7 +137,7 @@ class InscriptionsControllerTest {
     Integer enrollmentId = documentContext.read("$[0].id");
 
     EnrollmentUpdateDto updatedEnrollment =
-        new EnrollmentUpdateDto(null, ProcessStatus.REJECTED, null, null, null);
+        new EnrollmentUpdateDto(null, ProcessStatus.REJECTED, null, new BigDecimal("8.5"),null,null);
 
     //Request
     HttpEntity<EnrollmentUpdateDto> request = new HttpEntity<>(updatedEnrollment);
@@ -157,7 +158,7 @@ class InscriptionsControllerTest {
     DocumentContext documentContext = JsonPath.parse(response.getBody());
     Integer enrollmentId = documentContext.read("$[0].id");
 
-    EnrollmentUpdateDto updatedEnrollment = new EnrollmentUpdateDto(null, null, false, null, null);
+    EnrollmentUpdateDto updatedEnrollment = new EnrollmentUpdateDto(null, null, false,new BigDecimal("8.5"), null, null);
 
     //Request
     HttpEntity<EnrollmentUpdateDto> request = new HttpEntity<>(updatedEnrollment);
@@ -180,7 +181,7 @@ class InscriptionsControllerTest {
     Integer enrollmentId = documentContext.read("$[0].id");
 
     EnrollmentUpdateDto updatedEnrollment =
-        new EnrollmentUpdateDto(LocalDate.parse("2025-02-28"), ProcessStatus.REJECTED, false,
+        new EnrollmentUpdateDto(LocalDate.parse("2025-02-28"), ProcessStatus.REJECTED, false,new BigDecimal("8.5"),
             "Action made to update enrollment as test", 1);
 
     //Request

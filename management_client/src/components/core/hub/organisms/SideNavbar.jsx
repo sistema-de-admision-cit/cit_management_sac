@@ -12,6 +12,7 @@ const SideNavbar = ({ currentPage }) => {
         currentPage={currentPage}
         logout={logout}
         userRole={user.role}
+        userName={user.name}
       />
     </ul>
   )
