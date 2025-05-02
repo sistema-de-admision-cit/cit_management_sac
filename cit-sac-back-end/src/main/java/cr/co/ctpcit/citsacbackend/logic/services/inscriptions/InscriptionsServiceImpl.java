@@ -250,6 +250,8 @@ public class InscriptionsServiceImpl implements InscriptionsService {
       //Add student to the parent
       parent.addStudent(student);
 
+
+
       // Save the student
       studentRepository.save(student);
     }

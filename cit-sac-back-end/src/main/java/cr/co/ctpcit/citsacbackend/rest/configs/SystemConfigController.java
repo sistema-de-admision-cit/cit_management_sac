@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+
 /**
  * REST controller for managing system configurations.
- * Provides endpoints for retrieving and updating various system configuration parameters.
+ * Provides endpoints for retrieving and updating various system settings
+ * such as question quantities, process weights, contact information, and exam periods.
  */
 @RequiredArgsConstructor
 @RestController
@@ -21,6 +23,9 @@ import java.util.List;
 @Validated
 public class SystemConfigController {
 
+  /**
+   * Service for managing system configurations.
+   */
   private final SystemConfigServiceImpl systemConfigService;
   /**
    * Retrieves the quantity of questions configured in the system.
@@ -40,8 +45,9 @@ public class SystemConfigController {
    */
   @PutMapping("/update-questions-quantity")
   public ResponseEntity<String> updateQuestionsQuantity(
-          @RequestBody UpdateQuantityConfigsDto questionsConfigs) {
-    systemConfigService.updateQuantity(questionsConfigs.daiQuestionsQuantity(),questionsConfigs.academicQuestionsQuantity());
+      @RequestBody UpdateQuantityConfigsDto questionsConfigs) {
+    systemConfigService.updateQuantity(questionsConfigs.daiQuestionsQuantity(),
+        questionsConfigs.academicQuestionsQuantity());
     // return the updated questions quantity
     return ResponseEntity.ok().build();
   }
@@ -148,11 +154,25 @@ public class SystemConfigController {
         uriComponentsBuilder.path("/api/system-config/get-exam-period/{id}")
             .buildAndExpand(examPeriodDto.id()).toUri()).build();
   }
+
   /**
-   * Updates the quantity of questions for academic exams.
+   * Deletes an exam period by its ID.
    *
-   * @param quantity the new quantity of questions
-   * @return ResponseEntity with OK status
+   * @param id the ID of the exam period to delete
+   * @return a response entity with no content indicating success
+   */
+  @DeleteMapping("/delete-exam-period/{id}")
+  public ResponseEntity<Void> deleteExamPeriod(@PathVariable Long id) {
+    systemConfigService.deleteExamPeriod(id);
+
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Updates the number of questions for academic exams.
+   *
+   * @param quantity the new number of questions for academic exams
+   * @return a response entity indicating success
    */
   @PutMapping("/academic-exam-questions-quantity/{quantity}")
   public ResponseEntity<String> updateAcademicExamQuestionsQuantity(
@@ -176,4 +196,3 @@ public class SystemConfigController {
     return ResponseEntity.ok().build();
   }
 }
-

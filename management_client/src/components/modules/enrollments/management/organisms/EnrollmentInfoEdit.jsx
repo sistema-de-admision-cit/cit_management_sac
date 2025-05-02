@@ -4,7 +4,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { styled } from '@mui/material/styles';
 import Checkbox from '@mui/material/Checkbox';
-import { statusOptions, isCommentRequired, isEnabled } from '../helpers/helpers';
+import { statusOptionsForEnrollment, isCommentRequired, isEnabled } from '../helpers/helpers';
 import InputField from '../../../../core/global/atoms/InputField';
 import Button from '@mui/material/Button';
 
@@ -107,7 +107,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
                 type: 'dropdown',
                 name: 'status',
                 label: 'Estado',
-                options: statusOptions,
+                options: statusOptionsForEnrollment,
                 fullWidth: true
               }}
               value={formData.status}

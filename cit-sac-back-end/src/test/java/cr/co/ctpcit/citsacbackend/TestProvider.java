@@ -210,7 +210,7 @@ public class TestProvider {
   public static UpdateContactInfoConfigsDto provideUpdateContactInfoConfigsDto() {
     return new UpdateContactInfoConfigsDto("contactocit@ctpcit.co.cr",
         "notificaciones@ctpcit.co.cr", "88090041", "22370186", "ComplejoEducativoCIT",
-        "ComplejoEducativoCIT");
+        "ComplejoEducativoCIT","campus15","KIJKOLKÑPKKEJD");
   }
 
   public static SystemConfigDto provideSystemConfigDto() {

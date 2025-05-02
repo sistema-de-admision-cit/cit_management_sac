@@ -375,7 +375,8 @@ CREATE TABLE IF NOT EXISTS `tbl_Exam_Days` (
 
   CONSTRAINT `FK_ExamDays_ExamPeriods`
     FOREIGN KEY (`exam_period_id`)
-    REFERENCES `tbl_Exam_Periods` (`exam_period_id`))
+    REFERENCES `tbl_Exam_Periods` (`exam_period_id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -411,7 +412,7 @@ CREATE TABLE IF NOT EXISTS `tbl_Logs_Score` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `process_id` INT NULL DEFAULT NULL,
   `tracktest_id` INT NULL DEFAULT NULL,
-  `enrollment_id` INT NULL DEFAULT NULL,
+  `enrollment_id` INT UNSIGNED NULL DEFAULT NULL,
   `previous_score` INT NULL DEFAULT NULL,
   `new_score` INT NULL DEFAULT NULL,
   `exam_date` DATE NULL DEFAULT NULL,
@@ -434,7 +435,9 @@ CREATE TABLE IF NOT EXISTS `tbl_System_Config` (
   `config_name` ENUM(
 						'EMAIL_CONTACT',                   	-- Email for the people to ask any question 
                         'EMAIL_NOTIFICATION_CONTACT', 		-- Email for the system to send notifications
+                        'EMAIL_PASSWORD',					-- Email password to send notifications
 						'WHATSAPP_CONTACT',					-- Whatsapp phone number to send notifications
+                        'WHATSAPP_API_KEY',					-- Whatsapp api key to send notifications
                         'OFFICE_CONTACT', 					-- Office phone number
                         'FACEBOOK_CONTACT', 				-- Facebook profile name
                         'INSTAGRAM_CONTACT', 				-- Instagram profile name

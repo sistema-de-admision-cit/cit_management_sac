@@ -165,6 +165,62 @@ export const handleCheckboxChange = (day, setFormValues) => {
     return {
       ...prevValues,
       applicationDays: newDays
-    };
-  });
-};
+    }
+  })
+}
+
+
+export const handleGetAllExamPeriods = (setExamPeriods, setLoading, setErrorMessage, setSuccessMessage) => {
+  const getAllExamPeriodsUrl = import.meta.env.VITE_GET_CURRENT_EXAM_PERIODS_ENDPOINT
+
+  setLoading(true)
+  axios.get(getAllExamPeriodsUrl, { timeout: 10000 })
+    .then(response => {
+      if (response.data.length === 0) {
+        setSuccessMessage('No se encontraron periodos de examen para este año.')
+        return
+      }
+      const periods = response.data?.map(period => ({
+        id: period.id,
+        startDate: new Date(period.startDate),
+        endDate: new Date(period.endDate),
+        days: period.examDays.map(day => day.examDay)
+      }));
+      setExamPeriods(periods)
+    })
+    .catch(error => {
+      console.error(error)
+      setSuccessMessage('No se pudieron obtener los periodos de examen para este año.')
+    })
+    .finally(() => {
+      setLoading(false)
+    })
+}
+
+export const onDeleteSelectedItems = (selectedItems, setSelectedItems, setLoading, setErrorMessage) => {
+  const deleteExamPeriodsUrl = import.meta.env.VITE_DELETE_EXAM_PERIOD_ENDPOINT
+  const deleteErrors = [];
+  const deleteSuccess = [];
+  setLoading(true)
+
+  selectedItems.map(item => axios.delete(`${deleteExamPeriodsUrl}/${item}`)
+    .then(response => {
+      deleteSuccess.push(item)
+      return
+    })
+    .catch(error => {
+      deleteErrors.push({
+        perid: item.startDate.toISOString() + " -  " + item.endDate.toISOString(),
+      })
+    })
+    .finally(() => {
+      if (deleteErrors.length > 0) {
+        setErrorMessage(`No se pudieron eliminar los siguientes periodos de examen: \n${deleteErrors.map(item => item.period)}\n`)
+      }
+      setSelectedItems(
+        selectedItems.filter(item => !deleteSuccess.includes(item))
+      )
+      setLoading(false)
+    })
+  )
+}

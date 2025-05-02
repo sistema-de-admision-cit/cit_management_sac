@@ -5,6 +5,8 @@ import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
 
 import java.util.List;
 
+import static cr.co.ctpcit.citsacbackend.data.enums.Configurations.isSensible;
+
 /**
  * A utility class for converting between {@link SystemConfigDto} and {@link SystemConfigEntity}.
  * This class provides methods for mapping data between DTOs and entities related to system configuration.
@@ -27,8 +29,9 @@ public class SystemConfigMapper {
    * @return the corresponding {@link SystemConfigDto} object
    */
   public static SystemConfigDto toDto(SystemConfigEntity savedEntity) {
-    return new SystemConfigDto(savedEntity.getId(), savedEntity.getConfigName(),
-        savedEntity.getConfigValue());
+    String configValue = isSensible(savedEntity.getConfigName()) ? "******** oculto" : savedEntity.getConfigValue();
+
+    return new SystemConfigDto(savedEntity.getId(), savedEntity.getConfigName(), configValue);
   }
 
   /**

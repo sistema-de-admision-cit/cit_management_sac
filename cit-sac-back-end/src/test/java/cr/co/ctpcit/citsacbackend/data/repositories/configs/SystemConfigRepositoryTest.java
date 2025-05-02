@@ -78,6 +78,6 @@ class SystemConfigRepositoryTest {
 
     assertNotNull(contactInfo);
     assertFalse(contactInfo.isEmpty());
-    assertEquals(6, contactInfo.size());
+    assertEquals(8, contactInfo.size());
   }
 }

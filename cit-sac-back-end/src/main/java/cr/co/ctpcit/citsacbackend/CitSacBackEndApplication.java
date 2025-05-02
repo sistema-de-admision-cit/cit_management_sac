@@ -3,6 +3,12 @@ package cr.co.ctpcit.citsacbackend;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import cr.co.ctpcit.citsacbackend.data.entities.configs.SystemConfigEntity;
+import cr.co.ctpcit.citsacbackend.data.enums.Configurations;
+import cr.co.ctpcit.citsacbackend.data.repositories.configs.SystemConfigRepository;
+import cr.co.ctpcit.citsacbackend.logic.services.EncryptionUtil;
+import jakarta.annotation.PostConstruct;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +25,6 @@ public class CitSacBackEndApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(CitSacBackEndApplication.class, args);
-
-
   }
 
   @Bean

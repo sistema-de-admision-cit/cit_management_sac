@@ -24,6 +24,13 @@ export const statusOptions = [
   { value: 'ACCEPTED', label: 'Aceptado' },
   { value: 'REJECTED', label: 'Rechazado' }
 ]
+
+export const statusOptionsForEnrollment = [
+  { value: 'PENDING', label: 'Inscrito' },
+  { value: 'ELIGIBLE', label: 'Permitido' },
+  { value: 'INELIGIBLE', label: 'Inelegible' },
+]
+
 export const isCommentRequired = (formData, enrollment) => {
   // Verificar si hay cambios en el estado
   if (formData.status !== enrollment.status) {
