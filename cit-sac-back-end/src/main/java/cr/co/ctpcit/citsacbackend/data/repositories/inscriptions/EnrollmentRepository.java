@@ -2,62 +2,137 @@ package cr.co.ctpcit.citsacbackend.data.repositories.inscriptions;
 
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.EnrollmentEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.StudentEntity;
+import cr.co.ctpcit.citsacbackend.data.enums.KnownThrough;
 import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Pageable;
+import java.time.Instant;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Long> {
+/**
+ * Repository interface for managing {@link EnrollmentEntity} entities.
+ * Provides custom query methods for various enrollment-related operations.
+ */
+public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Long>, JpaSpecificationExecutor<EnrollmentEntity> {
 
+  /**
+   * Retrieves all enrollments with statuses that are in process, including 'PENDING', 'ELIGIBLE', or 'INELIGIBLE'.
+   * Supports pagination.
+   *
+   * @param pageable the pagination information
+   * @return a {@link Page} containing the matching {@link EnrollmentEntity} entries
+   */
   @Query(
       "SELECT e FROM EnrollmentEntity e WHERE e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
   Page<EnrollmentEntity> findAllEnrollmentsInProcess(Pageable pageable);
 
+  /**
+   * Retrieves all enrollments associated with a specific student.
+   *
+   * @param student the student entity to filter enrollments
+   * @return a list of {@link EnrollmentEntity} associated with the given student
+   */
   List<EnrollmentEntity> findAllByStudent(@NotNull StudentEntity student);
 
+  /**
+   * Retrieves all enrollments in process for a specific student. Only includes statuses 'PENDING', 'ELIGIBLE', or 'INELIGIBLE'.
+   *
+   * @param student the student entity to filter enrollments
+   * @return a list of {@link EnrollmentEntity} entries for the given student that are in process
+   */
   @Query(
       "SELECT e FROM EnrollmentEntity e WHERE e.student = :student AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
   List<EnrollmentEntity> findAllByStudentPerson_IdNumber_ThatAreInProcess(
       @NotNull StudentEntity student);
 
+  /**
+   * Retrieves all enrollments for a student identified by their student ID number.
+   *
+   * @param idNumber the ID number of the student
+   * @return a list of {@link EnrollmentEntity} entries for the student
+   */
   List<EnrollmentEntity> findAllByStudent_StudentPerson_IdNumber(@NotNull String idNumber);
 
+
+  /**
+   * Retrieves all enrollments for a list of students that have a status of 'PENDING', 'ELIGIBLE', or 'INELIGIBLE'.
+   *
+   * @param students a list of student entities to filter enrollments
+   * @return a list of {@link EnrollmentEntity} entries for students in the list that are in process
+   */
   @Query(
       "SELECT e FROM EnrollmentEntity e WHERE e.student IN :students AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
   List<EnrollmentEntity> findAllByStudentInTheListThatHasEnrollmentsInProcess(
       List<StudentEntity> students, Pageable pageable);
 
+  /**
+   * Updates the exam date for a specific enrollment.
+   *
+   * @param id       the ID of the enrollment to update
+   * @param examDate the new exam date to set
+   */
   @Modifying
   @Transactional
   @Query("UPDATE EnrollmentEntity e SET e.examDate = :examDate WHERE e.id = :id")
   void updateEnrollmentExamDate(Long id, LocalDate examDate);
 
+  /**
+   * Updates the status of a specific enrollment.
+   *
+   * @param id     the ID of the enrollment to update
+   * @param status the new status to set
+   */
   @Modifying
   @Transactional
   @Query("UPDATE EnrollmentEntity e SET e.status = :status WHERE e.id = :id")
   void updateEnrollmentStatus(Long id, ProcessStatus status);
 
+  /**
+   * Updates the WhatsApp notification permission for a specific enrollment.
+   *
+   * @param id                the ID of the enrollment to update
+   * @param whatsappPermission the new WhatsApp notification permission to set
+   */
   @Modifying
   @Transactional
   @Query(
       "UPDATE EnrollmentEntity e SET e.whatsappNotification = :whatsappPermission WHERE e.id = :id")
   void updateEnrollmentWhatsappPermission(Long id, Boolean whatsappPermission);
 
+  /**
+   * Calls the stored procedure {@code usp_update_enrollment_and_log} to update the enrollment status and log the changes.
+   *
+   * @param enrollmentId          the ID of the enrollment to update
+   * @param newStatus            the new status to assign to the enrollment
+   * @param newExamDate          the new exam date to set
+   * @param newWhatsappPermission the new WhatsApp notification permission
+   * @param newPreviousGrades    the new previous grades value
+   * @param comment              additional comments for the update
+   * @param changedBy            the ID of the user who made the changes
+   */
+
   @Procedure(name = "usp_update_enrollment_and_log")
-  void usp_update_enrollment_and_log(@Param("p_enrollment_id") Long enrollmentId,
-      @Param("p_new_status") String newStatus, @Param("p_new_exam_date") Date newExamDate,
-      @Param("p_new_whatsapp_permission") Boolean newWhatsappPermission,
-      @Param("p_comment") String comment, @Param("p_changed_by") Integer changedBy);
+  void usp_update_enrollment_and_log(
+          @Param("p_enrollment_id") Long enrollmentId,
+          @Param("p_new_status") String newStatus,
+          @Param("p_new_exam_date") Date newExamDate,
+          @Param("p_new_whatsapp_permission") Boolean newWhatsappPermission,
+          @Param("p_new_previous_grades") BigDecimal newPreviousGrades,
+          @Param("p_comment") String comment,
+          @Param("p_changed_by") Integer changedBy
+  );
 
   @Query(
       "SELECT COUNT(DISTINCT(e.student)) FROM EnrollmentEntity e WHERE e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")

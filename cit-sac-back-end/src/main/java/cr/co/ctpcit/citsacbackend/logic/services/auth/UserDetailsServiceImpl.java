@@ -22,7 +22,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * Custom implementation of Spring Security's UserDetailsManager.
+ * Provides user management functionality including authentication, creation, deletion,
+ * and password management for application users.
+ */
 @RequiredArgsConstructor
 @Service
 public class UserDetailsServiceImpl implements UserDetailsManager {
@@ -30,7 +34,13 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
       SecurityContextHolder.getContextHolderStrategy();
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
-
+  /**
+   * Loads user details by username (email in this implementation).
+   *
+   * @param username the username (email) identifying the user whose data is required
+   * @return UserDetails containing the user's information
+   * @throws UsernameNotFoundException if the user is not found
+   */
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     Optional<UserEntity> user = userRepository.findByEmail(username);
@@ -39,7 +49,12 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
     }
     return new UserDto(user.get());
   }
-
+  /**
+   * Creates a new user in the system.
+   *
+   * @param user the user details to create
+   * @throws ResponseStatusException if a user with the same email already exists
+   */
   @Override
   public void createUser(UserDetails user) {
     //Validar que el usuario no exista con base al email
@@ -52,12 +67,21 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
     entity = userRepository.save(entity);
     ((UserDto) user).setId(entity.getId());
   }
-
+  /**
+   * Updates a user's information (not implemented).
+   *
+   * @param user the user details to update
+   */
   @Override
   public void updateUser(UserDetails user) {
 
   }
-
+  /**
+   * Deletes a user from the system.
+   *
+   * @param username the username (email) of the user to delete
+   * @throws ResponseStatusException if the user is not found
+   */
   @Override
   public void deleteUser(String username) {
     Optional<UserEntity> entity = userRepository.findByEmail(username);
@@ -67,7 +91,13 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
 
     userRepository.delete(entity.get());
   }
-
+  /**
+   * Changes a user's password after verifying the old password.
+   *
+   * @param oldPassword the current password
+   * @param newPassword the new password to set
+   * @throws ResponseStatusException if user is not authenticated, not found, or old password doesn't match
+   */
   @Override
   public void changePassword(String oldPassword, String newPassword) {
     Authentication currentUser =
@@ -88,12 +118,22 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
     entity.get().setPassword(passwordEncoder.encode(newPassword));
     userRepository.save(entity.get());
   }
-
+  /**
+   * Checks if a user exists in the system.
+   *
+   * @param username the username (email) to check
+   * @return true if the user exists, false otherwise
+   */
   @Override
   public boolean userExists(String username) {
     return userRepository.existsByEmail(username);
   }
-
+  /**
+   * Retrieves a paginated list of all users in the system.
+   *
+   * @param pageable pagination information
+   * @return List of UserDto objects
+   */
   public List<UserDto> getUsers(Pageable pageable) {
     Page<UserEntity> users = userRepository.findAll(
         PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
@@ -101,12 +141,22 @@ public class UserDetailsServiceImpl implements UserDetailsManager {
 
     return UserMapper.convertToDtoList(users.getContent());
   }
-
+  /**
+   * Retrieves a user by their ID.
+   *
+   * @param id the user ID
+   * @return UserDto object or null if not found
+   */
   public UserDto getUser(Long id) {
     Optional<UserEntity> user = userRepository.findById(id);
     return user.map(UserDto::new).orElse(null);
   }
-
+  /**
+   * Retrieves a user by their email.
+   *
+   * @param email the user's email
+   * @return UserDto object or null if not found
+   */
   public UserDto getUserByEmail(String email) {
     Optional<UserEntity> user = userRepository.findByEmail(email);
     return user.map(UserDto::new).orElse(null);

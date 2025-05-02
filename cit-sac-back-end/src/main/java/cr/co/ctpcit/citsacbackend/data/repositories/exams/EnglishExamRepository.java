@@ -10,8 +10,26 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 
+/**
+ * Repository interface for managing {@link EnglishExamEntity} entities.
+ * Includes a method for invoking a stored procedure to process English exam data and log the result.
+ */
 @Repository
 public interface EnglishExamRepository extends JpaRepository<EnglishExamEntity, Long> {
+
+  /**
+   * Calls the stored procedure {@code usp_process_english_exam_and_log} to process the result of an English exam
+   * and log the corresponding data.
+   *
+   * @param firstName   the first name of the student
+   * @param lastNames   the last names of the student
+   * @param examDate    the date the exam was taken, formatted as a string
+   * @param trackTestId the ID of the TrackTest record associated with the exam
+   * @param newScore    the new score achieved by the student
+   * @param level       the English level determined by the exam
+   * @param processId   the ID of the associated process
+   */
+
   @Modifying
   @Transactional
   @Procedure(name = "usp_process_english_exam_and_log")

@@ -8,7 +8,8 @@ import lombok.Builder;
 import java.io.Serializable;
 
 /**
- * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.exams.DaiExamEntity}
+ * Represents the Data Transfer Object (DTO) for updating a DAI exam.
+ * Contains information about the updated comment and recommendation for the DAI exam.
  */
 @Builder
 public record UpdateDaiExamDto(Long id, @Size(max = 255) String comment,

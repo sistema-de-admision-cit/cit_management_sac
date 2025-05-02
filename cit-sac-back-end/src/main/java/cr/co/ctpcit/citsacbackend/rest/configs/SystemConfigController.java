@@ -27,23 +27,21 @@ public class SystemConfigController {
    * Service for managing system configurations.
    */
   private final SystemConfigServiceImpl systemConfigService;
-
   /**
-   * Retrieves the configured question quantities for different exam types.
+   * Retrieves the quantity of questions configured in the system.
    *
-   * @return a response entity containing a list of system configuration DTOs with question quantities
+   * @return ResponseEntity containing a list of SystemConfigDto with question quantities
    */
   @GetMapping("/get-questions-quantity")
   public ResponseEntity<List<SystemConfigDto>> getQuestionsQuantity() {
     List<SystemConfigDto> questionsQuantity = systemConfigService.getQuestionsQuantity();
     return new ResponseEntity<>(questionsQuantity, HttpStatus.OK);
   }
-
   /**
-   * Updates the question quantities for different exam types.
+   * Updates the quantity of questions in the system.
    *
-   * @param questionsConfigs DTO containing the new question quantities for DAI and academic exams
-   * @return a response entity indicating success
+   * @param questionsConfigs DTO containing the new question quantities
+   * @return ResponseEntity with OK status
    */
   @PutMapping("/update-questions-quantity")
   public ResponseEntity<String> updateQuestionsQuantity(
@@ -53,11 +51,10 @@ public class SystemConfigController {
     // return the updated questions quantity
     return ResponseEntity.ok().build();
   }
-
   /**
-   * Retrieves the configured process weights for different evaluation components.
+   * Retrieves the process weights configured in the system.
    *
-   * @return a response entity containing a list of system configuration DTOs with process weights
+   * @return ResponseEntity containing a list of SystemConfigDto with process weights
    */
   @GetMapping("/get-process-weights")
   public ResponseEntity<List<SystemConfigDto>> getProcessWeights() {
@@ -65,12 +62,11 @@ public class SystemConfigController {
 
     return new ResponseEntity<>(processWeights, HttpStatus.OK);
   }
-
   /**
-   * Updates the process weights for different evaluation components.
+   * Updates the process weights in the system.
    *
-   * @param weightsConfigs DTO containing the new weights for previous grades, academic, and English components
-   * @return a response entity indicating success
+   * @param weightsConfigs DTO containing the new process weights
+   * @return ResponseEntity with OK status
    */
   @PutMapping("/update-process-weights")
   public ResponseEntity<String> updateProcessWeights(
@@ -82,11 +78,10 @@ public class SystemConfigController {
     // return the updated exams percentages
     return ResponseEntity.ok().build();
   }
-
   /**
-   * Retrieves the configured contact information.
+   * Retrieves the contact information configured in the system.
    *
-   * @return a response entity containing a list of system configuration DTOs with contact information
+   * @return ResponseEntity containing a list of SystemConfigDto with contact information
    */
   @GetMapping("/get-contact-info")
   public ResponseEntity<List<SystemConfigDto>> getContactInfo() {
@@ -94,12 +89,11 @@ public class SystemConfigController {
 
     return new ResponseEntity<>(contactInfo, HttpStatus.OK);
   }
-
   /**
-   * Updates the contact information.
+   * Updates the contact information in the system.
    *
    * @param contactInfoConfigsDto DTO containing the new contact information
-   * @return a response entity indicating success
+   * @return ResponseEntity with OK status
    */
   @PutMapping("/update-contact-info")
   public ResponseEntity<String> updateContactInfo(
@@ -109,12 +103,11 @@ public class SystemConfigController {
 
     return ResponseEntity.ok().build();
   }
-
   /**
-   * Get the exam period by id
+   * Retrieves a specific exam period by its ID.
    *
-   * @param id the id of the exam period
-   * @return the exam period
+   * @param id the ID of the exam period to retrieve
+   * @return ResponseEntity containing the ExamPeriodDto
    */
   @GetMapping("/get-exam-period/{id}")
   public ResponseEntity<ExamPeriodDto> getExamPeriod(@PathVariable Long id) {
@@ -122,11 +115,10 @@ public class SystemConfigController {
 
     return new ResponseEntity<>(examPeriod, HttpStatus.OK);
   }
-
   /**
-   * Get the exam periods for the current year
+   * Retrieves all exam periods for the current year.
    *
-   * @return a list of exam periods of the year
+   * @return ResponseEntity containing a list of ExamPeriodDto
    */
   @GetMapping("/get-current-exam-periods")
   public ResponseEntity<List<ExamPeriodDto>> getCurrentExamPeriods() {
@@ -134,12 +126,11 @@ public class SystemConfigController {
 
     return new ResponseEntity<>(examPeriods, HttpStatus.OK);
   }
-
   /**
-   * Get the exam periods for a given year
+   * Retrieves all exam periods for a specific year.
    *
-   * @param year the year to get the exam periods
-   * @return a list of exam periods of the year
+   * @param year the year for which to retrieve exam periods
+   * @return ResponseEntity containing a list of ExamPeriodDto
    */
   @GetMapping("/get-exam-periods/{year}")
   public ResponseEntity<List<ExamPeriodDto>> getExamPeriods(@PathVariable Integer year) {
@@ -147,13 +138,12 @@ public class SystemConfigController {
 
     return new ResponseEntity<>(examPeriods, HttpStatus.OK);
   }
-
   /**
-   * Create a new exam period
+   * Creates a new exam period.
    *
-   * @param examPeriodDto        the exam period to create
-   * @param uriComponentsBuilder the uri components builder
-   * @return the response entity
+   * @param examPeriodDto DTO containing the exam period details to create
+   * @param uriComponentsBuilder builder for constructing the response URI
+   * @return ResponseEntity with created status and location header
    */
   @PostMapping("/create-exam-period")
   public ResponseEntity<Void> createExamPeriod(@RequestBody ExamPeriodDto examPeriodDto,
@@ -192,12 +182,11 @@ public class SystemConfigController {
 
     return ResponseEntity.ok().build();
   }
-
   /**
-   * Updates the number of questions for DAI exams.
+   * Updates the quantity of questions for DAI exams.
    *
-   * @param quantity the new number of questions for DAI exams
-   * @return a response entity indicating success
+   * @param quantity the new quantity of questions
+   * @return ResponseEntity with OK status
    */
   @PutMapping("/dai-exam-questions-quantity/{quantity}")
   public ResponseEntity<String> updateDaiExamQuestionsQuantity(@PathVariable Integer quantity) {

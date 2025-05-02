@@ -18,6 +18,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.QuestionDaiDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.*;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionOptionDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.reports.ReportDataDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.inscriptions.EnrollmentMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -166,7 +167,7 @@ public class TestProvider {
 
   public static StudentDto provideStudentDto() {
     return new StudentDto(11L, provideStudentPersonDto(), LocalDate.parse("2010-03-12"),
-        "Escuela La Sabana", false, new ArrayList<>());
+        "Escuela La Sabana", false,new BigDecimal("8.5"), new ArrayList<>());
   }
 
   public static AddressDto provideAddressDto() {
@@ -481,6 +482,15 @@ public class TestProvider {
         .build();
   }
 
+  public static ReportDataDto provideReportDataDto(String id, String name, String surname, String category) {
+    ReportDataDto dto = new ReportDataDto();
+    dto.setStudentId(id);
+    dto.setFirstName(name);
+    dto.setFullSurname(surname);
+    dto.setEnrollmentDate(Instant.now());
+    dto.setReportCategory(category);
+    return dto;
+  }
 
   public static List<StudentEntity> provideStudentList() {
     return List.of(provideStudent());

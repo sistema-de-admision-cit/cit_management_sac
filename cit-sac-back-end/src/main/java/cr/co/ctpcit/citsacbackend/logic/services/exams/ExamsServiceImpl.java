@@ -45,7 +45,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Service implementation for exam operations.
+ * Handles creation, retrieval, and processing of academic, DAI, and English exams.
+ */
 @Service
 @RequiredArgsConstructor
 public class ExamsServiceImpl implements ExamsService {
@@ -56,14 +59,8 @@ public class ExamsServiceImpl implements ExamsService {
   private final ExamRepository examRepository;
   private final ObjectMapper mapper;
   private final LogsScoreService logsScoreService;
-
   /**
-   * Get the academic exam for the student
-   *
-   * @param id The student idNumber (Cédula)
-   * @return The academic exam
-   * @throws ResponseStatusException If the student does not have an exam for today or the nearest
-   *                                 exam date or if the student does not have active inscriptions
+   * {@inheritDoc}
    */
   @Override
   public ExamAcaDto getAcademicExam(String id) {
@@ -86,12 +83,9 @@ public class ExamsServiceImpl implements ExamsService {
     return ExamMapper.examToExamAcaDto(examEntity, questions);
   }
 
+
   /**
-   * Save the academic exam
-   *
-   * @param examDto The exam to save
-   * @throws ResponseStatusException If the exam is not found, the exam is already answered or the
-   *                                 exam is not academic
+   * {@inheritDoc}
    */
   @Override
   public void saveAcademicExam(ExamAcaDto examDto) throws JsonProcessingException {
@@ -111,7 +105,9 @@ public class ExamsServiceImpl implements ExamsService {
     //Save the exam
     examRepository.save(exam);
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ExamDaiDto getDaiExam(String id) {
     EnrollmentEntity enrollmentInUse = getEnrollmentInUse(id, ExamType.DAI);
@@ -131,7 +127,9 @@ public class ExamsServiceImpl implements ExamsService {
     //Return Exam with the enrollment id
     return ExamMapper.examToExamDaiDto(examEntity, questions);
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void saveDaiExam(ExamDaiDto examDto) throws JsonProcessingException {
     ExamEntity exam = verifyExam(examDto.id(), examDto.examType());
@@ -149,6 +147,9 @@ public class ExamsServiceImpl implements ExamsService {
     examRepository.save(exam);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<AcademicExamDetailsDto> getExistingAcademicExams(String idNumber) {
     List<EnrollmentEntity> enrollments = getEnrollmentEntities(idNumber);
@@ -166,6 +167,9 @@ public class ExamsServiceImpl implements ExamsService {
     return ExamMapper.academicExamsToAcademicExamDetailsDto(academicExams);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<DaiExamDetailsDto> getExistingDaiExams(String idNumber) {
     List<EnrollmentEntity> enrollments = getEnrollmentEntities(idNumber);
@@ -176,7 +180,13 @@ public class ExamsServiceImpl implements ExamsService {
 
     return ExamMapper.daiExamsToDaiExamDetailsDto(daiExams);
   }
-
+  /**
+   * Helper method to filter exams by type from enrollments.
+   *
+   * @param enrollments list of enrollments to search
+   * @param dai the exam type to filter
+   * @param daiExams the list to populate with matching exams
+   */
   private static void getExamsFromEnrollmentsByExamType(List<EnrollmentEntity> enrollments,
       ExamType dai, List<ExamEntity> daiExams) {
     for (EnrollmentEntity enrollmentInUse : enrollments) {
@@ -187,7 +197,9 @@ public class ExamsServiceImpl implements ExamsService {
       }
     }
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<StudentExamsDto> getStudentsByExamType(ExamType examType, Pageable pageable) {
     //Get all students
@@ -199,7 +211,9 @@ public class ExamsServiceImpl implements ExamsService {
 
     return getStudentExamsDto(students, examType);
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void updateDaiExam(DaiExamDetailsDto daiExamDetailsDto) {
     ExamEntity exam = examRepository.findById(daiExamDetailsDto.id()).orElseThrow(
@@ -218,7 +232,9 @@ public class ExamsServiceImpl implements ExamsService {
     //Save the exam
     examRepository.save(exam);
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   @Transactional
   public List<EnglishExamLogDto> processEnglishScores(List<EnglishScoreEntryDTO> englishScores) {
@@ -240,7 +256,9 @@ public class ExamsServiceImpl implements ExamsService {
 
     return logsScoreService.getLogsScoresByProcessId(processId);
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<EnglishExamDetailsDto> getExistingEnglishExams(String idNumber) {
     //Find students enrollments
@@ -259,7 +277,9 @@ public class ExamsServiceImpl implements ExamsService {
     //Map the list to EnglishExamDetailsDto
     return ExamMapper.englishExamsToEnglishExamDetailsDto(englishExams);
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<StudentExamsDto> searchStudentExams(String value, ExamType examType,
       Pageable pageable) {
@@ -278,7 +298,13 @@ public class ExamsServiceImpl implements ExamsService {
 
     return getStudentExamsDto(students, examType);
   }
-
+  /**
+   * Converts student entities to exam DTOs filtered by exam type.
+   *
+   * @param students list of student entities
+   * @param examType type of exam to filter
+   * @return list of student exam DTOs
+   */
   private List<StudentExamsDto> getStudentExamsDto(List<StudentEntity> students, ExamType examType) {
     //Create the list of StudentExamsDto
     List<StudentExamsDto> studentExams = new ArrayList<>();
@@ -295,7 +321,12 @@ public class ExamsServiceImpl implements ExamsService {
 
     return studentExams;
   }
-
+  /**
+   * Normalizes a string by converting to lowercase and removing accents.
+   *
+   * @param input the string to normalize
+   * @return normalized string or null if input is null
+   */
   // normalize the string to lowercase and remove accents
   private String normalizeString(String input) {
     if (input == null)
@@ -303,8 +334,13 @@ public class ExamsServiceImpl implements ExamsService {
     String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
     return normalized.replaceAll("\\p{M}", "").toLowerCase();
   }
-
-
+  /**
+   * Finds exams of specified type for a student.
+   *
+   * @param student the student entity
+   * @param examType type of exam to find
+   * @return list of matching exams
+   */
   private List<ExamEntity> findExamsByType(StudentEntity student, ExamType examType) {
     List<ExamEntity> exams = new ArrayList<>();
     for (EnrollmentEntity enrollment : student.getEnrollments()) {
@@ -317,7 +353,13 @@ public class ExamsServiceImpl implements ExamsService {
 
     return exams;
   }
-
+  /**
+   * Retrieves enrollments for a student by ID number.
+   *
+   * @param id the student ID number
+   * @return list of enrollment entities
+   * @throws ResponseStatusException if no enrollments found
+   */
   private List<EnrollmentEntity> getEnrollmentEntities(String id) {
     List<EnrollmentEntity> enrollments =
         enrollmentRepository.findAllByStudent_StudentPerson_IdNumber(id);
@@ -359,7 +401,14 @@ public class ExamsServiceImpl implements ExamsService {
 
     return new BigDecimal(100 * questionsCorrect / questionsQuantity);
   }
-
+  /**
+   * Gets the active enrollment for exam taking.
+   *
+   * @param id the student ID
+   * @param examType type of exam
+   * @return the active enrollment entity
+   * @throws ResponseStatusException if no valid enrollment found
+   */
   private EnrollmentEntity getEnrollmentInUse(String id, ExamType examType) {
     //Validate Student Exists By ID
     StudentEntity student = studentRepository.findStudentEntityByStudentPerson_IdNumber(id)
@@ -400,7 +449,12 @@ public class ExamsServiceImpl implements ExamsService {
 
     return enrollmentInUse;
   }
-
+  /**
+   * Gets the configured quantity of questions for an exam type.
+   *
+   * @param configurations the exam configuration type
+   * @return the number of questions configured
+   */
   private int getQuestionQuantity(Configurations configurations) {
     if (!configurations.equals(
         Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY) && !configurations.equals(
@@ -422,7 +476,14 @@ public class ExamsServiceImpl implements ExamsService {
 
     return Integer.parseInt(config.getConfigValue());
   }
-
+  /**
+   * Verifies an exam exists and is valid for operations.
+   *
+   * @param id the exam ID
+   * @param examType the expected exam type
+   * @return the verified exam entity
+   * @throws ResponseStatusException if exam is invalid or not found
+   */
   private ExamEntity verifyExam(Long id, ExamType examType) {
     //Look for the examEntity
     ExamEntity exam = examRepository.findById(id).orElseThrow(

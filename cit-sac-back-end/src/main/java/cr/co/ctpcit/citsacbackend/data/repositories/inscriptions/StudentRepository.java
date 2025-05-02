@@ -10,10 +10,26 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for managing {@link StudentEntity} entities.
+ * Provides custom query methods to retrieve students by specific criteria.
+ */
 public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
 
+  /**
+   * Finds a student by their ID number.
+   *
+   * @param idNumber the ID number of the student
+   * @return an {@link Optional} containing the {@link StudentEntity} if found, or empty if not
+   */
   Optional<StudentEntity> findStudentEntityByStudentPerson_IdNumber(String idNumber);
 
+  /**
+   * Finds students whose ID number contains the specified value.
+   *
+   * @param value the value to search for within the ID number
+   * @return a list of {@link StudentEntity} matching the search criteria
+   */
   @Query("SELECT s FROM StudentEntity s " +
       "JOIN EnrollmentEntity e ON s.id = e.student.id " +
       "WHERE e.status IN ('PENDING','ELIGIBLE','INELIGIBLE') " +
@@ -22,8 +38,21 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
   List<StudentEntity> findStudentByLikeIdNumberWithEnrollmentInProcess(String value,
       Pageable pageable);
 
+  /**
+   * Finds all students whose associated {@link PersonEntity} is within the provided list of persons.
+   *
+   * @param persons the list of {@link PersonEntity} to filter students by
+   * @return a list of {@link StudentEntity} associated with the provided persons
+   */
   List<StudentEntity> findAllByStudentPersonIn(List<PersonEntity> persons);
 
+  /**
+   * Finds students whose associated {@link PersonEntity}'s first name, first surname, or second surname
+   * contains the specified value.
+   *
+   * @param value the value to search for within the first name, first surname, or second surname
+   * @return a list of {@link StudentEntity} that match the search criteria
+   */
   @Query(
       "SELECT s FROM StudentEntity s " +
           "JOIN EnrollmentEntity e ON s.id = e.student.id " +
@@ -41,12 +70,34 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
           "GROUP BY s.id")
   List<StudentEntity> findAllByValueWithEnrollmentInProcess(String value, Pageable pageable);
 
+  /**
+   * Finds students whose associated {@link PersonEntity}'s first name, first surname, or second surname
+   * contains the specified value.
+   *
+   * @param value the value to search for within the first name, first surname, or second surname
+   * @return a list of {@link StudentEntity} that match the search criteria
+   */
   @Query(
-      "SELECT COUNT(DISTINCT s.id) " +
-          "FROM StudentEntity s " +
-          "JOIN PersonEntity p ON p.id = s.id " +
-          "JOIN EnrollmentEntity e ON s.id = e.student.id " +
-          "WHERE LOWER(p.firstName) LIKE %:value% OR LOWER(p.fullSurname) LIKE %:value% " +
-          "AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
+      "SELECT s FROM StudentEntity s " +
+      "JOIN EnrollmentEntity e ON s.id = e.student.id " +
+      "WHERE e.status IN ('PENDING','ELIGIBLE','INELIGIBLE') " +
+      "GROUP BY s.id")
+  Page<StudentEntity> findAllWithEnrollmentsInProcess(Pageable pageable);
+
+  @Query("SELECT s " +
+      "FROM StudentEntity s " +
+      "JOIN PersonEntity p ON p.id = s.id " +
+      "JOIN EnrollmentEntity e ON s.id = e.student.id " +
+      "WHERE LOWER(p.firstName) LIKE %:value% OR LOWER(p.fullSurname) LIKE %:value% " +
+      "AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')" +
+      "GROUP BY s.id")
+  List<StudentEntity> findAllByValueWithEnrollmentInProcess(String value, Pageable pageable);
+
+  @Query("SELECT COUNT(DISTINCT s.id) " +
+      "FROM StudentEntity s " +
+      "JOIN PersonEntity p ON p.id = s.id " +
+      "JOIN EnrollmentEntity e ON s.id = e.student.id " +
+      "WHERE LOWER(p.firstName) LIKE %:value% OR LOWER(p.fullSurname) LIKE %:value% " +
+      "AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
   Long countStudentsWithEnrollmentsInProcessByValue(String value);
 }

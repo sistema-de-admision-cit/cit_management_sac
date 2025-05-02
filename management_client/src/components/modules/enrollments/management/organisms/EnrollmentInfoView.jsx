@@ -11,6 +11,7 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
     <h2>Inscripción - {enrollment.id}</h2>
     <p><strong>Estado:</strong> {statusText[enrollment.status]}</p>
     <p><strong>Fecha del Examen:</strong> {formatDate(new Date(enrollment.examDate))}</p>
+    <p><strong>Promedio de Notas:</strong> {enrollment.student.previousGrades ?? 'N/A'}</p>
     <p><strong>Notificación por WhatsApp:</strong> {enrollment.whatsappNotification ? 'Sí' : 'No'}</p>
     <p><strong>Consentimiento:</strong> {enrollment.consentGiven ? 'Dado' : 'No Dado'}</p>
 
@@ -23,7 +24,7 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
         onClick={() => setIsEditing(true)}
         disabled={enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS}
       >
-        <img src={EditIcon} alt='icono de editar' />
+        <img src={EditIcon} alt='icono de editar'/>
       </Button>
       {enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS && (
         <div className='tooltip'>
@@ -37,11 +38,11 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
         <p><strong>Documento de Notas:</strong></p>
         <Button
           className='pdf-icon' onClick={() => {
-            onDocClick(enrollment.documents.find((doc) => doc.documentType === 'OT'))
-            setSelectedFileType('Documento de Notas')
-          }}
+          onDocClick(enrollment.documents.find((doc) => doc.documentType === 'OT'))
+          setSelectedFileType('Documento de Notas')
+        }}
         >
-          <img src={PdfIcon} alt='logo de un pdf' />
+          <img src={PdfIcon} alt='logo de un pdf'/>
         </Button>
       </div>
       {student.hasAccommodations && (
@@ -49,11 +50,11 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
           <p><strong>Documento de Adaptaciones:</strong></p>
           <Button
             className='pdf-icon' onClick={() => {
-              onDocClick(enrollment.documents.find((doc) => doc.documentType === 'AC'))
-              setSelectedFileType('Documento de Adaptaciones')
-            }}
+            onDocClick(enrollment.documents.find((doc) => doc.documentType === 'AC'))
+            setSelectedFileType('Documento de Adaptaciones')
+          }}
           >
-            <img src={PdfIcon} alt='logo de un pdf' />
+            <img src={PdfIcon} alt='logo de un pdf'/>
           </Button>
         </div>
       )}
