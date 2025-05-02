@@ -13,39 +13,57 @@ import java.math.BigDecimal;
 import java.text.Normalizer;
 import java.time.Instant;
 import java.util.List;
-
+/**
+ * Service implementation for English exam operations.
+ * Handles CRUD operations and processing of English exam scores.
+ */
 @Service
 public class EnglishExamServiceImpl implements EnglishExamService {
   private final EnglishExamRepository englishExamRepository;
   private final LogsScoreServiceImpl logsScoreService;
-
+  /**
+   * Constructs a new EnglishExamServiceImpl with required dependencies.
+   *
+   * @param englishExamRepository repository for English exam data access
+   * @param logsScoreService service for handling score logging
+   */
   @Autowired  // Constructor injection
   public EnglishExamServiceImpl(EnglishExamRepository englishExamRepository,
       LogsScoreServiceImpl logsScoreService) {
     this.englishExamRepository = englishExamRepository;
     this.logsScoreService = logsScoreService;
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<EnglishExamEntity> getAll() {
     return englishExamRepository.findAll();
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EnglishExamEntity getById(Long id) {
     return englishExamRepository.findById(id).orElse(null);
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public EnglishExamEntity save(EnglishExamEntity englishExamEntity) {
     return englishExamRepository.save(englishExamEntity);
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void delete(Long id) {
     englishExamRepository.deleteById(id);
   }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   @Transactional
   public List<EnglishExamLogDto> processEnglishScores(List<EnglishScoreEntryDTO> englishScores) {
@@ -67,7 +85,12 @@ public class EnglishExamServiceImpl implements EnglishExamService {
 
     return logsScoreService.getLogsScoresByProcessId(processId);
   }
-
+  /**
+   * Normalizes a string by converting to lowercase and removing accents.
+   *
+   * @param input the string to normalize
+   * @return the normalized string, or null if input is null
+   */
   // normalize the string to lowercase and remove accents
   private String normalizeString(String input) {
     if (input == null)

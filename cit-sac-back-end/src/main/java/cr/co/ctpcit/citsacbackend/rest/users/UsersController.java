@@ -23,11 +23,11 @@ public class UsersController {
     private final DaoAuthenticationProviderCstm daoAuthenticationProvider;
 
     /**
-     * Crear un usuario
+     * Create a user
      *
-     * @param user                 el usuario a crear según el DTO @see UserDto
-     * @param uriComponentsBuilder el constructor de URI
-     * @return la respuesta de la solicitud o el error que se encuentre
+     * @param user                 the user that is going to be created by DTO @see UserDto
+     * @param uriComponentsBuilder the constructor of URI
+     * @return the response of the request or the error found
      */
     @PostMapping("/create-user")
     public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto user,
@@ -38,10 +38,10 @@ public class UsersController {
     }
 
     /**
-     * Obtener la lista de usuarios paginada y ordenada por email de 25 en 25 por defecto
+     * Get the list of users in order by email and paginated in 25 then other 25 by default
      *
-     * @param pageable la paginación
-     * @return la lista de usuarios
+     * @param pageable the pagination
+     * @return the users list
      */
     @GetMapping
     public ResponseEntity<Iterable<UserDto>> getUsers(
@@ -49,34 +49,31 @@ public class UsersController {
         List<UserDto> users = userDetailsServiceImpl.getUsers(pageable);
         return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
     }
-
     /**
-     * Obtener un usuario por su id
+     * Get a user by id
      *
-     * @param id el id del usuario
-     * @return el usuario
+     * @param id users id
+     * @return the user
      */
     @GetMapping("/user/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
         UserDto user = userDetailsServiceImpl.getUser(id);
         return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(user);
     }
-
     /**
-     * Obtener un usuario por su email
-     * @param email el email del usuario
-     * @return el usuario
+     * Get a user by email
+     * @param email the users email
+     * @return the user
      */
     @GetMapping("/user")
     public ResponseEntity<UserDto> getUserByEmail(@RequestParam String email) {
         UserDto user = userDetailsServiceImpl.getUserByEmail(email);
         return user == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(user);
     }
-
     /**
-     * Eliminar un usuario por su email
-     * @param email el email del usuario
-     * @return una respuesta sin contenido
+     * Delete a user by email
+     * @param email users email
+     * @return a response without content
      */
     @DeleteMapping("/delete-user")
     public ResponseEntity<Void> deleteUser(@RequestParam String email) {

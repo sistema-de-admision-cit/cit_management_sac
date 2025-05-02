@@ -8,7 +8,8 @@ import lombok.Builder;
 import java.io.Serializable;
 
 /**
- * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.inscriptions.DocumentEntity}
+ * Data Transfer Object (DTO) representing a document.
+ * Contains details about the document's unique ID, URL postfix, type, and name.
  */
 @Builder
 public record DocumentDto(Long id, @Size(max = 32) String documentUrlPostfix,

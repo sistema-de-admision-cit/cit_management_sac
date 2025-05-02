@@ -85,3 +85,47 @@
   background-color: var(--primary-color-hover);
   color: white;
 }
+
+/* Estructura del encabezado */
+.side-nav-group-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 1rem;
+}
+
+.side-nav-group-header-icon {
+  margin-right: 1rem;
+  font-size: 1.5rem;
+}
+
+.side-nav-group-header-content {
+  flex: 1;
+}
+
+.side-nav-group-header-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+/* Información del usuario */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.user-name {
+  font-weight: 500;
+  color: #444;
+}
+
+.user-role {
+  color: #666;
+  font-style: italic;
+}
+

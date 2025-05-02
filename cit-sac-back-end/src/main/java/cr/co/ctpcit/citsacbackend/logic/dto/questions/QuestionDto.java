@@ -12,7 +12,9 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.questions.QuestionEntity}
+ * Data Transfer Object (DTO) representing a question in an exam.
+ * Contains the question's details including type, text, image URL, grade, level, selection type,
+ * whether the question is deleted, and the options associated with the question.
  */
 @Builder
 public record QuestionDto(Long id, @NotNull QuestionType questionType,

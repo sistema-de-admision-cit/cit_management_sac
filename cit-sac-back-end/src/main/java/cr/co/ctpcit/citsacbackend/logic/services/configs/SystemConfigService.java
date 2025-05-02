@@ -6,18 +6,19 @@ import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
 
 import java.util.List;
-
 /**
  * Service interface for managing system configurations.
- * Provides methods for retrieving and updating various system settings
- * such as question quantities, process weights, contact information, and exam periods.
+ * Provides methods for handling various system settings including:
+ * - Question quantities for exams
+ * - Process weights for evaluations
+ * - Contact information
+ * - Exam periods management
  */
 public interface SystemConfigService {
-
   /**
-   * Retrieves the configured question quantities for different exam types.
+   * Retrieves the configured quantities of questions for different exam types.
    *
-   * @return a list of system configuration DTOs containing question quantities for DAI and academic exams
+   * @return List of SystemConfigDto containing question quantities
    */
   List<SystemConfigDto> getQuestionsQuantity();
 
@@ -47,11 +48,10 @@ public interface SystemConfigService {
    * @throws org.springframework.web.server.ResponseStatusException if the sum of weights is not equal to 1
    */
   void updateWeights(Double prevGradesWeight, Double academicWeight, Double englishWeight);
-
   /**
    * Retrieves the configured contact information.
    *
-   * @return a list of system configuration DTOs containing various contact information
+   * @return List of SystemConfigDto containing contact information
    */
   List<SystemConfigDto> getContactInfo();
 
@@ -71,19 +71,17 @@ public interface SystemConfigService {
    * @throws org.springframework.web.server.ResponseStatusException if the exam period is not found
    */
   ExamPeriodDto getExamPeriod(Long id);
-
   /**
-   * Retrieves all exam periods for the current year.
+   * Retrieves all exam periods for the current academic year.
    *
-   * @return a list of exam period DTOs for the current year
+   * @return List of ExamPeriodDto for current year
    */
   List<ExamPeriodDto> getCurrentExamPeriods();
-
   /**
-   * Retrieves all exam periods for a specific year.
+   * Retrieves all exam periods for a specific academic year.
    *
-   * @param year the year to retrieve exam periods for
-   * @return a list of exam period DTOs for the specified year
+   * @param year the academic year to filter exam periods
+   * @return List of ExamPeriodDto for specified year
    */
   List<ExamPeriodDto> getExamPeriodsByYear(int year);
 
