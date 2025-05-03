@@ -19,7 +19,11 @@ class ReportsRepositoryImpl implements ReportsRepository {
   }
 
   public List<ExamSourceDTO> findExamSourceStatistics(LocalDate startDate, LocalDate endDate,
-      List<String> gradesCsv, String sector) {
+      List<String> grades, String sector) {
+    // parse the grades list to a CSV string
+    String gradesCsv = grades.isEmpty() ? "All" : String.join(",", grades);
+
+    // call the stored procedure with the parameters
     String sql = "CALL usp_Get_Students_By_Exam_Source_Filters(?, ?, ?, ?)";
     return jdbcTemplate.query(sql, new Object[] {startDate, endDate, gradesCsv, sector},
         (rs, rowNum) -> new ExamSourceDTO(rs.getString("examSource"), rs.getInt("studentCount")));
@@ -27,7 +31,10 @@ class ReportsRepositoryImpl implements ReportsRepository {
 
   public List<EnrollmentAttendanceDTO> findEnrollmentAttendanceStats(LocalDate startDate,
       LocalDate endDate, List<String> grades, String sector) {
+    // parse the grades list to a CSV string
     String gradesCsv = grades.isEmpty() ? "All" : String.join(",", grades);
+
+    // call the stored procedure with the parameters
     String sql = "CALL usp_Get_Enrollment_Attendance_Stats_Filters(?, ?, ?, ?)";
     return jdbcTemplate.query(sql, new Object[] {startDate, endDate, gradesCsv, sector},
         (rs, rowNum) -> new EnrollmentAttendanceDTO(rs.getDate("enrollmentDate").toLocalDate(),
@@ -37,7 +44,10 @@ class ReportsRepositoryImpl implements ReportsRepository {
 
   public List<AdmissionFinalDTO> findAdmissionFinalStats(LocalDate startDate, LocalDate endDate,
       List<String> grades, String sector) {
+    // parse the grades list to a CSV string
     String gradesCsv = grades.isEmpty() ? "All" : String.join(",", grades);
+
+    // call the stored procedure with the parameters
     String sql = "CALL usp_Get_Admission_Final_Stats_Filters(?, ?, ?, ?)";
     return jdbcTemplate.query(sql, new Object[] {startDate, endDate, gradesCsv, sector},
         (rs, rowNum) -> new AdmissionFinalDTO(rs.getDate("enrollmentDate").toLocalDate(),

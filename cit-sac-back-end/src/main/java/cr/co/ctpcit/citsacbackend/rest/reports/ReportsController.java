@@ -4,7 +4,6 @@ import cr.co.ctpcit.citsacbackend.logic.dto.reports.AdmissionFinalDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.reports.EnrollmentAttendanceDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.reports.ExamSourceDTO;
 import cr.co.ctpcit.citsacbackend.logic.services.reports.ReportsServiceImpl;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,22 +24,26 @@ public class ReportsController {
     this.reportsService = reportsService;
   }
 
+  private LocalDate parseDate(String s) {
+    return (s == null || s.isBlank()) ? null : LocalDate.parse(s.trim());
+  }
+
   /**
    * Example: GET /api/reports/exam-attendance?startDate=2025-01-01&endDate=2025-01-31
    * &grade=FIRST,SECOND &sector=Primaria
    */
   @GetMapping("/exam-attendance")
   public ResponseEntity<List<EnrollmentAttendanceDTO>> getExamAttendance(
-      @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-
-      @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-
-      @RequestParam(value = "grade", defaultValue = "All") String gradeCsv,
-
+      @RequestParam(value = "startDate", required = false) String startDateStr,
+      @RequestParam(value = "endDate", required = false) String endDateStr,
+      @RequestParam(value = "grade", defaultValue = "All") String grade,
       @RequestParam(value = "sector", defaultValue = "All") String sector) {
-    // Convertimos CSV de grados en lista; si viene "All" o vacío, pasamos lista vacía
+    LocalDate startDate = parseDate(startDateStr);
+    LocalDate endDate = parseDate(endDateStr);
+
+
     List<String> grades =
-        "All".equalsIgnoreCase(gradeCsv) ? List.of() : Arrays.asList(gradeCsv.split(","));
+        "All".equalsIgnoreCase(grade) ? List.of() : Arrays.asList(grade.split("\\s*,\\s*"));
 
     List<EnrollmentAttendanceDTO> report =
         reportsService.getEnrollmentAttendanceStats(startDate, endDate, grades, sector);
@@ -54,40 +57,43 @@ public class ReportsController {
   @GetMapping("/exam-source")
   public ResponseEntity<List<ExamSourceDTO>> getExamSourceStatistics(
       @RequestParam(value = "startDate", required = false) String startDateStr,
-      @RequestParam(value = "endDate",   required = false) String endDateStr,
-      @RequestParam(value = "grade",     defaultValue = "All")  String gradeCsv,
-      @RequestParam(value = "sector",    defaultValue = "All")  String sector
-  ) {
-    LocalDate startDate = (startDateStr == null || startDateStr.isBlank())
-        ? null : LocalDate.parse(startDateStr.trim());
-    LocalDate endDate   = (endDateStr   == null || endDateStr.isBlank())
-        ? null : LocalDate.parse(endDateStr.trim());
-    List<String> grades = "All".equalsIgnoreCase(gradeCsv)
-        ? List.of() : Arrays.asList(gradeCsv.split("\\s*,\\s*"));
+      @RequestParam(value = "endDate", required = false) String endDateStr,
+      @RequestParam(value = "grade", defaultValue = "All") String gradeCsv,
+      @RequestParam(value = "sector", defaultValue = "All") String sector) {
+    LocalDate startDate = parseDate(startDateStr);
+    LocalDate endDate = parseDate(endDateStr);
 
-    List<ExamSourceDTO> result = reportsService.getExamSourceStatistics(
-        startDate, endDate, grades, sector.trim());
+    List<String> grades =
+        "All".equalsIgnoreCase(gradeCsv) ? List.of() : Arrays.asList(gradeCsv.split("\\s*,\\s*"));
+
+    List<ExamSourceDTO> result =
+        reportsService.getExamSourceStatistics(startDate, endDate, grades, sector.trim());
     return ResponseEntity.ok(result);
   }
 
   /**
    * Example: GET /api/reports/admission-final?startDate=2025-01-01&endDate=2025-01-31
-   * @param startDate
-   * @param endDate
+   *
+   * @param startDateStr
+   * @param endDateStr
    * @param grade
    * @param sector
    * @return
    */
   @GetMapping("/admission-final")
-  public ResponseEntity<List<AdmissionFinalDTO>> getAdmissionFinal(@RequestParam String startDate,
-      @RequestParam String endDate, @RequestParam(defaultValue = "All") String grade,
+  public ResponseEntity<List<AdmissionFinalDTO>> getAdmissionFinal(
+      @RequestParam String startDateStr, @RequestParam String endDateStr,
+      @RequestParam(defaultValue = "All") String grade,
       @RequestParam(defaultValue = "All") String sector) {
-    LocalDate sd = startDate.isBlank() ? null : LocalDate.parse(startDate.trim());
-    LocalDate ed = endDate.isBlank() ? null : LocalDate.parse(endDate.trim());
+    LocalDate startDate = parseDate(startDateStr);
+    LocalDate endDate = parseDate(endDateStr);
+
     List<String> grades =
         "All".equalsIgnoreCase(grade) ? List.of() : Arrays.asList(grade.split("\\s*,\\s*"));
+
     List<AdmissionFinalDTO> result =
-        reportsService.getAdmissionFinalStats(sd, ed, grades, sector.trim());
+        reportsService.getAdmissionFinalStats(startDate, endDate, grades, sector.trim());
+
     return ResponseEntity.ok(result);
   }
 }
