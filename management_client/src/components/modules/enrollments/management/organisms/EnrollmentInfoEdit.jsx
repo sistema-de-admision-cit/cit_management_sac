@@ -4,6 +4,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { styled } from '@mui/material/styles';
 import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { statusOptionsForEnrollment, isCommentRequired, isEnabled } from '../helpers/helpers';
 import LeftArrowIcon from '../../../../../assets/icons/arrow-left-svgrepo-com.svg'
 import InputField from '../../../../core/global/atoms/InputField';
@@ -42,8 +43,10 @@ const SectionTitle = styled('h3')({
 });
 
 const CheckboxContainer = styled('div')({
+  display: 'flex',
   width: '100%',
-  margin: '5px 0 20px 0',
+  margin: '0',
+  gap: '10px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start'
@@ -70,7 +73,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
 
   useEffect(() => {
     handleGetExamPeriods(setExamPeriods)
-  },[])
+  }, [])
 
   const allRequiredFieldsFilled = () => {
     return formData.status && formData.examDate &&
@@ -151,20 +154,14 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
             </FullWidthField>
 
             {/* Checkbox solo, alineado a la izquierda */}
-            <CheckboxContainer>
-              <SectionTitle>Recibir notificación por WhatsApp</SectionTitle>
-              <Checkbox
+
+            <FullWidthField>
+              <FormControlLabel control={<Checkbox
+                label="Recibir notificación por WhatsApp"
                 checked={formData.whatsappNotification}
                 onChange={(e) => setFormData({ ...formData, whatsappNotification: e.target.checked })}
-                sx={{
-                  padding: '0',
-                  marginLeft: '-9px', // Compensa el padding interno del checkbox
-                  '& .MuiSvgIcon-root': {
-                    fontSize: '1.5rem' // Tamaño ligeramente mayor
-                  }
-                }}
-              />
-            </CheckboxContainer>
+              />} label="Recibir notificación por WhatsApp" />
+            </FullWidthField>
 
             {/* Nota Previa */}
             <FullWidthField>
