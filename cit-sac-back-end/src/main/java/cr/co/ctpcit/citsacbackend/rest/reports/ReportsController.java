@@ -28,6 +28,11 @@ public class ReportsController {
     return (s == null || s.isBlank()) ? null : LocalDate.parse(s.trim());
   }
 
+  // parseGrades function
+  private List<String> parseGrades(String grades) {
+    return "All".equalsIgnoreCase(grades) ? List.of() : Arrays.asList(grades.split("\\s*,\\s*"));
+  }
+
   /**
    * Example: GET /api/reports/exam-attendance?startDate=2025-01-01&endDate=2025-01-31
    * &grade=FIRST,SECOND &sector=Primaria
@@ -42,8 +47,7 @@ public class ReportsController {
     LocalDate endDate = parseDate(endDateStr);
 
 
-    List<String> grades =
-        "All".equalsIgnoreCase(grade) ? List.of() : Arrays.asList(grade.split("\\s*,\\s*"));
+    List<String> grades = parseGrades(grade);
 
     List<EnrollmentAttendanceDTO> report =
         reportsService.getEnrollmentAttendanceStats(startDate, endDate, grades, sector);
@@ -63,8 +67,8 @@ public class ReportsController {
     LocalDate startDate = parseDate(startDateStr);
     LocalDate endDate = parseDate(endDateStr);
 
-    List<String> grades =
-        "All".equalsIgnoreCase(gradeCsv) ? List.of() : Arrays.asList(gradeCsv.split("\\s*,\\s*"));
+    List<String> grades = parseGrades(gradeCsv);
+
 
     List<ExamSourceDTO> result =
         reportsService.getExamSourceStatistics(startDate, endDate, grades, sector.trim());
@@ -89,8 +93,7 @@ public class ReportsController {
     LocalDate startDate = parseDate(startDateStr);
     LocalDate endDate = parseDate(endDateStr);
 
-    List<String> grades =
-        "All".equalsIgnoreCase(gradeCsv) ? List.of() : Arrays.asList(gradeCsv.split("\\s*,\\s*"));
+    List<String> grades = parseGrades(gradeCsv);
 
     List<AdmissionFinalDTO> result =
         reportsService.getAdmissionFinalStats(startDate, endDate, grades, sector.trim());
