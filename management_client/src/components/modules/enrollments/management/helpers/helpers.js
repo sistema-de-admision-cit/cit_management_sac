@@ -26,9 +26,9 @@ export const statusOptions = [
 ]
 
 export const statusOptionsForEnrollment = [
-  { value: 'PENDING', label: 'Inscrito' },
-  { value: 'ELIGIBLE', label: 'Permitido' },
-  { value: 'INELIGIBLE', label: 'Inelegible' },
+  { value: 'PENDING', label: 'Pendiente de Revisión' },
+  { value: 'ELIGIBLE', label: 'Aceptar' },
+  { value: 'INELIGIBLE', label: 'Rechazar' },
 ]
 
 export const isCommentRequired = (formData, enrollment) => {

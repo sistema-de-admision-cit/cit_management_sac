@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -6,10 +6,10 @@ import { styled } from '@mui/material/styles';
 import Checkbox from '@mui/material/Checkbox';
 import { statusOptionsForEnrollment, isCommentRequired, isEnabled } from '../helpers/helpers';
 import LeftArrowIcon from '../../../../../assets/icons/arrow-left-svgrepo-com.svg'
-import { mapGradeToSpanish } from '../helpers/handlers';
 import InputField from '../../../../core/global/atoms/InputField';
 import Button from '@mui/material/Button';
 import '../../../../../assets/styles/enrollments/enrollment-info-edit.css'
+import { handleGetExamPeriods, handleIsDateAllowed } from '../helpers/handlers';
 
 const FormContainer = styled('div')({
   display: 'flex',
@@ -18,7 +18,8 @@ const FormContainer = styled('div')({
   maxWidth: '600px',
   margin: '0 auto',
   padding: '25px 30px',
-  boxSizing: 'border-box'
+  boxSizing: 'border-box',
+  color: 'black',
 });
 
 const FullWidthField = styled('div')({
@@ -28,7 +29,8 @@ const FullWidthField = styled('div')({
     textAlign: 'left',
     width: '100%',
     display: 'block'
-  }
+  },
+  color: 'inherit',
 });
 
 const SectionTitle = styled('h3')({
@@ -64,6 +66,11 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
     comment: '',
     changedBy: 1
   })
+  const [examPeriods, setExamPeriods] = useState([])
+
+  useEffect(() => {
+    handleGetExamPeriods(setExamPeriods)
+  },[])
 
   const allRequiredFieldsFilled = () => {
     return formData.status && formData.examDate &&
@@ -108,7 +115,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
                 field={{
                   type: 'dropdown',
                   name: 'status',
-                  label: 'Estado',
+                  label: 'Estado de Inscripción',
                   options: statusOptionsForEnrollment,
                   fullWidth: true
                 }}
@@ -121,8 +128,11 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
             <FullWidthField>
               <SectionTitle>Fecha de examen</SectionTitle>
               <DatePicker
+                label="Cambiar fecha de examen"
                 value={formData.examDate}
                 onChange={handleDateChange}
+                shouldDisableDate={(date) => !handleIsDateAllowed(date, examPeriods)}
+                minDate={new Date()}
                 slotProps={{
                   textField: {
                     size: 'medium',

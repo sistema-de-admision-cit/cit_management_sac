@@ -32,7 +32,7 @@ const ModalApplicantDetails = ({
 
   return (
     <Modal onClose={onClose}>
-      <h2>Detalles del Aspirante</h2>
+      <h2>Información e Inscripciones del Estudiante</h2>
       <div className='modal-tabs'>
 
         <Button

@@ -270,3 +270,39 @@ export const mapGradeToSpanish = (grade) => {
       return grade;
   }
 }
+
+export const handleGetExamPeriods = (setExamPeriods) => {
+  const getExamPeriodsUrl = import.meta.env.VITE_GET_CURRENT_EXAM_PERIODS_ENDPOINT
+  axios.get(getExamPeriodsUrl, { timeout: 10000 })
+    .then(response => {
+      const examPeriods = response.data.map(period => {
+        return {
+          ...period,
+          startDate: new Date(period.startDate),
+          endDate: new Date(period.endDate),
+          examDays: period.examDays.map(day => day.examDay)
+        }
+      })
+      setExamPeriods(examPeriods)
+    })
+    .catch(error => {
+      console.error('Error al obtener los períodos de examen:', error)
+    })
+}
+
+const dayMap = {
+  0: 'SS', // Sunday
+  1: 'M',  // Monday
+  2: 'K',  // Tuesday
+  3: 'W',  // Wednesday
+  4: 'T',  // Thursday
+  5: 'F',  // Friday
+  6: 'S',  // Saturday
+};
+
+export const handleIsDateAllowed = (date, examPeriods) => {
+  const dayCode = dayMap[date.getDay()];
+  return examPeriods.some(({ startDate, endDate, examDays }) => {
+    return date >= startDate && date <= endDate && examDays.includes(dayCode);
+  })
+}
