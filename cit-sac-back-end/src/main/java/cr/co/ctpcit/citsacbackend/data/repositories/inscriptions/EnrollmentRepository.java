@@ -120,7 +120,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
    * @param newWhatsappPermission the new WhatsApp notification permission
    * @param newPreviousGrades    the new previous grades value
    * @param comment              additional comments for the update
-   * @param changedBy            the ID of the user who made the changes
+   * @param changedBy            the email of the user who made the changes
    */
 
   @Procedure(name = "usp_update_enrollment_and_log")
@@ -131,7 +131,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
           @Param("p_new_whatsapp_permission") Boolean newWhatsappPermission,
           @Param("p_new_previous_grades") BigDecimal newPreviousGrades,
           @Param("p_comment") String comment,
-          @Param("p_changed_by") Integer changedBy
+          @Param("p_changed_by") String changedBy
   );
 
   @Query(

@@ -92,8 +92,6 @@ export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setE
     changedBy: Cookies.get('username'),
   }
 
-  console.log('body', body)
-
   axios.put(`${updateEnrollmentUrl}/${enrollment.id}`, body,
     { timeout: 10000 })
     .then(response => {

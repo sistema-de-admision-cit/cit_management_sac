@@ -15,5 +15,5 @@ public record EnrollmentUpdateDto(LocalDate examDate,
                                   Boolean whatsappPermission,
                                   BigDecimal previousGrades,
                                   String comment,
-                                  Integer changedBy) {
+                                  String changedBy) {
 }

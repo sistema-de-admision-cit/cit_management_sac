@@ -13,7 +13,6 @@ import '../../../../../assets/styles/enrollments/enrollment-info-edit.css'
 import { handleGetExamPeriods, handleIsDateAllowed, handleEditSubmit, verifyAllRequiredFieldsFilled } from '../helpers/handlers';
 
 const FormContainer = styled('div')({
-  display: 'flex',
   flexDirection: 'column',
   width: '100%',
   maxWidth: '600px',
@@ -40,16 +39,6 @@ const SectionTitle = styled('h3')({
   fontSize: '1rem',
   fontWeight: '600',
   color: 'inherit'
-});
-
-const CheckboxContainer = styled('div')({
-  display: 'flex',
-  width: '100%',
-  margin: '0',
-  gap: '10px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start'
 });
 
 const ButtonContainer = styled('div')({

@@ -182,7 +182,7 @@ class InscriptionsControllerTest {
 
     EnrollmentUpdateDto updatedEnrollment =
         new EnrollmentUpdateDto(LocalDate.parse("2025-02-28"), ProcessStatus.REJECTED, false,new BigDecimal("8.5"),
-            "Action made to update enrollment as test", 1);
+            "Action made to update enrollment as test", "sysadmin@cit.co.cr");
 
     //Request
     HttpEntity<EnrollmentUpdateDto> request = new HttpEntity<>(updatedEnrollment);

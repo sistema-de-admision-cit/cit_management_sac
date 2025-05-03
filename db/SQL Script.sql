@@ -393,7 +393,7 @@ CREATE TABLE IF NOT EXISTS `tbl_Logs` (
   `column_name` VARCHAR(50) NOT NULL,
   `old_value` TEXT NOT NULL,
   `new_value` TEXT NOT NULL,
-  `changed_by` INT NOT NULL,
+  `changed_by` INT UNSIGNED NOT NULL,
   `changed_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `query` TEXT NULL DEFAULT NULL,
   `comment` VARCHAR(255) NOT NULL,
@@ -494,7 +494,7 @@ CREATE PROCEDURE usp_Update_Enrollment_And_Log (
     IN p_new_whatsapp_permission BOOLEAN,
     IN p_new_previous_grades DECIMAL(5,2),
     IN p_comment VARCHAR(255),
-    IN p_changed_by INT
+    IN p_changed_by VARCHAR(128)
 )
 BEGIN
     DECLARE v_old_status ENUM('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED');
@@ -502,6 +502,7 @@ BEGIN
     DECLARE v_old_whatsapp_permission BOOLEAN;
     DECLARE v_old_previous_grades DECIMAL(5,2);
     DECLARE v_student_id INT;
+    DECLARE v_changed_by_id INT UNSIGNED;
 
     -- Obtener datos actuales de la inscripción
     SELECT `status`, `exam_date`, `whatsapp_notification`, `student_id`
@@ -514,6 +515,12 @@ BEGIN
     INTO v_old_previous_grades
     FROM `tbl_Students`
     WHERE `student_id` = v_student_id;
+    
+    -- Obtener el id del usuario que actualiza
+    SELECT `user_id`
+    INTO v_changed_by_id
+    FROM `tbl_users`
+    WHERE `email` = p_changed_by;
 
     -- Actualizar inscripción
     UPDATE `tbl_Enrollments`
@@ -531,7 +538,7 @@ BEGIN
         INSERT INTO `tbl_Logs` 
             (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
         VALUES 
-            ('tbl_Students', 'previous_grades', v_old_previous_grades, p_new_previous_grades, p_changed_by, 
+            ('tbl_Students', 'previous_grades', v_old_previous_grades, p_new_previous_grades, v_changed_by_id, 
              CONCAT('UPDATE tbl_Students SET previous_grades = ', p_new_previous_grades, ' WHERE student_id = ', v_student_id), 
              p_comment);
     END IF;
@@ -541,7 +548,7 @@ BEGIN
         INSERT INTO `tbl_Logs` 
             (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
         VALUES 
-            ('tbl_Enrollments', 'status', v_old_status, p_new_status, p_changed_by, 
+            ('tbl_Enrollments', 'status', v_old_status, p_new_status, v_changed_by_id, 
              CONCAT('UPDATE tbl_Enrollments SET status = ', p_new_status, ' WHERE enrollment_id = ', p_enrollment_id), 
              p_comment);
     END IF;
@@ -550,7 +557,7 @@ BEGIN
         INSERT INTO `tbl_Logs` 
             (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
         VALUES 
-            ('tbl_Enrollments', 'exam_date', v_old_exam_date, p_new_exam_date, p_changed_by, 
+            ('tbl_Enrollments', 'exam_date', v_old_exam_date, p_new_exam_date, v_changed_by_id, 
              CONCAT('UPDATE tbl_Enrollments SET exam_date = ', p_new_exam_date, ' WHERE enrollment_id = ', p_enrollment_id), 
              p_comment);
     END IF;
