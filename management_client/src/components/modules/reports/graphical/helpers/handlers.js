@@ -26,3 +26,29 @@ export const fetchAdmissionFinal = async (startDate, endDate, gradeCsv = 'All', 
   })
   return data
 }
+
+/** Fetch data for the Academic Exam (distribution + grade-averages) */
+export const fetchAcademicExam = async (
+  startDate,
+  endDate,
+  gradeCsv = 'All',
+  sector = 'All'
+) => {
+  const { data } = await axios.get('reports/academic', {
+    params: { startDate, endDate, grade: gradeCsv, sector }
+  })
+  return data
+}
+
+/** Fetch data for the DAI Exam (details + area-averages) */
+export const fetchDaiExam = async (
+  startDate,
+  endDate,
+  gradeCsv = 'All',
+  sector = 'All'
+) => {
+  const { data } = await axios.get('reports/dai', {
+    params: { startDate, endDate, grade: gradeCsv, sector }
+  })
+  return data
+}
