@@ -316,6 +316,14 @@ export const verifyAllRequiredFieldsFilled = (formData, enrollment) => {
     (!isCommentRequired(formData, enrollment) || formData.comment.trim());
 }
 
+const datesAreEqual = (date1, date2) => {
+  return (
+    date1.getDate() === date2.getDate() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getFullYear() === date2.getFullYear()
+  );
+}
+
 export const handleEditSubmit = (e, enrollment, formData, setIsEditing, setErrorMessage, setSuccessMessage) => {
     e.preventDefault();
 
@@ -323,7 +331,7 @@ export const handleEditSubmit = (e, enrollment, formData, setIsEditing, setError
     const [year, month, day] = formData.examDate.toISOString().split('T')[0].split('-').map(Number);
 
     const enrollmentDate = enrollment.examDate ? new Date(year, month - 1, day) : null
-    const isDateChanged = formData.examDate.getTime() === enrollmentDate.getTime()
+    const isDateChanged = !datesAreEqual(formData.examDate, enrollmentDate)
 
     const isStatusChanged = formData.status !== enrollment.status
     const isWhatsappNotificationChanged = formData.whatsappNotification !== enrollment.whatsappNotification
