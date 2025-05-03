@@ -1,8 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest.reports;
 
-import cr.co.ctpcit.citsacbackend.logic.dto.reports.AdmissionFinalDTO;
-import cr.co.ctpcit.citsacbackend.logic.dto.reports.EnrollmentAttendanceDTO;
-import cr.co.ctpcit.citsacbackend.logic.dto.reports.ExamSourceDTO;
+import cr.co.ctpcit.citsacbackend.logic.dto.reports.*;
 import cr.co.ctpcit.citsacbackend.logic.services.reports.ReportsServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -99,6 +97,41 @@ public class ReportsController {
         reportsService.getAdmissionFinalStats(startDate, endDate, grades, sector.trim());
 
     return ResponseEntity.ok(result);
+  }
+
+  /**
+   * Example: GET /api/reports/academic?startDate=2025-01-01&endDate=2025-01-31
+   * @param start
+   * @param end
+   * @param gradeCsv
+   * @param sector
+   * @return
+   */
+  @GetMapping("/academic")
+  public ResponseEntity<AcademicExamReportDTO> getAcademicReport(
+      @RequestParam(value = "startDate", required = false) String start,
+      @RequestParam(value = "endDate", required = false) String end,
+      @RequestParam(value = "grade", defaultValue = "All") String gradeCsv,
+      @RequestParam(value = "sector", defaultValue = "All") String sector) {
+    LocalDate sd = parseDate(start);
+    LocalDate ed = parseDate(end);
+    List<String> grades = parseGrades(gradeCsv);
+    AcademicExamReportDTO dto = reportsService.getAcademicExamReport(sd, ed, grades, sector.trim());
+    return ResponseEntity.ok(dto);
+  }
+
+  // --- DAI composite endpoint ---
+  @GetMapping("/dai")
+  public ResponseEntity<DaiExamReportDTO> getDaiReport(
+      @RequestParam(value = "startDate", required = false) String start,
+      @RequestParam(value = "endDate", required = false) String end,
+      @RequestParam(value = "grade", defaultValue = "All") String gradeCsv,
+      @RequestParam(value = "sector", defaultValue = "All") String sector) {
+    LocalDate sd = parseDate(start);
+    LocalDate ed = parseDate(end);
+    List<String> grades = parseGrades(gradeCsv);
+    DaiExamReportDTO dto = reportsService.getDaiExamReport(sd, ed, grades, sector.trim());
+    return ResponseEntity.ok(dto);
   }
 }
 
