@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository interface for managing {@link EnrollmentEntity} entities.
@@ -132,4 +133,64 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
           @Param("p_comment") String comment,
           @Param("p_changed_by") Integer changedBy
   );
+
+  /**
+   * Repository query method to find enrollments by student's ID number and status, with pagination support.
+   * The status list can contain multiple process statuses.
+   *
+   * @param idNumber The ID number of the student to search for.
+   * @param statuses A list of statuses to filter the enrollments by.
+   * @param pageable The pagination information.
+   * @return A page of enrollment entities that match the search criteria.
+   */
+
+  @Query("SELECT e FROM EnrollmentEntity e WHERE e.student.studentPerson.idNumber LIKE %:idNumber% AND e.status IN :statuses")
+  Page<EnrollmentEntity> findByIdNumberAndStatusIn(
+          @Param("idNumber") String idNumber,
+          @Param("statuses") List<ProcessStatus> statuses,
+          Pageable pageable
+  );
+
+  Page<EnrollmentEntity> findAllByStatusIn(List<ProcessStatus> statuses, Pageable pageable);
+
+
+  /**
+   * Repository query method to find enrollments for a list of students with a specified status, with pagination support.
+   *
+   * @param students A list of students to filter enrollments by.
+   * @param statuses A list of statuses to filter the enrollments by.
+   * @param pageable The pagination information.
+   * @return A page of enrollment entities that match the search criteria.
+   */
+
+  @Query("SELECT e FROM EnrollmentEntity e WHERE e.student IN :students AND e.status IN :statuses")
+  Page<EnrollmentEntity> findAllByStudentsWithStatusIn(
+          @Param("students") List<StudentEntity> students,
+          @Param("statuses") List<ProcessStatus> statuses,
+          Pageable pageable
+  );
+
+
+  /**
+   * Repository query method to find an enrollment by student's ID number, without filtering by status.
+   *
+   * @param idNumber The ID number of the student to search for.
+   * @return An optional enrollment entity that matches the search criteria.
+   */
+
+  @Query("SELECT e FROM EnrollmentEntity e WHERE e.student.studentPerson.idNumber = :idNumber")
+  Optional<EnrollmentEntity> findByStudentStudentPersonIdNumber(@Param("idNumber") String idNumber);
+
+  /**
+   * Repository query method to find an enrollment by student's ID number and a list of possible statuses.
+   *
+   * @param idNumber The ID number of the student to search for.
+   * @param statuses A list of statuses to filter the enrollment by.
+   * @return An optional enrollment entity that matches the search criteria.
+   */
+
+  @Query("SELECT e FROM EnrollmentEntity e WHERE e.student.studentPerson.idNumber = :idNumber AND e.status IN :statuses")
+  Optional<EnrollmentEntity> findByStudentStudentPersonIdNumberAndStatusIn(
+          @Param("idNumber") String idNumber,
+          @Param("statuses") List<ProcessStatus> statuses);
 }
