@@ -76,20 +76,21 @@ public class ReportsController {
    *
    * @param startDateStr
    * @param endDateStr
-   * @param grade
+   * @param gradeCsv
    * @param sector
    * @return
    */
   @GetMapping("/admission-final")
   public ResponseEntity<List<AdmissionFinalDTO>> getAdmissionFinal(
-      @RequestParam String startDateStr, @RequestParam String endDateStr,
-      @RequestParam(defaultValue = "All") String grade,
-      @RequestParam(defaultValue = "All") String sector) {
+      @RequestParam(value = "startDate", required = false) String startDateStr,
+      @RequestParam(value = "endDate", required = false) String endDateStr,
+      @RequestParam(value = "grade", defaultValue = "All") String gradeCsv,
+      @RequestParam(value = "sector", defaultValue = "All") String sector) {
     LocalDate startDate = parseDate(startDateStr);
     LocalDate endDate = parseDate(endDateStr);
 
     List<String> grades =
-        "All".equalsIgnoreCase(grade) ? List.of() : Arrays.asList(grade.split("\\s*,\\s*"));
+        "All".equalsIgnoreCase(gradeCsv) ? List.of() : Arrays.asList(gradeCsv.split("\\s*,\\s*"));
 
     List<AdmissionFinalDTO> result =
         reportsService.getAdmissionFinalStats(startDate, endDate, grades, sector.trim());
