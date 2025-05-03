@@ -276,10 +276,14 @@ export const handleGetExamPeriods = (setExamPeriods) => {
   axios.get(getExamPeriodsUrl, { timeout: 10000 })
     .then(response => {
       const examPeriods = response.data.map(period => {
+        // Convertir las fechas de inicio y fin a objetos Date
+        const [yearStart, monthStart, dayStart] = period.startDate.split('-').map(Number)
+        const [yearEnd, monthEnd, dayEnd] = period.endDate.split('-').map(Number)
+
         return {
           ...period,
-          startDate: new Date(period.startDate),
-          endDate: new Date(period.endDate),
+          startDate: new Date(yearStart, monthStart - 1, dayStart),
+          endDate: new Date(yearEnd, monthEnd - 1, dayEnd),
           examDays: period.examDays.map(day => day.examDay)
         }
       })
@@ -306,3 +310,30 @@ export const handleIsDateAllowed = (date, examPeriods) => {
     return date >= startDate && date <= endDate && examDays.includes(dayCode);
   })
 }
+
+export const verifyAllRequiredFieldsFilled = (formData, enrollment) => {
+  return formData.status && formData.examDate &&
+    (!isCommentRequired(formData, enrollment) || formData.comment.trim());
+}
+
+export const handleEditSubmit = (e, enrollment, formData, setIsEditing, setErrorMessage, setSuccessMessage) => {
+    e.preventDefault();
+
+  if (!verifyAllRequiredFieldsFilled(formData, enrollment)) return;
+    const enrollmentDate = enrollment.examDate ? new Date(enrollment.examDate) : null
+    const isDateChanged = formData.examDate !== enrollmentDate
+
+    const isStatusChanged = formData.status !== enrollment.status
+    const isWhatsappNotificationChanged = formData.whatsappNotification !== enrollment.whatsappNotification
+    const isPreviousGradesChanged = formData.previousGrades !== enrollment.student.previousGrades
+
+    const dataToSend = {
+      ...formData,
+      examDate: isDateChanged ? formData.examDate.toISOString().split('T')[0] : enrollmentDate,
+      status: isStatusChanged ? formData.status : enrollment.status,
+      whatsappNotification: isWhatsappNotificationChanged ? formData.whatsappNotification : enrollment.whatsappNotification,
+      previousGrades: isPreviousGradesChanged ? formData.previousGrades : enrollment.student.previousGrades,
+      comment: formData.comment.trim() || enrollment.comment,
+    };
+    handleEnrollmentEdit(e, formData, enrollment, setIsEditing, setErrorMessage, setSuccessMessage);
+  }

@@ -10,7 +10,7 @@ import LeftArrowIcon from '../../../../../assets/icons/arrow-left-svgrepo-com.sv
 import InputField from '../../../../core/global/atoms/InputField';
 import Button from '@mui/material/Button';
 import '../../../../../assets/styles/enrollments/enrollment-info-edit.css'
-import { handleGetExamPeriods, handleIsDateAllowed } from '../helpers/handlers';
+import { handleGetExamPeriods, handleIsDateAllowed, handleEditSubmit, verifyAllRequiredFieldsFilled } from '../helpers/handlers';
 
 const FormContainer = styled('div')({
   display: 'flex',
@@ -59,11 +59,13 @@ const ButtonContainer = styled('div')({
   width: '100%'
 });
 
-const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) => {
+const EnrollmentInfoEdit = ({ enrollment, setIsEditing, setErrorMessage, setSuccessMessage }) => {
+  const [year, month, day] = enrollment.examDate.split('-').map(Number);
+
   const [formData, setFormData] = useState({
     enrollmentId: enrollment.id,
     status: enrollment.status,
-    examDate: enrollment.examDate ? new Date(enrollment.examDate) : null,
+    examDate: enrollment.examDate ? new Date(year, month - 1, day) : null,
     whatsappNotification: enrollment.whatsappNotification,
     previousGrades: enrollment.student.previousGrades,
     comment: '',
@@ -75,25 +77,9 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
     handleGetExamPeriods(setExamPeriods)
   }, [])
 
-  const allRequiredFieldsFilled = () => {
-    return formData.status && formData.examDate &&
-      (!isCommentRequired(formData, enrollment) || formData.comment.trim());
-  }
-
   const handleDateChange = (newValue) => {
     setFormData({ ...formData, examDate: newValue });
   }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!allRequiredFieldsFilled()) return;
-
-    const dataToSend = {
-      ...formData,
-      examDate: formData.examDate ? formData.examDate.toISOString().split('T')[0] : null
-    };
-    handleEnrollmentEdit(e, dataToSend, enrollment);
-  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -111,7 +97,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
           </h2>
         </div>
         <div>
-          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+          <form onSubmit={(e) => handleEditSubmit(e, enrollment, formData, setIsEditing, setErrorMessage, setSuccessMessage)} style={{ width: '100%' }}>
             {/* Estado */}
             <FullWidthField>
               <InputField
@@ -136,6 +122,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
                 onChange={handleDateChange}
                 shouldDisableDate={(date) => !handleIsDateAllowed(date, examPeriods)}
                 minDate={new Date()}
+                format="dd/MM/yyyy" 
                 slotProps={{
                   textField: {
                     size: 'medium',
@@ -212,7 +199,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
                 variant="contained"
                 size="large"
                 aria-label="Guardar Cambios"
-                disabled={!allRequiredFieldsFilled() || !isEnabled(formData, enrollment)}
+                disabled={!verifyAllRequiredFieldsFilled(formData, enrollment) || !isEnabled(formData, enrollment)}
                 type="submit"
                 sx={{
                   backgroundColor: '#2ba98e',

@@ -7,7 +7,7 @@ import EnrollmentInfo from './EnrollmentInfo'
 import Button from '../../../../core/global/atoms/Button'
 import { guardianTabText } from '../helpers/helpers'
 import ModalManageFiles from '../molecules/ModalManageFiles'
-import { handleDocClick, handleFileDownload, handleFileDelete, handleFileUpload, mapGradeToSpanish } from '../helpers/handlers'
+import { handleDocClick, handleFileDownload, handleFileDelete, mapGradeToSpanish } from '../helpers/handlers'
 
 const ModalApplicantDetails = ({
   student,
@@ -15,7 +15,6 @@ const ModalApplicantDetails = ({
   enrollments,
   onClose,
   onFileUpload,
-  onEnrollmentEdit,
   setErrorMessage,
   setSuccessMessage
 }) => {
@@ -23,12 +22,8 @@ const ModalApplicantDetails = ({
   const [isDocModalOpen, setIsDocModalOpen] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
   const [selectedFileType, setSelectedFileType] = useState('')
-  const [isEditing, setIsEditing] = useState(false)
+  
   const [enrollment, setEnrollment] = useState({})
-
-  useEffect(() => {
-    setIsEditing(false)
-  }, [activeTab, enrollments])
 
   return (
     <Modal onClose={onClose}>
@@ -72,13 +67,11 @@ const ModalApplicantDetails = ({
       {enrollments.some((enrollment) => activeTab === `enrollment-${enrollment.id}`) &&
         <EnrollmentInfo
           enrollment={enrollments.find((enrollment) => activeTab === `enrollment-${enrollment.id}`)}
-          isEditing={isEditing}
-          
-          onEnrollmentEdit={(e, formData, enrollment) => onEnrollmentEdit(e, formData, enrollment, setIsEditing)}
-          setIsEditing={setIsEditing}
           onDocClick={(file) => handleDocClick(file, setSelectedFile, setIsDocModalOpen)}
           setSelectedFileType={setSelectedFileType}
           student={student}
+          setErrorMessage={setErrorMessage}
+          setSuccessMessage={setSuccessMessage}
         />}
 
       {isDocModalOpen && (

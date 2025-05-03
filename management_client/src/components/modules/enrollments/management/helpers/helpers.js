@@ -1,7 +1,7 @@
 export const statusText = {
-  PENDING: 'Inscrito',
-  ELIGIBLE: 'Permitido',
-  INELIGIBLE: 'Inelegible',
+  PENDING: 'Pendiente de Revisión',
+  ELIGIBLE: 'Aceptar',
+  INELIGIBLE: 'Rechazar',
   ACCEPTED: 'Aceptado',
   REJECTED: 'Rechazado'
 }
@@ -18,9 +18,9 @@ export const guardianTabText = {
 }
 
 export const statusOptions = [
-  { value: 'PENDING', label: 'Inscrito' },
-  { value: 'ELIGIBLE', label: 'Permitido' },
-  { value: 'INELIGIBLE', label: 'Inelegible' },
+  { value: 'PENDING', label: 'Pendiente de Revisión' },
+  { value: 'ELIGIBLE', label: 'Aceptar' },
+  { value: 'INELIGIBLE', label: 'Rechazar' },
   { value: 'ACCEPTED', label: 'Aceptado' },
   { value: 'REJECTED', label: 'Rechazado' }
 ]
@@ -130,14 +130,12 @@ export const formatDate = (date) => {
   if (!date) return '';
 
   // Asegurarse que es un objeto Date
-  const dateObj = date instanceof Date ? date : new Date(date);
+  const [year, month, day] = date instanceof Date ? [date.getFullYear(), date.getMonth() + 1, date.getDate()] : date.split('-').map(Number);
+
+  const dateObj = date instanceof Date ? date : new Date(year, month - 1, day);
 
   // Si es inválido, retornar string vacío
   if (isNaN(dateObj.getTime())) return '';
-
-  const day = dateObj.getUTCDate();
-  const month = dateObj.getUTCMonth() + 1;
-  const year = dateObj.getUTCFullYear();
 
   const formattedDay = day < 10 ? `0${day}` : day;
   const formattedMonth = month < 10 ? `0${month}` : month;
