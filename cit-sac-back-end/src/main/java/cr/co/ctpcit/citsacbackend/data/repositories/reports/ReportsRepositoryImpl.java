@@ -18,9 +18,10 @@ class ReportsRepositoryImpl implements ReportsRepository {
     this.jdbcTemplate = jdbcTemplate;
   }
 
-  public List<ExamSourceDTO> findExamSourceStatistics() {
-    String sql = "CALL usp_Get_Students_By_Exam_Source()";
-    return jdbcTemplate.query(sql,
+  public List<ExamSourceDTO> findExamSourceStatistics(LocalDate startDate, LocalDate endDate,
+      List<String> gradesCsv, String sector) {
+    String sql = "CALL usp_Get_Students_By_Exam_Source_Filters(?, ?, ?, ?)";
+    return jdbcTemplate.query(sql, new Object[] {startDate, endDate, gradesCsv, sector},
         (rs, rowNum) -> new ExamSourceDTO(rs.getString("examSource"), rs.getInt("studentCount")));
   }
 

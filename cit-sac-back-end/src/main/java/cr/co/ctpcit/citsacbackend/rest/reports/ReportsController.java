@@ -52,8 +52,21 @@ public class ReportsController {
   }
 
   @GetMapping("/exam-source")
-  public ResponseEntity<List<ExamSourceDTO>> getExamSourceStatistics() {
-    List<ExamSourceDTO> result = reportsService.getExamSourceStatistics();
+  public ResponseEntity<List<ExamSourceDTO>> getExamSourceStatistics(
+      @RequestParam(value = "startDate", required = false) String startDateStr,
+      @RequestParam(value = "endDate",   required = false) String endDateStr,
+      @RequestParam(value = "grade",     defaultValue = "All")  String gradeCsv,
+      @RequestParam(value = "sector",    defaultValue = "All")  String sector
+  ) {
+    LocalDate startDate = (startDateStr == null || startDateStr.isBlank())
+        ? null : LocalDate.parse(startDateStr.trim());
+    LocalDate endDate   = (endDateStr   == null || endDateStr.isBlank())
+        ? null : LocalDate.parse(endDateStr.trim());
+    List<String> grades = "All".equalsIgnoreCase(gradeCsv)
+        ? List.of() : Arrays.asList(gradeCsv.split("\\s*,\\s*"));
+
+    List<ExamSourceDTO> result = reportsService.getExamSourceStatistics(
+        startDate, endDate, grades, sector.trim());
     return ResponseEntity.ok(result);
   }
 

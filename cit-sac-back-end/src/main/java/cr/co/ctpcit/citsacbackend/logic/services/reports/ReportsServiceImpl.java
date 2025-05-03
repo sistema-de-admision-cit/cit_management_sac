@@ -17,8 +17,9 @@ public class ReportsServiceImpl {
     this.reportsRepository = reportsRepository;
   }
 
-  public List<ExamSourceDTO> getExamSourceStatistics() {
-    return reportsRepository.findExamSourceStatistics();
+  public List<ExamSourceDTO> getExamSourceStatistics(LocalDate startDate, LocalDate endDate,
+      List<String> grades, String sector) {
+    return reportsRepository.findExamSourceStatistics(startDate, endDate, grades, sector);
   }
 
   public List<EnrollmentAttendanceDTO> getEnrollmentAttendanceStats(LocalDate startDate,

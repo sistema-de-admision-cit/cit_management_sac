@@ -706,21 +706,38 @@ END//
 -- This procedure groups the enrollments by the known_through field
 -- and returns the count of students for each group
 
+/* 1) SQL: create filtered stored procedure */
 DELIMITER //
-DROP PROCEDURE IF EXISTS usp_Get_Students_By_Exam_Source //
-CREATE PROCEDURE usp_Get_Students_By_Exam_Source()
+DROP PROCEDURE IF EXISTS usp_Get_Students_By_Exam_Source_Filters //
+CREATE PROCEDURE usp_Get_Students_By_Exam_Source_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
 BEGIN
-    SELECT 
-       CASE known_through
-            WHEN 'OH' THEN 'OpenHouse'
-            WHEN 'SM' THEN 'Redes Sociales'
-            WHEN 'FD' THEN 'Visita al Colegio'
-            WHEN 'FM' THEN 'Evento Académico'
-            ELSE 'Otros'
-       END AS examSource,
-       COUNT(*) AS studentCount
-    FROM tbl_Enrollments
-    GROUP BY known_through;
+  SELECT
+    CASE e.known_through
+      WHEN 'OH' THEN 'OpenHouse'
+      WHEN 'SM' THEN 'Redes Sociales'
+      WHEN 'FD' THEN 'Visita al Colegio'
+      WHEN 'FM' THEN 'Evento Académico'
+      ELSE 'Otros'
+    END AS examSource,
+    COUNT(*) AS studentCount
+  FROM tbl_Enrollments e
+  WHERE
+    (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
+    AND (
+      p_grades = 'All' OR FIND_IN_SET(e.grade_to_enroll, p_grades)
+    )
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND e.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  GROUP BY e.known_through;
 END //
 DELIMITER ;
 
