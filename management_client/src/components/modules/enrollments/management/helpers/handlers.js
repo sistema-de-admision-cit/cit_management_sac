@@ -1,6 +1,6 @@
-import { de, sq } from 'date-fns/locale'
 import axios from '../../../../../config/axiosConfig'
 import { formatDateForApi, isCommentRequired } from './helpers'
+import Cookies from 'js-cookie'
 
 // Manejo de errores
 const getErrorMessage = (error) => {
@@ -89,7 +89,7 @@ export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setE
     whatsappPermission: formData.whatsappNotification,
     previousGrades: parseFloat(formData.previousGrades),
     comment: formData.comment,
-    changedBy: 1
+    changedBy: Cookies.get('username'),
   }
 
   console.log('body', body)
@@ -320,8 +320,10 @@ export const handleEditSubmit = (e, enrollment, formData, setIsEditing, setError
     e.preventDefault();
 
   if (!verifyAllRequiredFieldsFilled(formData, enrollment)) return;
-    const enrollmentDate = enrollment.examDate ? new Date(enrollment.examDate) : null
-    const isDateChanged = formData.examDate !== enrollmentDate
+    const [year, month, day] = formData.examDate.toISOString().split('T')[0].split('-').map(Number);
+
+    const enrollmentDate = enrollment.examDate ? new Date(year, month - 1, day) : null
+    const isDateChanged = formData.examDate.getTime() === enrollmentDate.getTime()
 
     const isStatusChanged = formData.status !== enrollment.status
     const isWhatsappNotificationChanged = formData.whatsappNotification !== enrollment.whatsappNotification
