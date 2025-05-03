@@ -423,3 +423,157 @@ VALUES
     (3,       3,             '2025-01-15 08:45:00', 'ACA',     NULL),
     (4,       4,             '2025-02-07 09:30:00', 'ACA',     NULL),
     (5,       5,             '2025-01-12 11:15:00', 'ACA',     NULL);
+
+
+--
+
+-- Persons
+INSERT INTO tbl_Persons (person_id, first_name, first_surname, second_surname, id_type, id_number) VALUES
+                                                                                                       (661, 'Test661', 'Surname661', 'Last661', 'CC', '661'),
+                                                                                                       (662, 'Test662', 'Surname662', 'Last662', 'CC', '662'),
+                                                                                                       (663, 'Test663', 'Surname663', 'Last663', 'CC', '663'),
+                                                                                                       (664, 'Test664', 'Surname664', 'Last664', 'CC', '664'),
+                                                                                                       (665, 'Test665', 'Surname665', 'Last665', 'CC', '665'),
+                                                                                                       (666, 'Test666', 'Surname666', 'Last666', 'CC', '666'),
+                                                                                                       (667, 'Test667', 'Surname667', 'Last667', 'CC', '667'),
+                                                                                                       (668, 'Test668', 'Surname668', 'Last668', 'CC', '668'),
+                                                                                                       (669, 'Test669', 'Surname669', 'Last669', 'CC', '669'),
+                                                                                                       (670, 'Test670', 'Surname670', 'Last670', 'CC', '670');
+
+-- Students
+INSERT INTO tbl_Students (student_id, birth_date, previous_school, previous_grades, has_accommodations) VALUES
+                                                                                                            (661, '2015-01-01', 'Escuela 661', 71.00, 0),
+                                                                                                            (662, '2015-01-02', 'Escuela 662', 72.00, 1),
+                                                                                                            (663, '2015-01-03', 'Escuela 663', 73.00, 0),
+                                                                                                            (664, '2015-01-04', 'Escuela 664', 74.00, 1),
+                                                                                                            (665, '2015-01-05', 'Escuela 665', 75.00, 0),
+                                                                                                            (666, '2015-01-06', 'Escuela 666', 76.00, 1),
+                                                                                                            (667, '2015-01-07', 'Escuela 667', 77.00, 0),
+                                                                                                            (668, '2015-01-08', 'Escuela 668', 78.00, 1),
+                                                                                                            (669, '2015-01-09', 'Escuela 669', 79.00, 0),
+                                                                                                            (670, '2015-01-10', 'Escuela 670', 80.00, 1);
+
+-- Enrollments
+INSERT INTO tbl_Enrollments (enrollment_id, student_id, status, enrollment_date, grade_to_enroll, known_through, exam_date, consent_given, whatsapp_notification) VALUES
+                                                                                                                                                                      (6611, 661, 'ELIGIBLE', '2025-04-02 10:01:00', 'THIRD', 'FD', '2025-04-02', 1, 1),
+                                                                                                                                                                      (6612, 661, 'ELIGIBLE', '2025-04-03 10:01:00', 'FOURTH', 'FM', '2025-04-03', 1, 1),
+                                                                                                                                                                      (6621, 662, 'ELIGIBLE', '2025-04-03 10:02:00', 'FOURTH', 'FM', '2025-04-03', 1, 0),
+                                                                                                                                                                      (6622, 662, 'ELIGIBLE', '2025-04-04 10:02:00', 'FIFTH', 'OT', '2025-04-04', 1, 0),
+                                                                                                                                                                      (6631, 663, 'ELIGIBLE', '2025-04-04 10:03:00', 'FIFTH', 'OT', '2025-04-04', 1, 1),
+                                                                                                                                                                      (6632, 663, 'ELIGIBLE', '2025-04-05 10:03:00', 'SIXTH', 'SM', '2025-04-05', 1, 1),
+                                                                                                                                                                      (6641, 664, 'ELIGIBLE', '2025-04-05 10:04:00', 'SIXTH', 'SM', '2025-04-05', 1, 0),
+                                                                                                                                                                      (6642, 664, 'ELIGIBLE', '2025-04-06 10:04:00', 'SEVENTH', 'OH', '2025-04-06', 1, 0),
+                                                                                                                                                                      (6651, 665, 'ELIGIBLE', '2025-04-06 10:05:00', 'SEVENTH', 'OH', '2025-04-06', 1, 1),
+                                                                                                                                                                      (6652, 665, 'ELIGIBLE', '2025-04-07 10:05:00', 'EIGHTH', 'FD', '2025-04-07', 1, 1),
+                                                                                                                                                                      (6661, 666, 'ELIGIBLE', '2025-04-07 10:06:00', 'EIGHTH', 'FD', '2025-04-07', 1, 0),
+                                                                                                                                                                      (6662, 666, 'ELIGIBLE', '2025-04-08 10:06:00', 'NINTH', 'FM', '2025-04-08', 1, 0),
+                                                                                                                                                                      (6671, 667, 'ELIGIBLE', '2025-04-08 10:07:00', 'NINTH', 'FM', '2025-04-08', 1, 1),
+                                                                                                                                                                      (6672, 667, 'ELIGIBLE', '2025-04-09 10:07:00', 'TENTH', 'OT', '2025-04-09', 1, 1),
+                                                                                                                                                                      (6681, 668, 'ELIGIBLE', '2025-04-09 10:08:00', 'TENTH', 'OT', '2025-04-09', 1, 0),
+                                                                                                                                                                      (6682, 668, 'ELIGIBLE', '2025-04-10 10:08:00', 'FIRST', 'SM', '2025-04-10', 1, 0),
+                                                                                                                                                                      (6691, 669, 'ELIGIBLE', '2025-04-10 10:09:00', 'FIRST', 'SM', '2025-04-10', 1, 1),
+                                                                                                                                                                      (6692, 669, 'ELIGIBLE', '2025-04-11 10:09:00', 'SECOND', 'OH', '2025-04-11', 1, 1),
+                                                                                                                                                                      (6701, 670, 'ELIGIBLE', '2025-04-11 10:10:00', 'SECOND', 'OH', '2025-04-11', 1, 0),
+                                                                                                                                                                      (6702, 670, 'ELIGIBLE', '2025-04-12 10:10:00', 'THIRD', 'FD', '2025-04-12', 1, 0);
+
+-- Academic Questions
+INSERT INTO tbl_Questions (question_id, question_type, question_text, question_grade, question_level, selection_type, deleted) VALUES
+                                                                                                                                   (6601, 'ACA', 'Pregunta 6601', 'SECOND', 'EASY', 'SINGLE', 0),
+                                                                                                                                   (6602, 'ACA', 'Pregunta 6602', 'THIRD', 'MEDIUM', 'SINGLE', 0),
+                                                                                                                                   (6603, 'ACA', 'Pregunta 6603', 'FOURTH', 'HARD', 'SINGLE', 0),
+                                                                                                                                   (6604, 'ACA', 'Pregunta 6604', 'FIFTH', 'EASY', 'SINGLE', 0),
+                                                                                                                                   (6605, 'ACA', 'Pregunta 6605', 'SIXTH', 'MEDIUM', 'SINGLE', 0),
+                                                                                                                                   (6606, 'ACA', 'Pregunta 6606', 'SEVENTH', 'HARD', 'SINGLE', 0),
+                                                                                                                                   (6607, 'ACA', 'Pregunta 6607', 'EIGHTH', 'EASY', 'SINGLE', 0),
+                                                                                                                                   (6608, 'ACA', 'Pregunta 6608', 'NINTH', 'MEDIUM', 'SINGLE', 0),
+                                                                                                                                   (6609, 'ACA', 'Pregunta 6609', 'TENTH', 'HARD', 'SINGLE', 0);
+
+-- Academic Exams and Grades
+INSERT INTO tbl_Exams (exam_id, enrollment_id, exam_date, exam_type, responses) VALUES
+                                                                                    (672611, 6611, '2025-04-02 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.5}, {"questionId": 6602, "score": 7.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.5}, {"questionId": 6605, "score": 7.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.5}, {"questionId": 6608, "score": 7.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672612, 6612, '2025-04-03 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.0}, {"questionId": 6602, "score": 6.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.0}, {"questionId": 6605, "score": 6.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.0}, {"questionId": 6608, "score": 6.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672621, 6621, '2025-04-03 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.5}, {"questionId": 6602, "score": 7.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.5}, {"questionId": 6605, "score": 7.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.5}, {"questionId": 6608, "score": 7.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672622, 6622, '2025-04-04 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.0}, {"questionId": 6602, "score": 6.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.0}, {"questionId": 6605, "score": 6.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.0}, {"questionId": 6608, "score": 6.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672631, 6631, '2025-04-04 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.5}, {"questionId": 6602, "score": 7.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.5}, {"questionId": 6605, "score": 7.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.5}, {"questionId": 6608, "score": 7.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672632, 6632, '2025-04-05 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.0}, {"questionId": 6602, "score": 6.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.0}, {"questionId": 6605, "score": 6.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.0}, {"questionId": 6608, "score": 6.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672641, 6641, '2025-04-05 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.5}, {"questionId": 6602, "score": 7.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.5}, {"questionId": 6605, "score": 7.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.5}, {"questionId": 6608, "score": 7.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672642, 6642, '2025-04-06 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.0}, {"questionId": 6602, "score": 6.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.0}, {"questionId": 6605, "score": 6.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.0}, {"questionId": 6608, "score": 6.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672651, 6651, '2025-04-06 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.5}, {"questionId": 6602, "score": 7.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.5}, {"questionId": 6605, "score": 7.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.5}, {"questionId": 6608, "score": 7.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672652, 6652, '2025-04-07 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.0}, {"questionId": 6602, "score": 6.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.0}, {"questionId": 6605, "score": 6.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.0}, {"questionId": 6608, "score": 6.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672661, 6661, '2025-04-07 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.5}, {"questionId": 6602, "score": 7.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.5}, {"questionId": 6605, "score": 7.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.5}, {"questionId": 6608, "score": 7.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672662, 6662, '2025-04-08 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.0}, {"questionId": 6602, "score": 6.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.0}, {"questionId": 6605, "score": 6.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.0}, {"questionId": 6608, "score": 6.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672671, 6671, '2025-04-08 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.5}, {"questionId": 6602, "score": 7.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.5}, {"questionId": 6605, "score": 7.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.5}, {"questionId": 6608, "score": 7.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672672, 6672, '2025-04-09 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.0}, {"questionId": 6602, "score": 6.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.0}, {"questionId": 6605, "score": 6.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.0}, {"questionId": 6608, "score": 6.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672681, 6681, '2025-04-09 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.5}, {"questionId": 6602, "score": 7.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.5}, {"questionId": 6605, "score": 7.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.5}, {"questionId": 6608, "score": 7.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672682, 6682, '2025-04-10 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.0}, {"questionId": 6602, "score": 6.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.0}, {"questionId": 6605, "score": 6.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.0}, {"questionId": 6608, "score": 6.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672691, 6691, '2025-04-10 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.5}, {"questionId": 6602, "score": 7.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.5}, {"questionId": 6605, "score": 7.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.5}, {"questionId": 6608, "score": 7.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672692, 6692, '2025-04-11 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.0}, {"questionId": 6602, "score": 6.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.0}, {"questionId": 6605, "score": 6.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.0}, {"questionId": 6608, "score": 6.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672701, 6701, '2025-04-11 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.5}, {"questionId": 6602, "score": 7.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.5}, {"questionId": 6605, "score": 7.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.5}, {"questionId": 6608, "score": 7.0}, {"questionId": 6609, "score": 10.0}]'),
+                                                                                    (672702, 6702, '2025-04-12 09:00:00', 'ACA', '[{"questionId": 6601, "score": 8.0}, {"questionId": 6602, "score": 6.0}, {"questionId": 6603, "score": 10.0}, {"questionId": 6604, "score": 8.0}, {"questionId": 6605, "score": 6.0}, {"questionId": 6606, "score": 10.0}, {"questionId": 6607, "score": 8.0}, {"questionId": 6608, "score": 6.0}, {"questionId": 6609, "score": 10.0}]');
+
+INSERT INTO tbl_Academic_Exams (exam_id, grade) VALUES
+                                                    (672611, 8.5000),
+                                                    (672612, 8.0000),
+                                                    (672621, 8.5000),
+                                                    (672622, 8.0000),
+                                                    (672631, 8.5000),
+                                                    (672632, 8.0000),
+                                                    (672641, 8.5000),
+                                                    (672642, 8.0000),
+                                                    (672651, 8.5000),
+                                                    (672652, 8.0000),
+                                                    (672661, 8.5000),
+                                                    (672662, 8.0000),
+                                                    (672671, 8.5000),
+                                                    (672672, 8.0000),
+                                                    (672681, 8.5000),
+                                                    (672682, 8.0000),
+                                                    (672691, 8.5000),
+                                                    (672692, 8.0000),
+                                                    (672701, 8.5000),
+                                                    (672702, 8.0000);
+
+-- DAI Exams and Metadata
+INSERT INTO tbl_Exams (exam_id, enrollment_id, exam_date, exam_type, responses) VALUES
+                                                                                    (673611, 6611, '2025-04-02 11:00:00', 'DAI', '[{"area": "Atención", "score": 4.0}, {"area": "Memoria", "score": 4.2}, {"area": "Razonamiento", "score": 4.4}, {"area": "Lenguaje", "score": 4.6}]'),
+                                                                                    (673612, 6612, '2025-04-03 11:00:00', 'DAI', '[{"area": "Atención", "score": 3.5}, {"area": "Memoria", "score": 3.8}, {"area": "Razonamiento", "score": 4.1}, {"area": "Lenguaje", "score": 4.4}]'),
+                                                                                    (673621, 6621, '2025-04-03 11:00:00', 'DAI', '[{"area": "Atención", "score": 4.0}, {"area": "Memoria", "score": 4.2}, {"area": "Razonamiento", "score": 4.4}, {"area": "Lenguaje", "score": 4.6}]'),
+                                                                                    (673622, 6622, '2025-04-04 11:00:00', 'DAI', '[{"area": "Atención", "score": 3.5}, {"area": "Memoria", "score": 3.8}, {"area": "Razonamiento", "score": 4.1}, {"area": "Lenguaje", "score": 4.4}]'),
+                                                                                    (673631, 6631, '2025-04-04 11:00:00', 'DAI', '[{"area": "Atención", "score": 4.0}, {"area": "Memoria", "score": 4.2}, {"area": "Razonamiento", "score": 4.4}, {"area": "Lenguaje", "score": 4.6}]'),
+                                                                                    (673632, 6632, '2025-04-05 11:00:00', 'DAI', '[{"area": "Atención", "score": 3.5}, {"area": "Memoria", "score": 3.8}, {"area": "Razonamiento", "score": 4.1}, {"area": "Lenguaje", "score": 4.4}]'),
+                                                                                    (673641, 6641, '2025-04-05 11:00:00', 'DAI', '[{"area": "Atención", "score": 4.0}, {"area": "Memoria", "score": 4.2}, {"area": "Razonamiento", "score": 4.4}, {"area": "Lenguaje", "score": 4.6}]'),
+                                                                                    (673642, 6642, '2025-04-06 11:00:00', 'DAI', '[{"area": "Atención", "score": 3.5}, {"area": "Memoria", "score": 3.8}, {"area": "Razonamiento", "score": 4.1}, {"area": "Lenguaje", "score": 4.4}]'),
+                                                                                    (673651, 6651, '2025-04-06 11:00:00', 'DAI', '[{"area": "Atención", "score": 4.0}, {"area": "Memoria", "score": 4.2}, {"area": "Razonamiento", "score": 4.4}, {"area": "Lenguaje", "score": 4.6}]'),
+                                                                                    (673652, 6652, '2025-04-07 11:00:00', 'DAI', '[{"area": "Atención", "score": 3.5}, {"area": "Memoria", "score": 3.8}, {"area": "Razonamiento", "score": 4.1}, {"area": "Lenguaje", "score": 4.4}]'),
+                                                                                    (673661, 6661, '2025-04-07 11:00:00', 'DAI', '[{"area": "Atención", "score": 4.0}, {"area": "Memoria", "score": 4.2}, {"area": "Razonamiento", "score": 4.4}, {"area": "Lenguaje", "score": 4.6}]'),
+                                                                                    (673662, 6662, '2025-04-08 11:00:00', 'DAI', '[{"area": "Atención", "score": 3.5}, {"area": "Memoria", "score": 3.8}, {"area": "Razonamiento", "score": 4.1}, {"area": "Lenguaje", "score": 4.4}]'),
+                                                                                    (673671, 6671, '2025-04-08 11:00:00', 'DAI', '[{"area": "Atención", "score": 4.0}, {"area": "Memoria", "score": 4.2}, {"area": "Razonamiento", "score": 4.4}, {"area": "Lenguaje", "score": 4.6}]'),
+                                                                                    (673672, 6672, '2025-04-09 11:00:00', 'DAI', '[{"area": "Atención", "score": 3.5}, {"area": "Memoria", "score": 3.8}, {"area": "Razonamiento", "score": 4.1}, {"area": "Lenguaje", "score": 4.4}]'),
+                                                                                    (673681, 6681, '2025-04-09 11:00:00', 'DAI', '[{"area": "Atención", "score": 4.0}, {"area": "Memoria", "score": 4.2}, {"area": "Razonamiento", "score": 4.4}, {"area": "Lenguaje", "score": 4.6}]'),
+                                                                                    (673682, 6682, '2025-04-10 11:00:00', 'DAI', '[{"area": "Atención", "score": 3.5}, {"area": "Memoria", "score": 3.8}, {"area": "Razonamiento", "score": 4.1}, {"area": "Lenguaje", "score": 4.4}]'),
+                                                                                    (673691, 6691, '2025-04-10 11:00:00', 'DAI', '[{"area": "Atención", "score": 4.0}, {"area": "Memoria", "score": 4.2}, {"area": "Razonamiento", "score": 4.4}, {"area": "Lenguaje", "score": 4.6}]'),
+                                                                                    (673692, 6692, '2025-04-11 11:00:00', 'DAI', '[{"area": "Atención", "score": 3.5}, {"area": "Memoria", "score": 3.8}, {"area": "Razonamiento", "score": 4.1}, {"area": "Lenguaje", "score": 4.4}]'),
+                                                                                    (673701, 6701, '2025-04-11 11:00:00', 'DAI', '[{"area": "Atención", "score": 4.0}, {"area": "Memoria", "score": 4.2}, {"area": "Razonamiento", "score": 4.4}, {"area": "Lenguaje", "score": 4.6}]'),
+                                                                                    (673702, 6702, '2025-04-12 11:00:00', 'DAI', '[{"area": "Atención", "score": 3.5}, {"area": "Memoria", "score": 3.8}, {"area": "Razonamiento", "score": 4.1}, {"area": "Lenguaje", "score": 4.4}]');
+
+INSERT INTO tbl_Dai_Exams (exam_id, comment, recommendation, reviewed) VALUES
+                                                                           (673611, 'Auto comment', 'REJECT', 1),
+                                                                           (673612, 'Auto comment', 'REJECT', 0),
+                                                                           (673621, 'Auto comment', 'ADMIT', 1),
+                                                                           (673622, 'Auto comment', 'ADMIT', 0),
+                                                                           (673631, 'Auto comment', 'REJECT', 1),
+                                                                           (673632, 'Auto comment', 'REJECT', 0),
+                                                                           (673641, 'Auto comment', 'ADMIT', 1),
+                                                                           (673642, 'Auto comment', 'ADMIT', 0),
+                                                                           (673651, 'Auto comment', 'REJECT', 1),
+                                                                           (673652, 'Auto comment', 'REJECT', 0),
+                                                                           (673661, 'Auto comment', 'ADMIT', 1),
+                                                                           (673662, 'Auto comment', 'ADMIT', 0),
+                                                                           (673671, 'Auto comment', 'REJECT', 1),
+                                                                           (673672, 'Auto comment', 'REJECT', 0),
+                                                                           (673681, 'Auto comment', 'ADMIT', 1),
+                                                                           (673682, 'Auto comment', 'ADMIT', 0),
+                                                                           (673691, 'Auto comment', 'REJECT', 1),
+                                                                           (673692, 'Auto comment', 'REJECT', 0),
+                                                                           (673701, 'Auto comment', 'ADMIT', 1),
+                                                                           (673702, 'Auto comment', 'ADMIT', 0);

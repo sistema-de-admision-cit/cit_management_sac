@@ -819,6 +819,159 @@ END //
 DELIMITER ;
 
 
+DELIMITER //
+
+-- 5a) Distribución de notas por dificultad (Academic Exam)
+DROP PROCEDURE IF EXISTS usp_Get_Academic_Exam_Distribution_Filters //
+CREATE PROCEDURE usp_Get_Academic_Exam_Distribution_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    CASE q.question_level
+      WHEN 'EASY'   THEN 'Fácil'
+      WHEN 'MEDIUM' THEN 'Medio'
+      WHEN 'HARD'   THEN 'Difícil'
+    END                           AS difficulty,
+    CAST(r.score AS DECIMAL(5,2)) AS examScore
+  FROM tbl_Exams e
+  JOIN tbl_Enrollments en
+    ON en.enrollment_id = e.enrollment_id
+  JOIN JSON_TABLE(
+    e.responses,
+    '$[*]'
+    COLUMNS (
+      questionId INT    PATH '$.questionId',
+      score      DECIMAL(5,2) PATH '$.score'
+    )
+  ) AS r
+    ON TRUE
+  JOIN tbl_Questions q
+    ON q.question_id   = r.questionId
+   AND q.question_type = 'ACA'
+  WHERE e.exam_type = 'ACA'
+    AND (p_start_date IS NULL OR DATE(e.exam_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.exam_date) <= p_end_date)
+    AND (p_grades = 'All' OR FIND_IN_SET(en.grade_to_enroll, p_grades))
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND en.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND en.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    );
+END //
+  
+-- 5b) Media de puntajes por grado (Academic Exam)
+DROP PROCEDURE IF EXISTS usp_Get_Academic_Exam_Grade_Average_Filters //
+CREATE PROCEDURE usp_Get_Academic_Exam_Grade_Average_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    en.grade_to_enroll AS grade,
+    AVG(ae.grade)      AS averageScore
+  FROM tbl_Exams e
+  JOIN tbl_Academic_Exams ae
+    ON ae.exam_id = e.exam_id
+  JOIN tbl_Enrollments en
+    ON en.enrollment_id = e.enrollment_id
+  WHERE e.exam_type = 'ACA'
+    AND (p_start_date IS NULL OR DATE(e.exam_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.exam_date) <= p_end_date)
+    AND (p_grades = 'All' OR FIND_IN_SET(en.grade_to_enroll, p_grades))
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND en.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND en.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  GROUP BY en.grade_to_enroll
+  ORDER BY en.grade_to_enroll;
+END //
+
+-- 6a) Detalle por habilidad (DAI Exam)
+DROP PROCEDURE IF EXISTS usp_Get_Dai_Exam_Details_Filters //
+CREATE PROCEDURE usp_Get_Dai_Exam_Details_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    en.enrollment_id AS enrollmentId,
+    jt.area          AS area,
+    jt.score         AS score
+  FROM tbl_Exams e
+  JOIN tbl_Dai_Exams de
+    ON de.exam_id = e.exam_id
+  JOIN tbl_Enrollments en
+    ON en.enrollment_id = e.enrollment_id
+  JOIN JSON_TABLE(
+    e.responses,
+    '$[*]'
+    COLUMNS (
+      area  VARCHAR(64)  PATH '$.area',
+      score DECIMAL(5,2) PATH '$.score'
+    )
+  ) AS jt
+    ON TRUE
+  WHERE e.exam_type = 'DAI'
+    AND (p_start_date IS NULL OR DATE(e.exam_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.exam_date) <= p_end_date)
+    AND (p_grades = 'All' OR FIND_IN_SET(en.grade_to_enroll, p_grades))
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND en.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND en.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  ORDER BY en.enrollment_id, jt.area;
+END //
+
+-- 6b) Promedio por área (DAI Exam)
+DROP PROCEDURE IF EXISTS usp_Get_Dai_Exam_Area_Average_Filters //
+CREATE PROCEDURE usp_Get_Dai_Exam_Area_Average_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    jt.area      AS area,
+    AVG(jt.score) AS averageScore
+  FROM tbl_Exams e
+  JOIN tbl_Dai_Exams de
+    ON de.exam_id = e.exam_id
+  JOIN tbl_Enrollments en
+    ON en.enrollment_id = e.enrollment_id
+  JOIN JSON_TABLE(
+    e.responses,
+    '$[*]'
+    COLUMNS (
+      area  VARCHAR(64)  PATH '$.area',
+      score DECIMAL(5,2) PATH '$.score'
+    )
+  ) AS jt
+    ON TRUE
+  WHERE e.exam_type = 'DAI'
+    AND (p_start_date IS NULL OR DATE(e.exam_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.exam_date) <= p_end_date)
+    AND (p_grades = 'All' OR FIND_IN_SET(en.grade_to_enroll, p_grades))
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND en.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND en.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  GROUP BY jt.area
+  ORDER BY jt.area;
+END //
+DELIMITER ;
+
 -- End of the stored procedures
 -- ----------------------------------------------------- 
 DELIMITER ;
