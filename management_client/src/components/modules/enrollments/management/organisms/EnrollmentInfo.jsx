@@ -4,7 +4,6 @@ import EnrollmentInfoEdit from './EnrollmentInfoEdit'
 const EnrollmentInfo = ({
   enrollment,
   isEditing,
-  onStatusChange,
   onDateChange,
   onWhatsappChange,
   onPreviousGradesChange,
@@ -19,7 +18,6 @@ const EnrollmentInfo = ({
       ? (
         <EnrollmentInfoEdit
           enrollment={enrollment}
-          onStatusChange={onStatusChange}
           onDateChange={onDateChange}
           onWhatsappChange={onWhatsappChange}
           onPreviousGradesChange={onPreviousGradesChange}

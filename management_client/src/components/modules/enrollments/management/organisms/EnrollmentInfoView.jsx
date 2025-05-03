@@ -8,7 +8,6 @@ const ELIGIBLE_STATUS = 'ELIGIBLE'
 
 const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileType, setIsEditing }) => (
   <div className='tab-content'>
-    <h2>Inscripción - {enrollment.id}</h2>
     <p><strong>Estado:</strong> {statusText[enrollment.status]}</p>
     <p><strong>Fecha del Examen:</strong> {formatDate(new Date(enrollment.examDate))}</p>
     <p><strong>Promedio de Notas:</strong> {enrollment.student.previousGrades ?? 'N/A'}</p>
@@ -20,7 +19,7 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
       title={enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS ? `Edición no disponible: el estado actual es ${statusText[enrollment.status]}, lo que impide modificar la información de este usuario.` : ''}
     >
       <Button
-        className={`edit-icon pseudo-btn ${enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS ? 'disabled' : ''}`}
+        className={`edit-icon pseudo-btn ${enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS ? 'disabled' : 'enabled'}`}
         onClick={() => setIsEditing(true)}
         disabled={enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS}
       >
@@ -28,7 +27,12 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
       </Button>
       {enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS && (
         <div className='tooltip'>
-          Edición no disponible: el estado del usuario es {enrollment.status}, lo que impide modificar la información.
+          Edición no disponible: el estado del usuario es {statusText[enrollment.status]}, lo que impide modificar la información.
+        </div>
+      )}
+      {enrollment.status === PENDING_STATUS || enrollment.status === ELIGIBLE_STATUS && (
+        <div className='tooltip'>
+          Haga clic para editar la información del usuario.
         </div>
       )}
     </div>

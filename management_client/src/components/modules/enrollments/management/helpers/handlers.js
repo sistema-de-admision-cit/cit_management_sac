@@ -1,5 +1,6 @@
+import { de, sq } from 'date-fns/locale'
 import axios from '../../../../../config/axiosConfig'
-import { formatDateForApi, formatDateToObj, isCommentRequired } from './helpers'
+import { formatDateForApi, isCommentRequired } from './helpers'
 
 // Manejo de errores
 const getErrorMessage = (error) => {
@@ -23,13 +24,16 @@ const getErrorMessage = (error) => {
 }
 
 const getEnrollmentsByStudentIdUrl = import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_ID_ENDPOINT
-export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, setApplicantSelected) => {
+export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, setApplicantSelected, setApplicantEnrollments) => {
+  setApplicantSelected(applicant)
+  setIsModalApplicantDetailsOpen(false)
+
   axios.get(`${getEnrollmentsByStudentIdUrl}${applicant.person.idNumber}`,
     {
       timeout: 10000
     })
     .then(response => {
-      setApplicantSelected(response.data)
+      setApplicantEnrollments(response.data)
       setIsModalApplicantDetailsOpen(true)
     })
     .catch(error => {
@@ -206,7 +210,7 @@ export const handleGetStudents = (currentPage, pageSize, setStudents, setLoading
   const getAllStudentsUrl = import.meta.env.VITE_GET_ALL_ENROLLMENTS_ENDPOINT
 
   axios.get(`${getAllStudentsUrl}?page=${currentPage}&size=${pageSize}`, { timeout: 10000 })
-    .then(response => {      
+    .then(response => {
       setStudents(response.data)
     })
     .catch(error => {
@@ -238,4 +242,31 @@ export const handleGetTotalPagesForSearch = (search, pageSize, setTotalPages) =>
     .catch(error => {
       console.error('Error al obtener el total de páginas:', error)
     })
+}
+
+export const mapGradeToSpanish = (grade) => {
+  switch (grade) {
+    case 'FIRST':
+      return 'Primero'
+    case 'SECOND':
+      return 'Segundo'
+    case 'THIRD':
+      return 'Tercero'
+    case 'FOURTH':
+      return 'Cuarto'
+    case 'FIFTH':
+      return 'Quinto'
+    case 'SIXTH':
+      return 'Sexto'
+    case 'SEVENTH':
+      return 'Séptimo'
+    case 'EIGHTH':
+      return 'Octavo'
+    case 'NINTH':
+      return 'Noveno'
+    case 'TENTH':
+      return 'Décimo'
+    default:
+      return grade;
+  }
 }

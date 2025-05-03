@@ -2,7 +2,6 @@ import { formatDate } from '../helpers/helpers'
 
 const StudentInfo = ({ student }) => (
   <div className='tab-content'>
-    <h2>Información de Aplicante</h2>
     <p>
       <strong>Nombre:</strong> {student.person.firstName} {student.person.firstSurname} {student.person.secondSurname}
     </p>

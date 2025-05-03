@@ -2,26 +2,26 @@ import { useEffect, useState } from 'react'
 import '../../../../../assets/styles/enrollments/modal-applicant-details.css'
 import Modal from '../../../../core/global/molecules/Modal'
 import StudentInfo from '../molecules/StudentInfo'
-import GuardianInfo from '../molecules/GuardianInfo'
+import ParentInfo from '../molecules/ParentInfo'
 import EnrollmentInfo from './EnrollmentInfo'
 import Button from '../../../../core/global/atoms/Button'
 import { guardianTabText } from '../helpers/helpers'
 import ModalManageFiles from '../molecules/ModalManageFiles'
+import { handleDocClick, handleFileDownload, handleFileDelete, handleFileUpload, mapGradeToSpanish } from '../helpers/handlers'
 
 const ModalApplicantDetails = ({
   student,
-  parentsGuardians,
+  parents,
   enrollments,
   onClose,
-  onDocClick,
-  onFileDownload,
-  onFileDelete,
   onFileUpload,
-  onEnrollmentEdit
+  onEnrollmentEdit,
+  setErrorMessage,
+  setSuccessMessage
 }) => {
   const [activeTab, setActiveTab] = useState('student')
   const [isDocModalOpen, setIsDocModalOpen] = useState(false)
-  const [selectedFile, setSelectedFile] = useState([])
+  const [selectedFile, setSelectedFile] = useState(null)
   const [selectedFileType, setSelectedFileType] = useState('')
   const [isEditing, setIsEditing] = useState(false)
   const [enrollment, setEnrollment] = useState({})
@@ -42,13 +42,13 @@ const ModalApplicantDetails = ({
           Información del Estudiante
         </Button>
 
-        {parentsGuardians.map((guardian) => (
+        {parents?.map((parent) => (
           <Button
-            key={`guardian-${guardian.id}`}
-            className={`tab-button ${activeTab === `guardian-${guardian.id}` ? 'active' : ''}`}
-            onClick={() => setActiveTab(`guardian-${guardian.id}`)}
+            key={`parent-${parent.id}`}
+            className={`tab-button ${activeTab === `parent-${parent.id}` ? 'active' : ''}`}
+            onClick={() => setActiveTab(`parent-${parent.id}`)}
           >
-            {guardianTabText[guardian.relationship]}
+            {guardianTabText[parent.relationship]}
           </Button>
         ))}
 
@@ -61,21 +61,22 @@ const ModalApplicantDetails = ({
               setEnrollment(enrollment)
             }}
           >
-            Inscripción - {enrollment.id}
+            Inscripción para {mapGradeToSpanish(enrollment.gradeToEnroll)}
           </Button>
         ))}
       </div>
 
       {activeTab === 'student' && <StudentInfo student={student} />}
-      {parentsGuardians.some((guardian) => activeTab === `guardian-${guardian.id}`) &&
-        <GuardianInfo guardian={parentsGuardians.find((guardian) => activeTab === `guardian-${guardian.id}`)} />}
+      {parents?.some((parent) => activeTab === `parent-${parent.id}`) &&
+        <ParentInfo parent={parents?.find((parent) => activeTab === `parent-${parent.id}`)} />}
       {enrollments.some((enrollment) => activeTab === `enrollment-${enrollment.id}`) &&
         <EnrollmentInfo
           enrollment={enrollments.find((enrollment) => activeTab === `enrollment-${enrollment.id}`)}
           isEditing={isEditing}
+          
           onEnrollmentEdit={(e, formData, enrollment) => onEnrollmentEdit(e, formData, enrollment, setIsEditing)}
           setIsEditing={setIsEditing}
-          onDocClick={(file) => onDocClick(file, setSelectedFile, setIsDocModalOpen)}
+          onDocClick={(file) => handleDocClick(file, setSelectedFile, setIsDocModalOpen)}
           setSelectedFileType={setSelectedFileType}
           student={student}
         />}
@@ -85,9 +86,9 @@ const ModalApplicantDetails = ({
           selectedFileType={selectedFileType}
           selectedFile={selectedFile}
           onFileUpload={(e) => onFileUpload(e, selectedFileType, setSelectedFile, enrollment, student.idNumber)}
-          onFileDownload={(file) => onFileDownload(file, student)}
+          onFileDownload={() => handleFileDownload(selectedFile, student, setErrorMessage)}
           onFileDelete={(selectedFile) => {
-            onFileDelete(selectedFile)
+            handleFileDelete(selectedFile, setErrorMessage, setSuccessMessage)
             setSelectedFile(null)
           }}
           onClose={() => setIsDocModalOpen(false)}

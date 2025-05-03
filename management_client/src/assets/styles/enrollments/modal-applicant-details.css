@@ -47,7 +47,7 @@
   cursor: not-allowed;
 }
 
-.guardian-info {
+.parent-info {
   margin-bottom: 16px;
 }
 
@@ -79,10 +79,15 @@
 
 .edit-icon.disabled:hover + .tooltip {
   visibility: visible;
-  opacity: 1;
+  opacity: .85;
 }
 
 .edit-icon:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+.edit-icon.enabled:hover+.tooltip {
+  visibility: visible;
+  opacity: 0.85;
 }

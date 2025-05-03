@@ -54,10 +54,9 @@ export const isCommentRequired = (formData, enrollment) => {
     const originalDateStr = originalDate.toISOString().split('T')[0];
     return currentDateStr !== originalDateStr;
   } catch (error) {
-    console.error('Error al comparar fechas:', error);
     return true; // Por seguridad, considera que hay cambio si hay error
   }
-};
+}
 
 export const isEnabled = (formData, enrollment) => {
   // Verificar si hay cambios
