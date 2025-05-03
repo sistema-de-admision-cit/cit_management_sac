@@ -178,8 +178,11 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
                 value={formData.previousGrades}
                 handleChange={(e) => {
                   const value = e.target.value;
-                  if (value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= 100)) {
+                  if ((parseFloat(value) >= 0 && parseFloat(value) <= 100)) {
                     setFormData({ ...formData, previousGrades: value });
+                  }
+                  if (value === '') {
+                    setFormData({ ...formData, previousGrades: enrollment.student.previousGrades });
                   }
                 }}
               />
