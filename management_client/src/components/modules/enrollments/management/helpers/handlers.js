@@ -82,9 +82,11 @@ export const handleEnrollmentEdit = (dataToSend, enrollment, setErrorMessage, se
     { timeout: 10000 })
     .then(response => {
       setSuccessMessage('La inscripción se actualizó correctamente.')
+      return true;
     })
     .catch(error => {
       setErrorMessage(getErrorMessage(error))
+      return false;
     })
 }
 
@@ -335,5 +337,5 @@ export const handleEditSubmit = (enrollment, formData, setErrorMessage, setSucce
     changedBy: formData.changedBy,
   };
 
-  handleEnrollmentEdit(dataToSend, enrollment, setErrorMessage, setSuccessMessage);
+  return handleEnrollmentEdit(dataToSend, enrollment, setErrorMessage, setSuccessMessage);
 }

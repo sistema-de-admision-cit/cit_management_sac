@@ -73,9 +73,12 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, setErrorMessage, setSucc
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleEditSubmit(enrollment, formData, setErrorMessage, setSuccessMessage)
-    onUpdateEnrollment(formData)
-    setIsEditing(false)
+    let isCorrect = handleEditSubmit(enrollment, formData, setErrorMessage, setSuccessMessage)
+    
+    if(isCorrect) {
+      onUpdateEnrollment(formData)
+      setIsEditing(false)
+    }
   }
 
   return (
