@@ -26,7 +26,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
-
+/**
+ * Implementation of {@link StorageService} for file storage operations.
+ * Handles file storage, retrieval, and deletion in the configured storage location.
+ */
 @RequiredArgsConstructor
 @Service
 public class StorageServiceImpl implements StorageService {
@@ -34,12 +37,20 @@ public class StorageServiceImpl implements StorageService {
   private String location;
 
   private DocumentRepository documentRepository;
-
+  /**
+   * Constructs a new StorageServiceImpl with the required dependencies.
+   *
+   * @param documentRepository repository for document metadata operations
+   */
   @Autowired
   public StorageServiceImpl(DocumentRepository documentRepository) {
     this.documentRepository = documentRepository;
   }
-
+  /**
+   * Initializes the storage directory. Creates the directory if it doesn't exist.
+   *
+   * @throws StorageException if the directory cannot be created
+   */
   @Override
   public void init() {
     try {
@@ -50,7 +61,15 @@ public class StorageServiceImpl implements StorageService {
       throw new StorageException("Could not initialize storage", e);
     }
   }
-
+  /**
+   * Asynchronously stores a file in the storage location.
+   *
+   * @param file the file to store
+   * @param filename the name to give the stored file
+   * @param docType the type/category of the document
+   * @return CompletableFuture containing DocumentDto with storage information
+   * @throws StorageException if the file cannot be stored
+   */
   @Async
   @Override
   public CompletableFuture<DocumentDto> store(MultipartFile file, String filename,
@@ -66,12 +85,23 @@ public class StorageServiceImpl implements StorageService {
 
     return CompletableFuture.completedFuture(new DocumentDto(null, filename, docType, null));
   }
-
+  /**
+   * Loads all stored files as Path objects. Currently returns empty stream.
+   *
+   * @return empty stream of Path objects
+   */
   @Override
   public Stream<Path> loadAll() {
     return Stream.empty();
   }
-
+  /**
+   * Loads a stored document as a downloadable Resource.
+   *
+   * @param id the ID of the document to load
+   * @return the file as a Resource
+   * @throws ResponseStatusException if document is not found in repository
+   * @throws StorageFileNotFoundException if document file is not readable or doesn't exist
+   */
   @Override
   public Resource loadAsResource(Long id) {
     DocumentEntity documentEntity = documentRepository.findById(id).orElseThrow(
@@ -94,7 +124,11 @@ public class StorageServiceImpl implements StorageService {
           "Documento no encontrado con el id: " + documentEntity.getId(), e);
     }
   }
-
+  /**
+   * Deletes all files in the storage location.
+   *
+   * @throws StorageException if files cannot be deleted
+   */
   @Override
   public void deleteAll() {
     try {
@@ -104,7 +138,12 @@ public class StorageServiceImpl implements StorageService {
       throw new StorageException("Failed to delete all files", e);
     }
   }
-
+  /**
+   * Deletes a document by its URL postfix (relative path).
+   *
+   * @param urlPostfix the relative path of the document to delete
+   * @throws StorageException if the file cannot be deleted
+   */
   @Override
   public void deleteDocumentByUrlPostfix(String urlPostfix) {
     try {
@@ -113,7 +152,12 @@ public class StorageServiceImpl implements StorageService {
       throw new StorageException("Failed to delete file " + urlPostfix, e);
     }
   }
-
+  /**
+   * Deletes a document by its full URL.
+   *
+   * @param url the full URL of the document to delete
+   * @throws StorageException if the file cannot be deleted
+   */
   @Override
   public void deleteDocumentByUrl(String url) {
     try {

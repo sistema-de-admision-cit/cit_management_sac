@@ -47,6 +47,16 @@ const validateDataBeforeSubmit = (formData, enrollment) => {
   if (isCommentRequired(formData, enrollment) && !formData.comment) {
     throw new Error('El comentario es obligatorio')
   }
+  if (formData.previousGrades !== null && formData.previousGrades !== '') {
+    const grade = parseFloat(formData.previousGrades)
+
+    if (isNaN(grade)) {
+      throw new Error('La nota previa debe ser un número válido.')
+    }
+    if (grade < 0 || grade > 100) {
+      throw new Error('La nota previa debe ser mayor que 0 y menor que 100.')
+    }
+  }
 }
 
 // not sure if this is the best way to update the local state
@@ -55,6 +65,7 @@ const updateEnrollmentLocal = (enrollment, formData) => {
   enrollment.status = formData.status
   enrollment.examDate = formData.examDate
   enrollment.whatsappNotification = formData.whatsappNotification
+  enrollment.previousGrades = formData.previousGrades
 }
 
 const updateEnrollmentUrl = import.meta.env.VITE_UPDATE_ENROLLMENT_INFORMATION_ENDPOINT
@@ -72,6 +83,7 @@ export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setE
     examDate: formatDateForApi(new Date(formData.examDate)),
     processStatus: formData.status,
     whatsappPermission: formData.whatsappNotification,
+    previousGrades: parseFloat(formData.previousGrades),
     comment: formData.comment,
     changedBy: 1
   }
@@ -213,7 +225,14 @@ export const handleGetAllEnrollments = (setEnrollments, setLoading, setErrorMess
 
   axios.get(getAllEnrollmentsUrl, { timeout: 10000 })
     .then(response => {
-      const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
+      const data = response.data
+
+      if (!Array.isArray(data)) {
+        setEnrollments([]) // o mostrar un mensaje que no hay inscripciones
+        return
+      }
+
+      const enrollments = data.map(enrollment => formatDateToObj(enrollment))
       const uniqueStudents = enrollments.reduce((acc, enrollment) => {
         if (!acc.some(e => e.student.id === enrollment.student.id)) {
           acc.push(enrollment)

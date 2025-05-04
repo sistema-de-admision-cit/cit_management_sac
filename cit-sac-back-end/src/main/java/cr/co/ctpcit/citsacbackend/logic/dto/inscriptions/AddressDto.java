@@ -8,7 +8,8 @@ import lombok.Builder;
 import java.io.Serializable;
 
 /**
- * DTO for {@link AddressEntity}
+ * Represents the Data Transfer Object (DTO) for an address.
+ * Contains details about the country, province, city, district, and address information.
  */
 @Builder
 public record AddressDto(Long id, @NotNull @Size(max = 16) String country,

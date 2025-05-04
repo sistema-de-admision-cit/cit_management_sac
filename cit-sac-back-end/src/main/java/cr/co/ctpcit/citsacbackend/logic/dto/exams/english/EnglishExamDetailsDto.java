@@ -8,7 +8,8 @@ import java.io.Serializable;
 import java.time.Instant;
 
 /**
- * DTO for {@link cr.co.ctpcit.citsacbackend.data.entities.exams.EnglishExamEntity}
+ * Represents the Data Transfer Object (DTO) for the details of an English exam.
+ * Contains information about the exam ID, enrollment ID, exam date, track test ID, level, and core.
  */
 @Builder
 public record EnglishExamDetailsDto(Long examId, Long enrollmentId,

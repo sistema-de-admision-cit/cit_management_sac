@@ -7,6 +7,7 @@ const EnrollmentInfo = ({
   onStatusChange,
   onDateChange,
   onWhatsappChange,
+  onPreviousGradesChange,
   setIsEditing,
   onDocClick,
   student,
@@ -21,6 +22,7 @@ const EnrollmentInfo = ({
           onStatusChange={onStatusChange}
           onDateChange={onDateChange}
           onWhatsappChange={onWhatsappChange}
+          onPreviousGradesChange={onPreviousGradesChange}
           setIsEditing={setIsEditing}
           handleEnrollmentEdit={onEnrollmentEdit}
         />

@@ -4,6 +4,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.configs.ExamPeriodDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.EnrollmentException;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageFileNotFoundException;
+import cr.co.ctpcit.citsacbackend.logic.services.notifs.NotificationsService;
 import cr.co.ctpcit.citsacbackend.logic.services.configs.SystemConfigService;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class InscriptionFormController {
 
   private final InscriptionsService inscriptionsService;
   private final SystemConfigService systemConfigService;
+  private final NotificationsService notificationsService;
 
   /**
    * This method creates a new inscription based on the information provided in the request from the
@@ -48,6 +50,8 @@ public class InscriptionFormController {
     verifyFile(letter);
 
     EnrollmentDto enrolled = inscriptionsService.addInscription(inscription, grades, letter);
+    notificationsService.createEmailForInscription(inscription);
+    //notificationsService.createWhatsappMessage(inscription);
 
     //Return created status and location header
     return ResponseEntity.created(

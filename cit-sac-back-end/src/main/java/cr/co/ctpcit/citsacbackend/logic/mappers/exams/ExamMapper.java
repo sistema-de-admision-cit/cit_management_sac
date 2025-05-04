@@ -17,8 +17,18 @@ import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishExamDetailsDto;
 
 import java.util.List;
 
+/**
+ * A utility class for mapping between {@link ExamEntity} and various types of exam DTOs.
+ * This class provides methods for converting exam-related entities to DTOs for different exam types,
+ * such as academic exams (ACA), DAI exams, and English exams.
+ */
 public class ExamMapper {
 
+  /**
+   * A utility class for mapping between {@link ExamEntity} and various types of exam DTOs.
+   * This class provides methods for converting exam-related entities to DTOs for different exam types,
+   * such as academic exams (ACA), DAI exams, and English exams.
+   */
   public static ExamAcaDto examToExamAcaDto(ExamEntity examEntity, List<QuestionEntity> questions) {
     return ExamAcaDto.builder().id(examEntity.getId())
         .enrollment(examEntity.getEnrollment().getId()).examDate(examEntity.getExamDate())
@@ -26,6 +36,13 @@ public class ExamMapper {
         .responses(ExamQuestionMapper.questionsToQuestionsAcaDto(questions)).build();
   }
 
+  /**
+   * Converts an {@link ExamEntity} and a list of {@link QuestionEntity} objects to an {@link ExamAcaDto}.
+   *
+   * @param examEntity the {@link ExamEntity} object to be converted
+   * @param questions  a list of {@link QuestionEntity} objects associated with the exam
+   * @return an {@link ExamAcaDto} representing the academic exam
+   */
   public static ExamDaiDto examToExamDaiDto(ExamEntity examEntity, List<QuestionEntity> questions) {
     return ExamDaiDto.builder().id(examEntity.getId())
         .enrollment(examEntity.getEnrollment().getId()).examDate(examEntity.getExamDate())
@@ -33,6 +50,13 @@ public class ExamMapper {
         .responses(ExamQuestionMapper.questionsToQuestionsDaiDto(questions)).build();
   }
 
+  /**
+   * Converts an {@link ExamEntity} to an {@link AcademicExamDetailsDto} by deserializing the exam responses.
+   *
+   * @param examEntity the {@link ExamEntity} object to be converted
+   * @return an {@link AcademicExamDetailsDto} representing the academic exam details
+   * @throws JsonProcessingException if there's an error during JSON deserialization
+   */
   public static AcademicExamDetailsDto academicExamToAcademicExamDetailsDto(ExamEntity examEntity)
       throws JsonProcessingException {
     if (verifyExamType(examEntity, ExamType.ACA))
@@ -53,6 +77,12 @@ public class ExamMapper {
         .grade(examEntity.getAcademicExam().getGrade()).exam(exam).build();
   }
 
+  /**
+   * Converts a list of {@link ExamEntity} objects to a list of {@link AcademicExamDetailsDto} objects.
+   *
+   * @param exams a list of {@link ExamEntity} objects to be converted
+   * @return a list of {@link AcademicExamDetailsDto} objects representing the academic exams
+   */
   public static List<AcademicExamDetailsDto> academicExamsToAcademicExamDetailsDto(
       List<ExamEntity> exams) {
     return exams.stream().map(e -> {
@@ -65,6 +95,12 @@ public class ExamMapper {
     }).toList();
   }
 
+  /**
+   * Converts a list of {@link ExamEntity} objects to a list of {@link AcademicExamDetailsDto} objects.
+   *
+   * @param exams a list of {@link ExamEntity} objects to be converted
+   * @return a list of {@link AcademicExamDetailsDto} objects representing the academic exams
+   */
   public static List<DaiExamDetailsDto> daiExamsToDaiExamDetailsDto(List<ExamEntity> exams) {
     return exams.stream().map(e -> {
       try {
@@ -75,6 +111,13 @@ public class ExamMapper {
     }).toList();
   }
 
+  /**
+   * Converts an {@link ExamEntity} to a {@link DaiExamDetailsDto} by deserializing the exam responses.
+   *
+   * @param examEntity the {@link ExamEntity} object to be converted
+   * @return a {@link DaiExamDetailsDto} representing the DAI exam details
+   * @throws JsonProcessingException if there's an error during JSON deserialization
+   */
   private static DaiExamDetailsDto daiExamToDaiExamDetailsDto(ExamEntity examEntity)
       throws JsonProcessingException {
     if (verifyExamType(examEntity, ExamType.DAI))
@@ -98,6 +141,13 @@ public class ExamMapper {
 
   }
 
+  /**
+   * Verifies whether the given {@link ExamEntity} matches the specified {@link ExamType}.
+   *
+   * @param examEntity the {@link ExamEntity} to be checked
+   * @param examType   the {@link ExamType} to be verified
+   * @return true if the exam type matches, false otherwise
+   */
   private static boolean verifyExamType(ExamEntity examEntity, ExamType examType) {
     return switch (examType) {
       case ACA -> examEntity.getAcademicExam() == null || examEntity.getExamType() != ExamType.ACA;
@@ -107,6 +157,12 @@ public class ExamMapper {
     };
   }
 
+  /**
+   * Converts an {@link ExamEntity} to an {@link EnglishExamDetailsDto}.
+   *
+   * @param examEntity the {@link ExamEntity} to be converted
+   * @return an {@link EnglishExamDetailsDto} representing the English exam details
+   */
   public static EnglishExamDetailsDto englishExamToEnglishExamDetailsDto(ExamEntity examEntity) {
     if (verifyExamType(examEntity, ExamType.ENG))
       return null;
@@ -118,6 +174,12 @@ public class ExamMapper {
         .build();
   }
 
+  /**
+   * Converts a list of {@link ExamEntity} objects to a list of {@link EnglishExamDetailsDto} objects.
+   *
+   * @param englishExams a list of {@link ExamEntity} objects to be converted
+   * @return a list of {@link EnglishExamDetailsDto} objects representing the English exams
+   */
   public static List<EnglishExamDetailsDto> englishExamsToEnglishExamDetailsDto(
       List<ExamEntity> englishExams) {
     return englishExams.stream().map(ExamMapper::englishExamToEnglishExamDetailsDto).toList();

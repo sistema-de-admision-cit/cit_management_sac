@@ -12,35 +12,62 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
+/**
+ * REST controller for managing system configurations.
+ * Provides endpoints for retrieving and updating various system settings
+ * such as question quantities, process weights, contact information, and exam periods.
+ */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/system-config")
 @Validated
 public class SystemConfigController {
 
+  /**
+   * Service for managing system configurations.
+   */
   private final SystemConfigServiceImpl systemConfigService;
-
+  /**
+   * Retrieves the quantity of questions configured in the system.
+   *
+   * @return ResponseEntity containing a list of SystemConfigDto with question quantities
+   */
   @GetMapping("/get-questions-quantity")
   public ResponseEntity<List<SystemConfigDto>> getQuestionsQuantity() {
     List<SystemConfigDto> questionsQuantity = systemConfigService.getQuestionsQuantity();
     return new ResponseEntity<>(questionsQuantity, HttpStatus.OK);
   }
-
+  /**
+   * Updates the quantity of questions in the system.
+   *
+   * @param questionsConfigs DTO containing the new question quantities
+   * @return ResponseEntity with OK status
+   */
   @PutMapping("/update-questions-quantity")
   public ResponseEntity<String> updateQuestionsQuantity(
-          @RequestBody UpdateQuantityConfigsDto questionsConfigs) {
-    systemConfigService.updateQuantity(questionsConfigs.daiQuestionsQuantity(),questionsConfigs.academicQuestionsQuantity());
+      @RequestBody UpdateQuantityConfigsDto questionsConfigs) {
+    systemConfigService.updateQuantity(questionsConfigs.daiQuestionsQuantity(),
+        questionsConfigs.academicQuestionsQuantity());
     // return the updated questions quantity
     return ResponseEntity.ok().build();
   }
-
+  /**
+   * Retrieves the process weights configured in the system.
+   *
+   * @return ResponseEntity containing a list of SystemConfigDto with process weights
+   */
   @GetMapping("/get-process-weights")
   public ResponseEntity<List<SystemConfigDto>> getProcessWeights() {
     List<SystemConfigDto> processWeights = systemConfigService.getProcessWeights();
 
     return new ResponseEntity<>(processWeights, HttpStatus.OK);
   }
-
+  /**
+   * Updates the process weights in the system.
+   *
+   * @param weightsConfigs DTO containing the new process weights
+   * @return ResponseEntity with OK status
+   */
   @PutMapping("/update-process-weights")
   public ResponseEntity<String> updateProcessWeights(
       @RequestBody UpdateWeightsConfigsDto weightsConfigs) {
@@ -51,14 +78,23 @@ public class SystemConfigController {
     // return the updated exams percentages
     return ResponseEntity.ok().build();
   }
-
+  /**
+   * Retrieves the contact information configured in the system.
+   *
+   * @return ResponseEntity containing a list of SystemConfigDto with contact information
+   */
   @GetMapping("/get-contact-info")
   public ResponseEntity<List<SystemConfigDto>> getContactInfo() {
     List<SystemConfigDto> contactInfo = systemConfigService.getContactInfo();
 
     return new ResponseEntity<>(contactInfo, HttpStatus.OK);
   }
-
+  /**
+   * Updates the contact information in the system.
+   *
+   * @param contactInfoConfigsDto DTO containing the new contact information
+   * @return ResponseEntity with OK status
+   */
   @PutMapping("/update-contact-info")
   public ResponseEntity<String> updateContactInfo(
       @RequestBody UpdateContactInfoConfigsDto contactInfoConfigsDto) {
@@ -67,12 +103,11 @@ public class SystemConfigController {
 
     return ResponseEntity.ok().build();
   }
-
   /**
-   * Get the exam period by id
+   * Retrieves a specific exam period by its ID.
    *
-   * @param id the id of the exam period
-   * @return the exam period
+   * @param id the ID of the exam period to retrieve
+   * @return ResponseEntity containing the ExamPeriodDto
    */
   @GetMapping("/get-exam-period/{id}")
   public ResponseEntity<ExamPeriodDto> getExamPeriod(@PathVariable Long id) {
@@ -80,11 +115,10 @@ public class SystemConfigController {
 
     return new ResponseEntity<>(examPeriod, HttpStatus.OK);
   }
-
   /**
-   * Get the exam periods for the current year
+   * Retrieves all exam periods for the current year.
    *
-   * @return a list of exam periods of the year
+   * @return ResponseEntity containing a list of ExamPeriodDto
    */
   @GetMapping("/get-current-exam-periods")
   public ResponseEntity<List<ExamPeriodDto>> getCurrentExamPeriods() {
@@ -92,12 +126,11 @@ public class SystemConfigController {
 
     return new ResponseEntity<>(examPeriods, HttpStatus.OK);
   }
-
   /**
-   * Get the exam periods for a given year
+   * Retrieves all exam periods for a specific year.
    *
-   * @param year the year to get the exam periods
-   * @return a list of exam periods of the year
+   * @param year the year for which to retrieve exam periods
+   * @return ResponseEntity containing a list of ExamPeriodDto
    */
   @GetMapping("/get-exam-periods/{year}")
   public ResponseEntity<List<ExamPeriodDto>> getExamPeriods(@PathVariable Integer year) {
@@ -105,13 +138,12 @@ public class SystemConfigController {
 
     return new ResponseEntity<>(examPeriods, HttpStatus.OK);
   }
-
   /**
-   * Create a new exam period
+   * Creates a new exam period.
    *
-   * @param examPeriodDto        the exam period to create
-   * @param uriComponentsBuilder the uri components builder
-   * @return the response entity
+   * @param examPeriodDto DTO containing the exam period details to create
+   * @param uriComponentsBuilder builder for constructing the response URI
+   * @return ResponseEntity with created status and location header
    */
   @PostMapping("/create-exam-period")
   public ResponseEntity<Void> createExamPeriod(@RequestBody ExamPeriodDto examPeriodDto,
@@ -123,7 +155,25 @@ public class SystemConfigController {
             .buildAndExpand(examPeriodDto.id()).toUri()).build();
   }
 
+  /**
+   * Deletes an exam period by its ID.
+   *
+   * @param id the ID of the exam period to delete
+   * @return a response entity with no content indicating success
+   */
+  @DeleteMapping("/delete-exam-period/{id}")
+  public ResponseEntity<Void> deleteExamPeriod(@PathVariable Long id) {
+    systemConfigService.deleteExamPeriod(id);
 
+    return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * Updates the number of questions for academic exams.
+   *
+   * @param quantity the new number of questions for academic exams
+   * @return a response entity indicating success
+   */
   @PutMapping("/academic-exam-questions-quantity/{quantity}")
   public ResponseEntity<String> updateAcademicExamQuestionsQuantity(
       @PathVariable Integer quantity) {
@@ -132,7 +182,12 @@ public class SystemConfigController {
 
     return ResponseEntity.ok().build();
   }
-
+  /**
+   * Updates the quantity of questions for DAI exams.
+   *
+   * @param quantity the new quantity of questions
+   * @return ResponseEntity with OK status
+   */
   @PutMapping("/dai-exam-questions-quantity/{quantity}")
   public ResponseEntity<String> updateDaiExamQuestionsQuantity(@PathVariable Integer quantity) {
     systemConfigService.updateExamQuestionsQuantity(Configurations.DAI_EXAM_QUESTIONS_QUANTITY,
@@ -141,4 +196,3 @@ public class SystemConfigController {
     return ResponseEntity.ok().build();
   }
 }
-

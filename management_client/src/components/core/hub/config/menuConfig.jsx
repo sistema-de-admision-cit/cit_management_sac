@@ -4,7 +4,6 @@ import { ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST } from '..
 import AddQuestionView from '../../../modules/questions/add_questions/view/AddQuestionView.jsx'
 import ModifyQuestionView from '../../../modules/questions/modify_questions/view/ModifyQuestionView.jsx'
 import DeleteQuestionView from '../../../modules/questions/delete_questions/view/DeleteQuestionView.jsx'
-import GenerateExamView from '../../../modules/questions/generate_exam/view/GenerateExamView.jsx'
 import HubIcon from './HubIcon.jsx'
 import ExamMenuPageView from '../../../modules/questions/menu/view/ExamMenuPageView.jsx'
 
@@ -26,6 +25,7 @@ import QuestionConfiguratorView from '../../../modules/system_configuration/exam
 import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenuPageView.jsx'
 import ExamScoreManagementView from '../../../modules/results/load_results/view/ExamScoreManagementView.jsx'
 // import GradesManagmentView from '../../../modules/results/grades_managment/view/GradesManagementView.jsx'
+import AnalyzeResultsView from '../../../modules/results/analyze_results/view/AnalyzeResultsView.jsx'
 
 // reports views
 import ReportsMenuPageView from '../../../modules/reports/menu/views/ReportsMenuPageView.jsx'
@@ -34,16 +34,11 @@ import AccessManegementView from '../../../modules/system_configuration/access_m
 
 // report views
 import GraphicalReportsView from '../../../modules/reports/graphical/view/GraphicalReportsView.jsx'
+import ReportsView from '../../../modules/reports/pdf_csv/view/ReportsView.jsx'
 import DashboardView from '../../../modules/dashboard/menu/view/DashboardMenuPageView.jsx'
 
 // componente por defecto para las rutas padre
 // feature temporal
-// TODO: implementar un componente para cada padre
-const DefaultComponent = ({ label }) => (
-  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-    Componente por defecto para {label}
-  </div>
-)
 
 const menuConfig = [
   {
@@ -54,7 +49,7 @@ const menuConfig = [
         key: 'dashboard',
         label: 'Dashboard',
         path: '/dashboard',
-        roleRequired: [ROLE_SUPERADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
+        roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Vista general del sistema con accesos rápidos.',
         parentComponent: DashboardView
       },
@@ -65,6 +60,7 @@ const menuConfig = [
         parentComponent: EnrollmentsMenuPageView,
         roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN],
         description: 'Módulo para gestionar el proceso de inscripción de estudiantes.',
+        imagePath: '/images/inscripciones.PNG',
         subItems: [
           {
             key: 'visit-requests',
@@ -72,7 +68,7 @@ const menuConfig = [
             path: '/inscripciones/consultar',
             component: EnrollmentManagementView,
             description: 'Consultar y revisar las inscripciones existentes.',
-            imagePath: '/images/temp-card-image.avif'
+            imagePath: '/images/inscripciones.PNG'
           }
         ]
       },
@@ -83,41 +79,47 @@ const menuConfig = [
         parentComponent: ConfigurationMenuPageView,
         roleRequired: [ROLE_SUPERADMIN],
         description: 'Configuraciones generales del sistema.',
+        imagePath: '/images/configuracion.PNG',
         subItems: [
           {
             key: 'appointment-settings',
             label: 'Configurar Citas',
             path: '/configuracion/citas',
             component: ExamScheduleConfiguratorView,
-            description: 'Configurar horarios y citas para exámenes y reuniones.'
+            description: 'Configurar horarios y citas para exámenes y reuniones.',
+            imagePath: '/images/configuracion_2.PNG'
           },
           {
             key: 'percentages-settings',
             label: 'Configurar Porcentajes',
             path: '/configuracion/porcentajes',
             component: PercentagesConfiguratorView,
-            description: 'Definir porcentajes de evaluación y criterios.'
+            description: 'Definir porcentajes de evaluación y criterios.',
+            imagePath: '/images/configuracion_2.PNG'
           },
           {
             key: 'questions-settings',
             label: 'Configurar Cantidad de Preguntas',
             path: '/configuracion/preguntas',
             component: QuestionConfiguratorView,
-            description: 'Definir la cantidad de preguntas en los exámenes.'
+            description: 'Definir la cantidad de preguntas en los exámenes.',
+            imagePath: '/images/configuracion_2.PNG'
           },
           {
             key: 'notifications-settings',
             label: 'Configurar Notificaciones',
             path: '/configuracion/notificaciones',
             component: NotificationSettingsView,
-            description: 'Configurar las notificaciones automáticas del sistema.'
+            description: 'Configurar las notificaciones automáticas del sistema.',
+            imagePath: '/images/configuracion_2.PNG'
           },
           {
             key: 'manage-access',
             label: 'Gestionar Accesos',
             path: '/configuracion/accesos',
             component: AccessManegementView,
-            description: 'Gestionar accesos y permisos de los usuarios en el sistema.'
+            description: 'Gestionar accesos y permisos de los usuarios en el sistema.',
+            imagePath: '/images/configuracion_2.PNG'
           }
         ]
       },
@@ -128,6 +130,7 @@ const menuConfig = [
         parentComponent: ExamMenuPageView,
         roleRequired: [ROLE_SUPERADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Gestión y configuración de exámenes y preguntas.',
+        imagePath: '/images/examenes.PNG',
         subItems: [
           {
             key: 'add-question',
@@ -135,7 +138,7 @@ const menuConfig = [
             path: '/examenes/ingresar',
             component: AddQuestionView,
             description: 'Agregar nuevas preguntas a los exámenes.',
-            imagePath: '/images/temp-card-image.avif'
+            imagePath: '/images/examenes_2.PNG'
           },
           {
             key: 'modify-question',
@@ -143,7 +146,7 @@ const menuConfig = [
             path: '/examenes/modificar',
             component: ModifyQuestionView,
             description: 'Modificar preguntas existentes en los exámenes.',
-            imagePath: '/images/temp-card-image.avif'
+            imagePath: '/images/examenes_2.PNG'
           },
           {
             key: 'delete-question',
@@ -151,31 +154,7 @@ const menuConfig = [
             path: '/examenes/eliminar',
             component: DeleteQuestionView,
             description: 'Eliminar preguntas de los exámenes.',
-            imagePath: '/images/temp-card-image.avif'
-          },
-          {
-            key: 'generate-exam',
-            label: 'Generar Exámenes',
-            path: '/examenes/generar',
-            component: GenerateExamView,
-            description: 'Generar exámenes a partir de las preguntas configuradas.',
-            imagePath: '/images/temp-card-image-2.avif'
-          },
-          {
-            key: 'academic-exam',
-            label: 'Visualizar Exámenes Académicos',
-            path: '/examenes/academicos',
-            component: AcademicManagementView,
-            description: 'Ver notas de los examenes academicos.',
-            imagePath: '/images/temp-card-image.avif'
-          },
-          {
-            key: 'dai-exam',
-            label: 'Visualizar Exámenes DAI',
-            path: '/examenes/dai',
-            component: DaiGradesManagementView,
-            description: 'Ver notas de los examenes DAI.',
-            imagePath: '/images/temp-card-image.avif'
+            imagePath: '/images/examenes_2.PNG'
           }
         ]
       },
@@ -184,29 +163,41 @@ const menuConfig = [
         label: 'Gestión de Resultados',
         path: '/resultados',
         parentComponent: ResultsMenuPageView,
-        roleRequired: [ROLE_SUPERADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
+        roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Gestión y análisis de los resultados de los exámenes.',
+        imagePath: '/images/analisis.PNG',
         subItems: [
           {
             key: 'load-results',
-            label: 'Cargar Notas',
+            label: 'Cargar Notas de Inglés',
             path: '/resultados/cargar',
             component: ExamScoreManagementView,
-            description: 'Cargar y registrar las notas obtenidas.'
+            description: 'Cargar y registrar las notas obtenidas.',
+            imagePath: '/images/analisis_2.PNG'
           },
           {
-            key: 'analyze-results',
-            label: 'Modificar notas manualmente',
-            path: '/resultados/analizar',
-            component: DefaultComponent,
-            description: 'Modificar notas manualmente y ver notas finales.'
+            key: 'academic-exam',
+            label: 'Visualizar Exámenes Académicos',
+            path: '/resultados/academicos',
+            component: AcademicManagementView,
+            description: 'Ver notas de los examenes academicos.',
+            imagePath: '/images/examenes_2.PNG'
+          },
+          {
+            key: 'dai-exam',
+            label: 'Visualizar Exámenes DAI',
+            path: '/resultados/dai',
+            component: DaiGradesManagementView,
+            description: 'Ver notas de los examenes DAI.',
+            imagePath: '/images/examenes_2.PNG'
           },
           {
             key: 'notify-results',
             label: 'Notificar Resultados',
             path: '/resultados/notificar',
-            component: DefaultComponent,
-            description: 'Notificar a los usuarios sobre los resultados obtenidos.'
+            component: AnalyzeResultsView,
+            description: 'Notificar a los usuarios sobre los resultados obtenidos.',
+            imagePath: '/images/analisis_2.PNG'
           }
         ]
       },
@@ -215,22 +206,25 @@ const menuConfig = [
         label: 'Reportes y Análisis',
         path: '/reportes',
         parentComponent: ReportsMenuPageView,
-        roleRequired: [ROLE_SUPERADMIN],
+        roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN],
         description: 'Generar y visualizar reportes del sistema.',
+        imagePath: '/images/reporte.PNG',
         subItems: [
           {
             key: 'graphical-reports',
             label: 'Reportes Gráficos',
             path: '/reportes/graficos',
             component: GraphicalReportsView,
-            description: 'Visualizar reportes en formato gráfico.'
+            description: 'Visualizar reportes en formato gráfico.',
+            imagePath: '/images/reporte_2.PNG'
           },
           {
             key: 'pdf-reports',
             label: 'Reportes PDF/CSV',
             path: '/reportes/pdf',
-            component: DefaultComponent,
-            description: 'Generar reportes en formatos PDF y CSV.'
+            component: ReportsView,
+            description: 'Generar reportes en formatos PDF y CSV.',
+            imagePath: '/images/reporte_2.PNG'
           }
         ]
       }

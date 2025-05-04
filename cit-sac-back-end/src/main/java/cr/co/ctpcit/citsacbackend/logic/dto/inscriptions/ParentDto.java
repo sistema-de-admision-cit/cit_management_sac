@@ -10,7 +10,8 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * DTO for {@link ParentEntity}
+ * Data Transfer Object (DTO) representing the details of a parent.
+ * Contains personal information, contact details, relationship information, and addresses.
  */
 @Builder
 public record ParentDto(Long id, PersonDto person, @NotNull @Size(max = 32) String phoneNumber,

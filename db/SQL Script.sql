@@ -48,9 +48,7 @@ CREATE TABLE IF NOT EXISTS `tbl_Parents` (
   CONSTRAINT `FK_Parents_Persons`
     FOREIGN KEY (`parent_id`) 
     REFERENCES `tbl_Persons`(`person_id`)
-    ON DELETE NO ACTION,
-  UNIQUE INDEX `UQ_Parents_PhoneNumber` (`phone_number` ASC),
-  UNIQUE INDEX `UQ_Parents_Email` (`email` ASC))
+    ON DELETE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -375,7 +373,8 @@ CREATE TABLE IF NOT EXISTS `tbl_Exam_Days` (
 
   CONSTRAINT `FK_ExamDays_ExamPeriods`
     FOREIGN KEY (`exam_period_id`)
-    REFERENCES `tbl_Exam_Periods` (`exam_period_id`))
+    REFERENCES `tbl_Exam_Periods` (`exam_period_id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -411,7 +410,7 @@ CREATE TABLE IF NOT EXISTS `tbl_Logs_Score` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `process_id` INT NULL DEFAULT NULL,
   `tracktest_id` INT NULL DEFAULT NULL,
-  `enrollment_id` INT NULL DEFAULT NULL,
+  `enrollment_id` INT UNSIGNED NULL DEFAULT NULL,
   `previous_score` INT NULL DEFAULT NULL,
   `new_score` INT NULL DEFAULT NULL,
   `exam_date` DATE NULL DEFAULT NULL,
@@ -434,7 +433,9 @@ CREATE TABLE IF NOT EXISTS `tbl_System_Config` (
   `config_name` ENUM(
 						'EMAIL_CONTACT',                   	-- Email for the people to ask any question 
                         'EMAIL_NOTIFICATION_CONTACT', 		-- Email for the system to send notifications
+                        'EMAIL_PASSWORD',					-- Email password to send notifications
 						'WHATSAPP_CONTACT',					-- Whatsapp phone number to send notifications
+                        'WHATSAPP_API_KEY',					-- Whatsapp api key to send notifications
                         'OFFICE_CONTACT', 					-- Office phone number
                         'FACEBOOK_CONTACT', 				-- Facebook profile name
                         'INSTAGRAM_CONTACT', 				-- Instagram profile name
@@ -489,46 +490,70 @@ CREATE PROCEDURE usp_Update_Enrollment_And_Log (
     IN p_new_status ENUM('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED'),
     IN p_new_exam_date DATE,
     IN p_new_whatsapp_permission BOOLEAN,
+    IN p_new_previous_grades DECIMAL(5,2),
     IN p_comment VARCHAR(255),
     IN p_changed_by INT
 )
-
 BEGIN
     DECLARE v_old_status ENUM('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED');
     DECLARE v_old_exam_date DATE;
     DECLARE v_old_whatsapp_permission BOOLEAN;
+    DECLARE v_old_previous_grades DECIMAL(5,2);
+    DECLARE v_student_id INT;
 
-    -- Obtener los valores actuales
-    SELECT `status`, `exam_date`, `whatsapp_notification`
-    INTO v_old_status, v_old_exam_date, v_old_whatsapp_permission
+    -- Obtener datos actuales de la inscripción
+    SELECT `status`, `exam_date`, `whatsapp_notification`, `student_id`
+    INTO v_old_status, v_old_exam_date, v_old_whatsapp_permission, v_student_id
     FROM `tbl_Enrollments`
     WHERE `enrollment_id` = p_enrollment_id;
 
-    -- Actualizar los valores
+    -- Obtener la nota previa del estudiante
+    SELECT `previous_grades`
+    INTO v_old_previous_grades
+    FROM `tbl_Students`
+    WHERE `student_id` = v_student_id;
+
+    -- Actualizar inscripción
     UPDATE `tbl_Enrollments`
     SET `status` = p_new_status,
         `exam_date` = p_new_exam_date,
         `whatsapp_notification` = p_new_whatsapp_permission
     WHERE `enrollment_id` = p_enrollment_id;
 
+    -- Actualizar calificaciones previas si es diferente
+    IF v_old_previous_grades != p_new_previous_grades THEN
+        UPDATE `tbl_Students`
+        SET `previous_grades` = p_new_previous_grades
+        WHERE `student_id` = v_student_id;
 
-    -- Si el status ha cambiado, registrar en la tabla de logs
+        INSERT INTO `tbl_Logs` 
+            (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
+        VALUES 
+            ('tbl_Students', 'previous_grades', v_old_previous_grades, p_new_previous_grades, p_changed_by, 
+             CONCAT('UPDATE tbl_Students SET previous_grades = ', p_new_previous_grades, ' WHERE student_id = ', v_student_id), 
+             p_comment);
+    END IF;
+
+    -- Registrar cambios si los valores fueron modificados
     IF v_old_status != p_new_status THEN
         INSERT INTO `tbl_Logs` 
             (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
         VALUES 
-            ('tbl_Enrollments', 'status', v_old_status, p_new_status, p_changed_by, CONCAT('UPDATE tbl_Enrollments SET status = ', p_new_status, ' WHERE enrollment_id = ', p_enrollment_id), p_comment);
+            ('tbl_Enrollments', 'status', v_old_status, p_new_status, p_changed_by, 
+             CONCAT('UPDATE tbl_Enrollments SET status = ', p_new_status, ' WHERE enrollment_id = ', p_enrollment_id), 
+             p_comment);
     END IF;
 
-    -- Si la fecha de examen ha cambiado, registrar en la tabla de logs
     IF v_old_exam_date != p_new_exam_date THEN
         INSERT INTO `tbl_Logs` 
             (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
         VALUES 
-            ('tbl_Enrollments', 'exam_date', v_old_exam_date, p_new_exam_date, p_changed_by, CONCAT('UPDATE tbl_Enrollments SET exam_date = ', p_new_exam_date, ' WHERE enrollment_id = ', p_enrollment_id), p_comment);
+            ('tbl_Enrollments', 'exam_date', v_old_exam_date, p_new_exam_date, p_changed_by, 
+             CONCAT('UPDATE tbl_Enrollments SET exam_date = ', p_new_exam_date, ' WHERE enrollment_id = ', p_enrollment_id), 
+             p_comment);
     END IF;
-    
-    -- No se requiere log para whatsapp_permission
+
+    -- No se registra el cambio de whatsapp_notification en logs
 END//
 
 -- -----------------------------------------------------
