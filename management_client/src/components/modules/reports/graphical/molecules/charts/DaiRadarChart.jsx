@@ -14,7 +14,7 @@ import {
  * Build data per area with min, max, and average scores
  */
 const buildRadarData = (details) => {
-  const areas = Array.from(new Set(details.map(d => d.area)))
+  const areas = Array.from(new Set(details?.map(d => d.area)))
   return areas.map(area => {
     const scores = details.filter(d => d.area === area).map(d => d.score)
     const min = Math.min(...scores)
@@ -29,7 +29,7 @@ const buildRadarData = (details) => {
   })
 }
 
-const DaiRadarChart = ({ details, areaAverages /* areaAverages no longer needed */ }) => {
+const DaiRadarChart = ({ details }) => {
   const data = buildRadarData(details)
 
   return (
