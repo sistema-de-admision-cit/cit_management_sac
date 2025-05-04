@@ -322,7 +322,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
     // Save the enrollment
     enrollmentRepository.updateEnrollmentStatus(Long.parseLong(id),
-        enrollmentUpdate.processStatus());
+        enrollmentUpdate.status());
   }
 
   /**
@@ -355,7 +355,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     // Save the enrollment
     enrollmentRepository.usp_update_enrollment_and_log(
             Long.parseLong(id),
-            enrollmentUpdate.processStatus().toString(),
+            enrollmentUpdate.status().toString(),
             Date.valueOf(enrollmentUpdate.examDate()),
             enrollmentUpdate.whatsappPermission(),
             enrollmentUpdate.previousGrades(),

@@ -4,9 +4,8 @@ import EnrollmentInfoEdit from './EnrollmentInfoEdit'
 
 const EnrollmentInfo = ({
   enrollment,
+  onUpdateEnrollment,
   onDateChange,
-  onWhatsappChange,
-  onPreviousGradesChange,
   onDocClick,
   student,
   setSelectedFileType,
@@ -21,9 +20,8 @@ const EnrollmentInfo = ({
       (
         <EnrollmentInfoEdit
           enrollment={enrollment}
+          onUpdateEnrollment={onUpdateEnrollment}
           onDateChange={onDateChange}
-          onWhatsappChange={onWhatsappChange}
-          onPreviousGradesChange={onPreviousGradesChange}
           setIsEditing={setIsEditing}
           setErrorMessage={setErrorMessage}
           setSuccessMessage={setSuccessMessage}

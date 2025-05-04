@@ -1,7 +1,7 @@
 export const statusText = {
   PENDING: 'Pendiente de Revisión',
-  ELIGIBLE: 'Aceptar',
-  INELIGIBLE: 'Rechazar',
+  ELIGIBLE: 'Aceptado',
+  INELIGIBLE: 'Rechazado',
   ACCEPTED: 'Aceptado',
   REJECTED: 'Rechazado'
 }

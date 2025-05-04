@@ -11,6 +11,7 @@ import InputField from '../../../../core/global/atoms/InputField';
 import Button from '@mui/material/Button';
 import '../../../../../assets/styles/enrollments/enrollment-info-edit.css'
 import { handleGetExamPeriods, handleIsDateAllowed, handleEditSubmit, verifyAllRequiredFieldsFilled } from '../helpers/handlers';
+import Cookies from 'js-cookie';
 
 const FormContainer = styled('div')({
   flexDirection: 'column',
@@ -48,7 +49,7 @@ const ButtonContainer = styled('div')({
   width: '100%'
 });
 
-const EnrollmentInfoEdit = ({ enrollment, setIsEditing, setErrorMessage, setSuccessMessage }) => {
+const EnrollmentInfoEdit = ({ enrollment, setIsEditing, setErrorMessage, setSuccessMessage, onUpdateEnrollment }) => {
   const [year, month, day] = enrollment.examDate.split('-').map(Number);
 
   const [formData, setFormData] = useState({
@@ -58,7 +59,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, setErrorMessage, setSucc
     whatsappNotification: enrollment.whatsappNotification,
     previousGrades: enrollment.student.previousGrades,
     comment: '',
-    changedBy: 1
+    changedBy: Cookies.get('username'),
   })
   const [examPeriods, setExamPeriods] = useState([])
 
@@ -68,6 +69,13 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, setErrorMessage, setSucc
 
   const handleDateChange = (newValue) => {
     setFormData({ ...formData, examDate: newValue });
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleEditSubmit(enrollment, formData, setErrorMessage, setSuccessMessage)
+    onUpdateEnrollment(formData)
+    setIsEditing(false)
   }
 
   return (
@@ -86,7 +94,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, setErrorMessage, setSucc
           </h2>
         </div>
         <div>
-          <form onSubmit={(e) => handleEditSubmit(e, enrollment, formData, setIsEditing, setErrorMessage, setSuccessMessage)} style={{ width: '100%' }}>
+          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
             {/* Estado */}
             <FullWidthField>
               <InputField

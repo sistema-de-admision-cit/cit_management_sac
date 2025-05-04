@@ -1,6 +1,5 @@
 import axios from '../../../../../config/axiosConfig'
 import { formatDateForApi, isCommentRequired } from './helpers'
-import Cookies from 'js-cookie'
 
 // Manejo de errores
 const getErrorMessage = (error) => {
@@ -63,41 +62,26 @@ const validateDataBeforeSubmit = (formData, enrollment) => {
   }
 }
 
-// not sure if this is the best way to update the local state
-// but it works for now
-const updateEnrollmentLocal = (enrollment, formData) => {
-  enrollment.status = formData.status
-  enrollment.examDate = formData.examDate
-  enrollment.whatsappNotification = formData.whatsappNotification
-  enrollment.previousGrades = formData.previousGrades
+const updateEnrollmentLocal = (enrollment, dataToSend) => {
+  enrollment.status = dataToSend.status
+  enrollment.examDate = dataToSend.examDate
+  enrollment.whatsappNotification = dataToSend.whatsappNotification
+  enrollment.previousGrades = dataToSend.previousGrades
 }
 
 const updateEnrollmentUrl = import.meta.env.VITE_UPDATE_ENROLLMENT_INFORMATION_ENDPOINT
-export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setErrorMessage, setSuccessMessage) => {
-  e.preventDefault()
-
+export const handleEnrollmentEdit = (dataToSend, enrollment, setErrorMessage, setSuccessMessage) => {
   try {
-    validateDataBeforeSubmit(formData, enrollment)
+    validateDataBeforeSubmit(dataToSend, enrollment)
   } catch (error) {
     setErrorMessage(error.message)
     return
   }
 
-  const body = {
-    examDate: formatDateForApi(new Date(formData.examDate)),
-    processStatus: formData.status,
-    whatsappPermission: formData.whatsappNotification,
-    previousGrades: parseFloat(formData.previousGrades),
-    comment: formData.comment,
-    changedBy: Cookies.get('username'),
-  }
-
-  axios.put(`${updateEnrollmentUrl}/${enrollment.id}`, body,
+  axios.put(`${updateEnrollmentUrl}/${enrollment.id}`, dataToSend,
     { timeout: 10000 })
     .then(response => {
-      setIsEditing(false)
       setSuccessMessage('La inscripción se actualizó correctamente.')
-      updateEnrollmentLocal(enrollment, formData)
     })
     .catch(error => {
       setErrorMessage(getErrorMessage(error))
@@ -322,26 +306,25 @@ const datesAreEqual = (date1, date2) => {
   );
 }
 
-export const handleEditSubmit = (e, enrollment, formData, setIsEditing, setErrorMessage, setSuccessMessage) => {
-    e.preventDefault();
-
+export const handleEditSubmit = (enrollment, formData, setErrorMessage, setSuccessMessage) => {
   if (!verifyAllRequiredFieldsFilled(formData, enrollment)) return;
-    const [year, month, day] = formData.examDate.toISOString().split('T')[0].split('-').map(Number);
+  const [year, month, day] = formData.examDate.toISOString().split('T')[0].split('-').map(Number);
 
-    const enrollmentDate = enrollment.examDate ? new Date(year, month - 1, day) : null
-    const isDateChanged = !datesAreEqual(formData.examDate, enrollmentDate)
+  const enrollmentDate = enrollment.examDate ? new Date(year, month - 1, day) : null
+  const isDateChanged = !datesAreEqual(formData.examDate, enrollmentDate)
 
-    const isStatusChanged = formData.status !== enrollment.status
-    const isWhatsappNotificationChanged = formData.whatsappNotification !== enrollment.whatsappNotification
-    const isPreviousGradesChanged = formData.previousGrades !== enrollment.student.previousGrades
+  const isStatusChanged = formData.status !== enrollment.status
+  const isWhatsappNotificationChanged = formData.whatsappNotification !== enrollment.whatsappNotification
+  const isPreviousGradesChanged = formData.previousGrades !== enrollment.student.previousGrades
 
-    const dataToSend = {
-      ...formData,
-      examDate: isDateChanged ? formData.examDate.toISOString().split('T')[0] : enrollmentDate,
-      status: isStatusChanged ? formData.status : enrollment.status,
-      whatsappNotification: isWhatsappNotificationChanged ? formData.whatsappNotification : enrollment.whatsappNotification,
-      previousGrades: isPreviousGradesChanged ? formData.previousGrades : enrollment.student.previousGrades,
-      comment: formData.comment.trim() || enrollment.comment,
-    };
-    handleEnrollmentEdit(e, formData, enrollment, setIsEditing, setErrorMessage, setSuccessMessage);
-  }
+  const dataToSend = {
+    examDate: isDateChanged ? formatDateForApi(formData.examDate) : formatDateForApi(enrollmentDate),
+    status: isStatusChanged ? formData.status : enrollment.status,
+    whatsappPermission: isWhatsappNotificationChanged ? formData.whatsappNotification : enrollment.whatsappNotification,
+    previousGrades: isPreviousGradesChanged ? parseFloat(formData.previousGrades) : parseFloat(enrollment.student.previousGrades),
+    comment: formData.comment.trim() || enrollment.comment,
+    changedBy: formData.changedBy,
+  };
+
+  handleEnrollmentEdit(dataToSend, enrollment, setErrorMessage, setSuccessMessage);
+}

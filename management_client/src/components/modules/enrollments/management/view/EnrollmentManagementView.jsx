@@ -4,6 +4,7 @@ import StudentsTable from '../organisms/StudentsTable'
 import '../../../../../assets/styles/enrollments/enrollment-management-view.css'
 import ModalApplicantDetails from '../organisms/ModalApplicantDetails'
 import { handleStudendIdClick, handleFileUpload } from '../helpers/handlers'
+import { formatDateForApi } from '../helpers/helpers'
 import useMessages from '../../../../core/global/hooks/useMessages'
 
 const EnrollmentManagementView = () => {
@@ -11,6 +12,29 @@ const EnrollmentManagementView = () => {
   const [applicantEnrollments, setApplicantEnrollments] = useState([])
   const [isModalApplicantDetailsOpen, setIsModalApplicantDetailsOpen] = useState(false)
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
+
+  const handleOnUpdateEnrollment = (formData) => {
+
+    setApplicantSelected((prev) => ({
+      ...prev,
+      previousGrades: parseFloat(formData.previousGrades),
+    }))
+
+    const updatedEnrollment = applicantEnrollments.map((enrollment) => {
+      enrollment.student.previousGrades = parseFloat(formData.previousGrades)
+
+      if (enrollment.id === formData.enrollmentId) {
+        return {
+          ...enrollment,
+          status: formData.status,
+          examDate: formatDateForApi(formData.examDate),
+          whatsappNotification: formData.whatsappNotification,
+        }
+      }
+      return enrollment
+    })
+    setApplicantEnrollments(updatedEnrollment)
+  }
 
   return (
     <SectionLayout title='Consultar Inscripciones'>
@@ -34,6 +58,7 @@ const EnrollmentManagementView = () => {
           }
           setErrorMessage={setErrorMessage}
           setSuccessMessage={setSuccessMessage}
+          onUpdateEnrollment={(formData) => handleOnUpdateEnrollment(formData)}
         />
       )}
       {renderMessages()}

@@ -16,13 +16,13 @@ const ModalApplicantDetails = ({
   onClose,
   onFileUpload,
   setErrorMessage,
-  setSuccessMessage
+  setSuccessMessage,
+  onUpdateEnrollment,
 }) => {
   const [activeTab, setActiveTab] = useState('student')
   const [isDocModalOpen, setIsDocModalOpen] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
   const [selectedFileType, setSelectedFileType] = useState('')
-  
   const [enrollment, setEnrollment] = useState({})
 
   return (
@@ -67,6 +67,7 @@ const ModalApplicantDetails = ({
       {enrollments.some((enrollment) => activeTab === `enrollment-${enrollment.id}`) &&
         <EnrollmentInfo
           enrollment={enrollments.find((enrollment) => activeTab === `enrollment-${enrollment.id}`)}
+          onUpdateEnrollment={onUpdateEnrollment}
           onDocClick={(file) => handleDocClick(file, setSelectedFile, setIsDocModalOpen)}
           setSelectedFileType={setSelectedFileType}
           student={student}
