@@ -24,7 +24,7 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
         onClick={() => setIsEditing(true)}
         disabled={enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS}
       >
-        <img src={EditIcon} alt='icono de editar'/>
+        <img src={EditIcon} alt='icono de editar' />
       </Button>
       {enrollment.status !== PENDING_STATUS && enrollment.status !== ELIGIBLE_STATUS && (
         <div className='tooltip'>
@@ -38,11 +38,11 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
         <p><strong>Documento de Notas:</strong></p>
         <Button
           className='pdf-icon' onClick={() => {
-          onDocClick(enrollment.documents.find((doc) => doc.documentType === 'OT'))
-          setSelectedFileType('Documento de Notas')
-        }}
+            onDocClick(enrollment.documents.find((doc) => doc.documentType === 'OT'))
+            setSelectedFileType('Documento de Notas')
+          }}
         >
-          <img src={PdfIcon} alt='logo de un pdf'/>
+          <img src={PdfIcon} alt='logo de un pdf' />
         </Button>
       </div>
       {student.hasAccommodations && (
@@ -50,11 +50,11 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
           <p><strong>Documento de Adaptaciones:</strong></p>
           <Button
             className='pdf-icon' onClick={() => {
-            onDocClick(enrollment.documents.find((doc) => doc.documentType === 'AC'))
-            setSelectedFileType('Documento de Adaptaciones')
-          }}
+              onDocClick(enrollment.documents.find((doc) => doc.documentType === 'AC'))
+              setSelectedFileType('Documento de Adaptaciones')
+            }}
           >
-            <img src={PdfIcon} alt='logo de un pdf'/>
+            <img src={PdfIcon} alt='logo de un pdf' />
           </Button>
         </div>
       )}

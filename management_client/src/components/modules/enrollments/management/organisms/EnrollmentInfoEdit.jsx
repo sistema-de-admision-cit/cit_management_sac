@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { styled } from '@mui/material/styles';
-import Checkbox from '@mui/material/Checkbox';
-import { statusOptionsForEnrollment, isCommentRequired, isEnabled } from '../helpers/helpers';
-import InputField from '../../../../core/global/atoms/InputField';
-import Button from '@mui/material/Button';
+import { useState } from 'react'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { styled } from '@mui/material/styles'
+import Checkbox from '@mui/material/Checkbox'
+import { statusOptionsForEnrollment, isCommentRequired, isEnabled } from '../helpers/helpers'
+import InputField from '../../../../core/global/atoms/InputField'
+import Button from '@mui/material/Button'
 
 const FormContainer = styled('div')({
   display: 'flex',
@@ -16,7 +16,7 @@ const FormContainer = styled('div')({
   margin: '0 auto',
   padding: '25px 30px',
   boxSizing: 'border-box'
-});
+})
 
 const FullWidthField = styled('div')({
   width: '100%',
@@ -26,7 +26,7 @@ const FullWidthField = styled('div')({
     width: '100%',
     display: 'block'
   }
-});
+})
 
 const SectionTitle = styled('h3')({
   textAlign: 'left',
@@ -34,7 +34,7 @@ const SectionTitle = styled('h3')({
   fontSize: '1rem',
   fontWeight: '600',
   color: 'inherit'
-});
+})
 
 const CheckboxContainer = styled('div')({
   width: '100%',
@@ -42,14 +42,14 @@ const CheckboxContainer = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start'
-});
+})
 
 const ButtonContainer = styled('div')({
   display: 'flex',
   justifyContent: 'center',
   marginTop: '30px',
   width: '100%'
-});
+})
 
 const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) => {
   const [formData, setFormData] = useState({
@@ -60,30 +60,30 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
     previousGrades: enrollment.student.previousGrades ?? '',
     comment: '',
     changedBy: 1
-  });
+  })
 
   const allRequiredFieldsFilled = () => {
     return formData.status && formData.examDate &&
-      (!isCommentRequired(formData, enrollment) || formData.comment.trim());
-  };
+      (!isCommentRequired(formData, enrollment) || formData.comment.trim())
+  }
 
   const handleDateChange = (newValue) => {
     setFormData(prev => ({
       ...prev,
       examDate: newValue
-    }));
-  };
+    }))
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!allRequiredFieldsFilled()) return;
+    e.preventDefault()
+    if (!allRequiredFieldsFilled()) return
 
     const dataToSend = {
       ...formData,
       examDate: formData.examDate ? formData.examDate.toISOString().split('T')[0] : null
-    };
-    handleEnrollmentEdit(e, dataToSend, enrollment);
-  };
+    }
+    handleEnrollmentEdit(e, dataToSend, enrollment)
+  }
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -95,7 +95,8 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
           borderBottom: '1px solid #eee',
           paddingBottom: '12px',
           fontSize: '1.4rem'
-        }}>
+        }}
+        >
           Inscripción - {enrollment.id}
         </h2>
 
@@ -143,7 +144,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
             <SectionTitle>Recibir notificación por WhatsApp</SectionTitle>
             <Checkbox
               checked={formData.whatsappNotification}
-              onChange={(e) => setFormData({...formData, whatsappNotification: e.target.checked})}
+              onChange={(e) => setFormData({ ...formData, whatsappNotification: e.target.checked })}
               sx={{
                 padding: '0',
                 marginLeft: '-9px', // Compensa el padding interno del checkbox
@@ -168,9 +169,9 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
               }}
               value={formData.previousGrades}
               handleChange={(e) => {
-                const value = e.target.value;
+                const value = e.target.value
                 if (value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= 100)) {
-                  setFormData({ ...formData, previousGrades: value });
+                  setFormData({ ...formData, previousGrades: value })
                 }
               }}
             />
@@ -197,18 +198,18 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
           {/* Botón */}
           <ButtonContainer>
             <Button
-              variant="contained"
-              size="large"
-              aria-label="Guardar Cambios"
+              variant='contained'
+              size='large'
+              aria-label='Guardar Cambios'
               disabled={!allRequiredFieldsFilled() || !isEnabled(formData, enrollment)}
-              type="submit"
+              type='submit'
               sx={{
                 backgroundColor: '#2ba98e',
                 padding: '10px 40px',
                 fontSize: '1rem',
                 borderRadius: '8px',
                 '&:hover': {
-                  backgroundColor: '#23967d',
+                  backgroundColor: '#23967d'
                 },
                 '&:disabled': {
                   backgroundColor: '#e0e0e0',
@@ -222,7 +223,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, handleEnrollmentEdit }) 
         </form>
       </FormContainer>
     </LocalizationProvider>
-  );
-};
+  )
+}
 
-export default EnrollmentInfoEdit;
+export default EnrollmentInfoEdit
