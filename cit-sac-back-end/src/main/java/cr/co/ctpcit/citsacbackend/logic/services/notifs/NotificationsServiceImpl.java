@@ -26,506 +26,393 @@ import java.util.List;
 
 
 /**
- * Service implementation for handling various types of notifications including
- * email communications related to student enrollment processes.
- * The service also handles localization of status messages and formatting of email content.
+ * Service implementation for handling various types of notifications including email communications
+ * related to student enrollment processes. The service also handles localization of status messages
+ * and formatting of email content.
  */
 
 @Service
 public class NotificationsServiceImpl implements NotificationsService {
 
-    /**
-     * Mail sender component with refreshable configuration capabilities
-     */
-    private final RefreshableJavaMailSender mailSender;
+  /**
+   * Mail sender component with refreshable configuration capabilities
+   */
+  private final RefreshableJavaMailSender mailSender;
 
-    /**
-     * Repository for accessing system configuration data
-     */
-    private final SystemConfigRepository configRepository;
+  /**
+   * Repository for accessing system configuration data
+   */
+  private final SystemConfigRepository configRepository;
 
-    /**
-     * Repository for accessing enrollment data
-     */
-    private final EnrollmentRepository enrollmentRepository;
+  /**
+   * Repository for accessing enrollment data
+   */
+  private final EnrollmentRepository enrollmentRepository;
 
-    /**
-     * WhatsApp number configured in application properties for notifications
-     */
-    @Value("${twilio.whatsapp.from}")
-    private String fromWhatsAppNumber;
+  /**
+   * WhatsApp number configured in application properties for notifications
+   */
+  @Value("${twilio.whatsapp.from}")
+  private String fromWhatsAppNumber;
 
-    /**
-     * Constructs a new NotificationsServiceImpl with required dependencies.
-     *
-     * @param mailSender           the mail sender component
-     * @param configRepository     the system configuration repository
-     * @param enrollmentRepository the enrollment data repository
-     */
-    public NotificationsServiceImpl(
-            RefreshableJavaMailSender mailSender,
-            SystemConfigRepository configRepository, EnrollmentRepository enrollmentRepository
-    ) {
-        this.mailSender = mailSender;
-        this.configRepository = configRepository;
-        this.enrollmentRepository = enrollmentRepository;
+  /**
+   * Constructs a new NotificationsServiceImpl with required dependencies.
+   *
+   * @param mailSender           the mail sender component
+   * @param configRepository     the system configuration repository
+   * @param enrollmentRepository the enrollment data repository
+   */
+  public NotificationsServiceImpl(RefreshableJavaMailSender mailSender,
+      SystemConfigRepository configRepository, EnrollmentRepository enrollmentRepository) {
+    this.mailSender = mailSender;
+    this.configRepository = configRepository;
+    this.enrollmentRepository = enrollmentRepository;
+  }
+
+  /**
+   * Creates and sends enrollment confirmation email to all parents/guardians associated with the
+   * student in the enrollment record.
+   *
+   * @param inscription the enrollment data transfer object containing student and parent
+   *                    information
+   * @throws RuntimeException if there's an error sending the email
+   */
+
+  @Override
+  public void createEmailForInscription(EnrollmentDto inscription) {
+    String emailContact = "";
+    String phoneContact = "";
+    String gradoEsp = "";
+
+    for (SystemConfigEntity config : configRepository.getContactInfo()) {
+      switch (config.getConfigName().name()) {
+        case "EMAIL_CONTACT" -> emailContact = config.getConfigValue();
+        case "OFFICE_CONTACT" -> phoneContact = config.getConfigValue();
+      }
     }
 
-    /**
-     * Creates and sends enrollment confirmation email to all parents/guardians
-     * associated with the student in the enrollment record.
-     *
-     * @param inscription the enrollment data transfer object containing
-     *                    student and parent information
-     * @throws RuntimeException if there's an error sending the email
-     */
-
-    @Override
-    public void createEmailForInscription(EnrollmentDto inscription) {
-        String emailContact = "";
-        String phoneContact = "";
-        String gradoEsp = "";
-
-        for (SystemConfigEntity config : configRepository.getContactInfo()) {
-            switch (config.getConfigName().name()) {
-                case "EMAIL_CONTACT" -> emailContact = config.getConfigValue();
-                case "OFFICE_CONTACT" -> phoneContact = config.getConfigValue();
-            }
-        }
-
-        switch (inscription.gradeToEnroll().name()) {
-            case "FIRST" -> gradoEsp = "Primero";
-            case "SECOND" -> gradoEsp = "Segundo";
-            case "THIRD" -> gradoEsp = "Tercero";
-            case "FOURTH" -> gradoEsp = "Cuarto";
-            case "FIFTH" -> gradoEsp = "Quinto";
-            case "SIXTH" -> gradoEsp = "Sexto";
-            case "SEVENTH" -> gradoEsp = "Sétimo";
-            case "EIGHTH" -> gradoEsp = "Octavo";
-            case "NINTH" -> gradoEsp = "Noveno";
-            case "TENTH" -> gradoEsp = "Décimo";
-            default -> gradoEsp = String.valueOf(inscription.gradeToEnroll());
-        }
-
-        for (ParentDto parent : inscription.student().parents()) {
-            String parentFullName = parent.person().firstName() + " " +
-                    parent.person().firstSurname() +
-                    (parent.person().secondSurname() != null ?
-                            " " + parent.person().secondSurname() : "");
-
-            String studentFullName = inscription.student().person().firstName() + " " +
-                    inscription.student().person().firstSurname() +
-                    (inscription.student().person().secondSurname() != null ?
-                            " " + inscription.student().person().secondSurname() : "");
-
-            sendEmail(
-                    new EmailConfigDto(
-                            parent.email(),
-                            "Confirmación de Inscripción - Complejo Educativo CIT",
-                            buildInscriptionEmailContent(
-                                    parentFullName,
-                                    studentFullName,
-                                    gradoEsp,
-                                    inscription.examDate(),
-                                    emailContact,
-                                    phoneContact
-                            )
-                    )
-            );
-        }
+    switch (inscription.gradeToEnroll().name()) {
+      case "FIRST" -> gradoEsp = "Primero";
+      case "SECOND" -> gradoEsp = "Segundo";
+      case "THIRD" -> gradoEsp = "Tercero";
+      case "FOURTH" -> gradoEsp = "Cuarto";
+      case "FIFTH" -> gradoEsp = "Quinto";
+      case "SIXTH" -> gradoEsp = "Sexto";
+      case "SEVENTH" -> gradoEsp = "Sétimo";
+      case "EIGHTH" -> gradoEsp = "Octavo";
+      case "NINTH" -> gradoEsp = "Noveno";
+      case "TENTH" -> gradoEsp = "Décimo";
+      default -> gradoEsp = String.valueOf(inscription.gradeToEnroll());
     }
 
-    /**
-     * Builds HTML content for the enrollment confirmation email.
-     *
-     * @param parentFullName the full name of the parent/guardian
-     * @param studentFullName the full name of the student
-     * @param gradoEsp the grade level in Spanish
-     * @param examDate the scheduled exam date
-     * @param emailContact the school's contact email
-     * @param phoneContact the school's contact phone number
-     * @return formatted HTML email content
-     */
+    for (ParentDto parent : inscription.student().parents()) {
+      String parentFullName =
+          parent.person().firstName() + " " + parent.person().firstSurname() + (parent.person()
+              .secondSurname() != null ? " " + parent.person().secondSurname() : "");
 
-    private String buildInscriptionEmailContent(
-            String parentFullName, String studentFullName,
-            String gradoEsp, LocalDate examDate,
-            String emailContact, String phoneContact
-    ) {
-        return "<html>" +
-                "<head>" +
-                "<style>" +
-                "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" +
-                ".container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }" +
-                "h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }" +
-                "h2 { color: #3498db; }" +
-                ".details { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }" +
-                ".detail-item { margin-bottom: 8px; }" +
-                ".footer { margin-top: 20px; font-size: 14px; color: #7f8c8d; }" +
-                "</style>" +
-                "</head>" +
-                "<body>" +
-                "<div class='container'>" +
-                "<h1>Confirmación de Inscripción</h1>" +
-                "<p>Estimado/a <strong>" + parentFullName + "</strong>,</p>" +
-                "<p>Nos complace informarle que el registro de inscripción de su hijo/a ha sido exitosamente completado en el <strong>Complejo Educativo CIT</strong>.</p>" +
+      String studentFullName =
+          inscription.student().person().firstName() + " " + inscription.student().person()
+              .firstSurname() + (inscription.student().person().secondSurname() != null ?
+              " " + inscription.student().person().secondSurname() :
+              "");
 
-                "<div class='details'>" +
-                "<h2>Detalles del Registro:</h2>" +
-                "<div class='detail-item'><strong>Estudiante:</strong> " + studentFullName + "</div>" +
-                "<div class='detail-item'><strong>Grado/Nivel:</strong> " + gradoEsp + "</div>" +
-                "<div class='detail-item'><strong>Fecha de Examen:</strong> " + examDate + "</div>" +
-                "</div>" +
+      sendEmail(
+          new EmailConfigDto(parent.email(), "Confirmación de Inscripción - Complejo Educativo CIT",
+              buildInscriptionEmailContent(parentFullName, studentFullName, gradoEsp,
+                  inscription.examDate(), emailContact, phoneContact)));
+    }
+  }
 
-                "<p>Para finalizar el proceso, le solicitamos que revise los documentos adjuntos y se comunique con nuestra administración en caso de dudas.</p>" +
+  /**
+   * Builds HTML content for the enrollment confirmation email.
+   *
+   * @param parentFullName  the full name of the parent/guardian
+   * @param studentFullName the full name of the student
+   * @param gradoEsp        the grade level in Spanish
+   * @param examDate        the scheduled exam date
+   * @param emailContact    the school's contact email
+   * @param phoneContact    the school's contact phone number
+   * @return formatted HTML email content
+   */
 
-                "<div class='footer'>" +
-                "<p><em>Este es un mensaje automático. Por favor no responda a este correo.</em></p>" +
-                "<p>Para asistencia, contáctenos a: <a href='mailto:" + emailContact + "'>" + emailContact + "</a> o al teléfono: " + phoneContact + "</p>" +
-                "</div>" +
-                "</div>" +
-                "</body>" +
-                "</html>";
+  private String buildInscriptionEmailContent(String parentFullName, String studentFullName,
+      String gradoEsp, LocalDate examDate, String emailContact, String phoneContact) {
+    return "<html>" + "<head>" + "<style>" + "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" + ".container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }" + "h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }" + "h2 { color: #3498db; }" + ".details { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }" + ".detail-item { margin-bottom: 8px; }" + ".footer { margin-top: 20px; font-size: 14px; color: #7f8c8d; }" + "</style>" + "</head>" + "<body>" + "<div class='container'>" + "<h1>Confirmación de Inscripción</h1>" + "<p>Estimado/a <strong>" + parentFullName + "</strong>,</p>" + "<p>Nos complace informarle que el registro de inscripción de su hijo/a ha sido exitosamente completado en el <strong>Complejo Educativo CIT</strong>.</p>" +
+
+        "<div class='details'>" + "<h2>Detalles del Registro:</h2>" + "<div class='detail-item'><strong>Estudiante:</strong> " + studentFullName + "</div>" + "<div class='detail-item'><strong>Grado/Nivel:</strong> " + gradoEsp + "</div>" + "<div class='detail-item'><strong>Fecha de Examen:</strong> " + examDate + "</div>" + "</div>" +
+
+        "<p>Para finalizar el proceso, le solicitamos que revise los documentos adjuntos y se comunique con nuestra administración en caso de dudas.</p>" +
+
+        "<div class='footer'>" + "<p><em>Este es un mensaje automático. Por favor no responda a este correo.</em></p>" + "<p>Para asistencia, contáctenos a: <a href='mailto:" + emailContact + "'>" + emailContact + "</a> o al teléfono: " + phoneContact + "</p>" + "</div>" + "</div>" + "</body>" + "</html>";
+  }
+
+  /**
+   * Creates and sends email notifications to parents/guardians when an enrollment record is
+   * updated.
+   *
+   * @param enrollmentId the ID of the enrollment being updated
+   * @param updateDto    the data transfer object containing update information
+   * @throws RuntimeException if enrollment is not found or email sending fails
+   */
+
+  @Override
+  public void createEmailForEnrollmentUpdate(Long enrollmentId, EnrollmentUpdateDto updateDto) {
+    EnrollmentEntity enrollment = enrollmentRepository.findById(enrollmentId).orElseThrow(
+        () -> new RuntimeException("No se encontró inscripción con ID: " + enrollmentId));
+
+    String emailContact = "";
+    String phoneContact = "";
+
+    // Obtener información de contacto
+    for (SystemConfigEntity config : configRepository.getContactInfo()) {
+      switch (config.getConfigName().name()) {
+        case "EMAIL_CONTACT" -> emailContact = config.getConfigValue();
+        case "OFFICE_CONTACT" -> phoneContact = config.getConfigValue();
+      }
     }
 
-    /**
-     * Creates and sends email notifications to parents/guardians when
-     * an enrollment record is updated.
-     *
-     * @param enrollmentId the ID of the enrollment being updated
-     * @param updateDto the data transfer object containing update information
-     * @throws RuntimeException if enrollment is not found or email sending fails
-     */
+    String statusEsp = switch (updateDto.status().name()) {
+      case "ACCEPTED" -> "Aceptado";
+      case "REJECTED" -> "Rechazado";
+      case "PENDING" -> "Pendiente";
+      case "ELIGIBLE" -> "Elegible";
+      case "INELIGIBLE" -> "NO Elegible";
+      default -> updateDto.status().name();
+    };
 
-    @Override
-    public void createEmailForEnrollmentUpdate(Long enrollmentId, EnrollmentUpdateDto updateDto) {
-        EnrollmentEntity enrollment = enrollmentRepository.findById(enrollmentId)
-                .orElseThrow(() -> new RuntimeException("No se encontró inscripción con ID: " + enrollmentId));
+    // Obtener padres del estudiante
+    List<ParentEntity> parents =
+        enrollment.getStudent().getParents().stream().map(ParentsStudentsEntity::getParent)
+            .toList();
 
-        String emailContact = "";
-        String phoneContact = "";
+    for (ParentEntity parent : parents) {
+      sendEmail(new EmailConfigDto(parent.getEmail(),
+          "Actualización de Inscripción - Complejo Educativo CIT",
+          buildUpdateEmailContent(parent, enrollment.getStudent(), updateDto, statusEsp,
+              emailContact, phoneContact)));
+    }
+  }
 
-        // Obtener información de contacto
-        for (SystemConfigEntity config : configRepository.getContactInfo()) {
-            switch (config.getConfigName().name()) {
-                case "EMAIL_CONTACT" -> emailContact = config.getConfigValue();
-                case "OFFICE_CONTACT" -> phoneContact = config.getConfigValue();
-            }
-        }
+  /**
+   * Builds HTML content for the enrollment update email.
+   *
+   * @param parent       the parent entity receiving the notification
+   * @param student      the student entity associated with the enrollment
+   * @param updateDto    the enrollment update data
+   * @param statusEsp    the process status in Spanish
+   * @param emailContact the school's contact email
+   * @param phoneContact the school's contact phone number
+   * @return formatted HTML email content
+   */
 
-        String statusEsp = switch (updateDto.processStatus().name()) {
-            case "ACCEPTED" -> "Aceptado";
-            case "REJECTED" -> "Rechazado";
-            case "PENDING" -> "Pendiente";
-            case "ELIGIBLE" -> "Elegible";
-            case "INELIGIBLE" -> "NO Elegible";
-            default -> updateDto.processStatus().name();
-        };
+  private String buildUpdateEmailContent(ParentEntity parent, StudentEntity student,
+      EnrollmentUpdateDto updateDto, String statusEsp, String emailContact, String phoneContact) {
 
-        // Obtener padres del estudiante
-        List<ParentEntity> parents = enrollment.getStudent().getParents().stream()
-                .map(ParentsStudentsEntity::getParent)
-                .toList();
+    String parentFullName = parent.getParentPerson().getFirstName() + " " + parent.getParentPerson()
+        .getFirstSurname() + (parent.getParentPerson().getSecondSurname() != null ?
+        " " + parent.getParentPerson().getSecondSurname() :
+        "");
 
-        for (ParentEntity parent : parents) {
-            sendEmail(
-                    new EmailConfigDto(
-                            parent.getEmail(),
-                            "Actualización de Inscripción - Complejo Educativo CIT",
-                            buildUpdateEmailContent(parent, enrollment.getStudent(), updateDto, statusEsp, emailContact, phoneContact)
-                    )
-            );
-        }
+    String studentFullName =
+        student.getStudentPerson().getFirstName() + " " + student.getStudentPerson()
+            .getFirstSurname() + (student.getStudentPerson().getSecondSurname() != null ?
+            " " + student.getStudentPerson().getSecondSurname() :
+            "");
+
+    String whatsappStatus = updateDto.whatsappPermission() ? "ACTIVADO" : "DESACTIVADO";
+
+    return "<html>" + "<head>" + "<style>" + "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" + ".container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }" + "h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }" + "h2 { color: #3498db; }" + ".changes { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }" + ".change-item { margin-bottom: 8px; }" + ".footer { margin-top: 20px; font-size: 14px; color: #7f8c8d; }" + "</style>" + "</head>" + "<body>" + "<div class='container'>" + "<h1>Actualización de Inscripción</h1>" + "<p>Estimado/a <strong>" + parentFullName + "</strong>,</p>" + "<p>Le informamos que se han realizado modificaciones en la inscripción de su hijo/a <strong>" + studentFullName + "</strong> en el Complejo Educativo CIT.</p>" +
+
+        "<div class='changes'>" + "<h2>Cambios realizados:</h2>" + "<div class='change-item'><strong>Fecha de Examen:</strong> " + updateDto.examDate() + "</div>" + "<div class='change-item'><strong>Estado del Proceso:</strong> " + statusEsp + "</div>" + "<div class='change-item'><strong>Notificaciones por WhatsApp:</strong> " + whatsappStatus + "</div>" + "</div>" +
+
+        "<p>Si necesitas más información, por favor contáctenos.</p>" +
+
+        "<div class='footer'>" + "<p><em>Este es un mensaje automático. Por favor no responda a este correo.</em></p>" + "<p>Para asistencia, contáctenos a: <a href='mailto:" + emailContact + "'>" + emailContact + "</a> o al teléfono: " + phoneContact + "</p>" + "</div>" + "</div>" + "</body>" + "</html>";
+  }
+
+  /**
+   * Creates and sends admission decision notifications to parents/guardians.
+   *
+   * @param studentIdNumber the national ID number of the student
+   * @throws RuntimeException if enrollment is not found or email sending fails
+   */
+
+  @Override
+  public void createEmailForAdmissionDecision(String studentIdNumber) {
+    EnrollmentEntity enrollment =
+        enrollmentRepository.findByStudentStudentPersonIdNumber(studentIdNumber).orElseThrow(
+            () -> new RuntimeException(
+                "No se encontró inscripción para el estudiante con cédula: " + studentIdNumber));
+
+    String emailContact = "";
+    String phoneContact = "";
+
+    for (SystemConfigEntity config : configRepository.getContactInfo()) {
+      switch (config.getConfigName().name()) {
+        case "EMAIL_CONTACT" -> emailContact = config.getConfigValue();
+        case "OFFICE_CONTACT" -> phoneContact = config.getConfigValue();
+      }
     }
 
-    /**
-     * Builds HTML content for the enrollment update email.
-     *
-     * @param parent the parent entity receiving the notification
-     * @param student the student entity associated with the enrollment
-     * @param updateDto the enrollment update data
-     * @param statusEsp the process status in Spanish
-     * @param emailContact the school's contact email
-     * @param phoneContact the school's contact phone number
-     * @return formatted HTML email content
-     */
+    String gradoEsp = switch (enrollment.getGradeToEnroll().name()) {
+      case "FIRST" -> "Primero";
+      case "SECOND" -> "Segundo";
+      case "THIRD" -> "Tercero";
+      case "FOURTH" -> "Cuarto";
+      case "FIFTH" -> "Quinto";
+      case "SIXTH" -> "Sexto";
+      case "SEVENTH" -> "Sétimo";
+      case "EIGHTH" -> "Octavo";
+      case "NINTH" -> "Noveno";
+      case "TENTH" -> "Décimo";
+      default -> enrollment.getGradeToEnroll().name();
+    };
 
-    private String buildUpdateEmailContent(
-            ParentEntity parent, StudentEntity student,
-            EnrollmentUpdateDto updateDto, String statusEsp, String emailContact, String phoneContact
-    ) {
+    String statusEsp = switch (enrollment.getStatus().name()) {
+      case "ACCEPTED" -> "Aceptado";
+      case "REJECTED" -> "Rechazado";
+      case "PENDING" -> "Pendiente";
+      case "ELIGIBLE" -> "Elegible";
+      case "INELIGIBLE" -> "No Elegible";
+      default -> enrollment.getStatus().name();
+    };
 
-        String parentFullName = parent.getParentPerson().getFirstName() + " " +
-                parent.getParentPerson().getFirstSurname() +
-                (parent.getParentPerson().getSecondSurname() != null ?
-                        " " + parent.getParentPerson().getSecondSurname() : "");
+    List<ParentEntity> parents =
+        enrollment.getStudent().getParents().stream().map(ParentsStudentsEntity::getParent)
+            .toList();
 
-        String studentFullName = student.getStudentPerson().getFirstName() + " " +
-                student.getStudentPerson().getFirstSurname() +
-                (student.getStudentPerson().getSecondSurname() != null ?
-                        " " + student.getStudentPerson().getSecondSurname() : "");
+    for (ParentEntity parent : parents) {
+      String decisionMessage = enrollment.getStatus() == ProcessStatus.ACCEPTED ?
+          "<p>¡Felicitaciones! Su hijo/a ha sido <strong>" + statusEsp + "</strong> en el Complejo Educativo CIT.</p>" + "<p>Por favor esté atento a futuras comunicaciones con las instrucciones para completar el proceso de matrícula.</p>" :
+          "<p>Lamentamos informarle que su hijo/a no ha sido aceptado en esta ocasión.</p>" + "<p>Si desea conocer más detalles sobre esta decisión o sobre posibles opciones futuras, no dude en contactarnos.</p>";
 
-        String whatsappStatus = updateDto.whatsappPermission() ? "ACTIVADO" : "DESACTIVADO";
+      String parentFullName =
+          parent.getParentPerson().getFirstName() + " " + parent.getParentPerson()
+              .getFirstSurname() + (parent.getParentPerson().getSecondSurname() != null ?
+              " " + parent.getParentPerson().getSecondSurname() :
+              "");
 
-        return "<html>" +
-                "<head>" +
-                "<style>" +
-                "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" +
-                ".container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }" +
-                "h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }" +
-                "h2 { color: #3498db; }" +
-                ".changes { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }" +
-                ".change-item { margin-bottom: 8px; }" +
-                ".footer { margin-top: 20px; font-size: 14px; color: #7f8c8d; }" +
-                "</style>" +
-                "</head>" +
-                "<body>" +
-                "<div class='container'>" +
-                "<h1>Actualización de Inscripción</h1>" +
-                "<p>Estimado/a <strong>" + parentFullName + "</strong>,</p>" +
-                "<p>Le informamos que se han realizado modificaciones en la inscripción de su hijo/a <strong>" + studentFullName + "</strong> en el Complejo Educativo CIT.</p>" +
+      String studentFullName =
+          enrollment.getStudent().getStudentPerson().getFirstName() + " " + enrollment.getStudent()
+              .getStudentPerson().getFirstSurname() + (enrollment.getStudent().getStudentPerson()
+              .getSecondSurname() != null ?
+              " " + enrollment.getStudent().getStudentPerson().getSecondSurname() :
+              "");
 
-                "<div class='changes'>" +
-                "<h2>Cambios realizados:</h2>" +
-                "<div class='change-item'><strong>Fecha de Examen:</strong> " + updateDto.examDate() + "</div>" +
-                "<div class='change-item'><strong>Estado del Proceso:</strong> " + statusEsp + "</div>" +
-                "<div class='change-item'><strong>Notificaciones por WhatsApp:</strong> " + whatsappStatus + "</div>" +
-                "</div>" +
+      sendEmail(
+          new EmailConfigDto(parent.getEmail(), "Resultado de Admisión - Complejo Educativo CIT",
+              buildDecisionEmailContent(parentFullName, studentFullName, gradoEsp, statusEsp,
+                  decisionMessage, emailContact, phoneContact, enrollment.getStatus())));
+    }
+  }
 
-                "<p>Si necesitas más información, por favor contáctenos.</p>" +
+  /**
+   * Builds HTML content for the admission decision email.
+   *
+   * @param parentFullName  the full name of the parent/guardian
+   * @param studentFullName the full name of the student
+   * @param gradoEsp        the grade level in Spanish
+   * @param statusEsp       the admission status in Spanish
+   * @param decisionMessage the main decision message content
+   * @param emailContact    the school's contact email
+   * @param phoneContact    the school's contact phone number
+   * @param status          the admission process status
+   * @return formatted HTML email content
+   */
 
-                "<div class='footer'>" +
-                "<p><em>Este es un mensaje automático. Por favor no responda a este correo.</em></p>" +
-                "<p>Para asistencia, contáctenos a: <a href='mailto:" + emailContact + "'>" + emailContact + "</a> o al teléfono: " + phoneContact + "</p>" +
-                "</div>" +
-                "</div>" +
-                "</body>" +
-                "</html>";
+  private String buildDecisionEmailContent(String parentFullName, String studentFullName,
+      String gradoEsp, String statusEsp, String decisionMessage, String emailContact,
+      String phoneContact, ProcessStatus status) {
+    return "<html>" + "<head>" + "<style>" + "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" + ".container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }" + "h1 { color: " + (
+        status == ProcessStatus.ACCEPTED ?
+            "#4CAF50" :
+            "#f44336") + "; border-bottom: 2px solid #eee; padding-bottom: 10px; }" + "h2 { color: #3498db; }" + ".details { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }" + ".detail-item { margin-bottom: 8px; }" + ".footer { margin-top: 20px; font-size: 14px; color: #7f8c8d; }" + "</style>" + "</head>" + "<body>" + "<div class='container'>" + "<h1>Resultado del Proceso de Admisión</h1>" + "<p>Estimado/a <strong>" + parentFullName + "</strong>,</p>" + "<p>El proceso de admisión para su hijo/a en el <strong>Complejo Educativo CIT</strong> ha finalizado.</p>" + decisionMessage +
+
+        "<div class='details'>" + "<h2>Detalles del Proceso:</h2>" + "<div class='detail-item'><strong>Estudiante:</strong> " + studentFullName + "</div>" + "<div class='detail-item'><strong>Grado/Nivel:</strong> " + gradoEsp + "</div>" + "<div class='detail-item'><strong>Estado Final:</strong> " + statusEsp + "</div>" + "</div>" +
+
+        "<div class='footer'>" + "<p><em>Este es un mensaje automático. Por favor no responda a este correo.</em></p>" + "<p>Para asistencia, contáctenos a: <a href='mailto:" + emailContact + "'>" + emailContact + "</a> o al teléfono: " + phoneContact + "</p>" + "</div>" + "</div>" + "</body>" + "</html>";
+  }
+
+  /**
+   * Sends an email using the provided configuration.
+   *
+   * @param emailConfigDto the email configuration data transfer object containing: - recipient
+   *                       email address - email subject - HTML message content
+   * @throws RuntimeException if there's an error creating or sending the email
+   */
+
+  @Override
+  public void sendEmail(EmailConfigDto emailConfigDto) {
+    try {
+      MimeMessage message = mailSender.createMimeMessage();
+      MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+      helper.setTo(emailConfigDto.getRecipient());
+      helper.setSubject(emailConfigDto.getSubject());
+      helper.setText(emailConfigDto.getMessage(), true);
+      mailSender.send(message);
+    } catch (MessagingException e) {
+      throw new RuntimeException("Error al enviar el correo: " + e.getMessage(), e);
+    }
+  }
+
+  public void createWhatsappMessage(EnrollmentDto inscription) {
+    String emailContact = "";
+    String phoneContact = "";
+    String gradoEsp = "";
+
+    for (SystemConfigEntity config : configRepository.getContactInfo()) {
+      switch (config.getConfigName().name()) {
+        case "EMAIL_CONTACT" -> emailContact = config.getConfigValue();
+        case "OFFICE_CONTACT" -> phoneContact = config.getConfigValue();
+      }
     }
 
-    /**
-     * Creates and sends admission decision notifications to parents/guardians.
-     *
-     * @param studentIdNumber the national ID number of the student
-     * @throws RuntimeException if enrollment is not found or email sending fails
-     */
-
-    @Override
-    public void createEmailForAdmissionDecision(String studentIdNumber) {
-        EnrollmentEntity enrollment = enrollmentRepository.findByStudentStudentPersonIdNumber(studentIdNumber)
-                .orElseThrow(() -> new RuntimeException("No se encontró inscripción para el estudiante con cédula: " + studentIdNumber));
-
-        String emailContact = "";
-        String phoneContact = "";
-
-        for (SystemConfigEntity config : configRepository.getContactInfo()) {
-            switch (config.getConfigName().name()) {
-                case "EMAIL_CONTACT" -> emailContact = config.getConfigValue();
-                case "OFFICE_CONTACT" -> phoneContact = config.getConfigValue();
-            }
-        }
-
-        String gradoEsp = switch (enrollment.getGradeToEnroll().name()) {
-            case "FIRST" -> "Primero";
-            case "SECOND" -> "Segundo";
-            case "THIRD" -> "Tercero";
-            case "FOURTH" -> "Cuarto";
-            case "FIFTH" -> "Quinto";
-            case "SIXTH" -> "Sexto";
-            case "SEVENTH" -> "Sétimo";
-            case "EIGHTH" -> "Octavo";
-            case "NINTH" -> "Noveno";
-            case "TENTH" -> "Décimo";
-            default -> enrollment.getGradeToEnroll().name();
-        };
-
-        String statusEsp = switch (enrollment.getStatus().name()) {
-            case "ACCEPTED" -> "Aceptado";
-            case "REJECTED" -> "Rechazado";
-            case "PENDING" -> "Pendiente";
-            case "ELIGIBLE" -> "Elegible";
-            case "INELIGIBLE" -> "No Elegible";
-            default -> enrollment.getStatus().name();
-        };
-
-        List<ParentEntity> parents = enrollment.getStudent().getParents().stream()
-                .map(ParentsStudentsEntity::getParent)
-                .toList();
-
-        for (ParentEntity parent : parents) {
-            String decisionMessage = enrollment.getStatus() == ProcessStatus.ACCEPTED ?
-                    "<p>¡Felicitaciones! Su hijo/a ha sido <strong>" + statusEsp + "</strong> en el Complejo Educativo CIT.</p>" +
-                            "<p>Por favor esté atento a futuras comunicaciones con las instrucciones para completar el proceso de matrícula.</p>" :
-                    "<p>Lamentamos informarle que su hijo/a no ha sido aceptado en esta ocasión.</p>" +
-                            "<p>Si desea conocer más detalles sobre esta decisión o sobre posibles opciones futuras, no dude en contactarnos.</p>";
-
-            String parentFullName = parent.getParentPerson().getFirstName() + " " +
-                    parent.getParentPerson().getFirstSurname() +
-                    (parent.getParentPerson().getSecondSurname() != null ?
-                            " " + parent.getParentPerson().getSecondSurname() : "");
-
-            String studentFullName = enrollment.getStudent().getStudentPerson().getFirstName() + " " +
-                    enrollment.getStudent().getStudentPerson().getFirstSurname() +
-                    (enrollment.getStudent().getStudentPerson().getSecondSurname() != null ?
-                            " " + enrollment.getStudent().getStudentPerson().getSecondSurname() : "");
-
-            sendEmail(
-                    new EmailConfigDto(
-                            parent.getEmail(),
-                            "Resultado de Admisión - Complejo Educativo CIT",
-                            buildDecisionEmailContent(
-                                    parentFullName,
-                                    studentFullName,
-                                    gradoEsp,
-                                    statusEsp,
-                                    decisionMessage,
-                                    emailContact,
-                                    phoneContact,
-                                    enrollment.getStatus()
-                            )
-                    )
-            );
-        }
+    switch (inscription.gradeToEnroll().name()) {
+      case "FIRST" -> gradoEsp = "Primero";
+      case "SECOND" -> gradoEsp = "Segundo";
+      case "THIRD" -> gradoEsp = "Tercero";
+      case "FOURTH" -> gradoEsp = "Cuarto";
+      case "FIFTH" -> gradoEsp = "Quinto";
+      case "SIXTH" -> gradoEsp = "Sexto";
+      case "SEVENTH" -> gradoEsp = "Sétimo";
+      case "EIGHTH" -> gradoEsp = "Octavo";
+      case "NINTH" -> gradoEsp = "Noveno";
+      case "TENTH" -> gradoEsp = "Décimo";
+      default -> gradoEsp = String.valueOf(inscription.gradeToEnroll());
     }
 
-    /**
-     * Builds HTML content for the admission decision email.
-     *
-     * @param parentFullName the full name of the parent/guardian
-     * @param studentFullName the full name of the student
-     * @param gradoEsp the grade level in Spanish
-     * @param statusEsp the admission status in Spanish
-     * @param decisionMessage the main decision message content
-     * @param emailContact the school's contact email
-     * @param phoneContact the school's contact phone number
-     * @param status the admission process status
-     * @return formatted HTML email content
-     */
-
-    private String buildDecisionEmailContent(
-            String parentFullName, String studentFullName,
-            String gradoEsp, String statusEsp, String decisionMessage,
-            String emailContact, String phoneContact, ProcessStatus status
-    ) {
-        return "<html>" +
-                "<head>" +
-                "<style>" +
-                "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" +
-                ".container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }" +
-                "h1 { color: " + (status == ProcessStatus.ACCEPTED ? "#4CAF50" : "#f44336") + "; border-bottom: 2px solid #eee; padding-bottom: 10px; }" +
-                "h2 { color: #3498db; }" +
-                ".details { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }" +
-                ".detail-item { margin-bottom: 8px; }" +
-                ".footer { margin-top: 20px; font-size: 14px; color: #7f8c8d; }" +
-                "</style>" +
-                "</head>" +
-                "<body>" +
-                "<div class='container'>" +
-                "<h1>Resultado del Proceso de Admisión</h1>" +
-                "<p>Estimado/a <strong>" + parentFullName + "</strong>,</p>" +
-                "<p>El proceso de admisión para su hijo/a en el <strong>Complejo Educativo CIT</strong> ha finalizado.</p>" +
-                decisionMessage +
-
-                "<div class='details'>" +
-                "<h2>Detalles del Proceso:</h2>" +
-                "<div class='detail-item'><strong>Estudiante:</strong> " + studentFullName + "</div>" +
-                "<div class='detail-item'><strong>Grado/Nivel:</strong> " + gradoEsp + "</div>" +
-                "<div class='detail-item'><strong>Estado Final:</strong> " + statusEsp + "</div>" +
-                "</div>" +
-
-                "<div class='footer'>" +
-                "<p><em>Este es un mensaje automático. Por favor no responda a este correo.</em></p>" +
-                "<p>Para asistencia, contáctenos a: <a href='mailto:" + emailContact + "'>" + emailContact + "</a> o al teléfono: " + phoneContact + "</p>" +
-                "</div>" +
-                "</div>" +
-                "</body>" +
-                "</html>";
+    for (ParentDto parent : inscription.student().parents()) {
+      WhatsappConfigDto whatsappConfigDto = new WhatsappConfigDto();
+      whatsappConfigDto.setRecipient(parent.phoneNumber());
+      whatsappConfigDto.setMessage("""
+          📢 *Confirmación de Registro - Complejo Educativo CIT*
+          
+          Estimado/a %s %s %s
+          
+          Nos alegra informarle que el registro de su hijo/a ha sido exitosamente completado ✅
+          
+          👨‍🎓 *Estudiante:* %s %s %s
+          📚 *Grado/Nivel:* %s
+          📅 *Fecha de Examen:* %s
+          
+          Para más detalles, puede comunicarse con nuestra administración:
+          📧 %s
+          📞 %s
+          
+          *¡Gracias por confiar en nosotros!* 🌟
+          """.formatted(parent.person().firstName(), parent.person().firstSurname(),
+          parent.person().secondSurname(), inscription.student().person().firstName(),
+          inscription.student().person().firstSurname(),
+          inscription.student().person().secondSurname(), gradoEsp, inscription.examDate(),
+          emailContact, phoneContact));
+      sendWhatsAppMessage(whatsappConfigDto);
     }
-
-    /**
-     * Sends an email using the provided configuration.
-     *
-     * @param emailConfigDto the email configuration data transfer object containing:
-     *                       - recipient email address
-     *                       - email subject
-     *                       - HTML message content
-     * @throws RuntimeException if there's an error creating or sending the email
-     */
-
-    @Override
-    public void sendEmail(EmailConfigDto emailConfigDto) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(emailConfigDto.getRecipient());
-            helper.setSubject(emailConfigDto.getSubject());
-            helper.setText(emailConfigDto.getMessage(), true);
-            mailSender.send(message);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Error al enviar el correo: " + e.getMessage(), e);
-        }
-    }
-
-    public void createWhatsappMessage(EnrollmentDto inscription) {
-        String emailContact = "";
-        String phoneContact = "";
-        String gradoEsp = "";
-
-        for (SystemConfigEntity config : configRepository.getContactInfo()) {
-            switch (config.getConfigName().name()) {
-                case "EMAIL_CONTACT" -> emailContact = config.getConfigValue();
-                case "OFFICE_CONTACT" -> phoneContact = config.getConfigValue();
-            }
-        }
-
-        switch (inscription.gradeToEnroll().name()) {
-            case "FIRST" -> gradoEsp = "Primero";
-            case "SECOND" -> gradoEsp = "Segundo";
-            case "THIRD" -> gradoEsp = "Tercero";
-            case "FOURTH" -> gradoEsp = "Cuarto";
-            case "FIFTH" -> gradoEsp = "Quinto";
-            case "SIXTH" -> gradoEsp = "Sexto";
-            case "SEVENTH" -> gradoEsp = "Sétimo";
-            case "EIGHTH" -> gradoEsp = "Octavo";
-            case "NINTH" -> gradoEsp = "Noveno";
-            case "TENTH" -> gradoEsp = "Décimo";
-            default -> gradoEsp = String.valueOf(inscription.gradeToEnroll());
-        }
-
-        for (ParentDto parent : inscription.student().parents()) {
-            WhatsappConfigDto whatsappConfigDto = new WhatsappConfigDto();
-            whatsappConfigDto.setRecipient(parent.phoneNumber());
-            whatsappConfigDto.setMessage("""
-                    📢 *Confirmación de Registro - Complejo Educativo CIT*
-                              
-                    Estimado/a %s %s %s
-                              
-                    Nos alegra informarle que el registro de su hijo/a ha sido exitosamente completado ✅
-                              
-                    👨‍🎓 *Estudiante:* %s %s %s
-                    📚 *Grado/Nivel:* %s
-                    📅 *Fecha de Examen:* %s
-                              
-                    Para más detalles, puede comunicarse con nuestra administración:
-                    📧 %s
-                    📞 %s
-                              
-                    *¡Gracias por confiar en nosotros!* 🌟
-                    """.formatted(parent.person().firstName(), parent.person().firstSurname(),
-                    parent.person().secondSurname(), inscription.student().person().firstName(),
-                    inscription.student().person().firstSurname(),
-                    inscription.student().person().secondSurname(), gradoEsp, inscription.examDate(),
-                    emailContact, phoneContact
-            ));
-            sendWhatsAppMessage(whatsappConfigDto);
-        }
-    }
+  }
 
 
-    public void sendWhatsAppMessage(WhatsappConfigDto whatsappConfigDto) {
-        Message.creator(new PhoneNumber("whatsapp:+506" + whatsappConfigDto.getRecipient()),
-                new PhoneNumber(fromWhatsAppNumber), whatsappConfigDto.getMessage()
-        ).create();
-    }
+  public void sendWhatsAppMessage(WhatsappConfigDto whatsappConfigDto) {
+    Message.creator(new PhoneNumber("whatsapp:+506" + whatsappConfigDto.getRecipient()),
+        new PhoneNumber(fromWhatsAppNumber), whatsappConfigDto.getMessage()).create();
+  }
 
 }
