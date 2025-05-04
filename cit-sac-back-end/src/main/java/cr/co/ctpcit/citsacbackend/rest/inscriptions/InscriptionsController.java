@@ -6,6 +6,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
+import cr.co.ctpcit.citsacbackend.logic.services.notifs.NotificationsService;
 import cr.co.ctpcit.citsacbackend.logic.services.storage.StorageService;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.constraints.NotNull;
@@ -31,8 +32,12 @@ import static cr.co.ctpcit.citsacbackend.rest.inscriptions.InscriptionsFileVerif
 @RequestMapping("/api/inscriptions")
 @Validated
 public class InscriptionsController {
+
   private final InscriptionsService inscriptionsService;
+
   private final StorageService storageService;
+
+  private final NotificationsService notificationsService;
 
   /**
    * Get an inscription by id
@@ -142,7 +147,7 @@ public class InscriptionsController {
   public ResponseEntity<String> updateEnrollment(@PathVariable("enrollmentId") String enrollmentId,
       @RequestBody EnrollmentUpdateDto enrollmentUpdate) {
     inscriptionsService.updateEnrollment(enrollmentId, enrollmentUpdate);
-
+    notificationsService.createEmailForEnrollmentUpdate(Long.parseLong(enrollmentId), enrollmentUpdate);
     return ResponseEntity.noContent().build();
   }
 

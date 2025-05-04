@@ -1,0 +1,54 @@
+.modal-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 100%;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.student-info {
+  text-align: left;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 2rem;
+}
+
+
+.student-info h3 {
+  font-size: 1.2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.student-info p {
+  margin: 0.25rem 0; 
+}
+
+
+.result-form .form-group {
+  max-width: 300px; 
+  margin: 0 auto; 
+}
+
+.result-form select {
+  font-size: 0.9rem;
+  padding: 0.5rem; 
+}
