@@ -54,17 +54,17 @@ VALUES ('Costa Rica', 'San José', 'San José', 'Carmen', 'Avenida Central 100',
 
 -- Insert values into tbl_students
 INSERT INTO `tbl_students`
-    (`student_id`, `birth_date`, `previous_school`, `has_accommodations`)
-VALUES (11, '2010-03-12', 'Escuela La Sabana', 0),
-       (12, '2011-05-18', 'Escuela Central', 1),
-       (13, '2010-11-30', 'Escuela Monte Verde', 0),
-       (14, '2009-07-25', 'Escuela El Carmen', 0),
-       (15, '2008-09-16', 'Escuela Nueva Esperanza', 1),
-       (16, '2012-04-21', 'Escuela La Paz', 1),
-       (17, '2013-06-10', 'Escuela Nueva Vida', 0),
-       (18, '2011-09-30', 'Escuela San Isidro', 0),
-       (19, '2009-05-05', 'Escuela Santa Marta', 1),
-       (20, '2008-10-14', 'Escuela San Lucas', 0);
+    (`student_id`, `birth_date`, `previous_school`, `previous_grades`, `has_accommodations`)
+VALUES (11, '2010-03-12', 'Escuela La Sabana',88.75, 0),
+       (12, '2011-05-18', 'Escuela Central',88.75, 1),
+       (13, '2010-11-30', 'Escuela Monte Verde',88.75, 0),
+       (14, '2009-07-25', 'Escuela El Carmen',88.75, 0),
+       (15, '2008-09-16', 'Escuela Nueva Esperanza',88.75, 1),
+       (16, '2012-04-21', 'Escuela La Paz',88.75, 1),
+       (17, '2013-06-10', 'Escuela Nueva Vida',88.75, 0),
+       (18, '2011-09-30', 'Escuela San Isidro',88.75, 0),
+       (19, '2009-05-05', 'Escuela Santa Marta',88.75, 1),
+       (20, '2008-10-14', 'Escuela San Lucas',88.75, 0);
 
 -- Insert values into tbl_parents_students
 INSERT INTO `tbl_parents_students`
@@ -92,7 +92,7 @@ VALUES ('PENDING', 'TENTH', 'SM', '2024-01-10', 1, 1, 11),
        ('ELIGIBLE', 'THIRD', 'FM', '2024-01-29', 0, 1, 17),
        ('ACCEPTED', 'FIFTH', 'OH', '2024-01-30', 1, 0, 18),
        ('REJECTED', 'SIXTH', 'FD', '2024-01-31', 1, 1, 19),
-       ('INELIGIBLE', 'SEVENTH', 'OT', '2024-02-01', 0, 1, 20);
+       ('ELIGIBLE', 'SEVENTH', 'OT', '2024-02-01', 0, 1, 20);
 
 -- Insert values into tbl_documents
 INSERT INTO `tbl_documents`
@@ -109,10 +109,10 @@ VALUES ('Documento de Notas', 'OT', 'grades_200123654_856332114336.pdf', 1),
        ('Documento de Notas', 'OT', 'file_example.pdf', 10);
 
 -- Insert value into tbl_examperiods
-INSERT INTO `tbl_exam_periods` (`start_date`, `end_date`)
-VALUES ('2025-01-01', '2025-03-15'),
-       ('2025-04-01', '2025-06-15'),
-       ('2025-07-01', '2025-09-15');
+INSERT INTO `tbl_exam_periods` (`exam_period_id`, `start_date`, `end_date`)
+VALUES (1,'2025-01-01', '2025-03-15'),
+       (2,'2025-04-01', '2025-06-15'),
+       (3, '2025-07-01', '2025-09-15');
 
 -- Insert value into tbl_examdays
 INSERT INTO `tbl_exam_days` (exam_period_id, exam_day, start_time)
@@ -353,12 +353,12 @@ VALUES (1, 10, '2025-03-25 17:54:12', 'ACA', '{
        (2, 10, '2025-03-25 17:54:12', 'DAI', '{
          "exam": "[{\\"id\\":1,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Cómo te sientes el día de hoy?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Bien aunque un poco cansado.\\"},{\\"id\\":3,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Qué tipo de música prefieres?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"El rock es mi favorito.\\"},{\\"id\\":5,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Te gusta practicar deportes?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Sí, me gusta mucho el fútbol.\\"},{\\"id\\":7,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Prefieres la playa o la montaña?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Prefiero la montaña.\\"},{\\"id\\":9,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Cuál es tu película favorita?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Mi película favorita es El Padrino.\\"}]"
        }');
-
+       
 INSERT INTO `tbl_academic_exams` (`exam_id`, `grade`)
 VALUES (1, 100.00); -- Insert value into tbl_academic_exams
 
-INSERT INTO `tbl_dai_exams` (`exam_id`)
-VALUES (2); -- Insert value into tbl_dai_exams
+INSERT INTO `tbl_dai_exams` (`exam_id`,`comment`,`recommendation`,`reviewed`)
+VALUES (2,'Buen desempeño','ADMIT', 1); -- Insert value into tbl_dai_exams
 
 -- Insert value into tbl_system_config
 INSERT INTO `tbl_system_config` (`config_name`, `config_value`)
@@ -383,18 +383,10 @@ VALUES ('sysadmin@cit.co.cr', 'Sysadmin', '$2a$10$x2PgQcVgktD6SS6wtJonwOlWpnLj24
         'TEACHER'); -- Password Rocío: 'Mate8520$'
 
 
+---
 
 --- Data for testing reports (BI)
 -- api/reports/exam-attendance?startDate=2025-01-01&endDate=2025-01-31&grade=FIRST,SECOND&sector=Primaria
-
--- 1) Personas (serán también estudiantes)
-INSERT INTO tbl_Persons (person_id, first_name, first_surname, second_surname, id_type, id_number)
-VALUES
-    (1, 'Alice',  'Smith',    'Johnson', 'CC', '1001'),
-    (2, 'Bob',    'Brown',    NULL,      'CC', '1002'),
-    (3, 'Carlos', 'Garcia',   'Lopez',   'CC', '1003'),
-    (4, 'Diana',  'Mendez',   'Rodriguez','CC','1004'),
-    (5, 'Elena',  'Pérez',    'Gómez',   'CC', '1005');
 
 -- 2) Estudiantes (student_id = person_id)
 INSERT INTO tbl_Students (student_id, birth_date, previous_school, previous_grades, has_accommodations)
@@ -405,24 +397,6 @@ VALUES
     (4, '2013-02-10', 'Escuela C', 88.75, 0),
     (5, '2015-03-30', 'Escuela D', 80.25, 0);
 
--- 3) Inscripciones (enrollment_date es la fecha de registro; exam_date la cita)
-INSERT INTO tbl_Enrollments (
-    enrollment_id, student_id, status,           enrollment_date,       grade_to_enroll, known_through, exam_date,          consent_given, whatsapp_notification
-) VALUES
-      (1,             1,          'ELIGIBLE',       '2025-01-05 09:00:00', 'FIRST',         'SM',           '2025-01-10',        1,             1),
-      (2,             2,          'ELIGIBLE',       '2025-01-05 10:30:00', 'SECOND',        'OH',           '2025-01-11',        1,             0),
-      (3,             3,          'ELIGIBLE',       '2025-01-12 08:45:00', 'FIRST',         'FD',           '2025-01-15',        1,             1),
-      (4,             4,          'ELIGIBLE',       '2025-02-03 09:30:00', 'TENTH',         'FM',           '2025-02-07',        1,             1),
-      (5,             5,          'ELIGIBLE',       '2025-01-05 11:15:00', 'FIRST',         'FM',           '2025-01-12',        1,             0);
-
--- 4) Exámenes (cualquiera de tipo ACA/DAI/ENG cuenta como “asistencia”)
-INSERT INTO tbl_Exams (exam_id, enrollment_id, exam_date,           exam_type, responses)
-VALUES
-    (1,       1,             '2025-01-10 09:00:00', 'ACA',     NULL),
-    (2,       2,             '2025-01-11 10:30:00', 'DAI',     NULL),
-    (3,       3,             '2025-01-15 08:45:00', 'ACA',     NULL),
-    (4,       4,             '2025-02-07 09:30:00', 'ACA',     NULL),
-    (5,       5,             '2025-01-12 11:15:00', 'ACA',     NULL);
 
 
 --
