@@ -1,8 +1,8 @@
-import React from 'react';
-import { TextField, Checkbox, FormControlLabel } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import React from 'react'
+import { TextField, Checkbox, FormControlLabel } from '@mui/material'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 
 const DateApplicationSection = ({
   allYear,
@@ -13,45 +13,45 @@ const DateApplicationSection = ({
   onEndDateChange
 }) => {
   return (
-    <div className="date-application">
-      <h2>Fechas de Aplicación <span className="required">*</span></h2>
-      
+    <div className='date-application'>
+      <h2>Fechas de Aplicación <span className='required'>*</span></h2>
+
       <FormControlLabel
         control={
           <Checkbox
             checked={allYear}
             onChange={onAllYearChange}
-            color="primary"
+            color='primary'
           />
         }
-        label="Todo el año"
+        label='Todo el año'
       />
-      
+
       {!allYear && (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <div className="date-range" style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+          <div className='date-range' style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
             <DatePicker
-              label="Fecha de inicio"
+              label='Fecha de inicio'
               value={startDate}
               onChange={onStartDateChange}
               renderInput={(params) => (
-                <TextField 
-                  {...params} 
-                  fullWidth 
-                  size="small" 
+                <TextField
+                  {...params}
+                  fullWidth
+                  size='small'
                 />
               )}
             />
-            
+
             <DatePicker
-              label="Fecha de fin"
+              label='Fecha de fin'
               value={endDate}
               onChange={onEndDateChange}
               renderInput={(params) => (
-                <TextField 
-                  {...params} 
-                  fullWidth 
-                  size="small" 
+                <TextField
+                  {...params}
+                  fullWidth
+                  size='small'
                 />
               )}
               minDate={startDate}
@@ -60,7 +60,7 @@ const DateApplicationSection = ({
         </LocalizationProvider>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default DateApplicationSection;
+export default DateApplicationSection

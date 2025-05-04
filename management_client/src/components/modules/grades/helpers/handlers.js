@@ -170,7 +170,7 @@ export const handleSearchAcademicGrades = async (
     const response = await axiosInstance.get(url)
     const data = response.data
     setGrades(data || [])
-    //setSuccessMessage?.('Resultados de búsqueda cargados correctamente')
+    // setSuccessMessage?.('Resultados de búsqueda cargados correctamente')
   } catch (error) {
     console.error('Error al buscar calificaciones:', error)
 
@@ -219,7 +219,7 @@ export const handleSearchDAIGrades = async (
     const response = await axiosInstance.get(url)
     const data = response.data
     setGrades(data || [])
-    //setSuccessMessage?.('Resultados de búsqueda cargados correctamente')
+    // setSuccessMessage?.('Resultados de búsqueda cargados correctamente')
   } catch (error) {
     console.error('Error al buscar calificaciones:', error)
 
@@ -244,12 +244,6 @@ export const handleSearchDAIGrades = async (
     setLoading?.(false)
   }
 }
-
-
-
-
-
-
 
 // Handlers that Save Data from API
 export const handleSaveDAIComment = (

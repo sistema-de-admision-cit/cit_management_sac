@@ -1,25 +1,25 @@
-import { useState, useEffect } from 'react';
-import SectionLayout from '../../../../core/global/molecules/SectionLayout';
-import '../../../../../assets/styles/global/view.css';
-import '../../../../../assets/styles/sytem_config/exam_schedule_configurator.css';
-import Button from '../../../../core/global/atoms/Button';
-import ApplicationDaysSelector from '../molecules/ApplicationDaysSelector';
-import HoursSection from '../organisms/HoursSection';
-import useMessages from '../../../../core/global/hooks/useMessages';
-import useFormState from '../../../../core/global/hooks/useFormState';
+import { useState, useEffect } from 'react'
+import SectionLayout from '../../../../core/global/molecules/SectionLayout'
+import '../../../../../assets/styles/global/view.css'
+import '../../../../../assets/styles/sytem_config/exam_schedule_configurator.css'
+import Button from '../../../../core/global/atoms/Button'
+import ApplicationDaysSelector from '../molecules/ApplicationDaysSelector'
+import HoursSection from '../organisms/HoursSection'
+import useMessages from '../../../../core/global/hooks/useMessages'
+import useFormState from '../../../../core/global/hooks/useFormState'
 import ExamPeriodsTable from '../organisms/ExamPeriodsTable'
-import { 
-  handleSubmit, 
-  onStartDateChange, 
-  onEndDateChange, 
-  isFormValid, 
-  handleCheckboxChange, handleGetAllExamPeriods, onDeleteSelectedItems 
-} from '../handlers/handlers';
-import DateApplicationSection from '../organisms/DateApplicationSection';
+import {
+  handleSubmit,
+  onStartDateChange,
+  onEndDateChange,
+  isFormValid,
+  handleCheckboxChange, handleGetAllExamPeriods, onDeleteSelectedItems
+} from '../handlers/handlers'
+import DateApplicationSection from '../organisms/DateApplicationSection'
 
 const ExamScheduleConfiguratorView = () => {
-  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages();
-  const [loading, setLoading] = useState(false);
+  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
+  const [loading, setLoading] = useState(false)
   const [examPeriods, setExamPeriods] = useState([])
 
   const { formData: formValues, setFormData: setFormValues } = useFormState({
@@ -28,11 +28,11 @@ const ExamScheduleConfiguratorView = () => {
     endDate: new Date(),
     applicationDays: [],
     startTime: ''
-  });
+  })
 
   useEffect(() =>
     handleGetAllExamPeriods(setExamPeriods, setLoading, setErrorMessage, setSuccessMessage)
-    , [])
+  , [])
 
   const handleChange = (field, value) => {
     setFormValues({
@@ -43,9 +43,9 @@ const ExamScheduleConfiguratorView = () => {
 
   const handleFormSubmit = async () => {
     try {
-      await handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage);
+      await handleSubmit(formValues, setLoading, setErrorMessage, setSuccessMessage)
     } catch (error) {
-      console.error('Error en handleFormSubmit:', error);
+      console.error('Error en handleFormSubmit:', error)
     }
   }
 
@@ -67,15 +67,15 @@ const ExamScheduleConfiguratorView = () => {
             endDate={formValues.endDate}
             onAllYearChange={(e) => handleChange('allYear', e.target.checked)}
             onStartDateChange={(date) => onStartDateChange(
-              date, 
-              formValues, 
-              setErrorMessage, 
+              date,
+              formValues,
+              setErrorMessage,
               (field, value) => handleChange(field, value)
             )}
             onEndDateChange={(date) => onEndDateChange(
-              date, 
-              formValues, 
-              setErrorMessage, 
+              date,
+              formValues,
+              setErrorMessage,
               (field, value) => handleChange(field, value)
             )}
           />
@@ -83,9 +83,9 @@ const ExamScheduleConfiguratorView = () => {
           {/* Días de Aplicacion */}
           <div className='application-days'>
             <h2>Días de Aplicación <span className='required'>*</span></h2>
-            <ApplicationDaysSelector 
-              selectedDays={formValues.applicationDays} 
-              onDayChange={(day) => handleCheckboxChange(day, setFormValues)} 
+            <ApplicationDaysSelector
+              selectedDays={formValues.applicationDays}
+              onDayChange={(day) => handleCheckboxChange(day, setFormValues)}
             />
           </div>
 
@@ -118,7 +118,7 @@ const ExamScheduleConfiguratorView = () => {
       </div>
       {renderMessages()}
     </SectionLayout>
-  );
-};
+  )
+}
 
-export default ExamScheduleConfiguratorView;
+export default ExamScheduleConfiguratorView
