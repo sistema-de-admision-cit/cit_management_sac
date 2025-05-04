@@ -1,0 +1,35 @@
+/* Card around each chart */
+.report-card {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+/* Container for the whole view */
+.graphical-reports-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Filters panel layout */
+.filters-panel {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .filters-panel {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Chart container spacing */
+.attendance-chart-container,
+.exam-pie-chart-container {
+  margin-top: 1rem;
+}
