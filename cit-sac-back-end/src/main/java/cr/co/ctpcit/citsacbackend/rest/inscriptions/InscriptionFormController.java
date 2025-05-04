@@ -51,7 +51,7 @@ public class InscriptionFormController {
 
     EnrollmentDto enrolled = inscriptionsService.addInscription(inscription, grades, letter);
     notificationsService.createEmailForInscription(inscription);
-    notificationsService.createWhatsappMessage(inscription);
+    //notificationsService.createWhatsappMessage(inscription);
 
     //Return created status and location header
     return ResponseEntity.created(

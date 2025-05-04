@@ -25,6 +25,7 @@ import QuestionConfiguratorView from '../../../modules/system_configuration/exam
 import ResultsMenuPageView from '../../../modules/results/menu/views/ResultsMenuPageView.jsx'
 import ExamScoreManagementView from '../../../modules/results/load_results/view/ExamScoreManagementView.jsx'
 // import GradesManagmentView from '../../../modules/results/grades_managment/view/GradesManagementView.jsx'
+import AnalyzeResultsView from '../../../modules/results/analyze_results/view/AnalyzeResultsView.jsx'
 
 // reports views
 import ReportsMenuPageView from '../../../modules/reports/menu/views/ReportsMenuPageView.jsx'
@@ -38,12 +39,6 @@ import DashboardView from '../../../modules/dashboard/menu/view/DashboardMenuPag
 
 // componente por defecto para las rutas padre
 // feature temporal
-// TODO: implementar un componente para cada padre
-const DefaultComponent = ({ label }) => (
-  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-    Componente por defecto para {label}
-  </div>
-)
 
 const menuConfig = [
   {
@@ -65,7 +60,7 @@ const menuConfig = [
         parentComponent: EnrollmentsMenuPageView,
         roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN],
         description: 'Módulo para gestionar el proceso de inscripción de estudiantes.',
-        imagePath: '/images/inscripciones.JPG',
+        imagePath: '/images/inscripciones.PNG',
         subItems: [
           {
             key: 'visit-requests',
@@ -73,7 +68,7 @@ const menuConfig = [
             path: '/inscripciones/consultar',
             component: EnrollmentManagementView,
             description: 'Consultar y revisar las inscripciones existentes.',
-            imagePath: '/images/inscripciones.JPG'
+            imagePath: '/images/inscripciones.PNG'
           }
         ]
       },
@@ -84,7 +79,7 @@ const menuConfig = [
         parentComponent: ConfigurationMenuPageView,
         roleRequired: [ROLE_SUPERADMIN],
         description: 'Configuraciones generales del sistema.',
-        imagePath: '/images/configuracion.JPG',
+        imagePath: '/images/configuracion.PNG',
         subItems: [
           {
             key: 'appointment-settings',
@@ -92,7 +87,7 @@ const menuConfig = [
             path: '/configuracion/citas',
             component: ExamScheduleConfiguratorView,
             description: 'Configurar horarios y citas para exámenes y reuniones.',
-            imagePath: '/images/configuracion_2.JPG'
+            imagePath: '/images/configuracion_2.PNG'
           },
           {
             key: 'percentages-settings',
@@ -100,7 +95,7 @@ const menuConfig = [
             path: '/configuracion/porcentajes',
             component: PercentagesConfiguratorView,
             description: 'Definir porcentajes de evaluación y criterios.',
-            imagePath: '/images/configuracion_2.JPG'
+            imagePath: '/images/configuracion_2.PNG'
           },
           {
             key: 'questions-settings',
@@ -108,7 +103,7 @@ const menuConfig = [
             path: '/configuracion/preguntas',
             component: QuestionConfiguratorView,
             description: 'Definir la cantidad de preguntas en los exámenes.',
-            imagePath: '/images/configuracion_2.JPG'
+            imagePath: '/images/configuracion_2.PNG'
           },
           {
             key: 'notifications-settings',
@@ -116,7 +111,7 @@ const menuConfig = [
             path: '/configuracion/notificaciones',
             component: NotificationSettingsView,
             description: 'Configurar las notificaciones automáticas del sistema.',
-            imagePath: '/images/configuracion_2.JPG'
+            imagePath: '/images/configuracion_2.PNG'
           },
           {
             key: 'manage-access',
@@ -124,7 +119,7 @@ const menuConfig = [
             path: '/configuracion/accesos',
             component: AccessManegementView,
             description: 'Gestionar accesos y permisos de los usuarios en el sistema.',
-            imagePath: '/images/configuracion_2.JPG'
+            imagePath: '/images/configuracion_2.PNG'
           }
         ]
       },
@@ -135,7 +130,7 @@ const menuConfig = [
         parentComponent: ExamMenuPageView,
         roleRequired: [ROLE_SUPERADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Gestión y configuración de exámenes y preguntas.',
-        imagePath: '/images/examenes.JPG',
+        imagePath: '/images/examenes.PNG',
         subItems: [
           {
             key: 'add-question',
@@ -143,7 +138,7 @@ const menuConfig = [
             path: '/examenes/ingresar',
             component: AddQuestionView,
             description: 'Agregar nuevas preguntas a los exámenes.',
-            imagePath: '/images/examenes_2.JPG'
+            imagePath: '/images/examenes_2.PNG'
           },
           {
             key: 'modify-question',
@@ -151,7 +146,7 @@ const menuConfig = [
             path: '/examenes/modificar',
             component: ModifyQuestionView,
             description: 'Modificar preguntas existentes en los exámenes.',
-            imagePath: '/images/examenes_2.JPG'
+            imagePath: '/images/examenes_2.PNG'
           },
           {
             key: 'delete-question',
@@ -159,7 +154,7 @@ const menuConfig = [
             path: '/examenes/eliminar',
             component: DeleteQuestionView,
             description: 'Eliminar preguntas de los exámenes.',
-            imagePath: '/images/examenes_2.JPG'
+            imagePath: '/images/examenes_2.PNG'
           }
         ]
       },
@@ -170,7 +165,7 @@ const menuConfig = [
         parentComponent: ResultsMenuPageView,
         roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN, ROLE_TEACHER, ROLE_PSYCHOLOGIST],
         description: 'Gestión y análisis de los resultados de los exámenes.',
-        imagePath: '/images/analisis.JPG',
+        imagePath: '/images/analisis.PNG',
         subItems: [
           {
             key: 'load-results',
@@ -178,7 +173,7 @@ const menuConfig = [
             path: '/resultados/cargar',
             component: ExamScoreManagementView,
             description: 'Cargar y registrar las notas obtenidas.',
-            imagePath: '/images/analisis_2.JPG'
+            imagePath: '/images/analisis_2.PNG'
           },
           {
             key: 'academic-exam',
@@ -186,7 +181,7 @@ const menuConfig = [
             path: '/resultados/academicos',
             component: AcademicManagementView,
             description: 'Ver notas de los examenes academicos.',
-            imagePath: '/images/examenes_2.JPG'
+            imagePath: '/images/examenes_2.PNG'
           },
           {
             key: 'dai-exam',
@@ -194,15 +189,15 @@ const menuConfig = [
             path: '/resultados/dai',
             component: DaiGradesManagementView,
             description: 'Ver notas de los examenes DAI.',
-            imagePath: '/images/examenes_2.JPG'
+            imagePath: '/images/examenes_2.PNG'
           },
           {
             key: 'notify-results',
             label: 'Notificar Resultados',
             path: '/resultados/notificar',
-            component: DefaultComponent,
+            component: AnalyzeResultsView,
             description: 'Notificar a los usuarios sobre los resultados obtenidos.',
-            imagePath: '/images/analisis_2.JPG'
+            imagePath: '/images/analisis_2.PNG'
           }
         ]
       },
@@ -213,7 +208,7 @@ const menuConfig = [
         parentComponent: ReportsMenuPageView,
         roleRequired: [ROLE_SUPERADMIN, ROLE_ADMIN],
         description: 'Generar y visualizar reportes del sistema.',
-        imagePath: '/images/reporte.JPG',
+        imagePath: '/images/reporte.PNG',
         subItems: [
           {
             key: 'graphical-reports',
@@ -221,7 +216,7 @@ const menuConfig = [
             path: '/reportes/graficos',
             component: GraphicalReportsView,
             description: 'Visualizar reportes en formato gráfico.',
-            imagePath: '/images/reporte_2.JPG'
+            imagePath: '/images/reporte_2.PNG'
           },
           {
             key: 'pdf-reports',
@@ -229,7 +224,7 @@ const menuConfig = [
             path: '/reportes/pdf',
             component: ReportsView,
             description: 'Generar reportes en formatos PDF y CSV.',
-            imagePath: '/images/reporte_2.JPG'
+            imagePath: '/images/reporte_2.PNG'
           }
         ]
       }

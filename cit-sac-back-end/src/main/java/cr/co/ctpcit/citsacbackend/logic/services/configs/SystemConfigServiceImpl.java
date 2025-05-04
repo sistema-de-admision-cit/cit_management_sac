@@ -63,22 +63,22 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   @PostConstruct
   public void loadConfigFromDB() {
     systemConfigRepository.findAll()
-        .forEach(config -> cache.put(config.getConfigName().name(), config));
+            .forEach(config -> cache.put(config.getConfigName().name(), config));
 
     if (!cache.containsKey(Configurations.WHATSAPP_API_KEY.name())) {
       String whatsappApiKey = encryptionUtil.encrypt("WhatsappApiKeyDeEjemplo");
       SystemConfigEntity config =
-          new SystemConfigEntity(null, Configurations.WHATSAPP_API_KEY, whatsappApiKey);
+              new SystemConfigEntity(null, Configurations.WHATSAPP_API_KEY, whatsappApiKey);
       systemConfigRepository.save(config);
       cache.put(Configurations.WHATSAPP_API_KEY.name(), config);
     }
 
     if (!cache.containsKey(Configurations.EMAIL_PASSWORD.name())) {
-      String emailPassword = encryptionUtil.encrypt("EmailPasswordDeEjemplo");
+      String emailPassword = encryptionUtil.encrypt("qipy hnvl cliv slqy");
       SystemConfigEntity config =
-          new SystemConfigEntity(null, Configurations.EMAIL_PASSWORD, emailPassword);
+              new SystemConfigEntity(null, Configurations.EMAIL_PASSWORD, emailPassword);
       systemConfigRepository.save(config);
-        cache.put(Configurations.EMAIL_PASSWORD.name(), config);
+      cache.put(Configurations.EMAIL_PASSWORD.name(), config);
     }
   }
 
@@ -91,7 +91,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   @Override
   public List<SystemConfigDto> getQuestionsQuantity() {
     return getConfigList(Configurations.DAI_EXAM_QUESTIONS_QUANTITY,
-        Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY);
+            Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY);
   }
 
   /**
@@ -106,16 +106,16 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
     if (daiQuestionsQuantity < 0 || academicQuestionsQuantity < 0) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          "La cantidad de preguntas debe ser mayor o igual a 0");
+              "La cantidad de preguntas debe ser mayor o igual a 0");
     }
 
     //Update DAI_EXAM_QUESTIONS_QUANTITY
     saveConfiguration(Configurations.DAI_EXAM_QUESTIONS_QUANTITY,
-        String.valueOf(daiQuestionsQuantity), false);
+            String.valueOf(daiQuestionsQuantity), false);
 
     //Update ACADEMIC_EXAM_QUESTIONS_QUANTITY
     saveConfiguration(Configurations.ACADEMIC_EXAM_QUESTIONS_QUANTITY,
-        String.valueOf(academicQuestionsQuantity), false);
+            String.valueOf(academicQuestionsQuantity), false);
 
   }
 
@@ -128,7 +128,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   @Override
   public List<SystemConfigDto> getProcessWeights() {
     return getConfigList(Configurations.PREV_GRADES_WEIGHT, Configurations.ACADEMIC_WEIGHT,
-        Configurations.ENGLISH_WEIGHT);
+            Configurations.ENGLISH_WEIGHT);
   }
 
   /**
@@ -166,9 +166,9 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   @Override
   public List<SystemConfigDto> getContactInfo() {
     return getConfigList(Configurations.EMAIL_CONTACT, Configurations.EMAIL_NOTIFICATION_CONTACT,
-        Configurations.WHATSAPP_CONTACT, Configurations.OFFICE_CONTACT,
-        Configurations.INSTAGRAM_CONTACT, Configurations.FACEBOOK_CONTACT,
-        Configurations.EMAIL_PASSWORD, Configurations.WHATSAPP_API_KEY);
+            Configurations.WHATSAPP_CONTACT, Configurations.OFFICE_CONTACT,
+            Configurations.INSTAGRAM_CONTACT, Configurations.FACEBOOK_CONTACT,
+            Configurations.EMAIL_PASSWORD, Configurations.WHATSAPP_API_KEY);
   }
 
   /**
@@ -184,29 +184,29 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
     //Update EMAIL_NOTIFICATIONS_CONTACT
     saveConfiguration(Configurations.EMAIL_NOTIFICATION_CONTACT,
-        contactInfoConfigsDto.emailNotificationsContact(), false);
+            contactInfoConfigsDto.emailNotificationsContact(), false);
 
     //Update WHATSAPP_CONTACT
     saveConfiguration(Configurations.WHATSAPP_CONTACT, contactInfoConfigsDto.whatsappContact(),
-        false);
+            false);
 
     //Update OFFICE_CONTACT
     saveConfiguration(Configurations.OFFICE_CONTACT, contactInfoConfigsDto.officeContact(), false);
 
     //Update INSTAGRAM_CONTACT
     saveConfiguration(Configurations.INSTAGRAM_CONTACT, contactInfoConfigsDto.instagramContact(),
-        false);
+            false);
 
     //Update FACEBOOK_CONTACT
     saveConfiguration(Configurations.FACEBOOK_CONTACT, contactInfoConfigsDto.facebookContact(),
-        false);
+            false);
 
     //Update EMAIL_PASSWORD (sensitive)
     saveConfiguration(Configurations.EMAIL_PASSWORD, contactInfoConfigsDto.emailPassword(), true);
 
     //Update WHATSAPP_API_KEY (sensitive)
     saveConfiguration(Configurations.WHATSAPP_API_KEY, contactInfoConfigsDto.whatsappApiKey(),
-        true);
+            true);
   }
 
   /**
@@ -219,8 +219,8 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   @Override
   public ExamPeriodDto getExamPeriod(Long id) {
     return ExamPeriodMapper.toDto(examPeriodRepository.findById(id).orElseThrow(
-        () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-            "Periodo de exámenes no encontrado")));
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Periodo de exámenes no encontrado")));
   }
 
   /**
@@ -257,17 +257,17 @@ public class SystemConfigServiceImpl implements SystemConfigService {
   public void createExamPeriod(ExamPeriodDto examPeriodDto) {
     //Validate if the exam period already exists
     if (examPeriodRepository.existsByStartDateAndEndDate(examPeriodDto.startDate(),
-        examPeriodDto.endDate())) {
+            examPeriodDto.endDate())) {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "El periodo de exámenes ya existe");
     }
 
     //Validate if the period overlap another period
     List<ExamPeriodEntity> periods =
-        examPeriodRepository.findByStartDateBetweenOrEndDateBetween(examPeriodDto.startDate(),
-            examPeriodDto.endDate());
+            examPeriodRepository.findByStartDateBetweenOrEndDateBetween(examPeriodDto.startDate(),
+                    examPeriodDto.endDate());
     if (!periods.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.CONFLICT,
-          "El periodo de exámenes se superpone con otro periodo ya existente");
+              "El periodo de exámenes se superpone con otro periodo ya existente");
     }
 
     //Create the exam period
@@ -312,9 +312,13 @@ public class SystemConfigServiceImpl implements SystemConfigService {
    */
   @Override
   public String getConfigValue(Configurations configName, boolean isSensible) {
-    SystemConfigEntity config = cache.get(configName.name());
+    SystemConfigEntity config = systemConfigRepository.findByConfigName(configName)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Configuración no encontrada: " + configName.name()));
+
     if (isSensible) {
-      return encryptionUtil.decrypt(config.getConfigValue());
+      String decryptedValue = encryptionUtil.decrypt(config.getConfigValue());
+      return decryptedValue;
     }
 
     return config.getConfigValue();
@@ -365,7 +369,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     }
 
     configs =
-        configs.stream().filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
+            configs.stream().filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
 
     return SystemConfigMapper.toDtoList(configs);
   }

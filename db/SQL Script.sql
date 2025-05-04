@@ -48,9 +48,7 @@ CREATE TABLE IF NOT EXISTS `tbl_Parents` (
   CONSTRAINT `FK_Parents_Persons`
     FOREIGN KEY (`parent_id`) 
     REFERENCES `tbl_Persons`(`person_id`)
-    ON DELETE NO ACTION,
-  UNIQUE INDEX `UQ_Parents_PhoneNumber` (`phone_number` ASC),
-  UNIQUE INDEX `UQ_Parents_Email` (`email` ASC))
+    ON DELETE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;

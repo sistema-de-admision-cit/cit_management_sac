@@ -54,17 +54,17 @@ VALUES ('Costa Rica', 'San José', 'San José', 'Carmen', 'Avenida Central 100',
 
 -- Insert values into tbl_students
 INSERT INTO `tbl_students`
-    (`student_id`, `birth_date`, `previous_school`, `has_accommodations`)
-VALUES (11, '2010-03-12', 'Escuela La Sabana', 0),
-       (12, '2011-05-18', 'Escuela Central', 1),
-       (13, '2010-11-30', 'Escuela Monte Verde', 0),
-       (14, '2009-07-25', 'Escuela El Carmen', 0),
-       (15, '2008-09-16', 'Escuela Nueva Esperanza', 1),
-       (16, '2012-04-21', 'Escuela La Paz', 1),
-       (17, '2013-06-10', 'Escuela Nueva Vida', 0),
-       (18, '2011-09-30', 'Escuela San Isidro', 0),
-       (19, '2009-05-05', 'Escuela Santa Marta', 1),
-       (20, '2008-10-14', 'Escuela San Lucas', 0);
+    (`student_id`, `birth_date`, `previous_school`, `previous_grades`, `has_accommodations`)
+VALUES (11, '2010-03-12', 'Escuela La Sabana',88.75, 0),
+       (12, '2011-05-18', 'Escuela Central',88.75, 1),
+       (13, '2010-11-30', 'Escuela Monte Verde',88.75, 0),
+       (14, '2009-07-25', 'Escuela El Carmen',88.75, 0),
+       (15, '2008-09-16', 'Escuela Nueva Esperanza',88.75, 1),
+       (16, '2012-04-21', 'Escuela La Paz',88.75, 1),
+       (17, '2013-06-10', 'Escuela Nueva Vida',88.75, 0),
+       (18, '2011-09-30', 'Escuela San Isidro',88.75, 0),
+       (19, '2009-05-05', 'Escuela Santa Marta',88.75, 1),
+       (20, '2008-10-14', 'Escuela San Lucas',88.75, 0);
 
 -- Insert values into tbl_parents_students
 INSERT INTO `tbl_parents_students`
@@ -92,7 +92,7 @@ VALUES ('PENDING', 'TENTH', 'SM', '2024-01-10', 1, 1, 11),
        ('ELIGIBLE', 'THIRD', 'FM', '2024-01-29', 0, 1, 17),
        ('ACCEPTED', 'FIFTH', 'OH', '2024-01-30', 1, 0, 18),
        ('REJECTED', 'SIXTH', 'FD', '2024-01-31', 1, 1, 19),
-       ('INELIGIBLE', 'SEVENTH', 'OT', '2024-02-01', 0, 1, 20);
+       ('ELIGIBLE', 'SEVENTH', 'OT', '2024-02-01', 0, 1, 20);
 
 -- Insert values into tbl_documents
 INSERT INTO `tbl_documents`
@@ -353,12 +353,12 @@ VALUES (1, 10, '2025-03-25 17:54:12', 'ACA', '{
        (2, 10, '2025-03-25 17:54:12', 'DAI', '{
          "exam": "[{\\"id\\":1,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Cómo te sientes el día de hoy?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Bien aunque un poco cansado.\\"},{\\"id\\":3,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Qué tipo de música prefieres?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"El rock es mi favorito.\\"},{\\"id\\":5,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Te gusta practicar deportes?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Sí, me gusta mucho el fútbol.\\"},{\\"id\\":7,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Prefieres la playa o la montaña?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Prefiero la montaña.\\"},{\\"id\\":9,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Cuál es tu película favorita?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Mi película favorita es El Padrino.\\"}]"
        }');
-
+       
 INSERT INTO `tbl_academic_exams` (`exam_id`, `grade`)
 VALUES (1, 100.00); -- Insert value into tbl_academic_exams
 
-INSERT INTO `tbl_dai_exams` (`exam_id`)
-VALUES (2); -- Insert value into tbl_dai_exams
+INSERT INTO `tbl_dai_exams` (`exam_id`,`comment`,`recommendation`,`reviewed`)
+VALUES (2,'Buen desempeño','ADMIT', 1); -- Insert value into tbl_dai_exams
 
 -- Insert value into tbl_system_config
 INSERT INTO `tbl_system_config` (`config_name`, `config_value`)
@@ -381,3 +381,4 @@ VALUES ('sysadmin@cit.co.cr', 'Sysadmin', '$2a$10$x2PgQcVgktD6SS6wtJonwOlWpnLj24
        ('jorge@cit.co.cr', 'Jorge', '$2a$10$RFPObfy6ro87gLXQalrEiuGehgDsyWfETW4h9h51eg1ZUWlpMnrIG', 'PSYCHOLOGIST'),
        ('rocio@cit.co.cr', 'Rocio', '$2a$10$VjpaCQ9OkiyJYJ28kzGm1OSjKpKE337EdtJgUrq.aACa2JCJHLU7W',
         'TEACHER'); -- Password Rocío: 'Mate8520$'
+
