@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
@@ -82,7 +83,7 @@ public interface InscriptionsService {
    * @param file the document file to be saved
    * @return DTO containing information about the saved document
    */
-  DocumentDto saveDocument(String documentType, Long enrollmentId, MultipartFile file);
+  DocumentDto saveDocument(DocType documentType, Long enrollmentId, MultipartFile file);
   /**
    * Retrieves pending enrollments for a specific student.
    *

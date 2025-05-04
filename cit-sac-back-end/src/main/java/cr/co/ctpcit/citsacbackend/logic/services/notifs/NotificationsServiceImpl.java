@@ -15,6 +15,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.configs.WhatsappConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.ParentDto;
+import jakarta.mail.AuthenticationFailedException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -350,8 +351,12 @@ public class NotificationsServiceImpl implements NotificationsService {
       helper.setSubject(emailConfigDto.getSubject());
       helper.setText(emailConfigDto.getMessage(), true);
       mailSender.send(message);
+    } catch (AuthenticationFailedException e) {
+      System.err.println("Usuario o contraseña incorrectos para el correo electrónico");
     } catch (MessagingException e) {
-      throw new RuntimeException("Error al enviar el correo: " + e.getMessage(), e);
+      // do nothing
+    } catch (Exception e) {
+      // do nothing
     }
   }
 

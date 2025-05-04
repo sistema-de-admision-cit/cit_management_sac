@@ -166,7 +166,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, setErrorMessage, setSucc
                     setFormData({ ...formData, previousGrades: value });
                   }
                   if (value === '') {
-                    setFormData({ ...formData, previousGrades: enrollment.student.previousGrades });
+                    setFormData({ ...formData, previousGrades: '' });
                   }
                 }}
               />

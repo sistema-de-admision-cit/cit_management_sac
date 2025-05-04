@@ -67,7 +67,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
       <input
         type='file'
         name={field.name}
-        onChange={handleChange}
+        onInput={handleChange}
         required={field.required || false}
         multiple={field.multiple}
         accept={accept || ''}
@@ -111,7 +111,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
         onChange={handleChange}
         required={field.required || false}
       >
-        {field.options.map((option) => (
+        {field.options?.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>

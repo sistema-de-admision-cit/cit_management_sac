@@ -3,24 +3,19 @@ import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import StudentsTable from '../organisms/StudentsTable'
 import '../../../../../assets/styles/enrollments/enrollment-management-view.css'
 import ModalApplicantDetails from '../organisms/ModalApplicantDetails'
-import { handleStudendIdClick, handleFileUpload } from '../helpers/handlers'
+import { handleStudendIdClick } from '../helpers/handlers'
 import { formatDateForApi } from '../helpers/helpers'
 import useMessages from '../../../../core/global/hooks/useMessages'
 
 const EnrollmentManagementView = () => {
-  const [applicantSelected, setApplicantSelected] = useState({})
-  const [applicantEnrollments, setApplicantEnrollments] = useState([])
+  const [studentSelected, setStudentSelected] = useState({})
+  const [studentEnrollments, setStudentEnrollments] = useState([])
   const [isModalApplicantDetailsOpen, setIsModalApplicantDetailsOpen] = useState(false)
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
   const handleOnUpdateEnrollment = (formData) => {
 
-    setApplicantSelected((prev) => ({
-      ...prev,
-      previousGrades: parseFloat(formData.previousGrades),
-    }))
-
-    const updatedEnrollment = applicantEnrollments.map((enrollment) => {
+    const updatedEnrollment = studentEnrollments.map((enrollment) => {
       enrollment.student.previousGrades = parseFloat(formData.previousGrades)
 
       if (enrollment.id === formData.enrollmentId) {
@@ -33,7 +28,8 @@ const EnrollmentManagementView = () => {
       }
       return enrollment
     })
-    setApplicantEnrollments(updatedEnrollment)
+    setStudentEnrollments(updatedEnrollment)
+    setStudentSelected(studentEnrollments[0].student)
   }
 
   return (
@@ -42,20 +38,18 @@ const EnrollmentManagementView = () => {
         <h1>Consultar Inscripciones</h1>
         <p className='description'>Aquí puedes consultar y gestionar las inscripciones de los aspirantes.</p>
         <StudentsTable
-          onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen, setApplicantSelected, setApplicantEnrollments)}
+          onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen, setStudentSelected, setStudentEnrollments)}
           setErrorMessage={setErrorMessage}
         />
       </div>
 
       {isModalApplicantDetailsOpen && (
         <ModalApplicantDetails
-          student={applicantSelected}
-          parents={applicantSelected.parents}
-          enrollments={applicantEnrollments}
+          student={studentSelected}
+          parents={studentSelected.parents}
+          enrollments={studentEnrollments}
+          setStudentEnrollments={setStudentEnrollments}
           onClose={() => setIsModalApplicantDetailsOpen(false)}
-          onFileUpload={
-            (e, selectedFileType, setSelectedFile, enrollment, studentId) => handleFileUpload(e, selectedFileType, setSelectedFile, enrollment, studentId, setErrorMessage, setSuccessMessage)
-          }
           setErrorMessage={setErrorMessage}
           setSuccessMessage={setSuccessMessage}
           onUpdateEnrollment={(formData) => handleOnUpdateEnrollment(formData)}

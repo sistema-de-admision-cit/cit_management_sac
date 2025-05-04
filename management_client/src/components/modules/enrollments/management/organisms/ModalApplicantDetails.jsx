@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import '../../../../../assets/styles/enrollments/modal-applicant-details.css'
 import Modal from '../../../../core/global/molecules/Modal'
 import StudentInfo from '../molecules/StudentInfo'
@@ -7,14 +7,14 @@ import EnrollmentInfo from './EnrollmentInfo'
 import Button from '../../../../core/global/atoms/Button'
 import { guardianTabText } from '../helpers/helpers'
 import ModalManageFiles from '../molecules/ModalManageFiles'
-import { handleDocClick, handleFileDownload, handleFileDelete, mapGradeToSpanish } from '../helpers/handlers'
+import { handleDocClick, handleFileDownload, handleOnFileUpload, handleFileDelete, mapGradeToSpanish } from '../helpers/handlers'
 
 const ModalApplicantDetails = ({
   student,
   parents,
   enrollments,
+  setStudentEnrollments,
   onClose,
-  onFileUpload,
   setErrorMessage,
   setSuccessMessage,
   onUpdateEnrollment,
@@ -24,6 +24,12 @@ const ModalApplicantDetails = ({
   const [selectedFile, setSelectedFile] = useState(null)
   const [selectedFileType, setSelectedFileType] = useState('')
   const [enrollment, setEnrollment] = useState({})
+
+  const handleFileUpload = (e, formData) => {
+    handleOnFileUpload(e, enrollment, formData, setSuccessMessage, setErrorMessage, setStudentEnrollments)
+    setIsDocModalOpen(false)
+    onClose()
+  }
 
   return (
     <Modal onClose={onClose}>
@@ -68,8 +74,7 @@ const ModalApplicantDetails = ({
         <EnrollmentInfo
           enrollment={enrollments.find((enrollment) => activeTab === `enrollment-${enrollment.id}`)}
           onUpdateEnrollment={onUpdateEnrollment}
-          onDocClick={(file) => handleDocClick(file, setSelectedFile, setIsDocModalOpen)}
-          setSelectedFileType={setSelectedFileType}
+          onDocClick={(file, fileType) => handleDocClick(file, fileType, setSelectedFile, setIsDocModalOpen, setSelectedFileType)}
           student={student}
           setErrorMessage={setErrorMessage}
           setSuccessMessage={setSuccessMessage}
@@ -77,9 +82,10 @@ const ModalApplicantDetails = ({
 
       {isDocModalOpen && (
         <ModalManageFiles
+          enrollment={enrollment}
           selectedFileType={selectedFileType}
           selectedFile={selectedFile}
-          onFileUpload={(e) => onFileUpload(e, selectedFileType, setSelectedFile, enrollment, student.idNumber)}
+          onFileUpload={handleFileUpload}
           onFileDownload={() => handleFileDownload(selectedFile, student, setErrorMessage)}
           onFileDelete={(selectedFile) => {
             handleFileDelete(selectedFile, setErrorMessage, setSuccessMessage)

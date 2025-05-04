@@ -88,8 +88,9 @@ export const handleEnrollmentEdit = (dataToSend, enrollment, setErrorMessage, se
     })
 }
 
-export const handleDocClick = (file, setSelectedFile, setIsDocModalOpen) => {
-  setSelectedFile(file)
+export const handleDocClick = (file, fileType, setSelectedFile, setIsDocModalOpen, setSelectedFileType) => {
+  setSelectedFile(!file ? null : file)
+  setSelectedFileType(fileType)
   setIsDocModalOpen(true)
 }
 
@@ -129,44 +130,52 @@ export const handleFileDelete = (selectedFile, setErrorMessage, setSuccessMessag
 }
 
 const uploadFileUrl = import.meta.env.VITE_UPLOAD_DOCUMENT_ENDPOINT
-export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollment, studentId, setErrorMessage, setSuccessMessage) => {
+export const handleOnFileUpload = (e, enrollment, formData, setSuccessMessage, setErrorMessage, setStudentEnrollments) => {
   e.preventDefault()
 
-  const file = e.target[0].files[0]
-  if (!file) {
-    setErrorMessage('Debes seleccionar un archivo para subir.')
-    return
-  }
-
-  const documentType = selectedFileType === 'Documento de Notas' ? 'OT' : 'HC'
-  const documentName = selectedFileType === 'Documento de Notas'
-    ? `notas_${enrollment.id}_${studentId}.pdf`
-    : `carta_${enrollment.id}_${studentId}.pdf`
-
   const data = new FormData()
-  data.append('file', file)
-  data.append('documentName', documentName)
-  data.append('documentType', documentType)
-  data.append('enrollmentId', enrollment.id)
-  axios.post(
-    uploadFileUrl,
-    data,
-    { timeout: 10000 })
+  data.append('file', formData.file)
+  data.append('documentType', formData.documentType)
+  data.append('enrollmentId', formData.enrollmentId)
+  axios.post(uploadFileUrl, data,
+    {
+      timeout: 10000,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
     .then(response => {
       setSuccessMessage('El documento se subió correctamente.')
 
       const updatedDoc = {
-        id: response.data.id,
-        documentName: response.data.documentName,
-        documentType: response.data.documentType,
-        documentUrl: response.data.documentUrl
+        //get the id from the response location
+        id: response.headers['location'].split('/').pop(),
+        documentName: formData.documentType === 'OT' ? 'Documento de Notas' : 'Documento de Adaptaciones',
+        documentType: formData.documentType,
+        documentUrl: null,
       }
 
-      enrollment.document.push(updatedDoc)
-      setSelectedFile(updatedDoc)
+      const updatedEnrollment = {
+        ...enrollment,
+        documents: enrollment.documents?.map(doc => {
+          if (doc.documentType === formData.documentType) {
+            return updatedDoc
+          }
+          return doc
+        }),
+      }
+
+      setStudentEnrollments(prevEnrollments => {
+        return prevEnrollments.map(enrollment => {
+          if (enrollment.id === formData.enrollmentId) {
+            return updatedEnrollment
+          }
+          return enrollment
+        })
+      });
     })
     .catch(error => {
-      setErrorMessage(getErrorMessage(error))
+      setErrorMessage('Error al subir el documento. Por favor, intenta de nuevo.')
     })
 }
 

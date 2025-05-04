@@ -11,6 +11,11 @@ export const buildGuardianAddress = (guardianAddress) => {
   return direction
 }
 
+export const documentTypes = [
+  { value: 'AC', label: 'Documento de Adaptaciones' },
+  { value: 'OT', label: 'Documento de Notas' }
+]
+
 export const guardianTabText = {
   M: 'Informacion de la Madre',
   F: 'Informacion del Padre',

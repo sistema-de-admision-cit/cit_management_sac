@@ -392,7 +392,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
    * @return the saved document
    */
   @Override
-  public DocumentDto saveDocument(String documentType, Long enrollmentId, MultipartFile file) {
+  public DocumentDto saveDocument(DocType documentType, Long enrollmentId, MultipartFile file) {
     EnrollmentEntity enrollment = enrollmentRepository.findById(enrollmentId).orElse(null);
 
     if (enrollment == null) {
@@ -409,7 +409,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     if (file != null && !file.isEmpty()) {
       fileDocument = storageService.store(file,
           "grades_" + enrollment.getStudent().getStudentPerson()
-              .getIdNumber() + "_" + timestamp + ".pdf", DocType.fromString(documentType));
+              .getIdNumber() + "_" + timestamp + ".pdf", documentType);
     }
 
     //Wait for the documents to be saved

@@ -1,5 +1,6 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
@@ -161,7 +162,7 @@ public class InscriptionsController {
    */
   @PostMapping("/documents/upload")
   public ResponseEntity<Void> uploadDocument(@RequestParam("file") MultipartFile file,
-      @RequestParam("documentType") String documentType,
+      @RequestParam("documentType") DocType documentType,
       @RequestParam("enrollmentId") Long enrollmentId, UriComponentsBuilder uriComponentsBuilder) {
     verifyFile(file);
 

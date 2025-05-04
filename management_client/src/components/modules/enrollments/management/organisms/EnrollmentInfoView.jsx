@@ -6,7 +6,7 @@ import { formatDate, statusText } from '../helpers/helpers'
 const PENDING_STATUS = 'PENDING'
 const ELIGIBLE_STATUS = 'ELIGIBLE'
 
-const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileType, setIsEditing }) => {
+const EnrollmentInfoView = ({ enrollment, onDocClick, student, setIsEditing }) => {
   const [year, month, day] = enrollment.examDate.split('-')
 
   return (
@@ -44,10 +44,7 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
         <div className='document-item'>
           <p><strong>Documento de Notas:</strong></p>
           <Button
-            className='pdf-icon' onClick={() => {
-              onDocClick(enrollment.documents.find((doc) => doc.documentType === 'OT'))
-              setSelectedFileType('Documento de Notas')
-            }}
+            className='pdf-icon' onClick={() => { onDocClick(enrollment.documents?.find((doc) => doc.documentType === 'OT'), 'OT') }}
           >
             <img src={PdfIcon} alt='logo de un pdf' />
           </Button>
@@ -56,10 +53,7 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setSelectedFileTy
           <div className='document-item'>
             <p><strong>Documento de Adaptaciones:</strong></p>
             <Button
-              className='pdf-icon' onClick={() => {
-                onDocClick(enrollment.documents.find((doc) => doc.documentType === 'AC'))
-                setSelectedFileType('Documento de Adaptaciones')
-              }}
+              className='pdf-icon' onClick={() => { onDocClick(enrollment.documents?.find((doc) => doc.documentType === 'AC'), 'AC') }}
             >
               <img src={PdfIcon} alt='logo de un pdf' />
             </Button>
