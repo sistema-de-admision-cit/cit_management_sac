@@ -1,19 +1,24 @@
 package cr.co.ctpcit.citsacbackend.logic.services.reports;
 
+import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.EnrollmentEntity;
+import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.EnrollmentRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.reports.ReportsRepository;
+import cr.co.ctpcit.citsacbackend.data.utils.BuildReport;
 import cr.co.ctpcit.citsacbackend.logic.dto.reports.*;
+import cr.co.ctpcit.citsacbackend.logic.mappers.reports.ReportMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ReportsServiceImpl {
   private final ReportsRepository reportsRepository;
-
-  public ReportsServiceImpl(ReportsRepository reportsRepository) {
-    this.reportsRepository = reportsRepository;
-  }
+  private final EnrollmentRepository enrollmentRepository;
 
   public List<ExamSourceDTO> getExamSourceStatistics(LocalDate startDate, LocalDate endDate,
       List<String> grades, String sector) {
@@ -44,9 +49,30 @@ public class ReportsServiceImpl {
   public DaiExamReportDTO getDaiExamReport(LocalDate startDate, LocalDate endDate,
       List<String> grades, String sector) {
 
-    List<DaiDetailDTO> details = reportsRepository.findDaiExamDetails(startDate, endDate, grades, sector);
-    List<DaiAreaAverageDTO> avgs = reportsRepository.findDaiExamAreaAverages(startDate, endDate, grades, sector);
+    List<DaiDetailDTO> details =
+        reportsRepository.findDaiExamDetails(startDate, endDate, grades, sector);
+    List<DaiAreaAverageDTO> avgs =
+        reportsRepository.findDaiExamAreaAverages(startDate, endDate, grades, sector);
 
     return new DaiExamReportDTO(details, avgs);
+  }
+
+  /**
+   * Generates a list of report data DTOs based on the provided report request criteria.
+   *
+   * <p>This method builds a dynamic {@link Specification} using the provided request parameters,
+   * queries the database for matching {@link EnrollmentEntity} records, and maps each result to a
+   * {@link ReportDataDto} using the {@link ReportMapper} utility.
+   *
+   * @param request the {@link ReportRequestDto} containing the filtering criteria for the report
+   * @return a list of {@link ReportDataDto} objects representing the generated report data
+   */
+  public List<ReportDataDto> generateReportData(ReportRequestDto request) {
+    Specification<EnrollmentEntity> spec = BuildReport.buildSpecification(request);
+    List<EnrollmentEntity> inscripciones = enrollmentRepository.findAll(spec);
+
+    return inscripciones.stream()
+        .map(inscripcion -> ReportMapper.mapDataReport(inscripcion, request))
+        .collect(Collectors.toList());
   }
 }
