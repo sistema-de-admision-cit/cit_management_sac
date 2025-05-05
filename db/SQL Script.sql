@@ -559,6 +559,15 @@ BEGIN
              CONCAT('UPDATE tbl_Enrollments SET exam_date = ', p_new_exam_date, ' WHERE enrollment_id = ', p_enrollment_id), 
              p_comment);
     END IF;
+    
+    IF v_old_whatsapp_permission != p_new_whatsapp_permission THEN
+		INSERT INTO `tbl_Logs` 
+			(`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
+		VALUES
+			('tbl_Enrollments', 'whatsapp_notification', v_old_whatsapp_permission, p_new_whatsapp_permission, v_changed_by_id, 
+             CONCAT('UPDATE tbl_Enrollments SET whatsapp_notification = ', p_new_whatsapp_permission, ' WHERE enrollment_id = ', p_enrollment_id), 
+             p_comment);
+	END IF;
 
     -- No se registra el cambio de whatsapp_notification en logs
 END//

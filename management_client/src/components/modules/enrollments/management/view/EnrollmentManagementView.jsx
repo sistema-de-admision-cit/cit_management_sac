@@ -4,7 +4,6 @@ import StudentsTable from '../organisms/StudentsTable'
 import '../../../../../assets/styles/enrollments/enrollment-management-view.css'
 import ModalApplicantDetails from '../organisms/ModalApplicantDetails'
 import { handleStudendIdClick } from '../helpers/handlers'
-import { formatDateForApi } from '../helpers/helpers'
 import useMessages from '../../../../core/global/hooks/useMessages'
 
 const EnrollmentManagementView = () => {
@@ -22,7 +21,7 @@ const EnrollmentManagementView = () => {
         return {
           ...enrollment,
           status: sentData.status,
-          examDate: formatDateForApi(sentData.examDate),
+          examDate: sentData.examDate,
           whatsappNotification: sentData.whatsappPermission,
         }
       }
