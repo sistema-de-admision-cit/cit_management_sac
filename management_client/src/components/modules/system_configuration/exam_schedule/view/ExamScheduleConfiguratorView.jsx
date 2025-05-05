@@ -104,7 +104,7 @@ const ExamScheduleConfiguratorView = () => {
               onClick={handleFormSubmit}
               disabled={!isFormValid(formValues) || loading}
             >
-              {loading ? 'Creanando...' : 'Crear'}
+              {loading ? 'Creando...' : 'Crear'}
             </Button>
             <Button className='btn btn-secondary'>Cancelar</Button>
           </div>

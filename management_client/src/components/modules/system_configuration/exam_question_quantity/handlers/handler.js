@@ -1,6 +1,5 @@
 import axios from '../../../../../config/axiosConfig'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 const GET_QUESTIONS_QUANTITY_ENDPOINT = import.meta.env.VITE_GET_QUESTIONS_QUANTITY_ENDPOINT
 const UPDATE_QUESTIONS_QUANTITY_ENDPOINT = import.meta.env.VITE_UPDATE_EXAMS_QUESTION_QUANTITY_ENDPOINT
 

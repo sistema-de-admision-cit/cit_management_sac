@@ -6,6 +6,15 @@ import Spinner from '../../../../core/global/atoms/Spinner'
 const ExamPeriodsTable = ({ examPeriods, onDelete, loading }) => {
   const [selectedItems, setSelectedItems] = useState([])
 
+  const formatDateForDisplay = (date) => {
+    return date.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'UTC'
+    })
+  }
+
   const handleCheckboxChange = (period) => {
     if (selectedItems.includes(period.id)) {
       setSelectedItems(selectedItems.filter(item => item !== period.id))
@@ -41,13 +50,13 @@ const ExamPeriodsTable = ({ examPeriods, onDelete, loading }) => {
                 <tr key={period.id}>
                   <td>
                     <InputField
-                        field={{ type: 'checkbox', name: 'toDelete', label: '' }}
-                        value={selectedItems.includes(period.id)}
-                        handleChange={() => handleCheckboxChange(period)}
-                      />
+                      field={{ type: 'checkbox', name: 'toDelete', label: '' }}
+                      value={selectedItems.includes(period.id)}
+                      handleChange={() => handleCheckboxChange(period)}
+                    />
                   </td>
-                  <td>{new Date(period.startDate).toLocaleDateString()}</td>
-                  <td>{new Date(period.endDate).toLocaleDateString()}</td>
+                  <td>{formatDateForDisplay(period.startDate)}</td>
+                  <td>{formatDateForDisplay(period.endDate)}</td>
                   <td>{period.days.join(', ')}</td>
                 </tr>
               ))}
@@ -59,7 +68,7 @@ const ExamPeriodsTable = ({ examPeriods, onDelete, loading }) => {
           onClick={() => {
             onDelete(selectedItems, setSelectedItems)
             setSelectedItems([])
-          }} className='btn btn-primary' disabled={selectedItems.length == 0}
+          }} className='btn btn-primary' disabled={selectedItems.length === 0}
         >Borrar Selección
         </Button>
       </div>

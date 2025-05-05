@@ -84,12 +84,16 @@ public class NotificationsServiceImpl implements NotificationsService {
     public void createEmailForInscription(EnrollmentDto inscription) {
         String emailContact = "";
         String phoneContact = "";
+        String facebookLink = "";
+        String instragramLink = "";
         String gradoEsp = "";
 
         for (SystemConfigEntity config : configRepository.getContactInfo()) {
             switch (config.getConfigName().name()) {
                 case "EMAIL_CONTACT" -> emailContact = config.getConfigValue();
                 case "OFFICE_CONTACT" -> phoneContact = config.getConfigValue();
+                case "INSTAGRAM_CONTACT" -> instragramLink = config.getConfigValue();
+                case "FACEBOOK_CONTACT" -> facebookLink = config.getConfigValue();
             }
         }
 
@@ -128,7 +132,9 @@ public class NotificationsServiceImpl implements NotificationsService {
                                     gradoEsp,
                                     inscription.examDate(),
                                     emailContact,
-                                    phoneContact
+                                    phoneContact,
+                                    instragramLink,
+                                    facebookLink
                             )
                     )
             );
@@ -144,13 +150,16 @@ public class NotificationsServiceImpl implements NotificationsService {
      * @param examDate the scheduled exam date
      * @param emailContact the school's contact email
      * @param phoneContact the school's contact phone number
+     * @param instagramContact the school's contact instagram
+     * @param facebookContact the school's contact facebook
      * @return formatted HTML email content
      */
 
     private String buildInscriptionEmailContent(
             String parentFullName, String studentFullName,
             String gradoEsp, LocalDate examDate,
-            String emailContact, String phoneContact
+            String emailContact, String phoneContact,
+            String instagramContact, String facebookContact
     ) {
         return "<html>" +
                 "<head>" +
@@ -162,6 +171,8 @@ public class NotificationsServiceImpl implements NotificationsService {
                 ".details { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }" +
                 ".detail-item { margin-bottom: 8px; }" +
                 ".footer { margin-top: 20px; font-size: 14px; color: #7f8c8d; }" +
+                ".social-links { margin-top: 15px; }" +
+                ".social-link { display: inline-block; margin-right: 15px; }" +
                 "</style>" +
                 "</head>" +
                 "<body>" +
@@ -178,6 +189,12 @@ public class NotificationsServiceImpl implements NotificationsService {
                 "</div>" +
 
                 "<p>Para finalizar el proceso, le solicitamos que revise los documentos adjuntos y se comunique con nuestra administración en caso de dudas.</p>" +
+
+                "<div class='social-links'>" +
+                "<p>Manténgase informado de nuestras noticias:</p>" +
+                "<div class='social-link'><a href='" + facebookContact + "' target='_blank'>Facebook</a></div>" +
+                "<div class='social-link'><a href='" + instagramContact + "' target='_blank'>Instagram</a></div>" +
+                "</div>" +
 
                 "<div class='footer'>" +
                 "<p><em>Este es un mensaje automático. Por favor no responda a este correo.</em></p>" +
@@ -204,12 +221,16 @@ public class NotificationsServiceImpl implements NotificationsService {
 
         String emailContact = "";
         String phoneContact = "";
+        String facebookLink = "";
+        String instragramLink = "";
 
-        // Obtener información de contacto
+
         for (SystemConfigEntity config : configRepository.getContactInfo()) {
             switch (config.getConfigName().name()) {
                 case "EMAIL_CONTACT" -> emailContact = config.getConfigValue();
                 case "OFFICE_CONTACT" -> phoneContact = config.getConfigValue();
+                case "INSTAGRAM_CONTACT" -> instragramLink = config.getConfigValue();
+                case "FACEBOOK_CONTACT" -> facebookLink = config.getConfigValue();
             }
         }
 
@@ -232,7 +253,8 @@ public class NotificationsServiceImpl implements NotificationsService {
                     new EmailConfigDto(
                             parent.getEmail(),
                             "Actualización de Inscripción - Complejo Educativo CIT",
-                            buildUpdateEmailContent(parent, enrollment.getStudent(), updateDto, statusEsp, emailContact, phoneContact)
+                            buildUpdateEmailContent(parent, enrollment.getStudent(), updateDto, statusEsp, emailContact, phoneContact, instragramLink,
+                                    facebookLink)
                     )
             );
         }
@@ -252,7 +274,8 @@ public class NotificationsServiceImpl implements NotificationsService {
 
     private String buildUpdateEmailContent(
             ParentEntity parent, StudentEntity student,
-            EnrollmentUpdateDto updateDto, String statusEsp, String emailContact, String phoneContact
+            EnrollmentUpdateDto updateDto, String statusEsp, String emailContact, String phoneContact,
+            String instagramContact, String facebookContact
     ) {
 
         String parentFullName = parent.getParentPerson().getFirstName() + " " +
@@ -277,6 +300,8 @@ public class NotificationsServiceImpl implements NotificationsService {
                 ".changes { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }" +
                 ".change-item { margin-bottom: 8px; }" +
                 ".footer { margin-top: 20px; font-size: 14px; color: #7f8c8d; }" +
+                ".social-links { margin-top: 15px; }" +
+                ".social-link { display: inline-block; margin-right: 15px; }" +
                 "</style>" +
                 "</head>" +
                 "<body>" +
@@ -293,6 +318,12 @@ public class NotificationsServiceImpl implements NotificationsService {
                 "</div>" +
 
                 "<p>Si necesitas más información, por favor contáctenos.</p>" +
+
+                "<div class='social-links'>" +
+                "<p>Manténgase informado de nuestras noticias:</p>" +
+                "<div class='social-link'><a href='" + facebookContact + "' target='_blank'>Facebook</a></div>" +
+                "<div class='social-link'><a href='" + instagramContact + "' target='_blank'>Instagram</a></div>" +
+                "</div>" +
 
                 "<div class='footer'>" +
                 "<p><em>Este es un mensaje automático. Por favor no responda a este correo.</em></p>" +
@@ -317,11 +348,16 @@ public class NotificationsServiceImpl implements NotificationsService {
 
         String emailContact = "";
         String phoneContact = "";
+        String facebookLink = "";
+        String instragramLink = "";
+
 
         for (SystemConfigEntity config : configRepository.getContactInfo()) {
             switch (config.getConfigName().name()) {
                 case "EMAIL_CONTACT" -> emailContact = config.getConfigValue();
                 case "OFFICE_CONTACT" -> phoneContact = config.getConfigValue();
+                case "INSTAGRAM_CONTACT" -> instragramLink = config.getConfigValue();
+                case "FACEBOOK_CONTACT" -> facebookLink = config.getConfigValue();
             }
         }
 
@@ -381,6 +417,8 @@ public class NotificationsServiceImpl implements NotificationsService {
                                     decisionMessage,
                                     emailContact,
                                     phoneContact,
+                                    instragramLink,
+                                    facebookLink,
                                     enrollment.getStatus()
                             )
                     )
@@ -405,7 +443,9 @@ public class NotificationsServiceImpl implements NotificationsService {
     private String buildDecisionEmailContent(
             String parentFullName, String studentFullName,
             String gradoEsp, String statusEsp, String decisionMessage,
-            String emailContact, String phoneContact, ProcessStatus status
+            String emailContact, String phoneContact, String instagramContact,
+            String facebookContact, ProcessStatus status
+
     ) {
         return "<html>" +
                 "<head>" +
@@ -417,6 +457,8 @@ public class NotificationsServiceImpl implements NotificationsService {
                 ".details { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }" +
                 ".detail-item { margin-bottom: 8px; }" +
                 ".footer { margin-top: 20px; font-size: 14px; color: #7f8c8d; }" +
+                ".social-links { margin-top: 15px; }" +
+                ".social-link { display: inline-block; margin-right: 15px; }" +
                 "</style>" +
                 "</head>" +
                 "<body>" +
@@ -431,6 +473,12 @@ public class NotificationsServiceImpl implements NotificationsService {
                 "<div class='detail-item'><strong>Estudiante:</strong> " + studentFullName + "</div>" +
                 "<div class='detail-item'><strong>Grado/Nivel:</strong> " + gradoEsp + "</div>" +
                 "<div class='detail-item'><strong>Estado Final:</strong> " + statusEsp + "</div>" +
+                "</div>" +
+
+                "<div class='social-links'>" +
+                "<p>Manténgase informado de nuestras noticias:</p>" +
+                "<div class='social-link'><a href='" + facebookContact + "' target='_blank'>Facebook</a></div>" +
+                "<div class='social-link'><a href='" + instagramContact + "' target='_blank'>Instagram</a></div>" +
                 "</div>" +
 
                 "<div class='footer'>" +
@@ -462,7 +510,8 @@ public class NotificationsServiceImpl implements NotificationsService {
             helper.setText(emailConfigDto.getMessage(), true);
             mailSender.send(message);
         } catch (MessagingException e) {
-            throw new RuntimeException("Error al enviar el correo: " + e.getMessage(), e);
+            System.err.println("Error al enviar notificaciones: " + e.getMessage());
+            // No relanzamos la excepción
         }
     }
 
