@@ -15,7 +15,7 @@ const EnrollmentInfoView = ({ enrollment, onDocClick, student, setIsEditing }) =
       <p><strong>Fecha del Examen:</strong> {formatDate(new Date(year, month - 1, day))}</p>
       <p><strong>Promedio de Notas:</strong> {enrollment.student.previousGrades ?? 'N/A'}</p>
       <p><strong>Notificación por WhatsApp:</strong> {enrollment.whatsappNotification ? 'Sí' : 'No'}</p>
-      <p><strong>Consentimiento:</strong> {enrollment.consentGiven ? 'Dado' : 'No Dado'}</p>
+      <p><strong>Consentimiento Informado:</strong> {enrollment.consentGiven ? 'Aceptado' : 'No Aceptado'}</p>
 
       <div
         className='edit-icon'
