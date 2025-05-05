@@ -53,6 +53,7 @@ const DaiSection = ({
         <div className='chart'>
           <h2>Gráfica de Resultados</h2>
           {/* TODO: Add chart component here */}
+          <pre>{JSON.stringify(data, null, 2)}</pre>
         </div>
       </div>
     </div>
