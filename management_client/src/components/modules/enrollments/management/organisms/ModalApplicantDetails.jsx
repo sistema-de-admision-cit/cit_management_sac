@@ -1,38 +1,42 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import '../../../../../assets/styles/enrollments/modal-applicant-details.css'
 import Modal from '../../../../core/global/molecules/Modal'
 import StudentInfo from '../molecules/StudentInfo'
-import GuardianInfo from '../molecules/GuardianInfo'
+import ParentInfo from '../molecules/ParentInfo'
 import EnrollmentInfo from './EnrollmentInfo'
 import Button from '../../../../core/global/atoms/Button'
 import { guardianTabText } from '../helpers/helpers'
 import ModalManageFiles from '../molecules/ModalManageFiles'
+import { handleDocClick, handleFileDownload, handleOnFileUpload, handleOnFileDelete, mapGradeToSpanish } from '../helpers/handlers'
 
 const ModalApplicantDetails = ({
   student,
-  parentsGuardians,
+  parents,
   enrollments,
+  setStudentEnrollments,
   onClose,
-  onDocClick,
-  onFileDownload,
-  onFileDelete,
-  onFileUpload,
-  onEnrollmentEdit
+  setErrorMessage,
+  setSuccessMessage,
+  onUpdateEnrollment,
 }) => {
   const [activeTab, setActiveTab] = useState('student')
   const [isDocModalOpen, setIsDocModalOpen] = useState(false)
-  const [selectedFile, setSelectedFile] = useState([])
+  const [selectedFile, setSelectedFile] = useState(null)
   const [selectedFileType, setSelectedFileType] = useState('')
-  const [isEditing, setIsEditing] = useState(false)
   const [enrollment, setEnrollment] = useState({})
 
-  useEffect(() => {
-    setIsEditing(false)
-  }, [activeTab, enrollments])
+  const handleFileUpload = (e, formData) => {
+    e.preventDefault()
+    handleOnFileUpload(enrollment, formData, setSuccessMessage, setErrorMessage, setEnrollment, setStudentEnrollments, setSelectedFile)
+  }
+
+  const handleFileDelete = () => {
+    handleOnFileDelete(enrollment, selectedFile, setErrorMessage, setSuccessMessage, setEnrollment, setStudentEnrollments, setSelectedFile)
+  }
 
   return (
     <Modal onClose={onClose}>
-      <h2>Detalles del Aspirante</h2>
+      <h2>Información e Inscripciones del Estudiante</h2>
       <div className='modal-tabs'>
 
         <Button
@@ -42,13 +46,13 @@ const ModalApplicantDetails = ({
           Información del Estudiante
         </Button>
 
-        {parentsGuardians.map((guardian) => (
+        {parents?.map((parent) => (
           <Button
-            key={`guardian-${guardian.id}`}
-            className={`tab-button ${activeTab === `guardian-${guardian.id}` ? 'active' : ''}`}
-            onClick={() => setActiveTab(`guardian-${guardian.id}`)}
+            key={`parent-${parent.id}`}
+            className={`tab-button ${activeTab === `parent-${parent.id}` ? 'active' : ''}`}
+            onClick={() => setActiveTab(`parent-${parent.id}`)}
           >
-            {guardianTabText[guardian.relationship]}
+            {guardianTabText[parent.relationship]}
           </Button>
         ))}
 
@@ -61,32 +65,32 @@ const ModalApplicantDetails = ({
               setEnrollment(enrollment)
             }}
           >
-            Inscripción - {enrollment.id}
+            Inscripción para {mapGradeToSpanish(enrollment.gradeToEnroll)}
           </Button>
         ))}
       </div>
 
       {activeTab === 'student' && <StudentInfo student={student} />}
-      {parentsGuardians.some((guardian) => activeTab === `guardian-${guardian.id}`) &&
-        <GuardianInfo guardian={parentsGuardians.find((guardian) => activeTab === `guardian-${guardian.id}`)} />}
+      {parents?.some((parent) => activeTab === `parent-${parent.id}`) &&
+        <ParentInfo parent={parents?.find((parent) => activeTab === `parent-${parent.id}`)} />}
       {enrollments.some((enrollment) => activeTab === `enrollment-${enrollment.id}`) &&
         <EnrollmentInfo
           enrollment={enrollments.find((enrollment) => activeTab === `enrollment-${enrollment.id}`)}
-          isEditing={isEditing}
-          onEnrollmentEdit={(e, formData, enrollment) => onEnrollmentEdit(e, formData, enrollment, setIsEditing)}
-          setIsEditing={setIsEditing}
-          onDocClick={(file) => onDocClick(file, setSelectedFile, setIsDocModalOpen)}
-          setSelectedFileType={setSelectedFileType}
+          onUpdateEnrollment={onUpdateEnrollment}
+          onDocClick={(file, fileType) => handleDocClick(file, fileType, setSelectedFile, setIsDocModalOpen, setSelectedFileType)}
           student={student}
+          setErrorMessage={setErrorMessage}
+          setSuccessMessage={setSuccessMessage}
         />}
 
       {isDocModalOpen && (
         <ModalManageFiles
+          enrollment={enrollment}
           selectedFileType={selectedFileType}
           selectedFile={selectedFile}
-          onFileUpload={(e) => onFileUpload(e, selectedFileType, setSelectedFile, enrollment, student.idNumber)}
-          onFileDownload={onFileDownload}
-          onFileDelete={((selectedFile) => onFileDelete(selectedFile, setSelectedFile, student.id, enrollment.id))}
+          onFileUpload={handleFileUpload}
+          onFileDownload={() => handleFileDownload(selectedFile, student, setErrorMessage)}
+          onFileDelete={handleFileDelete}
           onClose={() => setIsDocModalOpen(false)}
         />
       )}

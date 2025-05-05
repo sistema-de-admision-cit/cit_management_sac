@@ -36,7 +36,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
    * @return a {@link Page} containing the matching {@link EnrollmentEntity} entries
    */
   @Query(
-      "SELECT e FROM EnrollmentEntity e WHERE e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE'")
+      "SELECT e FROM EnrollmentEntity e WHERE e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
   Page<EnrollmentEntity> findAllEnrollmentsInProcess(Pageable pageable);
 
   /**
@@ -54,8 +54,9 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
    * @return a list of {@link EnrollmentEntity} entries for the given student that are in process
    */
   @Query(
-      "SELECT e FROM EnrollmentEntity e WHERE e.student = :student AND (e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE')")
-  List<EnrollmentEntity> findAllByStudentPerson_IdNumber_ThatAreInProcess(@NotNull StudentEntity student);
+      "SELECT e FROM EnrollmentEntity e WHERE e.student = :student AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
+  List<EnrollmentEntity> findAllByStudentPerson_IdNumber_ThatAreInProcess(
+      @NotNull StudentEntity student);
 
   /**
    * Retrieves all enrollments for a student identified by their student ID number.
@@ -73,9 +74,9 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
    * @return a list of {@link EnrollmentEntity} entries for students in the list that are in process
    */
   @Query(
-      "SELECT e FROM EnrollmentEntity e WHERE e.student IN :students AND (e.status = 'PENDING' OR e.status = 'ELIGIBLE' OR e.status = 'INELIGIBLE')")
+      "SELECT e FROM EnrollmentEntity e WHERE e.student IN :students AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
   List<EnrollmentEntity> findAllByStudentInTheListThatHasEnrollmentsInProcess(
-      List<StudentEntity> students);
+      List<StudentEntity> students, Pageable pageable);
 
   /**
    * Updates the exam date for a specific enrollment.
@@ -120,7 +121,7 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
    * @param newWhatsappPermission the new WhatsApp notification permission
    * @param newPreviousGrades    the new previous grades value
    * @param comment              additional comments for the update
-   * @param changedBy            the ID of the user who made the changes
+   * @param changedBy            the email of the user who made the changes
    */
 
   @Procedure(name = "usp_update_enrollment_and_log")
@@ -131,8 +132,12 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
           @Param("p_new_whatsapp_permission") Boolean newWhatsappPermission,
           @Param("p_new_previous_grades") BigDecimal newPreviousGrades,
           @Param("p_comment") String comment,
-          @Param("p_changed_by") Integer changedBy
+          @Param("p_changed_by") String changedBy
   );
+
+  @Query(
+      "SELECT COUNT(DISTINCT(e.student)) FROM EnrollmentEntity e WHERE e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
+  Long countEnrollmentsInProcess();
 
   /**
    * Repository query method to find enrollments by student's ID number and status, with pagination support.

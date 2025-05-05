@@ -281,14 +281,15 @@ public class ExamsServiceImpl implements ExamsService {
    * {@inheritDoc}
    */
   @Override
-  public List<StudentExamsDto> searchStudentExams(String value, ExamType examType) {
+  public List<StudentExamsDto> searchStudentExams(String value, ExamType examType,
+      Pageable pageable) {
     //Validate if the value is a number
     List<StudentEntity> students;
     if (value.matches("\\d+")) {
-      students = studentRepository.findStudentByStudentPerson_IdNumberContaining(value);
+      students = studentRepository.findStudentByLikeIdNumberWithEnrollmentInProcess(value, pageable);
     } else {
       //Search for persons by value
-      students = studentRepository.findAllByValue(value);
+      students = studentRepository.findAllByValueWithEnrollmentInProcess(value, pageable);
     }
 
     if (students.isEmpty()) {

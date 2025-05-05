@@ -98,5 +98,5 @@ public interface ExamsService {
    * @param examType the type of exam to filter by
    * @return list of matching student exam data
    */
-  List<StudentExamsDto> searchStudentExams(String value, ExamType examType);
+  List<StudentExamsDto> searchStudentExams(String value, ExamType examType, Pageable pageable);
 }

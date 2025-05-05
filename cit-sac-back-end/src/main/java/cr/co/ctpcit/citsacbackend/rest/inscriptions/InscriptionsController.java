@@ -1,8 +1,10 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
 import cr.co.ctpcit.citsacbackend.logic.services.inscriptions.InscriptionsService;
 import cr.co.ctpcit.citsacbackend.logic.services.notifs.NotificationsService;
@@ -60,11 +62,20 @@ public class InscriptionsController {
    * @return the inscription with the given name
    */
   @GetMapping("/search")
-  public ResponseEntity<Iterable<EnrollmentDto>> getInscriptionsByValue(
-      @NotNull @RequestParam String value) {
-    List<EnrollmentDto> enrollments = inscriptionsService.findStudentByValue(value);
+  public ResponseEntity<Iterable<StudentDto>> getInscriptionsByValue(
+      @NotNull @RequestParam String value, @PageableDefault(page = 0, size = 25) Pageable pageable) {
+
+    List<StudentDto> enrollments = inscriptionsService.findStudentByValue(value.toLowerCase(), pageable);
 
     return enrollments == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(enrollments);
+  }
+
+  @GetMapping("/search-count")
+  public ResponseEntity<Long> getInscriptionsByValue(
+      @NotNull @RequestParam String value) {
+    Long count = inscriptionsService.getSearchCount(value);
+
+    return count == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(count);
   }
 
   /**
@@ -73,13 +84,20 @@ public class InscriptionsController {
    * @return a list of all inscriptions
    */
   @GetMapping
-  public ResponseEntity<Iterable<EnrollmentDto>> getInscriptions(
+  public ResponseEntity<Iterable<StudentDto>> getInscriptions(
       @PageableDefault(page = 0, size = 25) Pageable pageable) {
-    List<EnrollmentDto> inscriptions = inscriptionsService.getAllInscriptions(pageable);
+    List<StudentDto> inscriptions = inscriptionsService.getAllInscriptions(pageable);
 
     return inscriptions.isEmpty() ?
         ResponseEntity.noContent().build() :
         ResponseEntity.ok(inscriptions);
+  }
+
+  @GetMapping("/enrollments-count")
+  public ResponseEntity<Long> getEnrollmentsCount() {
+    Long count = inscriptionsService.getEnrollmentsCount();
+
+    return count == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(count);
   }
 
   /**
@@ -144,7 +162,7 @@ public class InscriptionsController {
    */
   @PostMapping("/documents/upload")
   public ResponseEntity<Void> uploadDocument(@RequestParam("file") MultipartFile file,
-      @RequestParam("documentType") String documentType,
+      @RequestParam("documentType") DocType documentType,
       @RequestParam("enrollmentId") Long enrollmentId, UriComponentsBuilder uriComponentsBuilder) {
     verifyFile(file);
 

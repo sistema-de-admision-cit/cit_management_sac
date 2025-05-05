@@ -1,7 +1,7 @@
 export const statusText = {
-  PENDING: 'Inscrito',
-  ELIGIBLE: 'Permitido',
-  INELIGIBLE: 'Inelegible',
+  PENDING: 'Pendiente de Revisión',
+  ELIGIBLE: 'Aceptado',
+  INELIGIBLE: 'Rechazado',
   ACCEPTED: 'Aceptado',
   REJECTED: 'Rechazado'
 }
@@ -11,6 +11,11 @@ export const buildGuardianAddress = (guardianAddress) => {
   return direction
 }
 
+export const documentTypes = [
+  { value: 'AC', label: 'Documento de Adaptaciones' },
+  { value: 'OT', label: 'Documento de Notas' }
+]
+
 export const guardianTabText = {
   M: 'Informacion de la Madre',
   F: 'Informacion del Padre',
@@ -18,17 +23,17 @@ export const guardianTabText = {
 }
 
 export const statusOptions = [
-  { value: 'PENDING', label: 'Inscrito' },
-  { value: 'ELIGIBLE', label: 'Permitido' },
-  { value: 'INELIGIBLE', label: 'Inelegible' },
+  { value: 'PENDING', label: 'Pendiente de Revisión' },
+  { value: 'ELIGIBLE', label: 'Aceptar' },
+  { value: 'INELIGIBLE', label: 'Rechazar' },
   { value: 'ACCEPTED', label: 'Aceptado' },
   { value: 'REJECTED', label: 'Rechazado' }
 ]
 
 export const statusOptionsForEnrollment = [
-  { value: 'PENDING', label: 'Inscrito' },
-  { value: 'ELIGIBLE', label: 'Permitido' },
-  { value: 'INELIGIBLE', label: 'Inelegible' }
+  { value: 'PENDING', label: 'Pendiente de Revisión' },
+  { value: 'ELIGIBLE', label: 'Aceptar' },
+  { value: 'INELIGIBLE', label: 'Rechazar' },
 ]
 
 export const isCommentRequired = (formData, enrollment) => {
@@ -38,24 +43,31 @@ export const isCommentRequired = (formData, enrollment) => {
   }
 
   // Comparación segura de fechas
-  const currentDate = formData.examDate
-  const originalDate = enrollment.examDate ? new Date(enrollment.examDate) : null
-
-  if (!currentDate && !originalDate) {
-    return false
-  }
+  const currentDate = formData.examDate;
+  const originalDate = enrollment.examDate ? new Date(enrollment.examDate) : null;
 
   if ((!currentDate && originalDate) || (currentDate && !originalDate)) {
     return true
   }
 
   try {
-    const currentDateStr = currentDate.toISOString().split('T')[0]
-    const originalDateStr = originalDate.toISOString().split('T')[0]
-    return currentDateStr !== originalDateStr
+    const currentDateStr = currentDate.toISOString().split('T')[0];
+    const originalDateStr = originalDate.toISOString().split('T')[0];
+    if (currentDateStr !== originalDateStr) {
+      return true; 
+    }
   } catch (error) {
-    console.error('Error al comparar fechas:', error)
-    return true // Por seguridad, considera que hay cambio si hay error
+    return true; // Por seguridad, considera que hay cambio si hay error
+  }
+
+  // Verificar si hay cambios en el campo de whatsappNotification
+  if (formData.whatsappNotification !== enrollment.whatsappNotification) {
+    return true;
+  }
+
+  // Verificar si hay cambios en el campo de previousGrades
+  if (formData.previousGrades !== (enrollment.student.previousGrades ?? '')) {
+    return true;
   }
 }
 
@@ -82,10 +94,10 @@ export const areDatesEqual = (date1, date2) => {
   if (!date1 || !date2) return false
 
   try {
-    const d1 = date1 instanceof Date ? date1 : new Date(date1)
-    const d2 = date2 instanceof Date ? date2 : new Date(date2)
+    const d1 = date1 instanceof Date ? date1 : new Date(date1);
+    const d2 = date2 instanceof Date ? date2 : new Date(date2);
 
-    return d1.toISOString().split('T')[0] === d2.toISOString().split('T')[0]
+    return d1.toISOString().split('T')[0] === d2.toISOString().split('T')[0];
   } catch (error) {
     console.error('Error al comparar fechas:', error)
     return false
@@ -97,7 +109,7 @@ export const formatDateToObj = (obj) => {
   if (!obj) return obj
 
   // Clonar el objeto para no modificar el original directamente
-  const newObj = { ...obj }
+  const newObj = { ...obj };
 
   if (newObj.birthDate) {
     newObj.birthDate = new Date(newObj.birthDate)
@@ -120,17 +132,15 @@ export const formatDateToObj = (obj) => {
 
 // Función para formatear fecha a "day/month/year"
 export const formatDate = (date) => {
-  if (!date) return ''
+  if (!date) return '';
 
   // Asegurarse que es un objeto Date
-  const dateObj = date instanceof Date ? date : new Date(date)
+  const [year, month, day] = date instanceof Date ? [date.getFullYear(), date.getMonth() + 1, date.getDate()] : date.split('-').map(Number);
+
+  const dateObj = date instanceof Date ? date : new Date(year, month - 1, day);
 
   // Si es inválido, retornar string vacío
-  if (isNaN(dateObj.getTime())) return ''
-
-  const day = dateObj.getUTCDate()
-  const month = dateObj.getUTCMonth() + 1
-  const year = dateObj.getUTCFullYear()
+  if (isNaN(dateObj.getTime())) return '';
 
   const formattedDay = day < 10 ? `0${day}` : day
   const formattedMonth = month < 10 ? `0${month}` : month
@@ -140,10 +150,10 @@ export const formatDate = (date) => {
 
 // Función para formatear fecha a "year-month-day" (API)
 export const formatDateForApi = (date) => {
-  if (!date) return null
+  if (!date) return null;
 
-  const dateObj = date instanceof Date ? date : new Date(date)
-  if (isNaN(dateObj.getTime())) return null
+  const dateObj = date instanceof Date ? date : new Date(date);
+  if (isNaN(dateObj.getTime())) return null;
 
   const year = dateObj.getFullYear()
   const month = String(dateObj.getMonth() + 1).padStart(2, '0')

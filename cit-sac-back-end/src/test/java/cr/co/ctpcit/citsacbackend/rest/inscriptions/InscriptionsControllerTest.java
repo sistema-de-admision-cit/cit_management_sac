@@ -74,8 +74,8 @@ class InscriptionsControllerTest {
     int enrollmentCount = documentContext.read("$.length()");
     assertThat(enrollmentCount).isEqualTo(1);
 
-    JSONArray statuses = documentContext.read("$..status");
-    assertThat(statuses).containsExactlyInAnyOrder("PENDING");
+    JSONArray statuses = documentContext.read("$..idNumber");
+    assertThat(statuses).containsExactlyInAnyOrder("201654987", "900654321");
   }
 
   @Test
@@ -90,10 +90,10 @@ class InscriptionsControllerTest {
     DocumentContext documentContext = JsonPath.parse(response.getBody());
 
     int enrollmentCount = documentContext.read("$.length()");
-    assertThat(enrollmentCount).isEqualTo(1);
+    assertThat(enrollmentCount).isEqualTo(2);
 
-    JSONArray statuses = documentContext.read("$..status");
-    assertThat(statuses).containsExactlyInAnyOrder("ELIGIBLE");
+    JSONArray id = documentContext.read("$..idNumber");
+    assertThat(id).containsExactlyInAnyOrder("270456789", "940123789", "201234025", "970456123");
   }
 
   @Test
@@ -107,7 +107,7 @@ class InscriptionsControllerTest {
     int enrollmentCount = documentContext.read("$.length()");
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-    assertThat(enrollmentCount).isEqualTo(6);
+    assertThat(enrollmentCount).isEqualTo(10);
   }
 
   @Test
@@ -192,7 +192,7 @@ class InscriptionsControllerTest {
 
     EnrollmentUpdateDto updatedEnrollment =
         new EnrollmentUpdateDto(LocalDate.parse("2025-02-28"), ProcessStatus.REJECTED, false,new BigDecimal("8.5"),
-            "Action made to update enrollment as test", 1);
+            "Action made to update enrollment as test", "sysadmin@cit.co.cr");
 
     //Request
     HttpEntity<EnrollmentUpdateDto> request = new HttpEntity<>(updatedEnrollment);

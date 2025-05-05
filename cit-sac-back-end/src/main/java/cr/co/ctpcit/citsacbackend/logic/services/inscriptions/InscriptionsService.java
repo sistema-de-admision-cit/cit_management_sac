@@ -1,8 +1,11 @@
 package cr.co.ctpcit.citsacbackend.logic.services.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.data.enums.DocType;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentDto;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,14 +23,14 @@ public interface InscriptionsService {
    * @param pageable pagination information (page number, size, sorting)
    * @return list of enrollment DTOs
    */
-  List<EnrollmentDto> getAllInscriptions(Pageable pageable);
+  List<StudentDto> getAllInscriptions(Pageable pageable);
   /**
    * Searches for enrollments by student matching the given value.
    *
    * @param value search term to match against student information
    * @return list of matching enrollment DTOs
    */
-  List<EnrollmentDto> findStudentByValue(String value);
+  List<StudentDto> findStudentByValue(String value, Pageable pageable);
   /**
    * Creates a new enrollment with associated documents.
    *
@@ -80,7 +83,7 @@ public interface InscriptionsService {
    * @param file the document file to be saved
    * @return DTO containing information about the saved document
    */
-  DocumentDto saveDocument(String documentType, Long enrollmentId, MultipartFile file);
+  DocumentDto saveDocument(DocType documentType, Long enrollmentId, MultipartFile file);
   /**
    * Retrieves pending enrollments for a specific student.
    *
@@ -88,4 +91,8 @@ public interface InscriptionsService {
    * @return iterable collection of pending enrollment DTOs
    */
   Iterable<EnrollmentDto> findPendingEnrollmentsByStudentId(String idNumber);
+
+  Long getEnrollmentsCount();
+
+  Long getSearchCount(@NotNull String value);
 }

@@ -1,57 +1,57 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
-import EnrollmentTable from '../organisms/EnrollmentTable'
+import StudentsTable from '../organisms/StudentsTable'
 import '../../../../../assets/styles/enrollments/enrollment-management-view.css'
-import EnrollemntSearchBar from '../molecules/EnrollmentSearchBar'
 import ModalApplicantDetails from '../organisms/ModalApplicantDetails'
-import { handleEnrollmentEdit, handleDocClick, handleFileDownload, handleStudendIdClick, handleSearch, handleGetAllEnrollments, handleFileDelete, handleFileUpload } from '../helpers/handlers'
+import { handleStudendIdClick } from '../helpers/handlers'
 import useMessages from '../../../../core/global/hooks/useMessages'
 
 const EnrollmentManagementView = () => {
-  const [loading, setLoading] = useState(false)
-
-  const [enrollments, setEnrollments] = useState()
-  const [applicantSelected, setApplicantSelected] = useState({})
-
+  const [studentSelected, setStudentSelected] = useState({})
+  const [studentEnrollments, setStudentEnrollments] = useState([])
   const [isModalApplicantDetailsOpen, setIsModalApplicantDetailsOpen] = useState(false)
-
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
-  useEffect(() =>
-    handleGetAllEnrollments(setEnrollments, setLoading, setErrorMessage)
-  , [])
+  const handleOnUpdateEnrollment = (sentData, editedEnrollment) => {
+
+    const updatedEnrollments = studentEnrollments.map((enrollment) => {
+      enrollment.student.previousGrades = parseFloat(sentData.previousGrades)
+
+      if (enrollment.id === editedEnrollment.id) {
+        return {
+          ...enrollment,
+          status: sentData.status,
+          examDate: sentData.examDate,
+          whatsappNotification: sentData.whatsappPermission,
+        }
+      }
+      return enrollment
+    })
+    setStudentEnrollments(updatedEnrollments)
+    setStudentSelected(studentEnrollments[0].student)
+  }
 
   return (
     <SectionLayout title='Consultar Inscripciones'>
       <div className='enrollment-management-view'>
         <h1>Consultar Inscripciones</h1>
         <p className='description'>Aquí puedes consultar y gestionar las inscripciones de los aspirantes.</p>
-
-        <EnrollemntSearchBar onSearch={(search) => handleSearch(search, setEnrollments)} />
-        <EnrollmentTable
-          enrollments={enrollments}
-          onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen, setApplicantSelected)}
-          loading={loading}
+        <StudentsTable
+          onStudentIdClick={(applicant) => handleStudendIdClick(applicant, setIsModalApplicantDetailsOpen, setStudentSelected, setStudentEnrollments)}
+          setErrorMessage={setErrorMessage}
         />
       </div>
 
       {isModalApplicantDetailsOpen && (
         <ModalApplicantDetails
-          student={applicantSelected[0].student}
-          parentsGuardians={applicantSelected[0].student.parents}
-          enrollments={applicantSelected}
+          student={studentSelected}
+          parents={studentSelected.parents}
+          enrollments={studentEnrollments}
+          setStudentEnrollments={setStudentEnrollments}
           onClose={() => setIsModalApplicantDetailsOpen(false)}
-          onDocClick={handleDocClick}
-          onFileDownload={(filename) => handleFileDownload(filename, setErrorMessage)}
-          onFileDelete={
-            (selectedFile, setSelectedFile, enrollmentId, studentId) => handleFileDelete(selectedFile, setSelectedFile, setErrorMessage, setSuccessMessage, setEnrollments, enrollmentId, studentId)
-          }
-          onFileUpload={
-            (e, selectedFileType, setSelectedFile, enrollment, studentId) => handleFileUpload(e, selectedFileType, setSelectedFile, enrollment, studentId, setErrorMessage, setSuccessMessage)
-          }
-          onEnrollmentEdit={
-            (e, formData, enrollment, setIsEditing) => handleEnrollmentEdit(e, formData, enrollment, setIsEditing, setErrorMessage, setSuccessMessage)
-          }
+          setErrorMessage={setErrorMessage}
+          setSuccessMessage={setSuccessMessage}
+          onUpdateEnrollment={handleOnUpdateEnrollment}
         />
       )}
       {renderMessages()}

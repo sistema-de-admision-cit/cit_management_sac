@@ -9,6 +9,8 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -124,16 +126,44 @@ class StudentRepositoryTest {
     assertNotNull(studentEntity.getId());
 
     //Find Parent-Student relation
-    StudentEntity savedStudentEntity = studentRepository.findById(studentEntity.getId()).orElse(null);
+    StudentEntity savedStudentEntity =
+        studentRepository.findById(studentEntity.getId()).orElse(null);
     assertThat(savedStudentEntity).isNotNull();
     assertEquals(1, savedStudentEntity.getParents().size());
   }
 
   @Test
   void testFindStudentByValue() {
-    List<StudentEntity> students = studentRepository.findAllByValue("Martínez");
+    Pageable pageable = Pageable.ofSize(50);
+    List<StudentEntity> students = studentRepository.findAllByValueWithEnrollmentInProcess("and", pageable);
 
-    assertThat(students.size()).isEqualTo(2);
+    assertThat(students.size()).isEqualTo(4);
+  }
+
+  @Test
+  void testCountStudentsByValue() {
+    Long count = studentRepository.countStudentsWithEnrollmentsInProcessByValue("and");
+
+    assertThat(count).isEqualTo(4);
+  }
+
+  @Test
+  void testFindAllWithEnrollmentsInProcess() {
+    // Create a new student and save it
+    Pageable pageable = Pageable.ofSize(50);
+    Page<StudentEntity> students = studentRepository.findAllWithEnrollmentsInProcess(pageable);
+
+    assertThat(students.getContent().size()).isEqualTo(35);
+  }
+
+  @Test
+  void testFindStudentByLikeIdNumberWithEnrollmentInProcess() {
+    // Create a new student and save it
+    Pageable pageable = Pageable.ofSize(50);
+    List<StudentEntity> students =
+        studentRepository.findStudentByLikeIdNumberWithEnrollmentInProcess("2", pageable);
+
+    assertThat(students.size()).isEqualTo(35);
   }
 
   @AfterEach

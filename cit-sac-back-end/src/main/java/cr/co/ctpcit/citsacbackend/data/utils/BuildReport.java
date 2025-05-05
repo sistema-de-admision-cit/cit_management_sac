@@ -19,7 +19,7 @@ public class BuildReport {
     /**
      * Builds a JPA {@link Specification} based on the filters provided in the {@link ReportRequestDto}.
      * This specification is used to dynamically construct queries for enrollment reports,
-     * including date ranges and various report types such as knownThrough, gradeToEnroll, processStatus, and province.
+     * including date ranges and various report types such as knownThrough, gradeToEnroll, status, and province.
      *
      * @param request The {@link ReportRequestDto} containing the filter criteria.
      * @return A {@link Specification} for querying {@link EnrollmentEntity} with the given filters.

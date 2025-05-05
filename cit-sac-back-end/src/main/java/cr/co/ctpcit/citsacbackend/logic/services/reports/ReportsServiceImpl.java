@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,10 +50,8 @@ public class ReportsServiceImpl {
   public DaiExamReportDTO getDaiExamReport(LocalDate startDate, LocalDate endDate,
       List<String> grades, String sector) {
 
-    List<DaiDetailDTO> details =
-        reportsRepository.findDaiExamDetails(startDate, endDate, grades, sector);
-    List<DaiAreaAverageDTO> avgs =
-        reportsRepository.findDaiExamAreaAverages(startDate, endDate, grades, sector);
+    List<DaiDetailDTO> details = new ArrayList<>();
+    List<DaiAreaAverageDTO> avgs = new ArrayList<>();
 
     return new DaiExamReportDTO(details, avgs);
   }

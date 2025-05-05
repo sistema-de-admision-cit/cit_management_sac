@@ -1,3 +1,20 @@
+.edit-header {
+  display: flex;
+  align-items: safe center;
+  justify-content: start;
+}
+
+.edit-header h2 {
+  font-size: 24px;
+  color: #333;
+}
+
+.edit-header img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
 .enrollment-info-edit {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -20,3 +37,4 @@
   display: flex;
   justify-content: center;
 }
+

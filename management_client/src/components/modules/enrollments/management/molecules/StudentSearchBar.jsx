@@ -2,7 +2,7 @@ import { useState } from 'react'
 import '../../../../../assets/styles/enrollments/enrollment-search-bar.css'
 import InputField from '../../../../core/global/atoms/InputField'
 
-const EnrollemntSearchBar = ({ onSearch }) => {
+const StudentSearchBar = ({ onSearch }) => {
   const [search, setSearch] = useState('')
 
   const handleSearch = (e) => {
@@ -29,4 +29,4 @@ const EnrollemntSearchBar = ({ onSearch }) => {
   )
 }
 
-export default EnrollemntSearchBar
+export default StudentSearchBar

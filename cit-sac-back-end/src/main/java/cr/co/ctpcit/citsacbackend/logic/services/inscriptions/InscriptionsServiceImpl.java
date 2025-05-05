@@ -75,49 +75,38 @@ public class InscriptionsServiceImpl implements InscriptionsService {
    * @return a list of all inscriptions
    */
   @Override
-  public List<EnrollmentDto> getAllInscriptions(Pageable pageable) {
+  public List<StudentDto> getAllInscriptions(Pageable pageable) {
     // Find all enrollments
-    Page<EnrollmentEntity> students = enrollmentRepository.findAllEnrollmentsInProcess(
+    Page<StudentEntity> enrollments = studentRepository.findAllWithEnrollmentsInProcess(
         PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-            pageable.getSortOr(Sort.by(Sort.Direction.ASC, "student.studentPerson.idNumber"))));
+            pageable.getSortOr(Sort.by(Sort.Direction.ASC, "studentPerson.idNumber"))));
 
     // Convert enrollments to DTOs
-    return EnrollmentMapper.convertToDtoList(students.getContent());
+    return StudentMapper.convertToDtoList(enrollments.getContent());
   }
 
   /**
    * Get an inscription by value
    *
-   * @param value of the idNumber, the name of the student or first surname or previous school
+   * @param value    of the idNumber, the name of the student or first surname or previous school
+   * @param pageable
    * @return a list of inscriptions that match the value
    */
   @Override
-  public List<EnrollmentDto> findStudentByValue(String value) {
-    List<EnrollmentEntity> enrollments = new ArrayList<>();
+  public List<StudentDto> findStudentByValue(String value, Pageable pageable) {
+    List<StudentEntity> students = new ArrayList<>();
     // Validate if the value is a number
     if (value.matches("\\d+")) {
-      List<StudentEntity> student =
-          studentRepository.findStudentByStudentPerson_IdNumberContaining(value);
-      if (!student.isEmpty()) {
-        enrollments =
-            enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(student);
-      }
+      students =
+          studentRepository.findStudentByLikeIdNumberWithEnrollmentInProcess(value, pageable);
     }
 
-    if (enrollments.isEmpty()) {
-      // Find persons by first name, first surname or second surname
-      List<PersonEntity> findings =
-          personRepository.findByFirstNameFirstSurnameSecondSurnameLike(value);
-
-      // Find students by persons
-      List<StudentEntity> students = studentRepository.findAllByStudentPersonIn(findings);
-
-      // Find enrollments by students
-      enrollments =
-          enrollmentRepository.findAllByStudentInTheListThatHasEnrollmentsInProcess(students);
+    if (students.isEmpty()) {
+      // Find students by value
+      students = studentRepository.findAllByValueWithEnrollmentInProcess(value, pageable);
     }
 
-    return EnrollmentMapper.convertToDtoList(enrollments);
+    return StudentMapper.convertToDtoList(students);
   }
 
   /**
@@ -333,7 +322,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
 
     // Save the enrollment
     enrollmentRepository.updateEnrollmentStatus(Long.parseLong(id),
-        enrollmentUpdate.processStatus());
+        enrollmentUpdate.status());
   }
 
   /**
@@ -366,7 +355,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     // Save the enrollment
     enrollmentRepository.usp_update_enrollment_and_log(
             Long.parseLong(id),
-            enrollmentUpdate.processStatus().toString(),
+            enrollmentUpdate.status().toString(),
             Date.valueOf(enrollmentUpdate.examDate()),
             enrollmentUpdate.whatsappPermission(),
             enrollmentUpdate.previousGrades(),
@@ -403,7 +392,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
    * @return the saved document
    */
   @Override
-  public DocumentDto saveDocument(String documentType, Long enrollmentId, MultipartFile file) {
+  public DocumentDto saveDocument(DocType documentType, Long enrollmentId, MultipartFile file) {
     EnrollmentEntity enrollment = enrollmentRepository.findById(enrollmentId).orElse(null);
 
     if (enrollment == null) {
@@ -420,7 +409,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
     if (file != null && !file.isEmpty()) {
       fileDocument = storageService.store(file,
           "grades_" + enrollment.getStudent().getStudentPerson()
-              .getIdNumber() + "_" + timestamp + ".pdf", DocType.fromString(documentType));
+              .getIdNumber() + "_" + timestamp + ".pdf", documentType);
     }
 
     //Wait for the documents to be saved
@@ -472,5 +461,16 @@ public class InscriptionsServiceImpl implements InscriptionsService {
         enrollmentRepository.findAllByStudentPerson_IdNumber_ThatAreInProcess(student);
 
     return EnrollmentMapper.convertToDtoList(enrollments);
+  }
+
+  @Override
+  public Long getEnrollmentsCount() {
+    // Get the count of enrollments
+    return enrollmentRepository.countEnrollmentsInProcess();
+  }
+
+  @Override
+  public Long getSearchCount(String value) {
+    return studentRepository.countStudentsWithEnrollmentsInProcessByValue(value);
   }
 }

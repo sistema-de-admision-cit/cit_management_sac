@@ -1,33 +1,34 @@
+import { useState } from 'react'
 import EnrollmentInfoView from './EnrollmentInfoView'
 import EnrollmentInfoEdit from './EnrollmentInfoEdit'
 
 const EnrollmentInfo = ({
   enrollment,
-  isEditing,
-  onStatusChange,
+  onUpdateEnrollment,
   onDateChange,
-  onWhatsappChange,
-  onPreviousGradesChange,
-  setIsEditing,
   onDocClick,
   student,
   setSelectedFileType,
-  onEnrollmentEdit
-}) => (
-  <>
+  setErrorMessage,
+  setSuccessMessage
+}) => {
+  const [isEditing, setIsEditing] = useState(false)
+
+  return (<>
     {isEditing
-      ? (
+      ?
+      (
         <EnrollmentInfoEdit
           enrollment={enrollment}
-          onStatusChange={onStatusChange}
+          onUpdateEnrollment={onUpdateEnrollment}
           onDateChange={onDateChange}
-          onWhatsappChange={onWhatsappChange}
-          onPreviousGradesChange={onPreviousGradesChange}
           setIsEditing={setIsEditing}
-          handleEnrollmentEdit={onEnrollmentEdit}
+          setErrorMessage={setErrorMessage}
+          setSuccessMessage={setSuccessMessage}
         />
-        )
-      : (
+      )
+      :
+      (
         <EnrollmentInfoView
           enrollment={enrollment}
           onDocClick={onDocClick}
@@ -35,8 +36,10 @@ const EnrollmentInfo = ({
           setSelectedFileType={setSelectedFileType}
           setIsEditing={setIsEditing}
         />
-        )}
+      )
+    }
   </>
-)
+  )
+}
 
 export default EnrollmentInfo

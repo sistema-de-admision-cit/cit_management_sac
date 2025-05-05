@@ -1,5 +1,5 @@
 import axios from '../../../../../config/axiosConfig'
-import { formatDateForApi, formatDateToObj, isCommentRequired } from './helpers'
+import { formatDateForApi, isCommentRequired } from './helpers'
 
 // Manejo de errores
 const getErrorMessage = (error) => {
@@ -23,13 +23,16 @@ const getErrorMessage = (error) => {
 }
 
 const getEnrollmentsByStudentIdUrl = import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_ID_ENDPOINT
-export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, setApplicantSelected) => {
+export const handleStudendIdClick = (applicant, setIsModalApplicantDetailsOpen, setApplicantSelected, setApplicantEnrollments) => {
+  setApplicantSelected(applicant)
+  setIsModalApplicantDetailsOpen(false)
+
   axios.get(`${getEnrollmentsByStudentIdUrl}${applicant.person.idNumber}`,
     {
       timeout: 10000
     })
     .then(response => {
-      setApplicantSelected(response.data)
+      setApplicantEnrollments(response.data)
       setIsModalApplicantDetailsOpen(true)
     })
     .catch(error => {
@@ -59,62 +62,47 @@ const validateDataBeforeSubmit = (formData, enrollment) => {
   }
 }
 
-// not sure if this is the best way to update the local state
-// but it works for now
-const updateEnrollmentLocal = (enrollment, formData) => {
-  enrollment.status = formData.status
-  enrollment.examDate = formData.examDate
-  enrollment.whatsappNotification = formData.whatsappNotification
-  enrollment.previousGrades = formData.previousGrades
-}
-
-const updateEnrollmentUrl = import.meta.env.VITE_UPDATE_ENROLLMENT_INFORMATION_ENDPOINT
-export const handleEnrollmentEdit = (e, formData, enrollment, setIsEditing, setErrorMessage, setSuccessMessage) => {
-  e.preventDefault()
+export const handleEnrollmentEdit = (dataToSend, enrollment, setErrorMessage, setSuccessMessage, onUpdateEnrollment, setIsEditing) => {
+  const updateEnrollmentUrl = import.meta.env.VITE_UPDATE_ENROLLMENT_INFORMATION_ENDPOINT
 
   try {
-    validateDataBeforeSubmit(formData, enrollment)
+    validateDataBeforeSubmit(dataToSend, enrollment)
   } catch (error) {
     setErrorMessage(error.message)
     return
   }
 
-  const body = {
-    examDate: formatDateForApi(new Date(formData.examDate)),
-    processStatus: formData.status,
-    whatsappPermission: formData.whatsappNotification,
-    previousGrades: parseFloat(formData.previousGrades),
-    comment: formData.comment,
-    changedBy: 1
-  }
-
-  console.log('body', body)
-
-  axios.put(`${updateEnrollmentUrl}/${enrollment.id}`, body,
+  axios.put(`${updateEnrollmentUrl}/${enrollment.id}`, dataToSend,
     { timeout: 10000 })
     .then(response => {
-      setIsEditing(false)
       setSuccessMessage('La inscripción se actualizó correctamente.')
-      updateEnrollmentLocal(enrollment, formData)
+      onUpdateEnrollment(dataToSend, enrollment)
+      setIsEditing(false)
     })
     .catch(error => {
       setErrorMessage(getErrorMessage(error))
+      return false;
     })
 }
 
-export const handleDocClick = (file, setSelectedFile, setIsDocModalOpen) => {
-  setSelectedFile(file)
+export const handleDocClick = (file, fileType, setSelectedFile, setIsDocModalOpen, setSelectedFileType) => {
+  setSelectedFile(!file ? null : file)
+  setSelectedFileType(fileType)
   setIsDocModalOpen(true)
 }
 
-const downloadFileUrl = import.meta.env.VITE_DOWNLOAD_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT
-export const handleFileDownload = (filename, setErrorMessage) => {
-  axios.get(`${downloadFileUrl}/${filename}`,
+export const handleFileDownload = (file, student, setErrorMessage) => {
+  const downloadFileUrl = import.meta.env.VITE_DOWNLOAD_DOCUMENT_BY_DOCUMENT_ID_ENDPOINT
+
+  axios.get(`${downloadFileUrl}/${file.id}`,
     {
-      responseType: 'blob',
-      timeout: 10000
+      responseType: 'blob'
     })
     .then(response => {
+      const contentDisposition = response.headers['content-disposition'];
+      const filename = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '')
+        : `${file.documentName}-${student.person.firstName} ${student.person.firstSurname}.pdf`;
+
       const url = window.URL.createObjectURL(new Blob([response.data]))
       const link = document.createElement('a')
       link.href = url
@@ -128,118 +116,136 @@ export const handleFileDownload = (filename, setErrorMessage) => {
     })
 }
 
-const deleteFileUrl = import.meta.env.VITE_DELETE_DOCUMENT_BY_DOCUMENT_NAME_ENDPOINT
-export const handleFileDelete = (selectedFile, setSelectedFile, setErrorMessage, setSuccessMessage, setEnrollments, enrollmentId, studentId) => {
-  axios.delete(`${deleteFileUrl}/${selectedFile.id}?filename=${selectedFile.documentUrl}`, { timeout: 10000 }) // 10 segundos
+export const handleOnFileDelete = (enrollment, selectedFile, setErrorMessage, setSuccessMessage, setEnrollment, setStudentEnrollments, setSelectedFile) => {
+  const deleteFileUrl = import.meta.env.VITE_DELETE_DOCUMENT_BY_DOCUMENT_ID_ENDPOINT
+
+  axios.delete(`${deleteFileUrl}/${selectedFile.id}`)
     .then(response => {
       setSuccessMessage('El documento se eliminó correctamente.')
-      setSelectedFile(null)
-      setEnrollments(prevEnrollments =>
-        prevEnrollments.map(student => {
-          if (student.id === studentId) {
+
+      const updatedDocs = enrollment.documents.filter(doc => doc.documentType !== selectedFile.documentType)
+      setEnrollment(prev => {
+        return {
+          ...prev,
+          documents: updatedDocs
+        }
+      })
+
+      setStudentEnrollments(prev => {
+        return prev.map(e => {
+          if (e.id === enrollment.id) {
             return {
-              ...student,
-              enrollments: student.enrollments.map(enrollment => {
-                if (enrollment.id === enrollmentId) {
-                  return {
-                    ...enrollment,
-                    document: enrollment.document.filter(doc => doc.id !== selectedFile.id)
-                  }
-                }
-                return enrollment
-              })
+              ...e,
+              documents: updatedDocs
             }
           }
-          return student
+          return e
         })
-      )
+      })
+
+      setSelectedFile(null)
     })
     .catch(error => {
       setErrorMessage(getErrorMessage(error))
     })
 }
 
-const uploadFileUrl = import.meta.env.VITE_UPLOAD_DOCUMENT_ENDPOINT
-export const handleFileUpload = (e, selectedFileType, setSelectedFile, enrollment, studentId, setErrorMessage, setSuccessMessage) => {
-  e.preventDefault()
+const updateEnrollmentDocument = (updatedDoc, enrollment, formData, setEnrollment, setStudentEnrollments) => {
+  const docInEnrollment = enrollment.documents.find(doc => doc.documentType === formData.documentType)
+  if (docInEnrollment) {
+    // Update the existing document in the enrollment
+    setEnrollment(prev => {
+      return {
+        ...prev,
+        documents: prev.documents.map(doc => {
+          if (doc.documentType === formData.documentType) {
+            return updatedDoc
+          }
+          return doc
+        })
+      }
+    })
 
-  const file = e.target[0].files[0]
-  if (!file) {
-    setErrorMessage('Debes seleccionar un archivo para subir.')
-    return
+    // Update student enrollments with the new document in the specific enrollment
+    setStudentEnrollments(prev => {
+      return prev.map(e => {
+        if (e.id === formData.enrollmentId) {
+          return {
+            ...e,
+            documents: e.documents.map(doc => {
+              if (doc.documentType === formData.documentType) {
+                return updatedDoc
+              }
+              return doc
+            })
+          }
+        }
+        return e
+      })
+    })
+  } else {
+
+    // Add the new document to the enrollment
+    setEnrollment(prev => {
+      return {
+        ...prev,
+        documents: [...prev.documents, updatedDoc]
+      }
+    })
+
+    setStudentEnrollments(prev => {
+      return prev.map(e => {
+        if (e.id === formData.enrollmentId) {
+          return {
+            ...e,
+            documents: [ ...e.documents, updatedDoc]
+          }
+        }
+        return e
+      })
+    })
   }
+}
 
-  const documentType = selectedFileType === 'Documento de Notas' ? 'OT' : 'HC'
-  const documentName = selectedFileType === 'Documento de Notas'
-    ? `notas_${enrollment.id}_${studentId}.pdf`
-    : `carta_${enrollment.id}_${studentId}.pdf`
-
+const uploadFileUrl = import.meta.env.VITE_UPLOAD_DOCUMENT_ENDPOINT
+export const handleOnFileUpload = (enrollment, formData, setSuccessMessage, setErrorMessage, setEnrollment, setStudentEnrollments, setSelectedFile) => {
   const data = new FormData()
-  data.append('file', file)
-  data.append('documentName', documentName)
-  data.append('documentType', documentType)
-  data.append('enrollmentId', enrollment.id)
-  axios.post(
-    uploadFileUrl,
-    data,
-    { timeout: 10000 })
+  data.append('file', formData.file)
+  data.append('documentType', formData.documentType)
+  data.append('enrollmentId', formData.enrollmentId)
+  axios.post(uploadFileUrl, data,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
     .then(response => {
       setSuccessMessage('El documento se subió correctamente.')
 
       const updatedDoc = {
-        id: response.data.id,
-        documentName: response.data.documentName,
-        documentType: response.data.documentType,
-        documentUrl: response.data.documentUrl
+        //get the id from the response location
+        id: response.headers['location'].split('/').pop(),
+        documentName: formData.documentType === 'OT' ? 'Documento de Notas' : 'Documento de Adaptaciones',
+        documentType: formData.documentType,
+        documentUrl: null,
       }
 
-      enrollment.document.push(updatedDoc)
+      updateEnrollmentDocument(updatedDoc, enrollment, formData, setEnrollment, setStudentEnrollments)
       setSelectedFile(updatedDoc)
     })
     .catch(error => {
-      setErrorMessage(getErrorMessage(error))
+      setErrorMessage('Error al subir el documento. Por favor, intenta de nuevo.')
     })
 }
 
-const searchEnrollmentUrl = import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT
-export const handleSearch = (search, setEnrollments) => {
-  axios.get(`${searchEnrollmentUrl}?value=${search}`, { timeout: 10000 })
-    .then(response => {
-      const enrollments = response.data.map(enrollment => formatDateToObj(enrollment))
-      const uniqueStudents = enrollments.reduce((acc, enrollment) => {
-        if (!acc.some(e => e.student.id === enrollment.student.id)) {
-          acc.push(enrollment)
-        }
-        return acc
-      }, [])
-      setEnrollments(uniqueStudents)
-    })
-    .catch(error => {
-      console.error(error)
-    })
-}
-
-const getAllEnrollmentsUrl = import.meta.env.VITE_GET_ALL_ENROLLMENTS_ENDPOINT
-export const handleGetAllEnrollments = (setEnrollments, setLoading, setErrorMessage) => {
+export const handleSearch = (currentSearchPage, pageSize, search, setEnrollments, setLoading, setErrorMessage) => {
   setLoading(true)
 
-  axios.get(getAllEnrollmentsUrl, { timeout: 10000 })
+  const searchEnrollmentUrl = import.meta.env.VITE_SEARCH_ENROLLMENT_BY_STUDENT_VALUES_ENDPOINT
+  axios.get(`${searchEnrollmentUrl}?value=${search.toLowerCase()}&page=${currentSearchPage}&size=${pageSize}`, { timeout: 1000 })
     .then(response => {
-      const data = response.data
-
-      if (!Array.isArray(data)) {
-        setEnrollments([]) // o mostrar un mensaje que no hay inscripciones
-        return
-      }
-
-      const enrollments = data.map(enrollment => formatDateToObj(enrollment))
-      const uniqueStudents = enrollments.reduce((acc, enrollment) => {
-        if (!acc.some(e => e.student.id === enrollment.student.id)) {
-          acc.push(enrollment)
-        }
-        return acc
-      }, [])
-      setEnrollments(uniqueStudents)
+      console.log('response', response.data)
+      setEnrollments(response.data)
     })
     .catch(error => {
       setErrorMessage(getErrorMessage(error))
@@ -247,4 +253,146 @@ export const handleGetAllEnrollments = (setEnrollments, setLoading, setErrorMess
     .finally(() => {
       setLoading(false)
     })
+}
+
+export const handleGetStudents = (currentPage, pageSize, setStudents, setLoading, setErrorMessage) => {
+  setLoading(true)
+  const getAllStudentsUrl = import.meta.env.VITE_GET_ALL_ENROLLMENTS_ENDPOINT
+
+  axios.get(`${getAllStudentsUrl}?page=${currentPage}&size=${pageSize}`, { timeout: 10000 })
+    .then(response => {
+      setStudents(response.data)
+    })
+    .catch(error => {
+      setErrorMessage(getErrorMessage(error))
+    })
+    .finally(() => {
+      setLoading(false)
+    })
+}
+
+export const handleGetTotalPages = (setTotalPages, pageSize) => {
+  const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_ENDPOINT
+
+  axios.get(getTotalPagesUrl, { timeout: 10000 })
+    .then(response => {
+      setTotalPages(response.data % pageSize === 0 ? response.data / pageSize : Math.floor(response.data / pageSize) + 1)
+    })
+    .catch(error => {
+      console.error('Error al obtener el total de páginas:', error)
+    })
+}
+
+export const handleGetTotalPagesForSearch = (search, pageSize, setTotalPages) => {
+  const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_FOR_SEARCH_ENDPOINT
+  axios.get(`${getTotalPagesUrl}?value=${search}`, { timeout: 10000 })
+    .then(response => {
+      setTotalPages(response.data % pageSize === 0 ? response.data / pageSize : Math.floor(response.data / pageSize) + 1)
+    })
+    .catch(error => {
+      console.error('Error al obtener el total de páginas:', error)
+    })
+}
+
+export const mapGradeToSpanish = (grade) => {
+  switch (grade) {
+    case 'FIRST':
+      return 'Primero'
+    case 'SECOND':
+      return 'Segundo'
+    case 'THIRD':
+      return 'Tercero'
+    case 'FOURTH':
+      return 'Cuarto'
+    case 'FIFTH':
+      return 'Quinto'
+    case 'SIXTH':
+      return 'Sexto'
+    case 'SEVENTH':
+      return 'Séptimo'
+    case 'EIGHTH':
+      return 'Octavo'
+    case 'NINTH':
+      return 'Noveno'
+    case 'TENTH':
+      return 'Décimo'
+    default:
+      return grade;
+  }
+}
+
+export const handleGetExamPeriods = (setExamPeriods) => {
+  const getExamPeriodsUrl = import.meta.env.VITE_GET_CURRENT_EXAM_PERIODS_ENDPOINT
+  axios.get(getExamPeriodsUrl, { timeout: 10000 })
+    .then(response => {
+      const examPeriods = response.data.map(period => {
+        // Convertir las fechas de inicio y fin a objetos Date
+        const [yearStart, monthStart, dayStart] = period.startDate.split('-').map(Number)
+        const [yearEnd, monthEnd, dayEnd] = period.endDate.split('-').map(Number)
+
+        return {
+          ...period,
+          startDate: new Date(yearStart, monthStart - 1, dayStart),
+          endDate: new Date(yearEnd, monthEnd - 1, dayEnd),
+          examDays: period.examDays.map(day => day.examDay)
+        }
+      })
+      setExamPeriods(examPeriods)
+    })
+    .catch(error => {
+      console.error('Error al obtener los períodos de examen:', error)
+    })
+}
+
+const dayMap = {
+  0: 'SS', // Sunday
+  1: 'M',  // Monday
+  2: 'K',  // Tuesday
+  3: 'W',  // Wednesday
+  4: 'T',  // Thursday
+  5: 'F',  // Friday
+  6: 'S',  // Saturday
+};
+
+export const handleIsDateAllowed = (date, examPeriods) => {
+  const dayCode = dayMap[date.getDay()];
+  return examPeriods.some(({ startDate, endDate, examDays }) => {
+    return date >= startDate && date <= endDate && examDays.includes(dayCode);
+  })
+}
+
+export const verifyAllRequiredFieldsFilled = (formData, enrollment) => {
+  return formData.status && formData.examDate &&
+    (!isCommentRequired(formData, enrollment) || formData.comment.trim());
+}
+
+const datesAreEqual = (date1, date2) => {
+  return (
+    date1.getDate() === date2.getDate() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getFullYear() === date2.getFullYear()
+  );
+}
+
+export const handleEditSubmit = (enrollment, formData, setErrorMessage, setSuccessMessage, onUpdateEnrollment, setIsEditing) => {
+  if (!verifyAllRequiredFieldsFilled(formData, enrollment)) return;
+  const [year, month, day] = formData.examDate.toISOString().split('T')[0].split('-').map(Number);
+
+  const enrollmentDate = enrollment.examDate ? new Date(year, month - 1, day) : null
+  const isDateChanged = !datesAreEqual(formData.examDate, enrollmentDate)
+
+  const isStatusChanged = formData.status !== enrollment.status
+  const isWhatsappNotificationChanged = formData.whatsappNotification !== enrollment.whatsappNotification
+  const isPreviousGradesChanged = formData.previousGrades !== enrollment.student.previousGrades
+
+  const dataToSend = {
+    examDate: isDateChanged ? formatDateForApi(formData.examDate) : formatDateForApi(enrollmentDate),
+    status: isStatusChanged ? formData.status : enrollment.status,
+    whatsappPermission: isWhatsappNotificationChanged ? formData.whatsappNotification : enrollment.whatsappNotification,
+    previousGrades: isPreviousGradesChanged ? parseFloat(formData.previousGrades) : parseFloat(enrollment.student.previousGrades),
+    comment: formData.comment.trim() || enrollment.comment,
+    changedBy: formData.changedBy,
+  };
+
+  handleEnrollmentEdit(dataToSend, enrollment, setErrorMessage, setSuccessMessage, onUpdateEnrollment, setIsEditing);
 }

@@ -20,12 +20,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 /**
  * Implementation of {@link StorageService} for file storage operations.
  * Handles file storage, retrieval, and deletion in the configured storage location.
@@ -76,7 +76,7 @@ public class StorageServiceImpl implements StorageService {
       DocType docType) {
     try {
       if (file != null) {
-        Files.copy(file.getInputStream(), Paths.get(location).resolve(filename));
+        Files.copy(file.getInputStream(), Paths.get(location).resolve(filename), REPLACE_EXISTING);
       }
     } catch (IOException e) {
       throw new StorageException(

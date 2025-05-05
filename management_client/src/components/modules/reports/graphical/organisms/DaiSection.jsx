@@ -5,7 +5,6 @@ import Spinner from '../../../../core/global/atoms/Spinner'
 import ErrorMessage from '../atoms/ErrorMessage'
 import ChartTitle from '../atoms/ChartTitle'
 import FiltersPanel from '../molecules/helpers/FiltersPanel'
-import DaiRadarChart from '../molecules/charts/DaiRadarChart'
 
 const DaiSection = ({
   startDate,
@@ -50,10 +49,13 @@ const DaiSection = ({
         sectorOptions={sectorOptions}
         gradeOptions={gradeOptions}
       />
-      <DaiRadarChart
-        details={data.details}
-        areaAverages={data.areaAverages}
-      />
+      <div className='chart-container'>
+        <div className='chart'>
+          <h2>Gráfica de Resultados</h2>
+          {/* TODO: Add chart component here */}
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </div>
+      </div>
     </div>
   )
 }
