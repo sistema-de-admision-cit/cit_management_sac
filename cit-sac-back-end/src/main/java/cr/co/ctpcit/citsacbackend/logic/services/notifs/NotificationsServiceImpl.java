@@ -15,6 +15,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.configs.WhatsappConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.ParentDto;
+import jakarta.mail.AuthenticationFailedException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
@@ -234,13 +235,13 @@ public class NotificationsServiceImpl implements NotificationsService {
             }
         }
 
-        String statusEsp = switch (updateDto.processStatus().name()) {
+        String statusEsp = switch (updateDto.status().name()) {
             case "ACCEPTED" -> "Aceptado";
             case "REJECTED" -> "Rechazado";
             case "PENDING" -> "Pendiente";
             case "ELIGIBLE" -> "Elegible";
             case "INELIGIBLE" -> "NO Elegible";
-            default -> updateDto.processStatus().name();
+            default -> updateDto.status().name();
         };
 
         // Obtener padres del estudiante
@@ -509,9 +510,9 @@ public class NotificationsServiceImpl implements NotificationsService {
             helper.setSubject(emailConfigDto.getSubject());
             helper.setText(emailConfigDto.getMessage(), true);
             mailSender.send(message);
-        } catch (MessagingException e) {
-            System.err.println("Error al enviar notificaciones: " + e.getMessage());
-            // No relanzamos la excepción
+        } catch (AuthenticationFailedException e) {
+            System.err.println("Usuario o contraseña incorrectos para el correo electrónico");
+        } catch (Exception e) {
         }
     }
 

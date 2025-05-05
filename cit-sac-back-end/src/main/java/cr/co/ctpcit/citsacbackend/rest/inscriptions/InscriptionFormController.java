@@ -56,7 +56,7 @@ public class InscriptionFormController {
       notificationsService.createEmailForInscription(inscription);
       //notificationsService.createWhatsappMessage(inscription);
     } catch (Exception e) {
-      System.err.println("Error al enviar notificaciones: " + e.getMessage());
+      System.err.println("Usuario o contraseña incorrectos para el correo electrónico: " + e.getMessage());
     }
 
     // Return created status and location header
