@@ -745,8 +745,8 @@ BEGIN
     CASE e.known_through
       WHEN 'OH' THEN 'OpenHouse'
       WHEN 'SM' THEN 'Redes Sociales'
-      WHEN 'FD' THEN 'Visita al Colegio'
-      WHEN 'FM' THEN 'Evento Académico'
+      WHEN 'FD' THEN 'Amigo'
+      WHEN 'FM' THEN 'Familiar'
       ELSE 'Otros'
     END AS examSource,
     COUNT(*) AS studentCount
