@@ -6,7 +6,7 @@ import UploadFileForm from './UploadFileForm'
 const ModalManageFiles = ({ 
   enrollment,
   selectedFileType, 
-  selectedFile, 
+  selectedFile,
   onFileUpload, 
   onFileDownload, 
   onFileDelete, 
@@ -38,7 +38,7 @@ const ModalManageFiles = ({
                   Descargar
                 </Button>
                 <Button
-                  onClick={() => onFileDelete(selectedFile)}
+                  onClick={onFileDelete}
                   className='btn btn-danger'
                 >
                   Eliminar

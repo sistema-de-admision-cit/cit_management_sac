@@ -7,7 +7,7 @@ import EnrollmentInfo from './EnrollmentInfo'
 import Button from '../../../../core/global/atoms/Button'
 import { guardianTabText } from '../helpers/helpers'
 import ModalManageFiles from '../molecules/ModalManageFiles'
-import { handleDocClick, handleFileDownload, handleOnFileUpload, handleFileDelete, mapGradeToSpanish } from '../helpers/handlers'
+import { handleDocClick, handleFileDownload, handleOnFileUpload, handleOnFileDelete, mapGradeToSpanish } from '../helpers/handlers'
 
 const ModalApplicantDetails = ({
   student,
@@ -26,9 +26,12 @@ const ModalApplicantDetails = ({
   const [enrollment, setEnrollment] = useState({})
 
   const handleFileUpload = (e, formData) => {
-    handleOnFileUpload(e, enrollment, formData, setSuccessMessage, setErrorMessage, setStudentEnrollments)
-    setIsDocModalOpen(false)
-    onClose()
+    e.preventDefault()
+    handleOnFileUpload(enrollment, formData, setSuccessMessage, setErrorMessage, setEnrollment, setStudentEnrollments, setSelectedFile)
+  }
+
+  const handleFileDelete = () => {
+    handleOnFileDelete(enrollment, selectedFile, setErrorMessage, setSuccessMessage, setEnrollment, setStudentEnrollments, setSelectedFile)
   }
 
   return (
@@ -87,10 +90,7 @@ const ModalApplicantDetails = ({
           selectedFile={selectedFile}
           onFileUpload={handleFileUpload}
           onFileDownload={() => handleFileDownload(selectedFile, student, setErrorMessage)}
-          onFileDelete={(selectedFile) => {
-            handleFileDelete(selectedFile, setErrorMessage, setSuccessMessage)
-            setSelectedFile(null)
-          }}
+          onFileDelete={handleFileDelete}
           onClose={() => setIsDocModalOpen(false)}
         />
       )}

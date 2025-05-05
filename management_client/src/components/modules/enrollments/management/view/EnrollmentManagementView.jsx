@@ -13,22 +13,22 @@ const EnrollmentManagementView = () => {
   const [isModalApplicantDetailsOpen, setIsModalApplicantDetailsOpen] = useState(false)
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
-  const handleOnUpdateEnrollment = (formData) => {
+  const handleOnUpdateEnrollment = (sentData, editedEnrollment) => {
 
-    const updatedEnrollment = studentEnrollments.map((enrollment) => {
-      enrollment.student.previousGrades = parseFloat(formData.previousGrades)
+    const updatedEnrollments = studentEnrollments.map((enrollment) => {
+      enrollment.student.previousGrades = parseFloat(sentData.previousGrades)
 
-      if (enrollment.id === formData.enrollmentId) {
+      if (enrollment.id === editedEnrollment.id) {
         return {
           ...enrollment,
-          status: formData.status,
-          examDate: formatDateForApi(formData.examDate),
-          whatsappNotification: formData.whatsappNotification,
+          status: sentData.status,
+          examDate: formatDateForApi(sentData.examDate),
+          whatsappNotification: sentData.whatsappPermission,
         }
       }
       return enrollment
     })
-    setStudentEnrollments(updatedEnrollment)
+    setStudentEnrollments(updatedEnrollments)
     setStudentSelected(studentEnrollments[0].student)
   }
 
@@ -52,7 +52,7 @@ const EnrollmentManagementView = () => {
           onClose={() => setIsModalApplicantDetailsOpen(false)}
           setErrorMessage={setErrorMessage}
           setSuccessMessage={setSuccessMessage}
-          onUpdateEnrollment={(formData) => handleOnUpdateEnrollment(formData)}
+          onUpdateEnrollment={handleOnUpdateEnrollment}
         />
       )}
       {renderMessages()}
