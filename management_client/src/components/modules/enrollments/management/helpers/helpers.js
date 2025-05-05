@@ -39,7 +39,7 @@ export const statusOptionsForEnrollment = [
 export const isCommentRequired = (formData, enrollment) => {
   // Verificar si hay cambios en el estado
   if (formData.status !== enrollment.status) {
-    return true;
+    return true
   }
 
   // Comparación segura de fechas
@@ -47,7 +47,7 @@ export const isCommentRequired = (formData, enrollment) => {
   const originalDate = enrollment.examDate ? new Date(enrollment.examDate) : null;
 
   if ((!currentDate && originalDate) || (currentDate && !originalDate)) {
-    return true;
+    return true
   }
 
   try {
@@ -77,21 +77,21 @@ export const isEnabled = (formData, enrollment) => {
     formData.status !== enrollment.status ||
     !areDatesEqual(formData.examDate, enrollment.examDate) ||
     formData.whatsappNotification !== enrollment.whatsappNotification ||
-    formData.previousGrades !== (enrollment.student.previousGrades ?? '');
+    formData.previousGrades !== (enrollment.student.previousGrades ?? '')
 
-  if (!hasChanges) return false;
+  if (!hasChanges) return false
 
   if (isCommentRequired(formData, enrollment) && !formData.comment.trim()) {
-    return false;
+    return false
   }
 
-  return true;
-};
+  return true
+}
 
 // Función auxiliar para comparar fechas de forma segura
 export const areDatesEqual = (date1, date2) => {
-  if (!date1 && !date2) return true;
-  if (!date1 || !date2) return false;
+  if (!date1 && !date2) return true
+  if (!date1 || !date2) return false
 
   try {
     const d1 = date1 instanceof Date ? date1 : new Date(date1);
@@ -99,20 +99,20 @@ export const areDatesEqual = (date1, date2) => {
 
     return d1.toISOString().split('T')[0] === d2.toISOString().split('T')[0];
   } catch (error) {
-    console.error('Error al comparar fechas:', error);
-    return false;
+    console.error('Error al comparar fechas:', error)
+    return false
   }
-};
+}
 
 // Función para convertir fechas en strings a objetos Date
 export const formatDateToObj = (obj) => {
-  if (!obj) return obj;
+  if (!obj) return obj
 
   // Clonar el objeto para no modificar el original directamente
   const newObj = { ...obj };
 
   if (newObj.birthDate) {
-    newObj.birthDate = new Date(newObj.birthDate);
+    newObj.birthDate = new Date(newObj.birthDate)
   }
 
   if (newObj.enrollments && Array.isArray(newObj.enrollments)) {
@@ -121,14 +121,14 @@ export const formatDateToObj = (obj) => {
         return {
           ...enrollment,
           examDate: new Date(enrollment.examDate)
-        };
+        }
       }
-      return enrollment;
-    });
+      return enrollment
+    })
   }
 
-  return newObj;
-};
+  return newObj
+}
 
 // Función para formatear fecha a "day/month/year"
 export const formatDate = (date) => {
@@ -142,11 +142,11 @@ export const formatDate = (date) => {
   // Si es inválido, retornar string vacío
   if (isNaN(dateObj.getTime())) return '';
 
-  const formattedDay = day < 10 ? `0${day}` : day;
-  const formattedMonth = month < 10 ? `0${month}` : month;
+  const formattedDay = day < 10 ? `0${day}` : day
+  const formattedMonth = month < 10 ? `0${month}` : month
 
-  return `${formattedDay}/${formattedMonth}/${year}`;
-};
+  return `${formattedDay}/${formattedMonth}/${year}`
+}
 
 // Función para formatear fecha a "year-month-day" (API)
 export const formatDateForApi = (date) => {
@@ -155,9 +155,9 @@ export const formatDateForApi = (date) => {
   const dateObj = date instanceof Date ? date : new Date(date);
   if (isNaN(dateObj.getTime())) return null;
 
-  const year = dateObj.getFullYear();
-  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-  const day = String(dateObj.getDate()).padStart(2, '0');
+  const year = dateObj.getFullYear()
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0')
+  const day = String(dateObj.getDate()).padStart(2, '0')
 
-  return `${year}-${month}-${day}`;
-};
+  return `${year}-${month}-${day}`
+}

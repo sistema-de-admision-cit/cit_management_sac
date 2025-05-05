@@ -45,7 +45,7 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
           gradeOptions: [{ value: 'ALL', label: 'Todos' }, ...opts.gradeOptions],
           processStatusOptions: [{ value: 'ALL', label: 'Todos' }, ...opts.processStatusOptions],
           gradeTypeOptions: [{ value: 'ALL', label: 'Todos' }, ...opts.gradeTypeOptions],
-          provinceOptions: [{ value: 'ALL', label: 'Todos' }, ...(opts.provinceOptions || [])],
+          provinceOptions: [{ value: 'ALL', label: 'Todos' }, ...(opts.provinceOptions || [])]
         })
       } catch (err) {
         onGenerate(null, null, 'Error cargando las opciones del formulario')
@@ -114,7 +114,7 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
 
     if (request.reportType === 'KNOWN_THROUGH') {
       filters.push(
-        <Grid item xs={12} md={6} key="knownThrough">
+        <Grid item xs={12} md={6} key='knownThrough'>
           <FormControl fullWidth>
             <InputLabel id='known-through-label'>Conocido por</InputLabel>
             <Select
@@ -136,7 +136,7 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
 
     if (request.reportType === 'GRADE_TO_ENROLL') {
       filters.push(
-        <Grid item xs={12} md={6} key="grade">
+        <Grid item xs={12} md={6} key='grade'>
           <FormControl fullWidth>
             <InputLabel id='grade-filter-label'>Grado a matricular</InputLabel>
             <Select
@@ -158,7 +158,7 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
 
     if (request.reportType === 'GRADES') {
       filters.push(
-        <Grid item xs={12} md={6} key="gradeType">
+        <Grid item xs={12} md={6} key='gradeType'>
           <FormControl fullWidth>
             <InputLabel id='grade-type-filter-label'>Tipo de calificación</InputLabel>
             <Select
@@ -180,7 +180,7 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
 
     if (request.reportType === 'PROCESS_STATUS') {
       filters.push(
-        <Grid item xs={12} md={6} key="status">
+        <Grid item xs={12} md={6} key='status'>
           <FormControl fullWidth>
             <InputLabel id='status-filter-label'>Estado del proceso</InputLabel>
             <Select
@@ -202,7 +202,7 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
 
     if (request.reportType === 'PROVINCE') {
       filters.push(
-        <Grid item xs={12} md={6} key="province">
+        <Grid item xs={12} md={6} key='province'>
           <FormControl fullWidth>
             <InputLabel id='province-filter-label'>Provincia</InputLabel>
             <Select
@@ -233,7 +233,8 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
       backgroundColor: theme.palette.background.paper,
       borderRadius: 2,
       boxShadow: theme.shadows[1]
-    }}>
+    }}
+    >
       <Grid container spacing={3}>
         {/* Selector de Tipo de Reporte */}
         <Grid item xs={12} md={6}>
@@ -254,7 +255,7 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
             </Select>
           </FormControl>
         </Grid>
-  
+
         {/* Selector de Rango de Fechas */}
         <Grid item xs={12}>
           <DateRangePicker
@@ -264,30 +265,30 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
             onEndDateChange={(date) => handleChange('endDate', date)}
           />
         </Grid>
-  
+
         {/* Filtros dinámicos */}
         {getVisibleFilters()}
-  
+
         {/* Espacio adicional entre filtros y botones */}
         <Grid item xs={12} sx={{ mb: 4 }} />
-  
+
         {/* Botones para Generar Reporte */}
         <Grid item xs={12}>
-          <Stack 
-            direction="row" 
-            spacing={2} 
-            justifyContent="center"
+          <Stack
+            direction='row'
+            spacing={2}
+            justifyContent='center'
             sx={{ mt: 6 }} // Margen superior aumentado
           >
             <Button
-              variant="contained"
+              variant='contained'
               onClick={() => handleSubmit('PDF')}
               disabled={isLoading}
               sx={{
                 backgroundColor: '#2ba98e',
                 minWidth: 200,
                 padding: '10px 24px',
-                fontSize: '1rem', 
+                fontSize: '1rem',
                 fontWeight: 'bold',
                 '&:hover': {
                   backgroundColor: '#228f75'
@@ -296,14 +297,14 @@ const ReportGeneratorForm = ({ onGenerate, isLoading }) => {
             >
               {isLoading ? 'Generando...' : 'Generar PDF'}
             </Button>
-            <Button 
-              variant="outlined" 
-              onClick={() => handleSubmit('CSV')} 
-              disabled={isLoading} 
-              sx={{ 
-                minWidth: 200, 
-                padding: '10px 24px', 
-                fontSize: '1rem', 
+            <Button
+              variant='outlined'
+              onClick={() => handleSubmit('CSV')}
+              disabled={isLoading}
+              sx={{
+                minWidth: 200,
+                padding: '10px 24px',
+                fontSize: '1rem',
                 fontWeight: 'bold',
                 borderColor: '#2ba98e',
                 color: '#2ba98e',

@@ -16,7 +16,7 @@ const NotificationsSettingsView = () => {
     whatsapp_api_key: '',
     office_contact: '',
     instagram_contact: '',
-    facebook_contact: '',
+    facebook_contact: ''
   })
 
   useEffect(() => {

@@ -74,9 +74,9 @@ const ReportsView = () => {
   return (
     <div className='container percentages-configurator'>
       {popupState.visible && (
-        <PopupComponent 
-          message={popupState.message} 
-          onClose={handleClosePopup} 
+        <PopupComponent
+          message={popupState.message}
+          onClose={handleClosePopup}
           type={popupState.type}
           messageTitle={popupState.title}
         />

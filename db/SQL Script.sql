@@ -747,23 +747,192 @@ END//
 -- This procedure groups the enrollments by the known_through field
 -- and returns the count of students for each group
 
+/* 1) SQL: create filtered stored procedure */
 DELIMITER //
-DROP PROCEDURE IF EXISTS usp_Get_Students_By_Exam_Source //
-CREATE PROCEDURE usp_Get_Students_By_Exam_Source()
+DROP PROCEDURE IF EXISTS usp_Get_Students_By_Exam_Source_Filters //
+CREATE PROCEDURE usp_Get_Students_By_Exam_Source_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
 BEGIN
-    SELECT 
-       CASE known_through
-            WHEN 'OH' THEN 'OpenHouse'
-            WHEN 'SM' THEN 'Redes Sociales'
-            WHEN 'FD' THEN 'Visita al Colegio'
-            WHEN 'FM' THEN 'Evento Académico'
-            ELSE 'Otros'
-       END AS examSource,
-       COUNT(*) AS studentCount
-    FROM tbl_Enrollments
-    GROUP BY known_through;
+  SELECT
+    CASE e.known_through
+      WHEN 'OH' THEN 'OpenHouse'
+      WHEN 'SM' THEN 'Redes Sociales'
+      WHEN 'FD' THEN 'Amigo'
+      WHEN 'FM' THEN 'Familiar'
+      ELSE 'Otros'
+    END AS examSource,
+    COUNT(*) AS studentCount
+  FROM tbl_Enrollments e
+  WHERE
+    (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
+    AND (
+      p_grades = 'All' OR FIND_IN_SET(e.grade_to_enroll, p_grades)
+    )
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND e.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  GROUP BY e.known_through;
 END //
 DELIMITER ;
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS usp_Get_Enrollment_Attendance_Stats_Filters //
+CREATE PROCEDURE usp_Get_Enrollment_Attendance_Stats_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT, 
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    DATE(e.enrollment_date)          AS enrollmentDate,
+    e.grade_to_enroll                AS grade,
+    CASE
+      WHEN e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH')
+        THEN 'Primaria'
+      ELSE 'Secundaria'
+    END                               AS sector,
+    COUNT(*)                         AS totalEnrolled,
+    COUNT(DISTINCT ex.enrollment_id) AS totalAttended
+  FROM tbl_Enrollments e
+  LEFT JOIN tbl_Exams ex
+    ON ex.enrollment_id = e.enrollment_id
+    /* opcionalmente: AND ex.exam_type IN ('ACA','DAI') */
+  WHERE 
+    (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
+    AND (
+      p_grades = 'All'
+      OR FIND_IN_SET(e.grade_to_enroll, p_grades)
+    )
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND e.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  GROUP BY enrollmentDate, grade, sector
+  ORDER BY enrollmentDate, grade;
+END //
+DELIMITER ;
+
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS usp_Get_Admission_Final_Stats_Filters //
+CREATE PROCEDURE usp_Get_Admission_Final_Stats_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,    -- CSV of grades or 'All'
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    DATE(e.enrollment_date) AS enrollmentDate,
+    e.grade_to_enroll       AS grade,
+    CASE
+      WHEN e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH') THEN 'Primaria'
+      ELSE 'Secundaria'
+    END                     AS sector,
+    SUM(e.status = 'ACCEPTED') AS totalAccepted,
+    SUM(e.status = 'REJECTED') AS totalRejected
+  FROM tbl_Enrollments e
+  WHERE
+    (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
+    AND (
+      p_grades = 'All' OR FIND_IN_SET(e.grade_to_enroll, p_grades)
+    )
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND e.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  GROUP BY enrollmentDate, grade, sector
+  ORDER BY enrollmentDate, grade;
+END //
+DELIMITER ;
+
+
+DELIMITER //
+
+-- 5a) Distribución de notas por dificultad (Academic Exam)
+DROP PROCEDURE IF EXISTS usp_Get_Academic_Exam_Distribution_Filters //
+CREATE PROCEDURE usp_Get_Academic_Exam_Distribution_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    CASE q.question_level
+      WHEN 'EASY'   THEN 'Fácil'
+      WHEN 'MEDIUM' THEN 'Medio'
+      WHEN 'HARD'   THEN 'Difícil'
+    END                           AS difficulty,
+    CAST(r.score AS DECIMAL(5,2)) AS examScore
+  FROM tbl_Exams e
+  JOIN tbl_Enrollments en
+    ON en.enrollment_id = e.enrollment_id
+  JOIN JSON_TABLE(
+    e.responses,
+    '$[*]'
+    COLUMNS (
+      questionId INT    PATH '$.questionId',
+      score      DECIMAL(5,2) PATH '$.score'
+    )
+  ) AS r
+    ON TRUE
+  JOIN tbl_Questions q
+    ON q.question_id   = r.questionId
+   AND q.question_type = 'ACA'
+  WHERE e.exam_type = 'ACA'
+    AND (p_start_date IS NULL OR DATE(e.exam_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.exam_date) <= p_end_date)
+    AND (p_grades = 'All' OR FIND_IN_SET(en.grade_to_enroll, p_grades))
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND en.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND en.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    );
+END //
+  
+-- 5b) Media de puntajes por grado (Academic Exam)
+DROP PROCEDURE IF EXISTS usp_Get_Academic_Exam_Grade_Average_Filters //
+CREATE PROCEDURE usp_Get_Academic_Exam_Grade_Average_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    en.grade_to_enroll AS grade,
+    AVG(ae.grade)      AS averageScore
+  FROM tbl_Exams e
+  JOIN tbl_Academic_Exams ae
+    ON ae.exam_id = e.exam_id
+  JOIN tbl_Enrollments en
+    ON en.enrollment_id = e.enrollment_id
+  WHERE e.exam_type = 'ACA'
+    AND (p_start_date IS NULL OR DATE(e.exam_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.exam_date) <= p_end_date)
+    AND (p_grades = 'All' OR FIND_IN_SET(en.grade_to_enroll, p_grades))
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND en.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND en.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  GROUP BY en.grade_to_enroll
+  ORDER BY en.grade_to_enroll;
+END //
 
 
 -- End of the stored procedures

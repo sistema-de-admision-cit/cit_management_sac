@@ -1,49 +1,44 @@
-import React, { useEffect, useState } from 'react'
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { fetchExamSourceData } from '../helpers/handlers'
+import React from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
-import { useFormState } from 'react-dom'
+import ExamSourceSection from '../organisms/ExamSourceSection'
+import AttendanceSection from '../organisms/AttendanceSection'
+import AdmissionFinalSection from '../organisms/AdmissionFinalSection'
+import '../../../../../assets/styles/reports/graphical-report-styles.css'
+import { useSectionFilters } from '../hooks/useSectionFilters'
+import AcademicSection from '../organisms/AcademicSection'
+import DaiSection from '../organisms/DaiSection'
 
-const GraphicalReportsView = () => {
-  const [data, setData] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    fetchExamSourceData(setData, setIsLoading, setError)
-  }, [])
-
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error loading data</div>
-
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28CF2']
+export default function GraphicalReportsView () {
+  // Instantiating independent filters for each chart
+  const examSourceFilters = useSectionFilters()
+  const attendanceFilters = useSectionFilters()
+  const admissionFinalFilers = useSectionFilters()
+  const academicFilters = useSectionFilters()
+  const daiFilters = useSectionFilters()
 
   return (
     <SectionLayout title='Reportes Gráficos'>
       <div className='graphical-reports-container container'>
-        <h1>Reportes Graficos</h1>
-        <ResponsiveContainer width='100%' height={400}>
-          <PieChart>
-            <Pie
-              data={data}
-              dataKey='studentCount'
-              nameKey='examSource'
-              cx='50%'
-              cy='50%'
-              outerRadius={120}
-              label
-            >
-              {data?.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+        <div className='exam-source-section'>
+          <ExamSourceSection {...examSourceFilters} />
+        </div>
+
+        <div className='attendance-section'>
+          <AttendanceSection {...attendanceFilters} />
+        </div>
+
+        <div className='admission-final-section'>
+          <AdmissionFinalSection {...admissionFinalFilers} />
+        </div>
+
+        <div className='academic-section'>
+          <AcademicSection {...academicFilters} />
+        </div>
+
+        <div className='dai-section'>
+          <DaiSection {...daiFilters} />
+        </div>
       </div>
     </SectionLayout>
   )
 }
-
-export default GraphicalReportsView

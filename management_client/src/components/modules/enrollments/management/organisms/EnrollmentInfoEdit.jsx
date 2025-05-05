@@ -47,7 +47,7 @@ const ButtonContainer = styled('div')({
   justifyContent: 'center',
   marginTop: '30px',
   width: '100%'
-});
+})
 
 const EnrollmentInfoEdit = ({ enrollment, setIsEditing, setErrorMessage, setSuccessMessage, onUpdateEnrollment }) => {
   const [year, month, day] = enrollment.examDate.split('-').map(Number);
@@ -217,7 +217,7 @@ const EnrollmentInfoEdit = ({ enrollment, setIsEditing, setErrorMessage, setSucc
         </div>
       </FormContainer>
     </LocalizationProvider>
-  );
-};
+  )
+}
 
-export default EnrollmentInfoEdit;
+export default EnrollmentInfoEdit
