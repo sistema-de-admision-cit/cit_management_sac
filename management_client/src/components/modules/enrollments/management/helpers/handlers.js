@@ -81,6 +81,7 @@ export const handleEnrollmentEdit = (dataToSend, enrollment, setErrorMessage, se
     })
     .catch(error => {
       setErrorMessage(getErrorMessage(error))
+      return false;
     })
 }
 
