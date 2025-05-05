@@ -745,8 +745,8 @@ BEGIN
     CASE e.known_through
       WHEN 'OH' THEN 'OpenHouse'
       WHEN 'SM' THEN 'Redes Sociales'
-      WHEN 'FD' THEN 'Visita al Colegio'
-      WHEN 'FM' THEN 'Evento Académico'
+      WHEN 'FD' THEN 'Amigo'
+      WHEN 'FM' THEN 'Familiar'
       ELSE 'Otros'
     END AS examSource,
     COUNT(*) AS studentCount
@@ -918,84 +918,6 @@ BEGIN
   ORDER BY en.grade_to_enroll;
 END //
 
--- 6a) Detalle por habilidad (DAI Exam)
-DROP PROCEDURE IF EXISTS usp_Get_Dai_Exam_Details_Filters //
-CREATE PROCEDURE usp_Get_Dai_Exam_Details_Filters(
-  IN p_start_date DATE,
-  IN p_end_date   DATE,
-  IN p_grades     TEXT,
-  IN p_sector     ENUM('All','Primaria','Secundaria')
-)
-BEGIN
-  SELECT
-    en.enrollment_id AS enrollmentId,
-    jt.area          AS area,
-    jt.score         AS score
-  FROM tbl_Exams e
-  JOIN tbl_Dai_Exams de
-    ON de.exam_id = e.exam_id
-  JOIN tbl_Enrollments en
-    ON en.enrollment_id = e.enrollment_id
-  JOIN JSON_TABLE(
-    e.responses,
-    '$[*]'
-    COLUMNS (
-      area  VARCHAR(64)  PATH '$.area',
-      score DECIMAL(5,2) PATH '$.score'
-    )
-  ) AS jt
-    ON TRUE
-  WHERE e.exam_type = 'DAI'
-    AND (p_start_date IS NULL OR DATE(e.exam_date) >= p_start_date)
-    AND (p_end_date   IS NULL OR DATE(e.exam_date) <= p_end_date)
-    AND (p_grades = 'All' OR FIND_IN_SET(en.grade_to_enroll, p_grades))
-    AND (
-      p_sector = 'All'
-      OR (p_sector = 'Primaria'   AND en.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
-      OR (p_sector = 'Secundaria' AND en.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
-    )
-  ORDER BY en.enrollment_id, jt.area;
-END //
-
--- 6b) Promedio por área (DAI Exam)
-DROP PROCEDURE IF EXISTS usp_Get_Dai_Exam_Area_Average_Filters //
-CREATE PROCEDURE usp_Get_Dai_Exam_Area_Average_Filters(
-  IN p_start_date DATE,
-  IN p_end_date   DATE,
-  IN p_grades     TEXT,
-  IN p_sector     ENUM('All','Primaria','Secundaria')
-)
-BEGIN
-  SELECT
-    jt.area      AS area,
-    AVG(jt.score) AS averageScore
-  FROM tbl_Exams e
-  JOIN tbl_Dai_Exams de
-    ON de.exam_id = e.exam_id
-  JOIN tbl_Enrollments en
-    ON en.enrollment_id = e.enrollment_id
-  JOIN JSON_TABLE(
-    e.responses,
-    '$[*]'
-    COLUMNS (
-      area  VARCHAR(64)  PATH '$.area',
-      score DECIMAL(5,2) PATH '$.score'
-    )
-  ) AS jt
-    ON TRUE
-  WHERE e.exam_type = 'DAI'
-    AND (p_start_date IS NULL OR DATE(e.exam_date) >= p_start_date)
-    AND (p_end_date   IS NULL OR DATE(e.exam_date) <= p_end_date)
-    AND (p_grades = 'All' OR FIND_IN_SET(en.grade_to_enroll, p_grades))
-    AND (
-      p_sector = 'All'
-      OR (p_sector = 'Primaria'   AND en.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
-      OR (p_sector = 'Secundaria' AND en.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
-    )
-  GROUP BY jt.area
-  ORDER BY jt.area;
-END //
-DELIMITER ;
 
 -- End of the stored procedures
 -- ----------------------------------------------------- 

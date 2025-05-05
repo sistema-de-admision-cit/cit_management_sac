@@ -21,11 +21,5 @@ public interface ReportsRepository {
 
   List<AcademicGradeAverageDTO> findAcademicExamGradeAverages(LocalDate startDate,
       LocalDate endDate, List<String> grades, String sector);
-
-  List<DaiDetailDTO> findDaiExamDetails(LocalDate startDate, LocalDate endDate, List<String> grades,
-      String sector);
-
-  List<DaiAreaAverageDTO> findDaiExamAreaAverages(LocalDate startDate, LocalDate endDate,
-      List<String> grades, String sector);
 }
 
