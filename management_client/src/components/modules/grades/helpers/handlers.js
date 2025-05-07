@@ -295,21 +295,24 @@ export const handleSaveDAIComment = (
 
 // Handlers that transfort to PDF
 
-export const generateAcademicExamPDF = (gradeData) => {
+export const generateAcademicExamPDF = async (gradeData) => {
   // Extraer los datos relevantes del JSON
-  const examData = gradeData.academicExams[0]
-  const exam = examData.exam
-  const grade = examData.grade
+  const examData = gradeData.academicExams[0];
+  const exam = examData.exam;
+  const grade = examData.grade;
 
   // Crear un nuevo documento PDF
   // eslint-disable-next-line new-cap
-  const doc = new jsPDF()
+  const doc = new jsPDF();
 
   // Configuración inicial
-  let yPosition = 10
-  const margin = 20
-  const pageWidth = doc.internal.pageSize.getWidth()
-  const maxWidth = pageWidth - margin * 2
+  let yPosition = 10;
+  const margin = 20;
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const maxWidth = pageWidth - margin * 2;
+  const maxImageWidth = pageWidth - margin * 2; // Ancho máximo para imágenes
+  const maxImageHeight = 100; // Altura máxima para imágenes (en puntos)
 
   // Título del documento
   doc.setFontSize(18)
@@ -338,17 +341,81 @@ export const generateAcademicExamPDF = (gradeData) => {
   yPosition += 15
 
   // Preguntas y respuestas
-  exam.responses.forEach((question, index) => {
-    if (yPosition > 250) {
-      doc.addPage()
-      yPosition = 20
+  for (const [index, question] of exam.responses.entries()) {
+    if (yPosition > pageHeight - 50) {
+      doc.addPage();
+      yPosition = 20;
     }
 
     // Número de pregunta
-    doc.setFontSize(14)
-    doc.setFont('helvetica', 'bold')
-    doc.text(`Pregunta ${index + 1}:`, margin, yPosition)
-    yPosition += 8
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Pregunta ${index + 1}:`, margin, yPosition);
+    yPosition += 8;
+
+    if (question.imageUrl) {
+      try {
+        // Corregir la URL eliminando duplicados de /api
+        let imageUrl = question.imageUrl;
+        if (imageUrl.startsWith('/api/')) {
+          imageUrl = imageUrl.substring(4); // Elimina el primer /api
+        }
+
+        // Usar axiosInstance para obtener la imagen
+        const response = await axiosInstance.get(imageUrl, {
+          responseType: 'blob',
+          // Agregar headers si es necesario
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        });
+
+        // Verificar que la respuesta sea válida
+        if (!response.data || response.data.size === 0) {
+          throw new Error('Respuesta vacía del servidor');
+        }
+
+        const imageBlob = response.data;
+        const imageBase64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(imageBlob);
+        });
+
+        // Crear elemento de imagen para obtener dimensiones
+        const img = new Image();
+        await new Promise((resolve) => {
+          img.onload = resolve;
+          img.src = imageBase64;
+        });
+
+        // Calcular dimensiones proporcionales
+        let imgWidth = img.width;
+        let imgHeight = img.height;
+        const ratio = imgWidth / imgHeight;
+
+        if (imgWidth > maxImageWidth) {
+          imgWidth = maxImageWidth;
+          imgHeight = imgWidth / ratio;
+        }
+
+        if (imgHeight > maxImageHeight) {
+          imgHeight = maxImageHeight;
+          imgWidth = imgHeight * ratio;
+        }
+
+        // Agregar la imagen con dimensiones calculadas
+        doc.addImage(imageBase64, 'JPEG', margin, yPosition, imgWidth, imgHeight);
+        yPosition += imgHeight + 10;
+        
+      } catch (error) {
+        console.error('Error al cargar la imagen:', error);
+        doc.text('(No se pudo cargar la imagen)', margin, yPosition);
+        yPosition += 10;
+      }
+    }
 
     // Texto de la pregunta
     doc.setFontSize(12)
@@ -387,7 +454,7 @@ export const generateAcademicExamPDF = (gradeData) => {
     })
 
     yPosition += 10
-  })
+  }
 
   // Guardar el PDF
   doc.save(`Examen_${gradeData.person.firstName}_${gradeData.person.firstSurname}_${exam.id}.pdf`)
