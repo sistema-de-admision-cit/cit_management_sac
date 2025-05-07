@@ -5,18 +5,17 @@ import InputField from '../../../../core/global/atoms/InputField'
 const ManualGradeSection = ({ handleAddScore, handleProcessScore, scores }) => {
   const [tracktestId, setTracktestId] = useState('') // TrackTest ID (E.g. 1234567890)
   const [level, setLevel] = useState('') // CERF level (A1 - C2)
-  const [core, setCore] = useState('') // Grading score (E.g. 90%)
   const [names, setNames] = useState('') // Full name of the student
   const [lastNames, setLastNames] = useState('') // Both last names of the student
-  const [lastTest, setLastTest] = useState(null) // Date of the last test taken by the student (this maps to the examDate field in the database)
+  const [lastTest, setLastTest] = useState(null) // Date of the last test taken by the student
 
   const addNote = () => {
-    if (!tracktestId || !core) return
+    if (!tracktestId) return
 
     const newGrade = {
       id: tracktestId,
       level,
-      core,
+      core: 0, // Always send 0 as the core value
       names,
       lastNames,
       lastTest
@@ -24,7 +23,6 @@ const ManualGradeSection = ({ handleAddScore, handleProcessScore, scores }) => {
 
     if (!handleAddScore(newGrade)) {
       setTracktestId('')
-      setCore('')
       setLevel('')
       setNames('')
       setLastNames('')
@@ -98,19 +96,6 @@ const ManualGradeSection = ({ handleAddScore, handleProcessScore, scores }) => {
         className='form-group'
       />
 
-      <InputField
-        field={{
-          type: 'text',
-          name: 'core',
-          placeholder: 'Nota (Ej: 90%)',
-          label: 'Nota',
-          required: true
-        }}
-        value={core}
-        handleChange={(e) => setCore(e.target.value)}
-        className='form-group'
-      />
-
       <Button onClick={addNote} className='btn btn-secondary'>
         Añadir Nota
       </Button>
@@ -120,7 +105,6 @@ const ManualGradeSection = ({ handleAddScore, handleProcessScore, scores }) => {
           Procesar Notas Manuales
         </Button>
       )}
-
     </div>
   )
 }

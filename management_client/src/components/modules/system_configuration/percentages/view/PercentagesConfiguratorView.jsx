@@ -9,8 +9,7 @@ const PercentagesConfiguratorView = () => {
   const [loading, setLoading] = useState(false)
   const [formValues, setFormValues] = useState({
     prevGradesExam: 0,
-    academicExam: 0,
-    englishExam: 0
+    academicExam: 0
   })
 
   useEffect(() => {

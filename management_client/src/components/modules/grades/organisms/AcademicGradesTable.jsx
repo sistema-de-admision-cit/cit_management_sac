@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Button from '../../../core/global/atoms/Button'
 import Spinner from '../../../core/global/atoms/Spinner'
-import useMessages from '../../../core/global/hooks/useMessages'
 import AcademicGradesRow from '../molecules/AcademicGradesRow'
 import ModalAcademicExam from '../molecules/ModalAcademicExam'
 import '../../../../assets/styles/grades/grades-table.css'
@@ -9,8 +8,6 @@ import '../../../../assets/styles/grades/grades-table.css'
 const AcademicGradesTable = ({ grades, loading, onPageChange, currentPage, totalPages }) => {
   const [activeModal, setActiveModal] = useState(null)
   const [selectedExam, setSelectedExam] = useState(null)
-  const { setErrorMessage, setSuccessMessage } = useMessages()
-  const itemsPerPage = 25
 
   const handleOpenModal = (modalType, exam) => {
     setSelectedExam(exam)

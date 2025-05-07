@@ -13,9 +13,7 @@ const DaiGradesManagementView = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(1)
   const [onlyReviewed, setOnlyReviewed] = useState(false)
-  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
-
-  const itemsPerPage = 25 // Número de elementos por página
+  const { setErrorMessage, setSuccessMessage } = useMessages()
 
   const loadGrades = async (page = 0) => {
     const result = await handleGetAllDaiGrades(

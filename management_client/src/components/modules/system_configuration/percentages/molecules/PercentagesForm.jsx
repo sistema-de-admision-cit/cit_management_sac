@@ -16,12 +16,6 @@ const PercentagesForm = ({ formValues, handleChange, onSave, loading }) => (
       handleChange={(e) => handleChange('prevGradesExam', e.target.value)}
       className='form-group'
     />
-    <InputField
-      field={{ name: 'englishExam', label: 'Inglés', type: 'text', placeholder: '20', required: true }}
-      value={formValues.englishExam}
-      handleChange={(e) => handleChange('englishExam', e.target.value)}
-      className='form-group'
-    />
     <Button
       className='btn btn-primary'
       onClick={onSave}

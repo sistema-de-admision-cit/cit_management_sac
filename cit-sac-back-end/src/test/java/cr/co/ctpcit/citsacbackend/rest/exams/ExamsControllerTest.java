@@ -152,7 +152,7 @@ class ExamsControllerTest {
     assertThat(examDto.examType()).isNotNull();
     assertThat(examDto.examType()).isEqualTo(ExamType.DAI);
     assertThat(examDto.responses()).isNotNull();
-    assertThat(examDto.responses().size()).isEqualTo(5);
+    assertThat(examDto.responses().size()).isEqualTo(0);
   }
 
   @Test

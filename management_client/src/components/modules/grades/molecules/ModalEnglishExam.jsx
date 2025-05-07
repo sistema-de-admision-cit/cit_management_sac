@@ -1,17 +1,13 @@
 import { useState } from 'react'
 import Button from '../../../core/global/atoms/Button'
 import InputField from '../../../core/global/atoms/InputField'
-import useMessages from '../../../core/global/hooks/useMessages'
 import '../../../../assets/styles/grades/modal-grade.css'
 
 const ModalEnglishExam = ({ examData, student, onClose, onSave }) => {
-  const { setErrorMessage, setSuccessMessage } = useMessages()
   const [level, setLevel] = useState(examData?.level || 'porDefecto')
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
 
   const handleSubmit = async (e) => {
-  }
-  const handleDownload = async () => {
   }
 
   return (

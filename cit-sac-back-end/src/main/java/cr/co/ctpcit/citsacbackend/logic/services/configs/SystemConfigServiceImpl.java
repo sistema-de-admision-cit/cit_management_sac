@@ -127,8 +127,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
    */
   @Override
   public List<SystemConfigDto> getProcessWeights() {
-    return getConfigList(Configurations.PREV_GRADES_WEIGHT, Configurations.ACADEMIC_WEIGHT,
-            Configurations.ENGLISH_WEIGHT);
+    return getConfigList(Configurations.PREV_GRADES_WEIGHT, Configurations.ACADEMIC_WEIGHT);
   }
 
   /**
@@ -137,13 +136,12 @@ public class SystemConfigServiceImpl implements SystemConfigService {
    *
    * @param prevGradesWeight the weight for previous grades component
    * @param academicWeight   the weight for academic component
-   * @param englishWeight    the weight for English component
    * @throws ResponseStatusException if the sum of weights is not equal to 1
    */
   @Override
-  public void updateWeights(Double prevGradesWeight, Double academicWeight, Double englishWeight) {
+  public void updateWeights(Double prevGradesWeight, Double academicWeight) {
     //Validate weights sum equals 1
-    if (prevGradesWeight + academicWeight + englishWeight != 1) {
+    if (prevGradesWeight + academicWeight != 1) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La suma de los pesos debe ser 1");
     }
 
@@ -153,8 +151,6 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     //Update ACADEMIC_WEIGHT
     saveConfiguration(Configurations.ACADEMIC_WEIGHT, String.valueOf(academicWeight), false);
 
-    //Update ENGLISH_WEIGHT
-    saveConfiguration(Configurations.ENGLISH_WEIGHT, String.valueOf(englishWeight), false);
   }
 
 

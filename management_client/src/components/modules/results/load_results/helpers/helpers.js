@@ -146,23 +146,36 @@ export const formatLogMessage = (log) => {
 export const validateScore = (score) => {
   const { id, names, lastNames, lastTest, core, level } = score
 
-  // Check if all required fields are present
-  const containsAllFields = id && names && lastNames && lastTest && core && level
+  // 1. Validar campos obligatorios (core puede ser 0)
+  const containsAllFields = id && names && lastNames && lastTest && level &&
+    (core === 0 || core) // Acepta core=0 o cualquier otro valor truthy
 
-  // Check if the date is valid
+  // 2. Validar fecha
   const isDateValid = !isNaN(Date.parse(lastTest))
 
-  // Check if the level is valid
   const isLevelValid = ENGLISH_LEVELS.includes(level)
 
-  // core = "10" or "10.0"
-  const isCoreValid = core && !isNaN(core) && core >= 0 && core <= 100
+  // 4. Validar core (acepta 0 como valor válido)
+  const coreNumber = Number(core) // Asegurarnos de que es número
+  const isCoreValid = !isNaN(coreNumber) && coreNumber >= 0 && coreNumber <= 100
 
-  console.log({
+  console.log('Validación:', {
     containsAllFields,
     isDateValid,
     isLevelValid,
-    isCoreValid
+    isCoreValid,
+    issues: {
+      missingFields: !id
+        ? 'id'
+        : !names
+            ? 'names'
+            : !lastNames
+                ? 'lastNames'
+                : !lastTest ? 'lastTest' : !level ? 'level' : (core === undefined) ? 'core' : null,
+      invalidDate: !isDateValid,
+      invalidLevel: !isLevelValid,
+      invalidCore: !isCoreValid
+    }
   })
 
   return containsAllFields && isDateValid && isLevelValid && isCoreValid

@@ -1,31 +1,7 @@
 import axiosInstance from '../../../../config/axiosConfig'
 import { jsPDF } from 'jspdf'
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL
-
-// Manejo de errores
-const getErrorMessage = (error) => {
-  if (error.code === 'ECONNABORTED') {
-    return 'La conexión al servidor tardó demasiado. Por favor, intenta de nuevo.'
-  }
-
-  if (error.response) {
-    if (error.response.status === 404) {
-      return 'El estudiante no se encontró. Puede que ya haya sido eliminado.'
-    } else if (error.response.status === 500) {
-      return 'Hubo un error en el servidor. Por favor, intenta de nuevo más tarde.'
-    } else {
-      return (error.response.data.message || 'Por favor, intenta de nuevo.')
-    }
-  } else if (error.request) {
-    return 'Error de red: No se pudo conectar al servidor. Por favor, verifica tu conexión.'
-  } else {
-    return 'Error inesperado: ' + error.message
-  }
-}
-
 // Handlers that Get Data from API
-
 const getAllAcademicGradesUrl = import.meta.env.VITE_GET_ALL_ACADEMIC_GRADES_ENDPOINT
 export const handleGetAllAcademicGrades = (
   page = 0,
@@ -326,6 +302,7 @@ export const generateAcademicExamPDF = (gradeData) => {
   const grade = examData.grade
 
   // Crear un nuevo documento PDF
+  // eslint-disable-next-line new-cap
   const doc = new jsPDF()
 
   // Configuración inicial

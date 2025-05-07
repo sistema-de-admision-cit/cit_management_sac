@@ -113,7 +113,7 @@ public class ExamsServiceImpl implements ExamsService {
     EnrollmentEntity enrollmentInUse = getEnrollmentInUse(id, ExamType.DAI);
 
     //Get the questions
-    List<QuestionEntity> questions = questionRepository.findQuestionsByType(QuestionType.DAI,
+    List<QuestionEntity> questions = questionRepository.findRandomQuestionsByGradeAndType(enrollmentInUse.getGradeToEnroll(),QuestionType.DAI,
         getQuestionQuantity(Configurations.DAI_EXAM_QUESTIONS_QUANTITY));
 
     //Asociate the exam to the enrollment

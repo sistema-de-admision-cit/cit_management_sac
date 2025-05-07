@@ -13,6 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +44,7 @@ public class EnrollmentEntity {
 
   @CreationTimestamp
   @Column(name = "enrollment_date")
-  private Instant enrollmentDate;
+  private LocalDateTime enrollmentDate;
 
   @NotNull
   @Enumerated(EnumType.STRING)

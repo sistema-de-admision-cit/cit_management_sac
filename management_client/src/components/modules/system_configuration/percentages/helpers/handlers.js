@@ -40,19 +40,16 @@ const mapIncomingData = (data) => {
       acc.prevGradesExam = parseFloat(item.configValue) * 100
     } else if (item.configName === 'ACADEMIC_WEIGHT') {
       acc.academicExam = parseFloat(item.configValue) * 100
-    } else if (item.configName === 'ENGLISH_WEIGHT') {
-      acc.englishExam = parseFloat(item.configValue) * 100
     }
     return acc
-  }, { academicExam: 0, prevGradesExam: 0, englishExam: 0 })
+  }, { academicExam: 0, prevGradesExam: 0 })
 }
 
 // Mapeo de datos antes de enviarlos al backend
 const mapOutgoingData = (data) => {
   return {
     prevGradesWeight: data.prevGradesExam / 100,
-    academicWeight: data.academicExam / 100,
-    englishWeight: data.englishExam / 100
+    academicWeight: data.academicExam / 100
   }
 }
 

@@ -19,10 +19,14 @@ import jakarta.mail.AuthenticationFailedException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
 
 
@@ -35,6 +39,25 @@ import java.util.List;
 @Service
 public class NotificationsServiceImpl implements NotificationsService {
 
+
+    /**
+     * Content ID used for referencing the logo image in MIME multipart emails.
+     * This CID must match exactly with the {@code src} attribute in the HTML content
+     * (e.g., {@code <img src="cid:logo">}).
+     */
+    private static final String LOGO_CID = "logo";
+
+    /**
+     * Classpath resource path to the organization logo image file.
+     * The image should be in WebP format and located in the resources/static/images directory.
+     *
+     * <p>Example location in project structure:
+     * {@code src/main/resources/static/images/logo.webp}</p>
+     *
+     * <p>Note: Some email clients or PDF generators may not support WebP format.
+     * For maximum compatibility, consider using PNG or JPEG format instead.</p>
+     */
+    private static final String LOGO_PATH = "static/images/logo.webp";
     /**
      * Mail sender component with refreshable configuration capabilities
      */
@@ -166,8 +189,10 @@ public class NotificationsServiceImpl implements NotificationsService {
                 "<head>" +
                 "<style>" +
                 "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" +
-                ".container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }" +
-                "h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }" +
+                ".email-container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }" +
+                ".header-image { text-align: center; margin-bottom: 20px; }" +
+                ".header-image img { max-width: 200px; height: auto; display: block; margin: 0 auto; }" +
+                "h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; }" +
                 "h2 { color: #3498db; }" +
                 ".details { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }" +
                 ".detail-item { margin-bottom: 8px; }" +
@@ -177,8 +202,11 @@ public class NotificationsServiceImpl implements NotificationsService {
                 "</style>" +
                 "</head>" +
                 "<body>" +
-                "<div class='container'>" +
-                "<h1>Confirmación de Inscripción</h1>" +
+                "<div class='email-container'>" +
+                "<div class='header-image'>" +
+                "<img src='data:image/jpeg;base64," + getLogoAsBase64() + "' alt='Logo' style='max-width:200px'>" +
+                "</div>" +
+                "<h1>Confirmación de Inscripción del Complejo Educativo CIT</h1>" +
                 "<p>Estimado/a <strong>" + parentFullName + "</strong>,</p>" +
                 "<p>Nos complace informarle que el registro de inscripción de su hijo/a ha sido exitosamente completado en el <strong>Complejo Educativo CIT</strong>.</p>" +
 
@@ -295,8 +323,10 @@ public class NotificationsServiceImpl implements NotificationsService {
                 "<head>" +
                 "<style>" +
                 "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" +
-                ".container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }" +
-                "h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }" +
+                ".email-container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }" +
+                ".header-image { text-align: center; margin-bottom: 20px; }" +
+                ".header-image img { max-width: 200px; height: auto; display: block; margin: 0 auto; }" +
+                "h1 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; }" +
                 "h2 { color: #3498db; }" +
                 ".changes { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }" +
                 ".change-item { margin-bottom: 8px; }" +
@@ -306,8 +336,11 @@ public class NotificationsServiceImpl implements NotificationsService {
                 "</style>" +
                 "</head>" +
                 "<body>" +
-                "<div class='container'>" +
-                "<h1>Actualización de Inscripción</h1>" +
+                "<div class='email-container'>" +
+                "<div class='header-image'>" +
+                "<img src='data:image/jpeg;base64," + getLogoAsBase64() + "' alt='Logo' style='max-width:200px'>" +
+                "</div>" +
+                "<h1>Actualización de Inscripción del Complejo Educativo CIT</h1>" +
                 "<p>Estimado/a <strong>" + parentFullName + "</strong>,</p>" +
                 "<p>Le informamos que se han realizado modificaciones en la inscripción de su hijo/a <strong>" + studentFullName + "</strong> en el Complejo Educativo CIT.</p>" +
 
@@ -453,7 +486,9 @@ public class NotificationsServiceImpl implements NotificationsService {
                 "<style>" +
                 "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }" +
                 ".container { background-color: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; }" +
-                "h1 { color: " + (status == ProcessStatus.ACCEPTED ? "#4CAF50" : "#f44336") + "; border-bottom: 2px solid #eee; padding-bottom: 10px; }" +
+                ".header-image { text-align: center; margin-bottom: 20px; }" +
+                ".header-image img { max-width: 200px; height: auto; }" +
+                "h1 { color: " + (status == ProcessStatus.ACCEPTED ? "#4CAF50" : "#f44336") + "; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 20px; }" +
                 "h2 { color: #3498db; }" +
                 ".details { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }" +
                 ".detail-item { margin-bottom: 8px; }" +
@@ -464,7 +499,10 @@ public class NotificationsServiceImpl implements NotificationsService {
                 "</head>" +
                 "<body>" +
                 "<div class='container'>" +
-                "<h1>Resultado del Proceso de Admisión</h1>" +
+                "<div class='header-image'>" +
+                "<img src='data:image/jpeg;base64," + getLogoAsBase64() + "' alt='Logo' style='max-width:200px'>" +
+                "</div>" +
+                "<h1>Resultado del Proceso de Admisión del Complejo Educativo CIT</h1>" +
                 "<p>Estimado/a <strong>" + parentFullName + "</strong>,</p>" +
                 "<p>El proceso de admisión para su hijo/a en el <strong>Complejo Educativo CIT</strong> ha finalizado.</p>" +
                 decisionMessage +
@@ -506,13 +544,25 @@ public class NotificationsServiceImpl implements NotificationsService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            // Configuración básica del correo
             helper.setTo(emailConfigDto.getRecipient());
             helper.setSubject(emailConfigDto.getSubject());
             helper.setText(emailConfigDto.getMessage(), true);
+
+            // Adjuntar el logo con configuración adicional
+            ClassPathResource logoResource = new ClassPathResource(LOGO_PATH);
+            if (logoResource.exists()) {
+                helper.addInline(LOGO_CID, logoResource, "image/jpeg");
+            } else {
+                System.err.println("No se encontró el archivo de logo en: " + LOGO_PATH);
+            }
+
             mailSender.send(message);
         } catch (AuthenticationFailedException e) {
-            System.err.println("Usuario o contraseña incorrectos para el correo electrónico");
-        } catch (Exception e) {
+            System.err.println("Error de autenticación: " + e.getMessage());
+        } catch (MessagingException e) {
+            System.err.println("Error al enviar el correo: " + e.getMessage());
         }
     }
 
@@ -577,5 +627,33 @@ public class NotificationsServiceImpl implements NotificationsService {
                 new PhoneNumber(fromWhatsAppNumber), whatsappConfigDto.getMessage()
         ).create();
     }
+
+    /**
+     * Converts the logo image to a Base64 encoded string.
+     *
+     * <p>This method reads the logo file from the classpath resource location specified by {@code LOGO_PATH},
+     * converts it to a byte array, and then encodes it as a Base64 string. This is useful for embedding
+     * the logo directly in HTML content without requiring separate file attachments.</p>
+     *
+     * @return Base64 encoded string representation of the logo image, or an empty string if the logo
+     *         cannot be read or converted
+     * @throws IOException if there is an error reading the logo file from the resources
+     *
+     * @see java.util.Base64
+     * @see org.springframework.util.FileCopyUtils
+     * @see org.springframework.core.io.ClassPathResource
+     */
+
+    private String getLogoAsBase64() {
+        try {
+            ClassPathResource logoResource = new ClassPathResource(LOGO_PATH);
+            byte[] imageBytes = FileCopyUtils.copyToByteArray(logoResource.getInputStream());
+            return Base64.getEncoder().encodeToString(imageBytes);
+        } catch (IOException e) {
+            System.err.println("Error al convertir logo a base64: " + e.getMessage());
+            return "";
+        }
+    }
+
 
 }

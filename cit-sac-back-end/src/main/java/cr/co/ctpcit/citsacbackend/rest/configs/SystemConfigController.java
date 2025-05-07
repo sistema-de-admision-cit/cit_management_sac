@@ -73,7 +73,7 @@ public class SystemConfigController {
       @RequestBody UpdateWeightsConfigsDto weightsConfigs) {
 
     systemConfigService.updateWeights(weightsConfigs.prevGradesWeight(),
-        weightsConfigs.academicWeight(), weightsConfigs.englishWeight());
+        weightsConfigs.academicWeight());
 
     // return the updated exams percentages
     return ResponseEntity.ok().build();

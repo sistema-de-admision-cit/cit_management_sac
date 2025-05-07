@@ -86,6 +86,9 @@ public class CsvReportGenerator {
                 );
             }
 
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+
             try (CSVPrinter csvPrinter = new CSVPrinter(writer, csvFormat)) {
                 for (ReportDataDto item : sortedData) {
                     if (isFullGradesReport) {
@@ -93,7 +96,7 @@ public class CsvReportGenerator {
                                 item.getStudentId(),
                                 item.getFirstName(),
                                 item.getFullSurname(),
-                                formatDate(item.getEnrollmentDate()),
+                                item.getEnrollmentDate().format(formatter),
                                 item.getEnglishGrade() != null ? item.getEnglishGrade() : "N/A",
                                 item.getAcademicGrade() != null ? item.getAcademicGrade() : "N/A",
                                 item.getPreviousGrade() != null ? item.getPreviousGrade() : "N/A"
@@ -125,7 +128,7 @@ public class CsvReportGenerator {
                                 item.getStudentId(),
                                 item.getFirstName(),
                                 item.getFullSurname(),
-                                formatDate(item.getEnrollmentDate()),
+                                item.getEnrollmentDate().format(formatter),
                                 categoryValue
                         );
                     }

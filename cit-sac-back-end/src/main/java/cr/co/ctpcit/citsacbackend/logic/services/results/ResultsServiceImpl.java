@@ -50,7 +50,6 @@ public class ResultsServiceImpl implements ResultsService {
      * @return a page of {@link ResultDTO} containing the exam results
      */
     public Page<ResultDTO> getExamResults(Pageable pageable) {
-        BigDecimal englishWeight = resultUtils.getConfigValue("ENGLISH_WEIGHT");
         BigDecimal academicWeight = resultUtils.getConfigValue("ACADEMIC_WEIGHT");
         BigDecimal prevGradesWeight = resultUtils.getConfigValue("PREV_GRADES_WEIGHT");
 
@@ -61,7 +60,7 @@ public class ResultsServiceImpl implements ResultsService {
 
         List<ResultDTO> content = enrollmentsPage.getContent().stream()
                 .filter(e -> hasCompleteExams(e))
-                .map(e -> ResultsMapper.mapToExamResultDTO(e, englishWeight, academicWeight, prevGradesWeight))
+                .map(e -> ResultsMapper.mapToExamResultDTO(e, academicWeight, prevGradesWeight))
                 .collect(Collectors.toList());
 
         return new PageImpl<>(content, pageable, enrollmentsPage.getTotalElements());
@@ -98,13 +97,12 @@ public class ResultsServiceImpl implements ResultsService {
             );
         }
 
-        BigDecimal englishWeight = resultUtils.getConfigValue("ENGLISH_WEIGHT");
         BigDecimal academicWeight = resultUtils.getConfigValue("ACADEMIC_WEIGHT");
         BigDecimal prevGradesWeight = resultUtils.getConfigValue("PREV_GRADES_WEIGHT");
 
         List<ResultDTO> content = enrollments.getContent().stream()
                 .filter(this::hasCompleteExams)
-                .map(e -> ResultsMapper.mapToExamResultDTO(e, englishWeight, academicWeight, prevGradesWeight))
+                .map(e -> ResultsMapper.mapToExamResultDTO(e, academicWeight, prevGradesWeight))
                 .collect(Collectors.toList());
 
         return new PageImpl<>(content, pageable, enrollments.getTotalElements());
@@ -128,13 +126,11 @@ public class ResultsServiceImpl implements ResultsService {
         AcademicExamEntity academicExam = ResultUtils.getAcademicExam(enrollment);
         DaiExamEntity daiExam = ResultUtils.getDaiExam(enrollment);
 
-        BigDecimal englishWeight = resultUtils.getConfigValue("ENGLISH_WEIGHT");
         BigDecimal academicWeight = resultUtils.getConfigValue("ACADEMIC_WEIGHT");
         BigDecimal prevGradesWeight = resultUtils.getConfigValue("PREV_GRADES_WEIGHT");
 
-        BigDecimal englishScore = ResultUtils.convertEnglishLevelToScore(englishExam.getLevel());
-        BigDecimal finalGrade = englishScore.multiply(englishWeight)
-                .add(academicExam.getGrade().multiply(academicWeight))
+
+        BigDecimal finalGrade = academicExam.getGrade().multiply(academicWeight)
                 .add(enrollment.getStudent().getPreviousGrades().multiply(prevGradesWeight))
                 .setScale(2, RoundingMode.HALF_UP);
 
