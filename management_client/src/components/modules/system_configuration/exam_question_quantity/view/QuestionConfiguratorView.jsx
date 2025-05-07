@@ -152,7 +152,7 @@ const QuestionsConfiguratorView = () => {
                 handleChange={handleChange}
                 className='form-group'
               />
-              <small className='form-text text-muted'>Debe ser un número entre 0 y 100</small>
+              <small className='form-text text-muted'>Debe ser un número entre 1 y 100</small>
             </div>
 
             <Button

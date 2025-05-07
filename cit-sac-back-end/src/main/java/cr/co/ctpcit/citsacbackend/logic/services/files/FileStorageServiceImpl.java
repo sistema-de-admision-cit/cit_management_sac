@@ -1,6 +1,7 @@
 package cr.co.ctpcit.citsacbackend.logic.services.files;
 
 import cr.co.ctpcit.citsacbackend.data.utils.FileNameSanitizer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +17,8 @@ import java.util.Date;
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
   /** Base directory where uploaded files will be stored */
-  private static final String BASE_UPLOAD_DIR = "uploads/";
+  @Value("${app.upload.base-dir}")
+  private String baseUploadDir;
   /**
    * Stores a file in the specified category directory after performing validation,
    * sanitization, and generating a unique filename.
@@ -29,32 +31,28 @@ public class FileStorageServiceImpl implements FileStorageService {
    * @throws IllegalArgumentException if the provided file is empty
    */
   @Override
-  public String storeFile(MultipartFile file, String unsanitized, String category)
-      throws Exception {
+  public String storeFile(MultipartFile file, String unsanitized, String category) throws Exception {
     if (file.isEmpty()) {
       throw new IllegalArgumentException("File is empty");
     }
 
-    // Determine file extension dynamically
     String originalFilename = file.getOriginalFilename();
     String fileExtension = getFileExtension(originalFilename);
 
-    // Define the upload directory based on category (e.g., "questions", "documents")
-    Path uploadPath = Paths.get(BASE_UPLOAD_DIR, category);
+    // Usa la ruta absoluta configurada
+    Path uploadPath = Paths.get(baseUploadDir, category);
     if (!Files.exists(uploadPath)) {
       Files.createDirectories(uploadPath);
     }
 
-    // Generate a unique filename
     String timeStamp = String.valueOf(new Date().getTime());
     String uniqueFileName = FileNameSanitizer.sanitizeFileName(unsanitized, timeStamp);
     String fileName = uniqueFileName + "." + fileExtension;
     Path filePath = uploadPath.resolve(fileName);
 
-    // Save the file
     Files.copy(file.getInputStream(), filePath);
 
-    // Return the relative path or full URL (depending on implementation)
+    // La ruta para acceder desde frontend (debes servirla luego)
     return "/api/files/" + category + "/" + fileName;
   }
   /**
@@ -67,7 +65,7 @@ public class FileStorageServiceImpl implements FileStorageService {
   @Override
   public String getFileExtension(String fileName) {
     if (fileName == null || !fileName.contains(".")) {
-      return "dat"; // Default extension for unknown file types
+      return "dat";
     }
     return fileName.substring(fileName.lastIndexOf(".") + 1);
   }
