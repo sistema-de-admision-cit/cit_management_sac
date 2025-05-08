@@ -550,14 +550,11 @@ public class NotificationsServiceImpl implements NotificationsService {
             helper.setTo(emailConfigDto.getRecipient());
             helper.setSubject(emailConfigDto.getSubject());
 
-            // Obtener el logo en base64
             String logoBase64 = getLogoAsBase64();
 
-            // Reemplazar el placeholder en el HTML
             String htmlContent = emailConfigDto.getMessage()
                     .replace("${logoBase64}", logoBase64);
 
-            // Versión alternativa para Outlook
             String outlookCompatibleHtml = htmlContent
                     .replace("<!--[if !mso]><!-- -->", "")
                     .replace("<!--<![endif]-->", "")
@@ -566,16 +563,15 @@ public class NotificationsServiceImpl implements NotificationsService {
 
             helper.setText(outlookCompatibleHtml, true);
 
-            // Adjuntar el logo como archivo adjunto CID (para Gmail)
             ClassPathResource logoResource = new ClassPathResource(LOGO_PATH);
             if (logoResource.exists()) {
                 helper.addInline(LOGO_CID, logoResource, "image/png");
             }
-
             mailSender.send(message);
+        } catch (AuthenticationFailedException e) {
+            System.err.println("Error de autenticación al enviar el correo: " + e.getMessage());
         } catch (Exception e) {
             System.err.println("Error al enviar el correo: " + e.getMessage());
-            throw new RuntimeException("Error al enviar el correo", e);
         }
     }
 
