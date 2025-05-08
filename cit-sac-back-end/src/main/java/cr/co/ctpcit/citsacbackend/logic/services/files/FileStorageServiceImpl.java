@@ -39,7 +39,6 @@ public class FileStorageServiceImpl implements FileStorageService {
     String originalFilename = file.getOriginalFilename();
     String fileExtension = getFileExtension(originalFilename);
 
-    // Usa la ruta absoluta configurada
     Path uploadPath = Paths.get(baseUploadDir, category);
     if (!Files.exists(uploadPath)) {
       Files.createDirectories(uploadPath);
@@ -52,7 +51,6 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     Files.copy(file.getInputStream(), filePath);
 
-    // La ruta para acceder desde frontend (debes servirla luego)
     return "/api/files/" + category + "/" + fileName;
   }
   /**

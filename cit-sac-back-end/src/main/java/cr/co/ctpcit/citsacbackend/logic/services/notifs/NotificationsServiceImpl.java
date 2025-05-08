@@ -40,6 +40,7 @@ import java.util.List;
 public class NotificationsServiceImpl implements NotificationsService {
 
 
+
     /**
      * Content ID used for referencing the logo image in MIME multipart emails.
      * This CID must match exactly with the {@code src} attribute in the HTML content
@@ -52,12 +53,12 @@ public class NotificationsServiceImpl implements NotificationsService {
      * The image should be in WebP format and located in the resources/static/images directory.
      *
      * <p>Example location in project structure:
-     * {@code src/main/resources/static/images/logo.webp}</p>
+     * {@code src/main/resources/static/images/logo.png}</p>
      *
      * <p>Note: Some email clients or PDF generators may not support WebP format.
      * For maximum compatibility, consider using PNG or JPEG format instead.</p>
      */
-    private static final String LOGO_PATH = "static/images/logo.webp";
+    private static final String LOGO_PATH = "static/images/logo.png";
     /**
      * Mail sender component with refreshable configuration capabilities
      */
@@ -204,7 +205,7 @@ public class NotificationsServiceImpl implements NotificationsService {
                 "<body>" +
                 "<div class='email-container'>" +
                 "<div class='header-image'>" +
-                "<img src='data:image/jpeg;base64," + getLogoAsBase64() + "' alt='Logo' style='max-width:200px'>" +
+                "<img src='cid:logo' alt='Logo' style='max-width:200px; display:block;'>" +
                 "</div>" +
                 "<h1>Confirmación de Inscripción del Complejo Educativo CIT</h1>" +
                 "<p>Estimado/a <strong>" + parentFullName + "</strong>,</p>" +
@@ -338,7 +339,7 @@ public class NotificationsServiceImpl implements NotificationsService {
                 "<body>" +
                 "<div class='email-container'>" +
                 "<div class='header-image'>" +
-                "<img src='data:image/jpeg;base64," + getLogoAsBase64() + "' alt='Logo' style='max-width:200px'>" +
+                "<img src='cid:logo' alt='Logo' style='max-width:200px; display:block;'>" +
                 "</div>" +
                 "<h1>Actualización de Inscripción del Complejo Educativo CIT</h1>" +
                 "<p>Estimado/a <strong>" + parentFullName + "</strong>,</p>" +
@@ -348,6 +349,7 @@ public class NotificationsServiceImpl implements NotificationsService {
                 "<h2>Cambios realizados:</h2>" +
                 "<div class='change-item'><strong>Fecha de Examen:</strong> " + updateDto.examDate() + "</div>" +
                 "<div class='change-item'><strong>Estado del Proceso:</strong> " + statusEsp + "</div>" +
+                "<div class='change-item'><strong>Notas Anteriores:</strong> " + updateDto.previousGrades() + "</div>" +
                 "<div class='change-item'><strong>Notificaciones por WhatsApp:</strong> " + whatsappStatus + "</div>" +
                 "</div>" +
 
@@ -500,7 +502,7 @@ public class NotificationsServiceImpl implements NotificationsService {
                 "<body>" +
                 "<div class='container'>" +
                 "<div class='header-image'>" +
-                "<img src='data:image/jpeg;base64," + getLogoAsBase64() + "' alt='Logo' style='max-width:200px'>" +
+                "<img src='cid:logo' alt='Logo' style='max-width:200px; display:block;'>" +
                 "</div>" +
                 "<h1>Resultado del Proceso de Admisión del Complejo Educativo CIT</h1>" +
                 "<p>Estimado/a <strong>" + parentFullName + "</strong>,</p>" +
@@ -545,24 +547,35 @@ public class NotificationsServiceImpl implements NotificationsService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            // Configuración básica del correo
             helper.setTo(emailConfigDto.getRecipient());
             helper.setSubject(emailConfigDto.getSubject());
-            helper.setText(emailConfigDto.getMessage(), true);
 
-            // Adjuntar el logo con configuración adicional
+            // Obtener el logo en base64
+            String logoBase64 = getLogoAsBase64();
+
+            // Reemplazar el placeholder en el HTML
+            String htmlContent = emailConfigDto.getMessage()
+                    .replace("${logoBase64}", logoBase64);
+
+            // Versión alternativa para Outlook
+            String outlookCompatibleHtml = htmlContent
+                    .replace("<!--[if !mso]><!-- -->", "")
+                    .replace("<!--<![endif]-->", "")
+                    .replace("<!--[if gte mso 9]>", "")
+                    .replace("<![endif]-->", "");
+
+            helper.setText(outlookCompatibleHtml, true);
+
+            // Adjuntar el logo como archivo adjunto CID (para Gmail)
             ClassPathResource logoResource = new ClassPathResource(LOGO_PATH);
             if (logoResource.exists()) {
-                helper.addInline(LOGO_CID, logoResource, "image/jpeg");
-            } else {
-                System.err.println("No se encontró el archivo de logo en: " + LOGO_PATH);
+                helper.addInline(LOGO_CID, logoResource, "image/png");
             }
 
             mailSender.send(message);
-        } catch (AuthenticationFailedException e) {
-            System.err.println("Error de autenticación: " + e.getMessage());
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             System.err.println("Error al enviar el correo: " + e.getMessage());
+            throw new RuntimeException("Error al enviar el correo", e);
         }
     }
 
