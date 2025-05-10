@@ -353,7 +353,7 @@ VALUES (1, 10, '2025-03-25 17:54:12', 'ACA', '{
        (2, 10, '2025-03-25 17:54:12', 'DAI', '{
          "exam": "[{\\"id\\":1,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Cómo te sientes el día de hoy?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Bien aunque un poco cansado.\\"},{\\"id\\":3,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Qué tipo de música prefieres?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"El rock es mi favorito.\\"},{\\"id\\":5,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Te gusta practicar deportes?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Sí, me gusta mucho el fútbol.\\"},{\\"id\\":7,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Prefieres la playa o la montaña?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Prefiero la montaña.\\"},{\\"id\\":9,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Cuál es tu película favorita?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Mi película favorita es El Padrino.\\"}]"
        }');
-       
+
 INSERT INTO `tbl_academic_exams` (`exam_id`, `grade`)
 VALUES (1, 100.00); -- Insert value into tbl_academic_exams
 
@@ -551,3 +551,21 @@ INSERT INTO tbl_Dai_Exams (exam_id, comment, recommendation, reviewed) VALUES
                                                                            (673692, 'Auto comment', 'REJECT', 0),
                                                                            (673701, 'Auto comment', 'ADMIT', 1),
                                                                            (673702, 'Auto comment', 'ADMIT', 0);
+
+INSERT INTO tbl_Enrollments
+(enrollment_id, student_id, status, enrollment_date, grade_to_enroll, known_through, exam_date, consent_given, whatsapp_notification)
+VALUES
+    /* 2025-05-01: 1 pending, 1 eligible, 1 accepted */
+    (98301, 661, 'PENDING' , '2025-05-01 09:00:00', 'FIRST' , 'SM', '2025-05-01', 1, 1),
+    (98302, 662, 'ELIGIBLE', '2025-05-01 10:00:00', 'FIRST' , 'FM', '2025-05-01', 1, 0),
+    (98303, 663, 'ACCEPTED', '2025-05-01 11:00:00', 'FIRST' , 'OH', '2025-05-01', 1, 1),
+
+    /* 2025-05-02 */
+    (98311, 664, 'PENDING' , '2025-05-02 09:00:00', 'SECOND', 'SM', '2025-05-02', 1, 1),
+    (98312, 665, 'ELIGIBLE', '2025-05-02 10:00:00', 'SECOND', 'FM', '2025-05-02', 1, 0),
+    (98313, 666, 'ACCEPTED', '2025-05-02 11:00:00', 'SECOND', 'OH', '2025-05-02', 1, 1),
+
+    /* 2025-05-03 */
+    (98321, 667, 'PENDING' , '2025-05-03 09:00:00', 'THIRD' , 'SM', '2025-05-03', 1, 1),
+    (98322, 668, 'ELIGIBLE', '2025-05-03 10:00:00', 'THIRD' , 'FM', '2025-05-03', 1, 0),
+    (98323, 669, 'ACCEPTED', '2025-05-03 11:00:00', 'THIRD' , 'OH', '2025-05-03', 1, 1);
