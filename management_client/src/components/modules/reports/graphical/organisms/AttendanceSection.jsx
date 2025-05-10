@@ -27,7 +27,7 @@ const AttendanceSection = ({ startDate, endDate, grade, sector }) => {
 
   return (
     <div className='attendance-chart-container'>
-      <ChartTitle>Exam Attendance</ChartTitle>
+      <ChartTitle>Comparitivo de Inscritos vs Asistentes</ChartTitle>
       <AttendanceChart data={data} />
     </div>
   )

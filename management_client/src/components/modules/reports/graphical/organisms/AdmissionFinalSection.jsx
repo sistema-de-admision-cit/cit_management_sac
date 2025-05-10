@@ -27,7 +27,7 @@ const AdmissionFinalSection = ({ startDate, endDate, grade, sector }) => {
 
   return (
     <div className='admission-final-chart-container'>
-      <ChartTitle>Admisión Final</ChartTitle>
+      <ChartTitle>Aceptados vs Rechazados </ChartTitle>
       <AddmissionFinalChart data={data} />
     </div>
   )

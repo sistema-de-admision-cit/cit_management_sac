@@ -27,7 +27,7 @@ const ExamSourceSection = ({ startDate, endDate, grade, sector }) => {
 
   return (
     <div className='exam-source-chart-container'>
-      <ChartTitle>Students by Exam Source</ChartTitle>
+      <ChartTitle>Origen de los Estudiantes según Canal de Referencia</ChartTitle>
       <ExamPieChart data={data} />
     </div>
   )
