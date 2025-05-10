@@ -5,7 +5,6 @@ import Spinner from '../../../../core/global/atoms/Spinner'
 import ErrorMessage from '../atoms/ErrorMessage'
 import ChartTitle from '../atoms/ChartTitle'
 import {
-  AcademicDifficultyChart,
   AcademicGradeAverageChart
 } from '../molecules/charts/AcademicCharts'
 
