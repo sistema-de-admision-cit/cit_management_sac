@@ -49,6 +49,7 @@ public class ResultsServiceImpl implements ResultsService {
      * @param pageable the pagination information
      * @return a page of {@link ResultDTO} containing the exam results
      */
+    @Override
     public Page<ResultDTO> getExamResults(Pageable pageable) {
         BigDecimal academicWeight = resultUtils.getConfigValue("ACADEMIC_WEIGHT");
         BigDecimal prevGradesWeight = resultUtils.getConfigValue("PREV_GRADES_WEIGHT");
@@ -74,7 +75,7 @@ public class ResultsServiceImpl implements ResultsService {
      * @param pageable the pagination information
      * @return a page of {@link ResultDTO} matching the search criteria
      */
-
+    @Override
     public Page<ResultDTO> searchResults(String query, Pageable pageable) {
         Page<EnrollmentEntity> enrollments = Page.empty(pageable);
 
@@ -89,7 +90,6 @@ public class ResultsServiceImpl implements ResultsService {
         if (enrollments.getContent().isEmpty()) {
             Page<PersonEntity> persons = personRepository.findByNamesContaining(query, pageable);
             List<StudentEntity> students = studentRepository.findAllByStudentPersonIn(persons.getContent());
-            // Actualizado para buscar múltiples estados
             enrollments = enrollmentRepository.findAllByStudentsWithStatusIn(
                     students,
                     Arrays.asList(ProcessStatus.ACCEPTED, ProcessStatus.REJECTED, ProcessStatus.ELIGIBLE),
@@ -115,7 +115,7 @@ public class ResultsServiceImpl implements ResultsService {
      * @return a {@link StudentResultsDetailsDTO} containing the detailed results
      * @throws RuntimeException if the student is not found
      */
-
+    @Override
     public StudentResultsDetailsDTO getStudentExamDetails(String idNumber) {
         EnrollmentEntity enrollment = enrollmentRepository.findByStudentStudentPersonIdNumberAndStatusIn(
                 idNumber,
@@ -154,6 +154,34 @@ public class ResultsServiceImpl implements ResultsService {
     }
 
     /**
+     *
+     * Delegates to {@code enrollmentRepository.countStudentsWithCompleteExamsBySearch(value)}
+     * to retrieve the count of students who have completed all required exams
+     * and match the given search term.
+     *
+     * @param value the search term to filter students (ID number or name)
+     * @return the count of matched students with complete exams
+     */
+
+    @Override
+    public Long getSearchCountByCompleteExams(String value) {
+        return enrollmentRepository.countStudentsWithCompleteExamsBySearch(value);
+    }
+
+    /**
+     *
+     * Delegates to {@code enrollmentRepository.countStudentsWithCompleteExams()}
+     * to retrieve the count of students who have completed all required exams.
+     *
+     * @return the count of students with complete exams
+     */
+
+    @Override
+    public Long getExamsCount() {
+        return enrollmentRepository.countStudentsWithCompleteExams();
+    }
+
+    /**
      * Updates the enrollment status of a student by their ID number.
      *
      * @param idNumber the student's ID number
@@ -161,6 +189,7 @@ public class ResultsServiceImpl implements ResultsService {
      * @throws RuntimeException if the student is not found or the status is not allowed
      */
 
+    @Override
     @Transactional
     public void updateEnrollmentStatus(String idNumber, UpdateStatusDTO updateStatusDTO) {
         EnrollmentEntity enrollment = enrollmentRepository.findByStudentStudentPersonIdNumber(idNumber)

@@ -1,7 +1,6 @@
 package cr.co.ctpcit.citsacbackend.logic.services.notifs;
 
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
+
 import cr.co.ctpcit.citsacbackend.data.entities.configs.SystemConfigEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.EnrollmentEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.ParentEntity;
@@ -11,14 +10,11 @@ import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.data.repositories.configs.SystemConfigRepository;
 import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.EnrollmentRepository;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.EmailConfigDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.configs.WhatsappConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.ParentDto;
 import jakarta.mail.AuthenticationFailedException;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -38,8 +34,6 @@ import java.util.List;
 
 @Service
 public class NotificationsServiceImpl implements NotificationsService {
-
-
 
     /**
      * Content ID used for referencing the logo image in MIME multipart emails.
@@ -74,11 +68,6 @@ public class NotificationsServiceImpl implements NotificationsService {
      */
     private final EnrollmentRepository enrollmentRepository;
 
-    /**
-     * WhatsApp number configured in application properties for notifications
-     */
-    @Value("${twilio.whatsapp.from}")
-    private String fromWhatsAppNumber;
 
     /**
      * Constructs a new NotificationsServiceImpl with required dependencies.
@@ -547,8 +536,11 @@ public class NotificationsServiceImpl implements NotificationsService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
+            String fromEmail = mailSender.getUsername();
+            helper.setFrom(fromEmail);
             helper.setTo(emailConfigDto.getRecipient());
             helper.setSubject(emailConfigDto.getSubject());
+
 
             String logoBase64 = getLogoAsBase64();
 
@@ -573,68 +565,6 @@ public class NotificationsServiceImpl implements NotificationsService {
         } catch (Exception e) {
             System.err.println("Error al enviar el correo: " + e.getMessage());
         }
-    }
-
-    public void createWhatsappMessage(EnrollmentDto inscription) {
-        String emailContact = "";
-        String phoneContact = "";
-        String gradoEsp = "";
-
-        for (SystemConfigEntity config : configRepository.getContactInfo()) {
-            switch (config.getConfigName().name()) {
-                case "EMAIL_CONTACT" -> emailContact = config.getConfigValue();
-                case "OFFICE_CONTACT" -> phoneContact = config.getConfigValue();
-            }
-        }
-
-        switch (inscription.gradeToEnroll().name()) {
-            case "FIRST" -> gradoEsp = "Primero";
-            case "SECOND" -> gradoEsp = "Segundo";
-            case "THIRD" -> gradoEsp = "Tercero";
-            case "FOURTH" -> gradoEsp = "Cuarto";
-            case "FIFTH" -> gradoEsp = "Quinto";
-            case "SIXTH" -> gradoEsp = "Sexto";
-            case "SEVENTH" -> gradoEsp = "Sétimo";
-            case "EIGHTH" -> gradoEsp = "Octavo";
-            case "NINTH" -> gradoEsp = "Noveno";
-            case "TENTH" -> gradoEsp = "Décimo";
-            default -> gradoEsp = String.valueOf(inscription.gradeToEnroll());
-        }
-
-        for (ParentDto parent : inscription.student().parents()) {
-            WhatsappConfigDto whatsappConfigDto = new WhatsappConfigDto();
-            whatsappConfigDto.setRecipient(parent.phoneNumber());
-            whatsappConfigDto.setMessage("""
-                    📢 *Confirmación de Registro - Complejo Educativo CIT*
-                              
-                    Estimado/a %s %s %s
-                              
-                    Nos alegra informarle que el registro de su hijo/a ha sido exitosamente completado ✅
-                              
-                    👨‍🎓 *Estudiante:* %s %s %s
-                    📚 *Grado/Nivel:* %s
-                    📅 *Fecha de Examen:* %s
-                              
-                    Para más detalles, puede comunicarse con nuestra administración:
-                    📧 %s
-                    📞 %s
-                              
-                    *¡Gracias por confiar en nosotros!* 🌟
-                    """.formatted(parent.person().firstName(), parent.person().firstSurname(),
-                    parent.person().secondSurname(), inscription.student().person().firstName(),
-                    inscription.student().person().firstSurname(),
-                    inscription.student().person().secondSurname(), gradoEsp, inscription.examDate(),
-                    emailContact, phoneContact
-            ));
-            sendWhatsAppMessage(whatsappConfigDto);
-        }
-    }
-
-
-    public void sendWhatsAppMessage(WhatsappConfigDto whatsappConfigDto) {
-        Message.creator(new PhoneNumber("whatsapp:+506" + whatsappConfigDto.getRecipient()),
-                new PhoneNumber(fromWhatsAppNumber), whatsappConfigDto.getMessage()
-        ).create();
     }
 
     /**

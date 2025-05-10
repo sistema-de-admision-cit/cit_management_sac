@@ -128,6 +128,7 @@ public class RefreshableJavaMailSender implements JavaMailSender {
         props.put("mail.smtp.starttls.enable", starttlsEnable);
         props.put("mail.transport.protocol", protocol);
         props.put("mail.debug", debug);
+        props.put("mail.smtp.from", systemConfigService.getConfigValue(Configurations.EMAIL_NOTIFICATION_CONTACT, false));
 
     }
 
@@ -160,6 +161,10 @@ public class RefreshableJavaMailSender implements JavaMailSender {
     public void send(MimeMessage... mimeMessages) {
         refreshCredentials();
         delegate.send(mimeMessages);
+    }
+
+    public String getUsername() {
+        return delegate.getUsername();
     }
 
     @Override

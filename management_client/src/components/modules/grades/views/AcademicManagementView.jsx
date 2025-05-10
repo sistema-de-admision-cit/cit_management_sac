@@ -1,48 +1,90 @@
 import { useEffect, useState } from 'react'
 import SectionLayout from '../../../core/global/molecules/SectionLayout'
-import useMessages from '../../../core/global/hooks/useMessages'
 import AcademicGradesTable from '../organisms/AcademicGradesTable'
 import AcademicSearchBar from '../molecules/AcademicSearchBar'
-import { handleGetAllAcademicGrades, handleSearchAcademicGrades } from '../helpers/handlers'
 import '../../../../assets/styles/grades/grades-management-view.css'
+import useMessages from '../../../core/global/hooks/useMessages'
+import {
+  handleGetAllAcademicGrades,
+  handleSearchAcademicGrades,
+  handleGetTotalGradesAcademicPages,
+  handleGetTotalAcademicGradesSearchPages
+} from '../helpers/handlers.js'
 
 const AcademicGradesManagementView = () => {
-  const [loading, setLoading] = useState(false)
-  const [grades, setGrades] = useState([])
-  const [currentPage, setCurrentPage] = useState(0)
-  const [totalPages, setTotalPages] = useState(1)
   const { setErrorMessage, setSuccessMessage } = useMessages()
+  const [currentPage, setCurrentPage] = useState(0)
+  const [pageSize] = useState(10)
+  const [totalPages, setTotalPages] = useState(0)
+  const [grades, setGrades] = useState([])
+  const [loading, setLoading] = useState(false)
 
-  const loadGrades = async (page = 0) => {
-    const result = await handleGetAllAcademicGrades(
+  const [currentSearchPage, setCurrentSearchPage] = useState(0)
+  const [searching, setSearching] = useState(false)
+  const [searchValue, setSearchValue] = useState('')
+
+  useEffect(() => {
+    loadGrades(currentPage)
+  }, [currentPage])
+
+  useEffect(() => {
+    if (searching) {
+      onSearch(searchValue)
+    }
+  }, [currentSearchPage])
+
+  const onSearch = (search) => {
+    if (search.trim() === '') {
+      setSearching(false)
+      setCurrentSearchPage(0)
+      setSearchValue('')
+      handleGetAllAcademicGrades(currentPage, pageSize, setGrades, setLoading, setErrorMessage)
+      handleGetTotalGradesAcademicPages(setTotalPages, pageSize)
+      return
+    }
+    setSearching(true)
+    setSearchValue(search)
+    handleSearchAcademicGrades(
+      currentSearchPage,
+      pageSize,
+      search,
+      setGrades,
+      setLoading,
+      setErrorMessage,
+      setSuccessMessage
+    )
+    handleGetTotalAcademicGradesSearchPages(search, pageSize, setTotalPages)
+  }
+
+  const loadGrades = (page) => {
+    setSearching(false)
+    setCurrentPage(page)
+    setCurrentSearchPage(0)
+    setSearchValue('')
+    handleGetAllAcademicGrades(
       page,
+      pageSize,
       setGrades,
       setLoading,
       setErrorMessage
     )
-    if (result) {
-      setTotalPages(result.totalPages)
-      setCurrentPage(result.currentPage)
-    }
+    handleGetTotalGradesAcademicPages(setTotalPages, pageSize)
   }
 
-  // Cargar datos iniciales
-  useEffect(() => {
-    loadGrades(0)
-  }, [])
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 0 && newPage < totalPages) {
-      loadGrades(newPage)
+  const onClickPage = (number) => {
+    if (searching) {
+      setCurrentSearchPage(number)
+    } else {
+      setCurrentPage(number)
     }
   }
 
   return (
     <SectionLayout title='Resultados de exámenes Académicos'>
       <div className='grade-management-view'>
-        <h1>Resultados de examenes Academico</h1>
+        <h1>Resultados de Exámenes Académicos</h1>
         <p className='description'>
-          Aquí puedes visualizar los resultados de los exámenes academicos.
+          Aquí puedes visualizar los resultados de los Exámenes Académicos.
         </p>
         <AcademicSearchBar
           onSearch={(value) => {
@@ -62,7 +104,7 @@ const AcademicGradesManagementView = () => {
         <AcademicGradesTable
           grades={grades}
           loading={loading}
-          onPageChange={handlePageChange}
+          onPageChange={onClickPage}
           currentPage={currentPage}
           totalPages={totalPages}
         />

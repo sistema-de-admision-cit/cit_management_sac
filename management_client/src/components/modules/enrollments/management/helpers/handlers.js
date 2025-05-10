@@ -184,7 +184,6 @@ const updateEnrollmentDocument = (updatedDoc, enrollment, formData, setEnrollmen
       })
     })
   } else {
-
     // Add the new document to the enrollment
     setEnrollment(prev => {
       return {

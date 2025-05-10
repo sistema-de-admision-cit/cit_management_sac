@@ -15,7 +15,8 @@ import {
 } from '../../helpers/formHandlers'
 import { getButtonState } from '../../helpers/helpers'
 import { EXAM_GRADE_OPTIONS, ACADEMIC_EXAM_TYPE_OPTIONS, DAI_EXAM_TYPE_OPTIONS } from '../helpers/questionFormOptions'
-
+// eslint-disable-next-line no-undef
+const disableExamType = title === 'Modificar Pregunta'
 const getExamTypeOptionsByUserRole = (userRole) => {
   const optionsByRole = {
     SYS: [ACADEMIC_EXAM_TYPE_OPTIONS, DAI_EXAM_TYPE_OPTIONS],
@@ -73,6 +74,7 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
           value={questionType}
           handleChange={(e) => handleTestOptionChange(e, questionData, setQuestionData)}
           options={filteredExamTypeOptions}
+          disabled={disableExamType}
         />
         <QuestionGradeOptions
           value={questionGrade}

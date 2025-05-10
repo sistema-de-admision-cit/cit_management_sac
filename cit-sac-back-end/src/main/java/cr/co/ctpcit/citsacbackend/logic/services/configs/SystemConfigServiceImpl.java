@@ -11,7 +11,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.configs.SystemConfigDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.configs.ExamPeriodMapper;
 import cr.co.ctpcit.citsacbackend.logic.mappers.configs.SystemConfigMapper;
-import cr.co.ctpcit.citsacbackend.logic.services.EncryptionUtil;
+import cr.co.ctpcit.citsacbackend.data.utils.EncryptionUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

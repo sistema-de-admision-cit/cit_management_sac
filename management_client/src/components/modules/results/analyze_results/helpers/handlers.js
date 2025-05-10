@@ -27,12 +27,12 @@ const getErrorMessage = (error) => {
 const getAllResultsUrl = import.meta.env.VITE_GET_ALL_RESULTS_ENDPOINT
 export const handleGetAllResults = (
   page = 0,
+  pageSize = 10,
   setResults,
   setLoading,
   setErrorMessage,
   setSuccessMessage
 ) => {
-  const pageSize = 25
   const url = `${getAllResultsUrl}`
 
   setLoading(true)
@@ -131,12 +131,12 @@ export const handleGetStudentDetails = async (
 
 // Handlers that Search Data from API
 const searchResultUrl = import.meta.env.VITE_GET_RESULTS_BY_SEARCH_ENDPOINT
-export const handleSearchResults = (search,
+export const handleSearchResults = (
+  search,
   setResults,
   setLoading,
   setErrorMessage,
-  setTotalPages,
-  setCurrentPage) => {
+  setSuccessMessage) => {
   axiosInstance.get(`${searchResultUrl}?value=${search}`, { timeout: 10000 })
     .then(response => {
       const results = response.data.map(setResults => formatDateToObj(setResults))
@@ -188,4 +188,26 @@ export const handleSaveStatus = async (
   } finally {
     setLoading(false)
   }
+}
+
+export const handleGetTotalResultsPages = (setTotalPages, pageSize) => {
+  const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_ENDPOINT_RESULTS
+  axiosInstance.get(getTotalPagesUrl, { timeout: 10000 })
+    .then(response => {
+      setTotalPages(response.data % pageSize === 0 ? response.data / pageSize : Math.floor(response.data / pageSize) + 1)
+    })
+    .catch(error => {
+      console.error('Error al obtener el total de páginas:', error)
+    })
+}
+
+export const handleGetTotalResultsSearchPages = (search, pageSize, setTotalPages) => {
+  const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_FOR_SEARCH_ENDPOINT_RESULTS
+  axiosInstance.get(`${getTotalPagesUrl}?value=${search}`, { timeout: 10000 })
+    .then(response => {
+      setTotalPages(response.data % pageSize === 0 ? response.data / pageSize : Math.floor(response.data / pageSize) + 1)
+    })
+    .catch(error => {
+      console.error('Error al obtener el total de páginas:', error)
+    })
 }

@@ -502,4 +502,51 @@ public class ExamsServiceImpl implements ExamsService {
 
     return exam;
   }
+
+  /**
+   * Retrieves the number of students who have taken academic (ACA) exams.
+   *
+   * @return the count of students with academic exams
+   */
+  @Override
+  public Long getStudentsCountWithAcademicExams() {
+    return examRepository.countStudentsWithAcademicExams();
+  }
+
+
+  /**
+   * Retrieves the number of students who have taken DAI exams.
+   *
+   * @return the count of students with DAI exams
+   */
+
+  @Override
+  public Long getStudentsCountWithDAIExams() {
+    return examRepository.countStudentsWithDAIExams();
+  }
+
+  /**
+   * Retrieves the number of students matching a search value who have taken academic (ACA) exams.
+   *
+   * @param value the search term used to filter students by ID, name, or surname
+   * @return the count of matched students with academic exams
+   */
+
+  @Override
+  public Long getSearchCountByAcademicExam(String value) {
+    return examRepository.countStudentsWithAcademicExamsBySearch(value);
+  }
+
+  /**
+   * Retrieves the number of students matching a search value who have taken DAI exams.
+   *
+   * @param value the search term used to filter students by ID, name, or surname
+   * @return the count of matched students with DAI exams
+   */
+
+  @Override
+  public Long getSearchCountByDAIExam(String value) {
+    return examRepository.countStudentsWithDAIExamsBySearch(value);
+  }
+
 }

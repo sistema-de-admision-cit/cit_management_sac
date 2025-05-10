@@ -33,7 +33,7 @@ const StudentsTable = ({ onStudentIdClick, setErrorMessage }) => {
       setSearchValue('')
       handleGetStudents(currentPage, pageSize, setStudents, setLoading, setErrorMessage)
       handleGetTotalPages(setTotalPages, pageSize)
-      return;
+      return
     }
     setSearching(true)
     setSearchValue(search)
@@ -73,73 +73,73 @@ const StudentsTable = ({ onStudentIdClick, setErrorMessage }) => {
                   </td>
                 </tr>
               </tbody>
-            )
+              )
             : (
               <tbody>
                 {students.length > 0
                   ? (
-                    students?.map((student) => (
-                      <StudentRow
-                        key={student.id}
-                        student={student}
-                        onStudentIdClick={onStudentIdClick}
-                      />
-                    ))
-                  )
+                      students?.map((student) => (
+                        <StudentRow
+                          key={student.id}
+                          student={student}
+                          onStudentIdClick={onStudentIdClick}
+                        />
+                      ))
+                    )
                   : (
                     <tr>
                       <td colSpan='6' className='no-applicants'>
                         No hay estudiantes inscritos
                       </td>
                     </tr>
-                  )}
+                    )}
               </tbody>
-            )}
+              )}
         </table>
         <div className='pagination'>
-          {totalPages > 18 ? (
-            <>
-              <Button
-                key={0}
-                onClick={() => onClickPage(-1)}
-                disabled={false}
-                className={currentPage + 1 === 1 ? 'active' : ''}
-              >
-                {'1'}
-              </Button>
-              ...
-              {Array.from({ length: 18 }, (_, i) => currentPage + 2 + i < totalPages - 18 ? currentPage + 2 + i : totalPages - 18 + i).map((number) => (
+          {totalPages > 18
+            ? (
+              <>
                 <Button
-                  key={number}
-                  onClick={() => onClickPage(number - 2)}
-                  className={currentPage + 1 === number ? 'active' : ''}
+                  key={0}
+                  onClick={() => onClickPage(-1)}
+                  disabled={false}
+                  className={currentPage + 1 === 1 ? 'active' : ''}
                 >
-                  {number}
+                  1
                 </Button>
-              ))}
-              ...
-              <Button
-                key={0}
-                onClick={() => onClickPage(totalPages - 2)}
-                disabled={false}
-                className={currentPage + 1 === totalPages ? 'active' : ''}
-              >
-                {totalPages}
-              </Button>
-            </>
-          )
-            :
-            (
-              Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                ...
+                {Array.from({ length: 18 }, (_, i) => currentPage + 2 + i < totalPages - 18 ? currentPage + 2 + i : totalPages - 18 + i).map((number) => (
+                  <Button
+                    key={number}
+                    onClick={() => onClickPage(number - 2)}
+                    className={currentPage + 1 === number ? 'active' : ''}
+                  >
+                    {number}
+                  </Button>
+                ))}
+                ...
                 <Button
-                  key={number}
-                  onClick={() => onClickPage(number - 2)}
-                  className={searching ? currentSearchPage + 1 === number ? 'active' : '' : currentPage + 1 === number ? 'active' : ''}
+                  key={0}
+                  onClick={() => onClickPage(totalPages - 2)}
+                  disabled={false}
+                  className={currentPage + 1 === totalPages ? 'active' : ''}
                 >
-                  {number}
+                  {totalPages}
                 </Button>
-              ))
-            )}
+              </>
+              )
+            : (
+                Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                  <Button
+                    key={number}
+                    onClick={() => onClickPage(number - 2)}
+                    className={searching ? currentSearchPage + 1 === number ? 'active' : '' : currentPage + 1 === number ? 'active' : ''}
+                  >
+                    {number}
+                  </Button>
+                ))
+              )}
         </div>
       </div>
     </>
