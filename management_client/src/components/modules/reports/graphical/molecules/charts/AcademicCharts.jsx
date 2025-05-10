@@ -51,7 +51,7 @@ export const AcademicDifficultyChart = ({ distribution }) => {
 
 export const AcademicGradeAverageChart = ({ gradeAverages }) => (
   <div className='academic-grade-average-chart mt-6'>
-    <h3 className='mb-2'>Media por Grado</h3>
+    <h3 className='mb-2'>Promedio de Puntajes por Grado</h3>
     <ResponsiveContainer width='100%' height={250}>
       <BarChart data={gradeAverages}>
         <CartesianGrid strokeDasharray='3 3' />

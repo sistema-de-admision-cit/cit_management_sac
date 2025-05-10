@@ -4,10 +4,17 @@ import { fetchAdmissionFinal } from '../helpers/handlers'
 import Spinner from '../../../../core/global/atoms/Spinner'
 import ErrorMessage from '../atoms/ErrorMessage'
 import ChartTitle from '../atoms/ChartTitle'
-import FiltersPanel from '../molecules/helpers/FiltersPanel'
 import AddmissionFinalChart from '../molecules/charts/AddmissionFinalChart'
 
-const AdmissionFinalSection = ({ startDate, endDate, grade, sector, setStartDate, setEndDate, setGrade, setSector, sectorOptions, gradeOptions }) => {
+/**
+ * Section displaying a stacked bar chart for final admissions (accepted/rejected).
+ * @param {Object} props
+ * @param {Date} props.startDate - Filter start date
+ * @param {Date} props.endDate - Filter end date
+ * @param {string} props.grade - Selected grade or 'All'
+ * @param {string} props.sector - Selected sector or 'All'
+ */
+const AdmissionFinalSection = ({ startDate, endDate, grade, sector }) => {
   const fmt = d => d?.toISOString().split('T')[0]
   const fetcher = useCallback(
     () => fetchAdmissionFinal(fmt(startDate), fmt(endDate), grade === 'All' ? 'All' : grade, sector === 'All' ? 'All' : sector),
@@ -20,19 +27,7 @@ const AdmissionFinalSection = ({ startDate, endDate, grade, sector, setStartDate
 
   return (
     <div className='admission-final-chart-container'>
-      <ChartTitle>Admisión Final</ChartTitle>
-      <FiltersPanel
-        startDate={startDate}
-        endDate={endDate}
-        onStartDateChange={setStartDate}
-        onEndDateChange={setEndDate}
-        sector={sector}
-        onSectorChange={e => setSector(e.target.value)}
-        grade={grade}
-        onGradeChange={e => setGrade(e.target.value)}
-        sectorOptions={sectorOptions}
-        gradeOptions={gradeOptions}
-      />
+      <ChartTitle>Aceptados vs Rechazados </ChartTitle>
       <AddmissionFinalChart data={data} />
     </div>
   )

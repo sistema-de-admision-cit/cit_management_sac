@@ -4,54 +4,30 @@ import { fetchExamSource } from '../helpers/handlers'
 import Spinner from '../../../../core/global/atoms/Spinner'
 import ErrorMessage from '../atoms/ErrorMessage'
 import ChartTitle from '../atoms/ChartTitle'
-import FiltersPanel from '../molecules/helpers/FiltersPanel'
 import ExamPieChart from '../molecules/charts/ExamPieChart'
 
-const ExamSourceSection = ({
-  startDate,
-  endDate,
-  grade,
-  sector,
-  setStartDate,
-  setEndDate,
-  setGrade,
-  setSector,
-  sectorOptions,
-  gradeOptions
-}) => {
-  const formatDate = d => d?.toISOString().split('T')[0]
-
-  const examSourceFetcher = useCallback(
-    () =>
-      fetchExamSource(
-        formatDate(startDate),
-        formatDate(endDate),
-        grade === 'All' ? '' : grade,
-        sector === 'All' ? '' : sector
-      ),
+/**
+ * Section displaying a pie chart of students by exam source.
+ * @param {Object} props
+ * @param {Date} props.startDate - Filter start date
+ * @param {Date} props.endDate - Filter end date
+ * @param {string} props.grade - Selected grade or 'All'
+ * @param {string} props.sector - Selected sector or 'All'
+ */
+const ExamSourceSection = ({ startDate, endDate, grade, sector }) => {
+  const fmt = d => d?.toISOString().split('T')[0]
+  const fetcher = useCallback(
+    () => fetchExamSource(fmt(startDate), fmt(endDate), grade === 'All' ? 'All' : grade, sector === 'All' ? 'All' : sector),
     [startDate, endDate, grade, sector]
   )
-
-  const { data, isLoading, error } = useChartData(examSourceFetcher, [examSourceFetcher])
+  const { data, isLoading, error } = useChartData(fetcher, [fetcher])
 
   if (isLoading) return <Spinner />
   if (error) return <ErrorMessage message={error} />
 
   return (
     <div className='exam-source-chart-container'>
-      <ChartTitle>Students by Exam Source</ChartTitle>
-      <FiltersPanel
-        startDate={startDate}
-        endDate={endDate}
-        onStartDateChange={setStartDate}
-        onEndDateChange={setEndDate}
-        sector={sector}
-        onSectorChange={e => setSector(e.target.value)}
-        grade={grade}
-        onGradeChange={e => setGrade(e.target.value)}
-        sectorOptions={sectorOptions}
-        gradeOptions={gradeOptions}
-      />
+      <ChartTitle>Origen de los Estudiantes según Canal de Referencia</ChartTitle>
       <ExamPieChart data={data} />
     </div>
   )

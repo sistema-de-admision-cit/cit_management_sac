@@ -1,42 +1,92 @@
 import React from 'react'
 import SectionLayout from '../../../../core/global/molecules/SectionLayout'
+import FiltersPanel from '../molecules/helpers/FiltersPanel'
 import ExamSourceSection from '../organisms/ExamSourceSection'
 import AttendanceSection from '../organisms/AttendanceSection'
 import AdmissionFinalSection from '../organisms/AdmissionFinalSection'
-import '../../../../../assets/styles/reports/graphical-report-styles.css'
-import { useSectionFilters } from '../hooks/useSectionFilters'
 import AcademicSection from '../organisms/AcademicSection'
 import DaiSection from '../organisms/DaiSection'
+import '../../../../../assets/styles/reports/graphical-report-styles.css'
+import { useSectionFilters } from '../hooks/useSectionFilters'
 
+/**
+ * Main view for graphical reports. Renders a top-level filter panel and multiple chart sections.
+ * @component
+ */
 export default function GraphicalReportsView () {
-  // Instantiating independent filters for each chart
-  const examSourceFilters = useSectionFilters()
-  const attendanceFilters = useSectionFilters()
-  const admissionFinalFilers = useSectionFilters()
-  const academicFilters = useSectionFilters()
-  const daiFilters = useSectionFilters()
+  const {
+    startDate,
+    endDate,
+    sector,
+    grade,
+    setStartDate,
+    setEndDate,
+    setSector,
+    setGrade,
+    sectorOptions,
+    gradeOptions
+  } = useSectionFilters()
 
   return (
     <SectionLayout title='Reportes Gráficos'>
       <div className='graphical-reports-container container'>
+        <div className='filters-top'>
+          <FiltersPanel
+            startDate={startDate}
+            endDate={endDate}
+            onStartDateChange={setStartDate}
+            onEndDateChange={setEndDate}
+            sector={sector}
+            onSectorChange={e => setSector(e.target.value)}
+            grade={grade}
+            onGradeChange={e => setGrade(e.target.value)}
+            sectorOptions={sectorOptions}
+            gradeOptions={gradeOptions}
+          />
+        </div>
         <div className='exam-source-section'>
-          <ExamSourceSection {...examSourceFilters} />
+          <ExamSourceSection
+            startDate={startDate}
+            endDate={endDate}
+            grade={grade}
+            sector={sector}
+          />
         </div>
 
         <div className='attendance-section'>
-          <AttendanceSection {...attendanceFilters} />
+          <AttendanceSection
+            startDate={startDate}
+            endDate={endDate}
+            grade={grade}
+            sector={sector}
+          />
         </div>
 
         <div className='admission-final-section'>
-          <AdmissionFinalSection {...admissionFinalFilers} />
+          <AdmissionFinalSection
+            startDate={startDate}
+            endDate={endDate}
+            grade={grade}
+            sector={sector}
+          />
         </div>
 
         <div className='academic-section'>
-          <AcademicSection {...academicFilters} />
+          <AcademicSection
+            startDate={startDate}
+            endDate={endDate}
+            grade={grade}
+            sector={sector}
+          />
         </div>
 
         <div className='dai-section'>
-          <DaiSection {...daiFilters} />
+          <DaiSection
+            startDate={startDate}
+            endDate={endDate}
+            grade={grade}
+            sector={sector}
+          />
         </div>
       </div>
     </SectionLayout>
