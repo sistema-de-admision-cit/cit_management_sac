@@ -4,29 +4,19 @@ import { fetchDaiExam } from '../helpers/handlers'
 import Spinner from '../../../../core/global/atoms/Spinner'
 import ErrorMessage from '../atoms/ErrorMessage'
 import ChartTitle from '../atoms/ChartTitle'
-import FiltersPanel from '../molecules/helpers/FiltersPanel'
 
-const DaiSection = ({
-  startDate,
-  endDate,
-  grade,
-  sector,
-  setStartDate,
-  setEndDate,
-  setGrade,
-  setSector,
-  sectorOptions,
-  gradeOptions
-}) => {
+/**
+ * Section displaying DAI exam analysis charts ().
+ * @param {Object} props
+ * @param {Date} props.startDate - Filter start date
+ * @param {Date} props.endDate - Filter end date
+ * @param {string} props.grade - Selected grade or 'All'
+ * @param {string} props.sector - Selected sector or 'All'
+ */
+const DaiSection = ({ startDate, endDate, grade, sector }) => {
   const fmt = d => d?.toISOString().split('T')[0]
   const fetcher = useCallback(
-    () =>
-      fetchDaiExam(
-        fmt(startDate),
-        fmt(endDate),
-        grade === 'All' ? 'All' : grade,
-        sector === 'All' ? 'All' : sector
-      ),
+    () => fetchDaiExam(fmt(startDate), fmt(endDate), grade === 'All' ? 'All' : grade, sector === 'All' ? 'All' : sector),
     [startDate, endDate, grade, sector]
   )
   const { data, isLoading, error } = useChartData(fetcher, [fetcher])
@@ -37,22 +27,9 @@ const DaiSection = ({
   return (
     <div className='dai-section'>
       <ChartTitle>Evaluación del Examen DAI</ChartTitle>
-      <FiltersPanel
-        startDate={startDate}
-        endDate={endDate}
-        onStartDateChange={setStartDate}
-        onEndDateChange={setEndDate}
-        sector={sector}
-        onSectorChange={e => setSector(e.target.value)}
-        grade={grade}
-        onGradeChange={e => setGrade(e.target.value)}
-        sectorOptions={sectorOptions}
-        gradeOptions={gradeOptions}
-      />
       <div className='chart-container'>
         <div className='chart'>
           <h2>Gráfica de Resultados</h2>
-          {/* TODO: Add chart component here */}
           <pre>{JSON.stringify(data, null, 2)}</pre>
         </div>
       </div>
