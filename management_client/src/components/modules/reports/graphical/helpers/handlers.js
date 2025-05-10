@@ -108,13 +108,13 @@ export const fetchDaiExam = async (
  * @param {string} [sector='All'] - Sector filter, or 'All'.
  * @returns {Promise<
  * {
- * "enrollmentDate": "2025-04-02",
- * "interestedCount": 1,
- * "eligibleCount": 1,
- * "acceptedCount": 0,
- * "pctInterestedToEligible": 100.00,
- * "pctEligibleToAccepted": 0.00
- * } >} API response data for Funel trend.
+ * "enrollmentDate": string,
+ * "interestedCount": int,
+ * "eligibleCount": int,
+ * "acceptedCount": int,
+ * "pctInterestedToEligible": float,
+ * "pctEligibleToAccepted": float
+ * }[]>} API response data for Funel trend.
  */
 export const fetchFunnelTrend = async (
   startDate,
@@ -123,6 +123,35 @@ export const fetchFunnelTrend = async (
   sector = 'All'
 ) => {
   const { data } = await axios.get('reports/admission-funnel', {
+    params: { startDate, endDate, grade: gradeCsv, sector }
+  })
+  return data
+}
+
+/**
+ * Fetch data for the lead source effectiveness chart (interested -> eligible -> accepted)
+ * @param {string} startDate - ISO string for the start date (YYYY-MM-DD).
+ * @param {string} endDate - ISO string for the end date (YYYY-MM-DD).
+ * @param {string} [gradeCsv='All'] - Grade filter, or 'All'.
+ * @param {string} [sector='All'] - Sector filter, or 'All'.
+ * @returns {
+ * Promise<
+ * {
+ * "examSource": string,
+ * "studentCount": int,
+ * "acceptanceRate": double,
+ * "avgExamScore": double
+ * } []
+ * >
+ * } API response data for lead source effectiveness.
+*/
+export const fetchLeadSourceEffectiveness = async (
+  startDate,
+  endDate,
+  gradeCsv = 'All',
+  sector = 'All'
+) => {
+  const { data } = await axios.get('reports/lead-source-effectiveness', {
     params: { startDate, endDate, grade: gradeCsv, sector }
   })
   return data

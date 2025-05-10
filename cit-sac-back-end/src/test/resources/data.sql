@@ -569,3 +569,48 @@ VALUES
     (98321, 667, 'PENDING' , '2025-05-03 09:00:00', 'THIRD' , 'SM', '2025-05-03', 1, 1),
     (98322, 668, 'ELIGIBLE', '2025-05-03 10:00:00', 'THIRD' , 'FM', '2025-05-03', 1, 0),
     (98323, 669, 'ACCEPTED', '2025-05-03 11:00:00', 'THIRD' , 'OH', '2025-05-03', 1, 1);
+
+
+INSERT INTO tbl_Persons (person_id, first_name, first_surname, second_surname, id_type, id_number)
+VALUES 
+  (901, 'Alice', 'Smith', NULL, 'CC', 'ID901'),
+  (902, 'Bob', 'Jones', NULL, 'CC', 'ID902'),
+  (903, 'Carlos', 'Gomez', 'Perez', 'CC', 'ID903'),
+  (904, 'Diana', 'Lopez', NULL, 'CC', 'ID904'),
+  (905, 'Elena', 'Martinez', NULL, 'CC', 'ID905'),
+  (906, 'Elena', 'Ramirez', NULL, 'CC', 'ID906');
+
+INSERT INTO tbl_Students (student_id, birth_date, has_accommodations)
+VALUES
+  (901, '2012-05-01', 0),
+  (902, '2010-08-15', 0),
+  (903, '2011-03-22', 1),
+  (904, '2013-12-01', 0),
+  (905, '2010-09-09', 0),
+  (906, '2011-11-11', 0);
+
+INSERT INTO tbl_Enrollments (enrollment_id, student_id, status, enrollment_date, grade_to_enroll, known_through, exam_date, consent_given, whatsapp_notification)
+VALUES
+  (909, 901, 'ACCEPTED', '2025-03-01', 'FIRST',  'SM', '2025-04-01', 1, 1),
+  (910, 902, 'REJECTED', '2025-03-02', 'SECOND', 'OH', '2025-04-02', 1, 0),
+  (911, 903, 'ACCEPTED', '2025-03-03', 'SEVENTH','FD', '2025-04-03', 0, 1),
+  (912, 904, 'ACCEPTED', '2025-03-04', 'FOURTH', 'FM', '2025-04-04', 1, 1),
+  (913, 905, 'PENDING',  '2025-03-05', 'EIGHTH', 'OT', '2025-04-05', 1, 1),
+  (914, 906, 'ACCEPTED', '2025-03-06', 'THIRD', 'FM', '2025-04-06', 1, 1);
+
+INSERT INTO tbl_Exams (exam_id, enrollment_id, exam_date, exam_type)
+VALUES
+  (1001, 909, '2025-04-01', 'ACA'),
+  (1002, 910, '2025-04-02', 'ACA'),
+  (1003, 911, '2025-04-03', 'ACA'),
+  (1004, 912, '2025-04-04', 'ACA'),
+  (1005, 914, '2025-04-06', 'ACA');
+  
+  INSERT INTO tbl_Academic_Exams (exam_id, grade)
+VALUES
+  (1001, 85.5),
+  (1002, 60.0),
+  (1003, 92.3),
+  (1004, 74.0),
+  (1005, 78.5);
+

@@ -87,4 +87,15 @@ class ReportsRepositoryImpl implements ReportsRepository {
             rs.getBigDecimal("pct_Interested_to_Eligible"),
             rs.getBigDecimal("pct_Eligible_to_Accepted")));
   }
+
+  @Override
+  public List<LeadSourceEffectivenessDTO> findLeadSourceEffectiveness(LocalDate startDate,
+      LocalDate endDate, List<String> grades, String sector) {
+    String gradesCsv = grades.isEmpty() ? "All" : String.join(",", grades);
+    String sql = "CALL usp_Get_LeadSource_Effectiveness_Filters(?, ?, ?, ?)";
+    return jdbcTemplate.query(sql, new Object[] {startDate, endDate, gradesCsv, sector},
+        (rs, rowNum) -> new LeadSourceEffectivenessDTO(rs.getString("examSource"),
+            rs.getInt("studentCount"), rs.getBigDecimal("acceptanceRate"),
+            rs.getBigDecimal("avgExamScore")));
+  }
 }

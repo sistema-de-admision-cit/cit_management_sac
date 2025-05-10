@@ -9,6 +9,7 @@ import DaiSection from '../organisms/DaiSection'
 import '../../../../../assets/styles/reports/graphical-report-styles.css'
 import { useSectionFilters } from '../hooks/useSectionFilters'
 import FunnelTrendSection from '../organisms/FunnelTrendSection'
+import LeadSourceEffectivenessSection from '../organisms/LeadSourceEffectivenessSection'
 
 /**
  * Main view for graphical reports. Renders a top-level filter panel and multiple chart sections.
@@ -47,6 +48,15 @@ export default function GraphicalReportsView () {
         </div>
         <div className='exam-source-section'>
           <ExamSourceSection
+            startDate={startDate}
+            endDate={endDate}
+            grade={grade}
+            sector={sector}
+          />
+        </div>
+
+        <div className='lead-source-matrix-section'>
+          <LeadSourceEffectivenessSection
             startDate={startDate}
             endDate={endDate}
             grade={grade}

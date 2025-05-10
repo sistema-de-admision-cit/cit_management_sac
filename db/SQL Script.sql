@@ -978,6 +978,50 @@ END //
 DELIMITER ;
 
 
+DROP PROCEDURE IF EXISTS `usp_Get_LeadSource_Effectiveness_Filters`;
+DELIMITER //
+CREATE PROCEDURE `usp_Get_LeadSource_Effectiveness_Filters`(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,                   -- CSV of grades or 'All'
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    CASE e.known_through
+      WHEN 'OH' THEN 'OpenHouse'
+      WHEN 'SM' THEN 'Redes Sociales'
+      WHEN 'FD' THEN 'Amigo'
+      WHEN 'FM' THEN 'Familiar'
+      ELSE 'Otros'
+    END                          AS examSource,
+    COUNT(*)                     AS studentCount,
+    ROUND(SUM(e.status = 'ACCEPTED')/COUNT(*) * 100, 2)    AS acceptanceRate,
+    ROUND(AVG(ae.grade),2)       AS avgExamScore
+  FROM tbl_Enrollments e
+  LEFT JOIN tbl_Exams ex
+    ON ex.enrollment_id = e.enrollment_id
+    AND ex.exam_type = 'ACA'
+  LEFT JOIN tbl_Academic_Exams ae
+    ON ae.exam_id = ex.exam_id
+  WHERE
+    (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
+    AND (
+      p_grades = 'All'
+      OR FIND_IN_SET(e.grade_to_enroll, p_grades)
+    )
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND e.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  GROUP BY e.known_through
+  ORDER BY studentCount DESC;
+END //
+DELIMITER ;
+
+
 -- End of the stored procedures
 -- ----------------------------------------------------- 
 DELIMITER ;

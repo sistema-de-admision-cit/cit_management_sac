@@ -23,5 +23,8 @@ public interface ReportsRepository {
 
   public List<AdmissionFunnelTrendDTO> findAdmissionFunnelTrend(LocalDate startDate,
       LocalDate endDate, List<String> grades, String sector);
+
+  public List<LeadSourceEffectivenessDTO> findLeadSourceEffectiveness(LocalDate startDate,
+      LocalDate endDate, List<String> grades, String sector);
 }
 

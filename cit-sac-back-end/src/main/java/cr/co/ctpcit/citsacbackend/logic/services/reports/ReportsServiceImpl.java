@@ -65,6 +65,21 @@ public class ReportsServiceImpl {
   }
 
   /**
+   * Retrieves lead source effectiveness metrics.
+   *
+   * @param startDate
+   * @param endDate
+   * @param grades
+   * @param sector
+   * @return
+   */
+  public List<LeadSourceEffectivenessDTO> getLeadSourceEffectiveness(LocalDate startDate,
+      LocalDate endDate, List<String> grades, String sector) {
+    return reportsRepository.findLeadSourceEffectiveness(startDate, endDate, grades, sector);
+  }
+
+
+  /**
    * Generates a list of report data DTOs based on the provided report request criteria.
    *
    * <p>
