@@ -183,6 +183,31 @@ public class ReportsController {
   }
 
   /**
+   * Retrieves daily admission-funnel metrics: interested → eligible → accepted
+   *
+   * @param startDateStr the start date of the reporting period
+   * @param endDateStr   the end date of the reporting period
+   * @param gradeCsv     the grade level to filter by, as a comma-separated list
+   * @param sector       the educational sector to filter by
+   * @return ResponseEntity containing the admission funnel trend as a list of
+   * AdmissionFunnelTrendDTO Example: GET
+   * /api/reports/admission-funnel?startDate=2025-01-01&endDate=2025-01-31
+   */
+  @GetMapping("/admission-funnel")
+  public ResponseEntity<List<AdmissionFunnelTrendDTO>> getAdmissionFunnelTrend(
+      @RequestParam(value = "startDate", required = false) String startDateStr,
+      @RequestParam(value = "endDate", required = false) String endDateStr,
+      @RequestParam(value = "grade", defaultValue = "All") String gradeCsv,
+      @RequestParam(value = "sector", defaultValue = "All") String sector) {
+    LocalDate startDate = parseDate(startDateStr);
+    LocalDate endDate = parseDate(endDateStr);
+    List<String> grades = parseGrades(gradeCsv);
+    List<AdmissionFunnelTrendDTO> dto =
+        reportsService.getAdmissionFunnelTrend(startDate, endDate, grades, sector.trim());
+    return ResponseEntity.ok(dto);
+  }
+
+  /**
    * Generates a PDF report based on the provided report request and returns it as a downloadable
    * file.
    *

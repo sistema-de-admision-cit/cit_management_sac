@@ -57,6 +57,14 @@ public class ReportsServiceImpl {
   }
 
   /**
+   * Retrieves daily admission-funnel metrics: interested → eligible → accepted
+   */
+  public List<AdmissionFunnelTrendDTO> getAdmissionFunnelTrend(LocalDate startDate,
+      LocalDate endDate, List<String> grades, String sector) {
+    return reportsRepository.findAdmissionFunnelTrend(startDate, endDate, grades, sector);
+  }
+
+  /**
    * Generates a list of report data DTOs based on the provided report request criteria.
    *
    * <p>

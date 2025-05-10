@@ -99,3 +99,31 @@ export const fetchDaiExam = async (
   })
   return data
 }
+
+/**
+ * Fetch data for the Funel trend chart (interested -> eligible -> accepted)
+ * @param {string} startDate - ISO string for the start date (YYYY-MM-DD).
+ * @param {string} endDate - ISO string for the end date (YYYY-MM-DD).
+ * @param {string} [gradeCsv='All'] - Grade filter, or 'All'.
+ * @param {string} [sector='All'] - Sector filter, or 'All'.
+ * @returns {Promise<
+ * {
+ * "enrollmentDate": "2025-04-02",
+ * "interestedCount": 1,
+ * "eligibleCount": 1,
+ * "acceptedCount": 0,
+ * "pctInterestedToEligible": 100.00,
+ * "pctEligibleToAccepted": 0.00
+ * } >} API response data for Funel trend.
+ */
+export const fetchFunnelTrend = async (
+  startDate,
+  endDate,
+  gradeCsv = 'All',
+  sector = 'All'
+) => {
+  const { data } = await axios.get('reports/admission-funnel', {
+    params: { startDate, endDate, grade: gradeCsv, sector }
+  })
+  return data
+}

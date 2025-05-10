@@ -8,6 +8,7 @@ import AcademicSection from '../organisms/AcademicSection'
 import DaiSection from '../organisms/DaiSection'
 import '../../../../../assets/styles/reports/graphical-report-styles.css'
 import { useSectionFilters } from '../hooks/useSectionFilters'
+import FunnelTrendSection from '../organisms/FunnelTrendSection'
 
 /**
  * Main view for graphical reports. Renders a top-level filter panel and multiple chart sections.
@@ -64,6 +65,15 @@ export default function GraphicalReportsView () {
 
         <div className='admission-final-section'>
           <AdmissionFinalSection
+            startDate={startDate}
+            endDate={endDate}
+            grade={grade}
+            sector={sector}
+          />
+        </div>
+
+        <div className='funnel-trend-section'>
+          <FunnelTrendSection
             startDate={startDate}
             endDate={endDate}
             grade={grade}
