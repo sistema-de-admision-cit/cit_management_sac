@@ -18,6 +18,20 @@ const COLORS = {
   accepted: '#ffc658'
 }
 
+/**
+ * Scatter chart visualizing lead source performance.
+ * X-axis: number of applicants, Y-axis: acceptance rate, bubble size: average exam score.
+ *
+ * @component
+ * @param {Object} props
+ * @param {{
+*   studentCount: number,
+*   acceptanceRate: number,
+*   avgExamScore: number,
+*   examSource: string
+* }[]} [props.data=[]] - Lead source performance metrics.
+* @returns {JSX.Element}
+*/
 const LeadSourceMatrixChart = ({ data = [] }) => {
   // ensure it's always an array
   const chartData = Array.isArray(data) ? data : []

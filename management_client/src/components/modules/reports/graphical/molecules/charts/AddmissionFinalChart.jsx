@@ -13,10 +13,16 @@ import {
 const CATEGORICAL_PALETTE = ['#4CAF50', '#F44336'] // green for accepted, red for rejected
 
 /**
- * Stacked-bar chart showing, per date:
- * - Rechazados  (en green)
- * - Admitidos   (en red)
+ * Displays a stacked bar chart of admission outcomes over time.
+ * Each bar shows the number of rejected and accepted students per enrollment date.
+ *
+ * @component
+ * @param {Object} props
+ * @param {{ enrollmentDate: string, totalAccepted: number, totalRejected: number }[]} props.data - Raw admission data.
+ * @param {string} [props.title] - Optional title displayed above the chart.
+ * @returns {JSX.Element}
  */
+
 const AdmissionFinalChart = ({ data, title }) => {
   const chartData = data.map(d => ({
     enrollmentDate: d.enrollmentDate,

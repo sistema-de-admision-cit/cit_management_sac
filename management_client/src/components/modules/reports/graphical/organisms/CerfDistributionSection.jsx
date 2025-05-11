@@ -7,6 +7,14 @@ import ErrorMessage from '../atoms/ErrorMessage'
 import ChartTitle from '../atoms/ChartTitle'
 import CefrDistributionChart from '../molecules/charts/CefrDistributionChart'
 
+/**
+ * Section displaying the CEFR level distribution chart.
+ * @param {Object} props
+ * @param {Date} props.startDate - Filter start date
+ * @param {Date} props.endDate - Filter end date
+ * @param {string} props.grade - Selected grade or 'All'
+ * @param {string} props.sector - Selected sector or 'All'
+ */
 const CefrDistributionSection = ({ startDate, endDate, grade, sector }) => {
   const fmt = d => d?.toISOString().slice(0, 10)
   const fetcher = useCallback(

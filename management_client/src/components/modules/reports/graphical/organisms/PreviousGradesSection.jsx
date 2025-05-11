@@ -6,6 +6,14 @@ import ErrorMessage from '../atoms/ErrorMessage'
 import ChartTitle from '../atoms/ChartTitle'
 import PreviousGradesChart from '../molecules/charts/PreviousGradesChart'
 
+/**
+ * Section displaying previous grades analysis charts (grade distribution).
+ * @param {Object} props
+ * @param {Date} props.startDate - Filter start date
+ * @param {Date} props.endDate - Filter end date
+ * @param {string} props.grade - Selected grade or 'All'
+ * @param {string} props.sector - Selected sector or 'All'
+ */
 const PreviousGradesSection = ({ startDate, endDate, grade, sector }) => {
   const fmt = d => d.toISOString().slice(0, 10)
   const fetcher = useCallback(

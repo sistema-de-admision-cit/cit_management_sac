@@ -13,9 +13,15 @@ import {
 const LEVEL_ORDER = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
 
 /**
- * @param {{ level: string, count: number }[]} data
- * @param {string} [title]
+ * Displays a vertical bar chart of CEFR level distribution.
+ *
+ * @component
+ * @param {Object} props
+ * @param {{ level: string, count: number }[]} props.data - Array of CEFR levels and applicant counts.
+ * @param {string} [props.title] - Optional title to show above the chart.
+ * @returns {JSX.Element}
  */
+
 const CefrDistributionChart = ({ data = [], title }) => {
   // sort the incoming data A1 → C2
   const sorted = [...data].sort(

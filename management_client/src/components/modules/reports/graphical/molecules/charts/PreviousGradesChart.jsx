@@ -14,6 +14,14 @@ const STATUS_COLORS = {
   REJECTED: '#EF5350'
 }
 
+/**
+ * Box and scatter plot showing previous grade distributions grouped by applicant status.
+ *
+ * @component
+ * @param {Object} props
+ * @param {{ status: string, previousGrades: number }[]} [props.data=[]] - Applicant grades with status.
+ * @returns {JSX.Element}
+ */
 const PreviousGradesChart = ({ data = [] }) => {
   // group y-values by status
   const grouped = data.reduce((acc, { status, previousGrades }) => {
