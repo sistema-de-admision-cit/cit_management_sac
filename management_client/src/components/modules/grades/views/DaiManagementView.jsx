@@ -20,7 +20,7 @@ const DaiGradesManagementView = () => {
   const [totalPages, setTotalPages] = useState(0)
   const [grades, setGrades] = useState([])
   const [loading, setLoading] = useState(false)
-  const [, setOnlyReviewed] = useState(false)
+  const [onlyReviewed, setOnlyReviewed] = useState(false)
 
   const [currentSearchPage, setCurrentSearchPage] = useState(0)
   const [searching, setSearching] = useState(false)
@@ -41,8 +41,7 @@ const DaiGradesManagementView = () => {
       setSearching(false)
       setCurrentSearchPage(0)
       setSearchValue('')
-      handleGetAllDaiGrades(currentPage, pageSize, setGrades, setLoading, setErrorMessage)
-      handleGetTotalGradesDAIPages(setTotalPages, pageSize)
+      loadGrades(currentPage)
       return
     }
     setSearching(true)
@@ -52,8 +51,13 @@ const DaiGradesManagementView = () => {
       pageSize,
       search,
       (grades) => {
-        setGrades(grades)
         setAllGrades(grades)
+        if (onlyReviewed) {
+          const filtered = grades.filter(g => g.daiExams.some(exam => exam.reviewed === true))
+          setGrades(filtered)
+        } else {
+          setGrades(grades)
+        }
       },
       setLoading,
       setErrorMessage,
@@ -62,17 +66,25 @@ const DaiGradesManagementView = () => {
     handleGetTotalDAIGradesSearchPages(search, pageSize, setTotalPages)
   }
 
+
   const loadGrades = (page) => {
     setSearching(false)
     setCurrentPage(page)
     setCurrentSearchPage(0)
     setSearchValue('')
     handleGetAllDaiGrades(page, pageSize, (grades) => {
-      setGrades(grades)
       setAllGrades(grades)
+      if (onlyReviewed) {
+        const filtered = grades.filter(g => g.daiExams.some(exam => exam.reviewed === true))
+        setGrades(filtered)
+      } else {
+        setGrades(grades)
+      }
     }, setLoading, setErrorMessage)
     handleGetTotalGradesDAIPages(setTotalPages, pageSize)
   }
+
+
   const onClickPage = (number) => {
     if (searching) {
       setCurrentSearchPage(number)
@@ -84,7 +96,7 @@ const DaiGradesManagementView = () => {
   const handleCheckboxChange = (checked) => {
     setOnlyReviewed(checked)
     if (checked) {
-      const filtered = allGrades.filter(g => g.daiExam[0]?.reviewed === true)
+      const filtered = allGrades.filter(g => g.daiExams.some(exam => exam.reviewed === true))
       setGrades(filtered)
     } else {
       setGrades(allGrades)
