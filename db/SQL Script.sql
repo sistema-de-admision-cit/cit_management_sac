@@ -935,6 +935,178 @@ BEGIN
 END //
 
 
+DELIMITER //
+DROP PROCEDURE IF EXISTS usp_Get_Admission_Funnel_Trend_Filters //
+CREATE PROCEDURE usp_Get_Admission_Funnel_Trend_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,                   -- CSV list of grades or 'All'
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  /*
+    Business question – 
+    Are we moving prospects efficiently from “interested” to “accepted”, 
+    and where are they getting stuck?
+    
+    Funnel stages:
+      • Interested (status = 'PENDING')
+      • Eligible   (status = 'ELIGIBLE')
+      • Accepted   (status = 'ACCEPTED')
+  */
+
+  SELECT
+    DATE(e.enrollment_date) AS enrollmentDate,
+
+    -- raw counts at each stage
+    COUNT(*)                                   AS interestedCount,
+    SUM(e.status = 'ELIGIBLE')                 AS eligibleCount,
+    SUM(e.status = 'ACCEPTED')                 AS acceptedCount,
+
+    -- drop-off metrics
+    ROUND(
+      IF(COUNT(*) = 0, NULL, 
+         SUM(e.status = 'ELIGIBLE') / COUNT(*) * 100
+      ), 2
+    ) AS pct_Interested_to_Eligible,
+    ROUND(
+      IF(SUM(e.status = 'ELIGIBLE') = 0, NULL, 
+         SUM(e.status = 'ACCEPTED') / SUM(e.status = 'ELIGIBLE') * 100
+      ), 2
+    ) AS pct_Eligible_to_Accepted
+
+  FROM tbl_Enrollments e
+  WHERE
+    (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
+    AND (
+      p_grades = 'All'
+      OR FIND_IN_SET(e.grade_to_enroll, p_grades)
+    )
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND e.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  GROUP BY DATE(e.enrollment_date)
+  ORDER BY DATE(e.enrollment_date);
+END //
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS `usp_Get_LeadSource_Effectiveness_Filters`;
+DELIMITER //
+CREATE PROCEDURE `usp_Get_LeadSource_Effectiveness_Filters`(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,                   -- CSV of grades or 'All'
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    CASE e.known_through
+      WHEN 'OH' THEN 'OpenHouse'
+      WHEN 'SM' THEN 'Redes Sociales'
+      WHEN 'FD' THEN 'Amigo'
+      WHEN 'FM' THEN 'Familiar'
+      ELSE 'Otros'
+    END                          AS examSource,
+    COUNT(*)                     AS studentCount,
+    ROUND(SUM(e.status = 'ACCEPTED')/COUNT(*) * 100, 2)    AS acceptanceRate,
+    ROUND(AVG(ae.grade),2)       AS avgExamScore
+  FROM tbl_Enrollments e
+  LEFT JOIN tbl_Exams ex
+    ON ex.enrollment_id = e.enrollment_id
+    AND ex.exam_type = 'ACA'
+  LEFT JOIN tbl_Academic_Exams ae
+    ON ae.exam_id = ex.exam_id
+  WHERE
+    (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
+    AND (
+      p_grades = 'All'
+      OR FIND_IN_SET(e.grade_to_enroll, p_grades)
+    )
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'   AND e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria' AND e.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  GROUP BY e.known_through
+  ORDER BY studentCount DESC;
+END //
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS `usp_Get_PreviousGrades_By_Status_Filters`;
+DELIMITER //
+CREATE PROCEDURE `usp_Get_PreviousGrades_By_Status_Filters`(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,                   -- CSV of grades or 'All'
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    s.previous_grades     AS previousGrades,
+    e.status              AS status
+  FROM tbl_Students s
+  JOIN tbl_Enrollments e
+    ON e.student_id = s.student_id
+  WHERE
+    (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
+    AND (p_grades = 'All' OR FIND_IN_SET(e.grade_to_enroll, p_grades))
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'
+          AND e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria'
+          AND e.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    );
+END //
+DELIMITER ;
+
+
+
+DROP PROCEDURE IF EXISTS usp_Get_CEFR_Distribution_Filters;
+DELIMITER //
+CREATE PROCEDURE usp_Get_CEFR_Distribution_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,                     -- CSV or 'All'
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    ee.`level`   AS level,
+    COUNT(*)     AS count
+  FROM tbl_English_Exams ee
+  JOIN tbl_Exams ex
+    ON ee.exam_id = ex.exam_id
+  JOIN tbl_Enrollments e
+    ON ex.enrollment_id = e.enrollment_id
+  WHERE e.status = 'ACCEPTED'
+    AND (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
+    AND (
+      p_grades = 'All'
+      OR FIND_IN_SET(e.grade_to_enroll, p_grades)
+    )
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'
+          AND e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria'
+          AND e.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  GROUP BY ee.`level`
+  -- ensure A1→C2 ordering:
+  ORDER BY FIELD(ee.`level`,'A1','A2','B1','B2','C1','C2');
+END//
+DELIMITER ;
+
+
 -- End of the stored procedures
 -- ----------------------------------------------------- 
 DELIMITER ;

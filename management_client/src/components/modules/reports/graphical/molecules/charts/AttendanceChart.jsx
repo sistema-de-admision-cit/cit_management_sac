@@ -13,10 +13,16 @@ import {
 const CATEGORICAL_PALETTE = ['#EA801C', '#1A80BB']
 
 /**
- * Stacked-bar chart showing, per date:
- * - No Presentados  (en naranja)
- * - Presentados     (en azul)
+ * Stacked bar chart visualizing attendance trends over time.
+ * Bars show total students who attended vs. those who did not per enrollment date.
+ *
+ * @component
+ * @param {Object} props
+ * @param {{ enrollmentDate: string, totalEnrolled: number, totalAttended: number }[]} props.data - Attendance dataset.
+ * @param {string} [props.title] - Optional chart title.
+ * @returns {JSX.Element}
  */
+
 const AttendanceChart = ({ data, title }) => {
   // derive “noPresented” so we can stack it under “presentados”
   const chartData = data.map(d => ({

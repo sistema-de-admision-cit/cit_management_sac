@@ -3,6 +3,16 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recha
 
 const COLORS = ['#003A7D', '#008DFF', '#FF73B6', '#C701FF', '#4ECB8D', '#FF9D3A']
 
+/**
+ * Renders a pie chart of student count per exam source.
+ *
+ * @component
+ * @param {Object} props
+ * @param {{ examSource: string, studentCount: number }[]} props.data - Pie segments by exam source.
+ * @param {string} [props.title] - Optional chart title.
+ * @returns {JSX.Element}
+ */
+
 const ExamPieChart = ({ data, title }) => (
   <div className='exam-pie-chart'>
     {title && <h3 className='mb-2'>{title}</h3>}
