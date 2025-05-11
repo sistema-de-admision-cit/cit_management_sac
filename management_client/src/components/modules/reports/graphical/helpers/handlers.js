@@ -177,3 +177,23 @@ export const fetchPreviousGradesStatus = async (
   })
   return data
 }
+
+/**
+ * Fetch data for the CEFR distribution chart
+ * @param {string} startDate - ISO string for the start date (YYYY-MM-DD).
+ * @param {string} endDate - ISO string for the end date (YYYY-MM-DD).
+ * @param {string} [gradeCsv='All'] - Grade filter, or 'All'.
+ * @param {string} [sector='All'] - Sector filter, or 'All'.
+ * @returns {Promise<any>} API response data for CEFR distribution.
+ */
+export const fetchCefrDistribution = async (
+  startDate,
+  endDate,
+  gradeCsv = 'All',
+  sector = 'All'
+) => {
+  const { data } = await axios.get('reports/cefr-distribution', {
+    params: { startDate, endDate, grade: gradeCsv, sector }
+  })
+  return data
+}

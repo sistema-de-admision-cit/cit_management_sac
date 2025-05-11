@@ -11,6 +11,7 @@ import { useSectionFilters } from '../hooks/useSectionFilters'
 import FunnelTrendSection from '../organisms/FunnelTrendSection'
 import LeadSourceEffectivenessSection from '../organisms/LeadSourceEffectivenessSection'
 import PreviousGradesSection from '../organisms/PreviousGradesSection'
+import CerfDistributionSection from '../organisms/CerfDistributionSection'
 
 /**
  * Main view for graphical reports. Renders a top-level filter panel and multiple chart sections.
@@ -109,6 +110,16 @@ export default function GraphicalReportsView () {
             sector={sector}
           />
         </div>
+
+        <div className='english-section'>
+          <CerfDistributionSection
+            startDate={startDate}
+            endDate={endDate}
+            grade={grade}
+            sector={sector}
+          />
+        </div>
+
       </div>
     </SectionLayout>
   )

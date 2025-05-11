@@ -29,5 +29,8 @@ public interface ReportsRepository {
 
   public List<PreviousGradesStatusDTO> findPreviousGradesByStatus(LocalDate start, LocalDate end,
       List<String> grades, String sector);
+
+  List<CefrDistributionDTO> findCefrDistribution(LocalDate startDate, LocalDate endDate,
+      List<String> grades, String sector);
 }
 

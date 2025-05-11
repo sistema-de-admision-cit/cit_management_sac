@@ -92,6 +92,11 @@ public class ReportsServiceImpl {
     return reportsRepository.findPreviousGradesByStatus(start, end, grades, sector);
   }
 
+  public List<CefrDistributionDTO> getCefrDistribution(LocalDate startDate, LocalDate endDate,
+      List<String> grades, String sector) {
+    return reportsRepository.findCefrDistribution(startDate, endDate, grades, sector);
+  }
+
   /**
    * Generates a list of report data DTOs based on the provided report request criteria.
    *

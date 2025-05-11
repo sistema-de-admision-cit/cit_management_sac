@@ -1052,6 +1052,45 @@ END //
 DELIMITER ;
 
 
+
+DROP PROCEDURE IF EXISTS usp_Get_CEFR_Distribution_Filters;
+DELIMITER //
+CREATE PROCEDURE usp_Get_CEFR_Distribution_Filters(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,                     -- CSV or 'All'
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    ee.`level`   AS level,
+    COUNT(*)     AS count
+  FROM tbl_English_Exams ee
+  JOIN tbl_Exams ex
+    ON ee.exam_id = ex.exam_id
+  JOIN tbl_Enrollments e
+    ON ex.enrollment_id = e.enrollment_id
+  WHERE e.status = 'ACCEPTED'
+    AND (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
+    AND (
+      p_grades = 'All'
+      OR FIND_IN_SET(e.grade_to_enroll, p_grades)
+    )
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'
+          AND e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria'
+          AND e.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    )
+  GROUP BY ee.`level`
+  -- ensure A1→C2 ordering:
+  ORDER BY FIELD(ee.`level`,'A1','A2','B1','B2','C1','C2');
+END//
+DELIMITER ;
+
+
 -- End of the stored procedures
 -- ----------------------------------------------------- 
 DELIMITER ;

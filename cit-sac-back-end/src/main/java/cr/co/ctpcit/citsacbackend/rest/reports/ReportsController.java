@@ -245,6 +245,22 @@ public class ReportsController {
     return ResponseEntity.ok(data);
   }
 
+  @GetMapping("/cefr-distribution")
+  public ResponseEntity<List<CefrDistributionDTO>> getCefrDistribution(
+      @RequestParam(value = "startDate", required = false) String startDateStr,
+      @RequestParam(value = "endDate", required = false) String endDateStr,
+      @RequestParam(value = "grade", defaultValue = "All") String gradeCsv,
+      @RequestParam(value = "sector", defaultValue = "All") String sector) {
+    LocalDate startDate = parseDate(startDateStr);
+    LocalDate endDate = parseDate(endDateStr);
+    List<String> grades = parseGrades(gradeCsv);
+
+    List<CefrDistributionDTO> result =
+        reportsService.getCefrDistribution(startDate, endDate, grades, sector.trim());
+
+    return ResponseEntity.ok(result);
+  }
+
   /**
    * Generates a PDF report based on the provided report request and returns it as a downloadable
    * file.

@@ -107,4 +107,15 @@ class ReportsRepositoryImpl implements ReportsRepository {
         (rs, i) -> new PreviousGradesStatusDTO(rs.getBigDecimal("previousGrades"),
             rs.getString("status")));
   }
+
+  @Override
+  public List<CefrDistributionDTO> findCefrDistribution(LocalDate startDate, LocalDate endDate,
+      List<String> grades, String sector) {
+
+    String gradesCsv = grades.isEmpty() ? "All" : String.join(",", grades);
+    String sql = "CALL usp_Get_CEFR_Distribution_Filters(?, ?, ?, ?)";
+
+    return jdbcTemplate.query(sql, new Object[] {startDate, endDate, gradesCsv, sector},
+        (rs, rowNum) -> new CefrDistributionDTO(rs.getString("level"), rs.getInt("count")));
+  }
 }
