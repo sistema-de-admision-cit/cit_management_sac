@@ -78,6 +78,19 @@ public class ReportsServiceImpl {
     return reportsRepository.findLeadSourceEffectiveness(startDate, endDate, grades, sector);
   }
 
+  /**
+   * Retrieves previous grades by status metrics.
+   *
+   * @param start
+   * @param end
+   * @param grades
+   * @param sector
+   * @return
+   */
+  public List<PreviousGradesStatusDTO> getPreviousGradesByStatus(LocalDate start, LocalDate end,
+      List<String> grades, String sector) {
+    return reportsRepository.findPreviousGradesByStatus(start, end, grades, sector);
+  }
 
   /**
    * Generates a list of report data DTOs based on the provided report request criteria.

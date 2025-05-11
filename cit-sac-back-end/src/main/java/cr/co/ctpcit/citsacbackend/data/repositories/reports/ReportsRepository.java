@@ -26,5 +26,8 @@ public interface ReportsRepository {
 
   public List<LeadSourceEffectivenessDTO> findLeadSourceEffectiveness(LocalDate startDate,
       LocalDate endDate, List<String> grades, String sector);
+
+  public List<PreviousGradesStatusDTO> findPreviousGradesByStatus(LocalDate start, LocalDate end,
+      List<String> grades, String sector);
 }
 

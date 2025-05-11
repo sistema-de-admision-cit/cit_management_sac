@@ -10,6 +10,7 @@ import '../../../../../assets/styles/reports/graphical-report-styles.css'
 import { useSectionFilters } from '../hooks/useSectionFilters'
 import FunnelTrendSection from '../organisms/FunnelTrendSection'
 import LeadSourceEffectivenessSection from '../organisms/LeadSourceEffectivenessSection'
+import PreviousGradesSection from '../organisms/PreviousGradesSection'
 
 /**
  * Main view for graphical reports. Renders a top-level filter panel and multiple chart sections.
@@ -93,6 +94,15 @@ export default function GraphicalReportsView () {
 
         <div className='academic-section'>
           <AcademicSection
+            startDate={startDate}
+            endDate={endDate}
+            grade={grade}
+            sector={sector}
+          />
+        </div>
+
+        <div className='previous-grades-section'>
+          <PreviousGradesSection
             startDate={startDate}
             endDate={endDate}
             grade={grade}

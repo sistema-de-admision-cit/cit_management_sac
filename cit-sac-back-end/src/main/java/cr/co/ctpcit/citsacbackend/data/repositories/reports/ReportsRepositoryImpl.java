@@ -98,4 +98,13 @@ class ReportsRepositoryImpl implements ReportsRepository {
             rs.getInt("studentCount"), rs.getBigDecimal("acceptanceRate"),
             rs.getBigDecimal("avgExamScore")));
   }
+
+  public List<PreviousGradesStatusDTO> findPreviousGradesByStatus(LocalDate start, LocalDate end,
+      List<String> grades, String sector) {
+    String gradesCsv = grades.isEmpty() ? "All" : String.join(",", grades);
+    var sql = "CALL usp_Get_PreviousGrades_By_Status_Filters(?, ?, ?, ?)";
+    return jdbcTemplate.query(sql, new Object[] {start, end, gradesCsv, sector},
+        (rs, i) -> new PreviousGradesStatusDTO(rs.getBigDecimal("previousGrades"),
+            rs.getString("status")));
+  }
 }

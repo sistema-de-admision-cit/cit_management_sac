@@ -1022,6 +1022,36 @@ END //
 DELIMITER ;
 
 
+DROP PROCEDURE IF EXISTS `usp_Get_PreviousGrades_By_Status_Filters`;
+DELIMITER //
+CREATE PROCEDURE `usp_Get_PreviousGrades_By_Status_Filters`(
+  IN p_start_date DATE,
+  IN p_end_date   DATE,
+  IN p_grades     TEXT,                   -- CSV of grades or 'All'
+  IN p_sector     ENUM('All','Primaria','Secundaria')
+)
+BEGIN
+  SELECT
+    s.previous_grades     AS previousGrades,
+    e.status              AS status
+  FROM tbl_Students s
+  JOIN tbl_Enrollments e
+    ON e.student_id = s.student_id
+  WHERE
+    (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
+    AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
+    AND (p_grades = 'All' OR FIND_IN_SET(e.grade_to_enroll, p_grades))
+    AND (
+      p_sector = 'All'
+      OR (p_sector = 'Primaria'
+          AND e.grade_to_enroll IN ('FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH'))
+      OR (p_sector = 'Secundaria'
+          AND e.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
+    );
+END //
+DELIMITER ;
+
+
 -- End of the stored procedures
 -- ----------------------------------------------------- 
 DELIMITER ;

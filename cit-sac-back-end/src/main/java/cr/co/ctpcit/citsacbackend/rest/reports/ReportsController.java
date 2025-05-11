@@ -231,7 +231,20 @@ public class ReportsController {
         reportsService.getLeadSourceEffectiveness(sd, ed, grades, sector.trim());
     return ResponseEntity.ok(data);
   }
-  
+
+  @GetMapping("/previous-grades-status")
+  public ResponseEntity<List<PreviousGradesStatusDTO>> previousGradesStatus(
+      @RequestParam(value = "startDate", required = false) String startDateStr,
+      @RequestParam(value = "endDate", required = false) String endDateStr,
+      @RequestParam(value = "grade", defaultValue = "All") String gradeCsv,
+      @RequestParam(value = "sector", defaultValue = "All") String sector) {
+    LocalDate sd = parseDate(startDateStr);
+    LocalDate ed = parseDate(endDateStr);
+    var grades = parseGrades(gradeCsv);
+    var data = reportsService.getPreviousGradesByStatus(sd, ed, grades, sector.trim());
+    return ResponseEntity.ok(data);
+  }
+
   /**
    * Generates a PDF report based on the provided report request and returns it as a downloadable
    * file.
