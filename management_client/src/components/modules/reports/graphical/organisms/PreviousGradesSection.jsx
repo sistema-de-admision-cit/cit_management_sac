@@ -24,7 +24,10 @@ const PreviousGradesSection = ({ startDate, endDate, grade, sector }) => {
 
   return (
     <div className='previous-grades-section'>
-      <ChartTitle>Prior Grades vs Admission Outcome</ChartTitle>
+      <ChartTitle>
+        Distribución de Calificaciones Anteriores por Estado de Postulación
+      </ChartTitle>
+
       <PreviousGradesChart data={data} />
     </div>
   )

@@ -109,15 +109,6 @@ export default function GraphicalReportsView () {
             sector={sector}
           />
         </div>
-
-        <div className='dai-section'>
-          <DaiSection
-            startDate={startDate}
-            endDate={endDate}
-            grade={grade}
-            sector={sector}
-          />
-        </div>
       </div>
     </SectionLayout>
   )

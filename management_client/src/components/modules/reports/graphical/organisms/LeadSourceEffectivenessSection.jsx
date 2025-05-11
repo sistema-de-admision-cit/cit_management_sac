@@ -23,7 +23,13 @@ const LeadSourceEffectivenessSection = ({ startDate, endDate, grade, sector }) =
 
   return (
     <div className='lead-source-matrix-section'>
-      <ChartTitle>Lead-Source Effectiveness</ChartTitle>
+      {/* Lead-Source Effectiveness */}
+      <ChartTitle>
+        Desempeño de los Canales de Referencia
+        <span className='chart__subtitle'>
+          (Aplicantes vs Tasa de Aceptación por Canal)
+        </span>
+      </ChartTitle>
       <LeadSourceMatrixChart data={data} />
     </div>
   )
