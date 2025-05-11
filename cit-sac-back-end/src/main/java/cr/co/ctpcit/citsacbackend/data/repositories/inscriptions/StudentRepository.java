@@ -3,10 +3,12 @@ package cr.co.ctpcit.citsacbackend.data.repositories.inscriptions;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.EnrollmentEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.PersonEntity;
 import cr.co.ctpcit.citsacbackend.data.entities.inscriptions.StudentEntity;
+import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -102,5 +104,14 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
                   "OR LOWER(p.secondSurname) LIKE %:value%) " +
                   "AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
   Long countStudentsWithEnrollmentsInProcessByValue(String value);
+
+  @Query("""
+    SELECT DISTINCT s
+    FROM StudentEntity s
+    JOIN s.enrollments e
+    JOIN e.exams ex
+    WHERE ex.examType = :examType
+""")
+  Page<StudentEntity> findStudentsWithExamType(@Param("examType") ExamType examType, Pageable pageable);
 
 }

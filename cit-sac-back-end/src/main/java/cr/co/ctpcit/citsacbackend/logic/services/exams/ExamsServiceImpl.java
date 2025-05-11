@@ -202,8 +202,9 @@ public class ExamsServiceImpl implements ExamsService {
    */
   @Override
   public List<StudentExamsDto> getStudentsByExamType(ExamType examType, Pageable pageable) {
-    //Get all students
-    List<StudentEntity> students = studentRepository.findAll(pageable).toList();
+    List<StudentEntity> students = studentRepository
+            .findStudentsWithExamType(examType, pageable)
+            .toList();
 
     if (students.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron estudiantes.");
@@ -211,6 +212,7 @@ public class ExamsServiceImpl implements ExamsService {
 
     return getStudentExamsDto(students, examType);
   }
+
   /**
    * {@inheritDoc}
    */

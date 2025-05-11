@@ -54,13 +54,9 @@ public class ResultsServiceImpl implements ResultsService {
         BigDecimal academicWeight = resultUtils.getConfigValue("ACADEMIC_WEIGHT");
         BigDecimal prevGradesWeight = resultUtils.getConfigValue("PREV_GRADES_WEIGHT");
 
-        Page<EnrollmentEntity> enrollmentsPage = enrollmentRepository.findAllByStatusIn(
-                Arrays.asList(ProcessStatus.ACCEPTED, ProcessStatus.REJECTED, ProcessStatus.ELIGIBLE),
-                pageable
-        );
+        Page<EnrollmentEntity> enrollmentsPage = enrollmentRepository.findAllWithCompleteExams(pageable);
 
         List<ResultDTO> content = enrollmentsPage.getContent().stream()
-                .filter(e -> hasCompleteExams(e))
                 .map(e -> ResultsMapper.mapToExamResultDTO(e, academicWeight, prevGradesWeight))
                 .collect(Collectors.toList());
 

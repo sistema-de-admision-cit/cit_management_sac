@@ -238,4 +238,14 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
           "OR LOWER(p.secondSurname) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
   Long countStudentsWithCompleteExamsBySearch(@Param("searchTerm") String searchTerm);
 
+
+  @Query("SELECT DISTINCT e " +
+          "FROM EnrollmentEntity e " +
+          "WHERE e.status IN ('ELIGIBLE', 'ACCEPTED', 'REJECTED') " +
+          "AND EXISTS (SELECT 1 FROM e.exams ex1 WHERE ex1.examType = 'ACA') " +
+          "AND EXISTS (SELECT 1 FROM e.exams ex2 WHERE ex2.examType = 'DAI') " +
+          "AND EXISTS (SELECT 1 FROM e.exams ex3 WHERE ex3.examType = 'ENG')")
+  Page<EnrollmentEntity> findAllWithCompleteExams(Pageable pageable);
+
+
 }
