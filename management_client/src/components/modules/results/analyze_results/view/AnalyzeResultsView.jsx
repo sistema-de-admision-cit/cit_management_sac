@@ -75,7 +75,7 @@ const AnalyzeResultsView = () => {
       <div className='result-management-view'>
         <h1>Resultados del Proceso de Admisión</h1>
         <p className='description'>
-          Aquí puedes visualizar los resultados del Proceso de Admisón, ademas de aceptar o rechazar al estudiante.
+          Aquí puedes visualizar los resultados del Proceso de Admisón, ademas de aceptar o rechazar a la persona Inscrita.
         </p>
         <ResultSearchBar
           onSearch={(value) => {

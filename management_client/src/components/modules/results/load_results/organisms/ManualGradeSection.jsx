@@ -88,7 +88,7 @@ const ManualGradeSection = ({ handleAddScore, handleProcessScore, scores }) => {
         field={{
           type: 'text',
           name: 'level',
-          placeholder: 'Nivel (A1 - C2)',
+          placeholder: 'Nivel (A1 - A2 - B1 - B2 - C1 - C2)',
           label: 'Nivel'
         }}
         value={level}

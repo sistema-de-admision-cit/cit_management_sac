@@ -116,7 +116,7 @@ const QuestionsConfiguratorView = () => {
       <div className='container percentages-configurator'>
         {renderMessages()}
         <h1>Configuración de cantidad de preguntas</h1>
-        <p className='description'>Configura la cantidad de preguntas para cada tipo de examen (0-100).</p>
+        <p className='description'>Configura la cantidad de preguntas para cada tipo de examen</p>
         <div className='percentages-configurator'>
           <form onSubmit={handleSubmit}>
             <div className='form-group'>
@@ -160,7 +160,7 @@ const QuestionsConfiguratorView = () => {
               className='btn btn-primary w-full'
               disabled={loading || initialLoading}
             >
-              {loading ? 'Guardando...' : 'Guardar Configuración'}
+              {loading ? 'Guardando...' : 'Guardar'}
             </Button>
           </form>
         </div>
