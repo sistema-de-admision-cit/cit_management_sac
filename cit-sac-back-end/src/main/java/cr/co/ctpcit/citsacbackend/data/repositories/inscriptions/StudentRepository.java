@@ -87,7 +87,7 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
                   "OR LOWER(p.idNumber) LIKE %:value% " +
                   "OR LOWER(p.firstSurname) LIKE %:value% " +
                   "OR LOWER(p.secondSurname) LIKE %:value%) " +
-                  "AND e.status IN ('ELIGIBLE','INELIGIBLE','ACCEPTED','REJECTED') " +
+                  "AND e.status IN ('ELIGIBLE','ACCEPTED','REJECTED') " +
                   "GROUP BY s.id")
   List<StudentEntity> findAllByValueWithExamsInProcess(String value, Pageable pageable);
 
