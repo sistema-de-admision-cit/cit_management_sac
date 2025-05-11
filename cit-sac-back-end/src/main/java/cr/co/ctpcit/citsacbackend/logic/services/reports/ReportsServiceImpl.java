@@ -57,6 +57,47 @@ public class ReportsServiceImpl {
   }
 
   /**
+   * Retrieves daily admission-funnel metrics: interested → eligible → accepted
+   */
+  public List<AdmissionFunnelTrendDTO> getAdmissionFunnelTrend(LocalDate startDate,
+      LocalDate endDate, List<String> grades, String sector) {
+    return reportsRepository.findAdmissionFunnelTrend(startDate, endDate, grades, sector);
+  }
+
+  /**
+   * Retrieves lead source effectiveness metrics.
+   *
+   * @param startDate
+   * @param endDate
+   * @param grades
+   * @param sector
+   * @return
+   */
+  public List<LeadSourceEffectivenessDTO> getLeadSourceEffectiveness(LocalDate startDate,
+      LocalDate endDate, List<String> grades, String sector) {
+    return reportsRepository.findLeadSourceEffectiveness(startDate, endDate, grades, sector);
+  }
+
+  /**
+   * Retrieves previous grades by status metrics.
+   *
+   * @param start
+   * @param end
+   * @param grades
+   * @param sector
+   * @return
+   */
+  public List<PreviousGradesStatusDTO> getPreviousGradesByStatus(LocalDate start, LocalDate end,
+      List<String> grades, String sector) {
+    return reportsRepository.findPreviousGradesByStatus(start, end, grades, sector);
+  }
+
+  public List<CefrDistributionDTO> getCefrDistribution(LocalDate startDate, LocalDate endDate,
+      List<String> grades, String sector) {
+    return reportsRepository.findCefrDistribution(startDate, endDate, grades, sector);
+  }
+
+  /**
    * Generates a list of report data DTOs based on the provided report request criteria.
    *
    * <p>

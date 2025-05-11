@@ -13,6 +13,14 @@ import {
 const DIFF_COLORS = ['#8884d8']
 const GRADE_COLORS = ['#82ca9d']
 
+/**
+ * Renders a bar chart showing the average exam score grouped by difficulty level.
+ *
+ * @component
+ * @param {Object} props
+ * @param {{ difficulty: string, examScore: number }[]} props.distribution - List of student exam scores by difficulty level.
+ * @returns {JSX.Element}
+ */
 export const AcademicDifficultyChart = ({ distribution }) => {
   // compute avg per difficulty
   const data = useMemo(() => {

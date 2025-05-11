@@ -503,7 +503,7 @@ VALUES (1, 10, '2025-03-25 17:54:12', 'ACA', '{
        (2, 10, '2025-03-25 17:54:12', 'DAI', '{
          "exam": "[{\\"id\\":1,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Cómo te sientes el día de hoy?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Bien aunque un poco cansado.\\"},{\\"id\\":3,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Qué tipo de música prefieres?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"El rock es mi favorito.\\"},{\\"id\\":5,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Te gusta practicar deportes?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Sí, me gusta mucho el fútbol.\\"},{\\"id\\":7,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Prefieres la playa o la montaña?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Prefiero la montaña.\\"},{\\"id\\":9,\\"questionType\\":\\"DAI\\",\\"questionText\\":\\"¿Cuál es tu película favorita?\\",\\"imageUrl\\":null,\\"selectionType\\":\\"PARAGRAPH\\",\\"deleted\\":false,\\"response\\":\\"Mi película favorita es El Padrino.\\"}]"
        }');
-       
+
 INSERT INTO `tbl_academic_exams` (`exam_id`, `grade`)
 VALUES (1, 100.00); -- Insert value into tbl_academic_exams
 
@@ -701,3 +701,125 @@ INSERT INTO tbl_Dai_Exams (exam_id, comment, recommendation, reviewed) VALUES
                                                                            (673692, 'Auto comment', 'REJECT', 0),
                                                                            (673701, 'Auto comment', 'ADMIT', 1),
                                                                            (673702, 'Auto comment', 'ADMIT', 0);
+
+INSERT INTO tbl_Enrollments
+(enrollment_id, student_id, status, enrollment_date, grade_to_enroll, known_through, exam_date, consent_given, whatsapp_notification)
+VALUES
+    /* 2025-05-01: 1 pending, 1 eligible, 1 accepted */
+    (98301, 661, 'PENDING' , '2025-05-01 09:00:00', 'FIRST' , 'SM', '2025-05-01', 1, 1),
+    (98302, 662, 'ELIGIBLE', '2025-05-01 10:00:00', 'FIRST' , 'FM', '2025-05-01', 1, 0),
+    (98303, 663, 'ACCEPTED', '2025-05-01 11:00:00', 'FIRST' , 'OH', '2025-05-01', 1, 1),
+
+    /* 2025-05-02 */
+    (98311, 664, 'PENDING' , '2025-05-02 09:00:00', 'SECOND', 'SM', '2025-05-02', 1, 1),
+    (98312, 665, 'ELIGIBLE', '2025-05-02 10:00:00', 'SECOND', 'FM', '2025-05-02', 1, 0),
+    (98313, 666, 'ACCEPTED', '2025-05-02 11:00:00', 'SECOND', 'OH', '2025-05-02', 1, 1),
+
+    /* 2025-05-03 */
+    (98321, 667, 'PENDING' , '2025-05-03 09:00:00', 'THIRD' , 'SM', '2025-05-03', 1, 1),
+    (98322, 668, 'ELIGIBLE', '2025-05-03 10:00:00', 'THIRD' , 'FM', '2025-05-03', 1, 0),
+    (98323, 669, 'ACCEPTED', '2025-05-03 11:00:00', 'THIRD' , 'OH', '2025-05-03', 1, 1);
+
+
+INSERT INTO tbl_Persons (person_id, first_name, first_surname, second_surname, id_type, id_number)
+VALUES 
+  (901, 'Alice', 'Smith', NULL, 'CC', 'ID901'),
+  (902, 'Bob', 'Jones', NULL, 'CC', 'ID902'),
+  (903, 'Carlos', 'Gomez', 'Perez', 'CC', 'ID903'),
+  (904, 'Diana', 'Lopez', NULL, 'CC', 'ID904'),
+  (905, 'Elena', 'Martinez', NULL, 'CC', 'ID905'),
+  (906, 'Elena', 'Ramirez', NULL, 'CC', 'ID906');
+
+INSERT INTO tbl_Students (student_id, birth_date, has_accommodations)
+VALUES
+  (901, '2012-05-01', 0),
+  (902, '2010-08-15', 0),
+  (903, '2011-03-22', 1),
+  (904, '2013-12-01', 0),
+  (905, '2010-09-09', 0),
+  (906, '2011-11-11', 0);
+
+INSERT INTO tbl_Enrollments (enrollment_id, student_id, status, enrollment_date, grade_to_enroll, known_through, exam_date, consent_given, whatsapp_notification)
+VALUES
+  (909, 901, 'ACCEPTED', '2025-03-01', 'FIRST',  'SM', '2025-04-01', 1, 1),
+  (910, 902, 'REJECTED', '2025-03-02', 'SECOND', 'OH', '2025-04-02', 1, 0),
+  (911, 903, 'ACCEPTED', '2025-03-03', 'SEVENTH','FD', '2025-04-03', 0, 1),
+  (912, 904, 'ACCEPTED', '2025-03-04', 'FOURTH', 'FM', '2025-04-04', 1, 1),
+  (913, 905, 'PENDING',  '2025-03-05', 'EIGHTH', 'OT', '2025-04-05', 1, 1),
+  (914, 906, 'ACCEPTED', '2025-03-06', 'THIRD', 'FM', '2025-04-06', 1, 1);
+
+INSERT INTO tbl_Exams (exam_id, enrollment_id, exam_date, exam_type)
+VALUES
+  (1001, 909, '2025-04-01', 'ACA'),
+  (1002, 910, '2025-04-02', 'ACA'),
+  (1003, 911, '2025-04-03', 'ACA'),
+  (1004, 912, '2025-04-04', 'ACA'),
+  (1005, 914, '2025-04-06', 'ACA');
+  
+  INSERT INTO tbl_Academic_Exams (exam_id, grade)
+VALUES
+  (1001, 85.5),
+  (1002, 60.0),
+  (1003, 92.3),
+  (1004, 74.0),
+  (1005, 78.5);
+
+INSERT INTO `tbl_Exams` (`exam_id`, `enrollment_id`, `exam_date`, `exam_type`)
+VALUES
+  (2001, 909, '2025-04-01 12:00:00', 'ENG'),
+  (2002, 911, '2025-04-03 12:00:00', 'ENG'),
+  (2003, 912, '2025-04-04 12:00:00', 'ENG'),
+  (2004, 914, '2025-04-06 12:00:00', 'ENG');
+
+INSERT INTO `tbl_English_Exams` (`exam_id`, `tracktest_id`, `level`, `core`)
+VALUES
+  (2001, 9001, 'B2', 72),
+  (2002, 9002, 'C1',  90),
+  (2003, 9003, 'B1', 65),
+  (2004, 9004, 'A2',  50);
+
+INSERT INTO `tbl_Exams` (`exam_id`, `enrollment_id`, `exam_date`, `exam_type`)
+VALUES
+  (2005, 913, '2025-04-05 12:00:00', 'ENG'),
+  (2006, 910, '2025-04-02 12:00:00', 'ENG');
+
+INSERT INTO `tbl_English_Exams` (`exam_id`, `tracktest_id`, `level`, `core`)
+VALUES
+  (2005, 9005, 'C2', 90),
+  (2006, 9006, 'A1',  45);
+
+
+
+-- 1) Insert six ENG exams (one per CEFR level) for enrollments 98301–98313
+INSERT INTO
+  `tbl_Exams` (
+    `exam_id`,
+    `enrollment_id`,
+    `exam_date`,
+    `exam_type`
+  )
+VALUES
+  (705001, 98301, '2025-05-01 12:00:00', 'ENG'),
+  -- A1
+  (705002, 98302, '2025-05-01 12:30:00', 'ENG'),
+  -- A2
+  (705003, 98303, '2025-05-01 13:00:00', 'ENG'),
+  -- B1
+  (705004, 98311, '2025-05-02 12:00:00', 'ENG'),
+  -- B2
+  (705005, 98312, '2025-05-02 12:30:00', 'ENG'),
+  -- C1
+  (705006, 98313, '2025-05-02 13:00:00', 'ENG');
+
+
+-- C2
+-- 2) Tie each to its CEFR level in tbl_English_Exams
+INSERT INTO
+  `tbl_English_Exams` (`exam_id`, `tracktest_id`, `level`, `core`)
+VALUES
+  (705001, 705001, 'A1', 45),
+  (705002, 705002, 'A2', 55),
+  (705003, 705003, 'B1', 65),
+  (705004, 705004, 'B2', 75),
+  (705005, 705005, 'C1', 85),
+  (705006, 705006, 'C2', 95);

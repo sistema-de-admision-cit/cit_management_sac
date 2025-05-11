@@ -183,6 +183,85 @@ public class ReportsController {
   }
 
   /**
+   * Retrieves daily admission-funnel metrics: interested → eligible → accepted
+   *
+   * @param startDateStr the start date of the reporting period
+   * @param endDateStr   the end date of the reporting period
+   * @param gradeCsv     the grade level to filter by, as a comma-separated list
+   * @param sector       the educational sector to filter by
+   * @return ResponseEntity containing the admission funnel trend as a list of
+   * AdmissionFunnelTrendDTO Example: GET
+   * /api/reports/admission-funnel?startDate=2025-01-01&endDate=2025-01-31
+   */
+  @GetMapping("/admission-funnel")
+  public ResponseEntity<List<AdmissionFunnelTrendDTO>> getAdmissionFunnelTrend(
+      @RequestParam(value = "startDate", required = false) String startDateStr,
+      @RequestParam(value = "endDate", required = false) String endDateStr,
+      @RequestParam(value = "grade", defaultValue = "All") String gradeCsv,
+      @RequestParam(value = "sector", defaultValue = "All") String sector) {
+    LocalDate startDate = parseDate(startDateStr);
+    LocalDate endDate = parseDate(endDateStr);
+    List<String> grades = parseGrades(gradeCsv);
+    List<AdmissionFunnelTrendDTO> dto =
+        reportsService.getAdmissionFunnelTrend(startDate, endDate, grades, sector.trim());
+    return ResponseEntity.ok(dto);
+  }
+
+  /**
+   * Retrieves lead source effectiveness metrics filtered by date range, grade, and sector.
+   *
+   * @param startDateStr the start date of the reporting period
+   * @param endDateStr   the end date of the reporting period
+   * @param gradeCsv     the grade level to filter by, as a comma-separated list
+   * @param sector       the educational sector to filter by
+   * @return ResponseEntity containing the lead source effectiveness as a list of
+   * LeadSourceEffectivenessDTO Example: GET
+   * /api/reports/lead-source-effectiveness?startDate=2025-01-01&endDate=2025-01-31
+   */
+  @GetMapping("/lead-source-effectiveness")
+  public ResponseEntity<List<LeadSourceEffectivenessDTO>> getLeadSourceEffectiveness(
+      @RequestParam(value = "startDate", required = false) String startDateStr,
+      @RequestParam(value = "endDate", required = false) String endDateStr,
+      @RequestParam(value = "grade", defaultValue = "All") String gradeCsv,
+      @RequestParam(value = "sector", defaultValue = "All") String sector) {
+    LocalDate sd = parseDate(startDateStr);
+    LocalDate ed = parseDate(endDateStr);
+    List<String> grades = parseGrades(gradeCsv);
+    List<LeadSourceEffectivenessDTO> data =
+        reportsService.getLeadSourceEffectiveness(sd, ed, grades, sector.trim());
+    return ResponseEntity.ok(data);
+  }
+
+  @GetMapping("/previous-grades-status")
+  public ResponseEntity<List<PreviousGradesStatusDTO>> previousGradesStatus(
+      @RequestParam(value = "startDate", required = false) String startDateStr,
+      @RequestParam(value = "endDate", required = false) String endDateStr,
+      @RequestParam(value = "grade", defaultValue = "All") String gradeCsv,
+      @RequestParam(value = "sector", defaultValue = "All") String sector) {
+    LocalDate sd = parseDate(startDateStr);
+    LocalDate ed = parseDate(endDateStr);
+    var grades = parseGrades(gradeCsv);
+    var data = reportsService.getPreviousGradesByStatus(sd, ed, grades, sector.trim());
+    return ResponseEntity.ok(data);
+  }
+
+  @GetMapping("/cefr-distribution")
+  public ResponseEntity<List<CefrDistributionDTO>> getCefrDistribution(
+      @RequestParam(value = "startDate", required = false) String startDateStr,
+      @RequestParam(value = "endDate", required = false) String endDateStr,
+      @RequestParam(value = "grade", defaultValue = "All") String gradeCsv,
+      @RequestParam(value = "sector", defaultValue = "All") String sector) {
+    LocalDate startDate = parseDate(startDateStr);
+    LocalDate endDate = parseDate(endDateStr);
+    List<String> grades = parseGrades(gradeCsv);
+
+    List<CefrDistributionDTO> result =
+        reportsService.getCefrDistribution(startDate, endDate, grades, sector.trim());
+
+    return ResponseEntity.ok(result);
+  }
+
+  /**
    * Generates a PDF report based on the provided report request and returns it as a downloadable
    * file.
    *
