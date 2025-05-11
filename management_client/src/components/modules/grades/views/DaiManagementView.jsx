@@ -36,34 +36,39 @@ const DaiGradesManagementView = () => {
     }
   }, [currentSearchPage])
 
+  const applyReviewedFilter = (gradesList, reviewed) => {
+    return reviewed
+      ? gradesList.filter(g => g.daiExams.some(exam => exam.reviewed === true))
+      : gradesList
+  }
+
   const onSearch = (search) => {
-    if (search.trim() === '') {
+    const trimmed = search.trim()
+
+    if (trimmed === '') {
       setSearching(false)
       setCurrentSearchPage(0)
       setSearchValue('')
       loadGrades(currentPage)
       return
     }
+
     setSearching(true)
-    setSearchValue(search)
+    setSearchValue(trimmed)
+
     handleSearchDAIGrades(
-      currentSearchPage,
-      pageSize,
       search,
       (grades) => {
         setAllGrades(grades)
-        if (onlyReviewed) {
-          const filtered = grades.filter(g => g.daiExams.some(exam => exam.reviewed === true))
-          setGrades(filtered)
-        } else {
-          setGrades(grades)
-        }
+        setGrades(onlyReviewed
+          ? grades.filter(g => g.daiExams.some(exam => exam.reviewed))
+          : grades
+        )
       },
       setLoading,
       setErrorMessage,
       setSuccessMessage
     )
-    handleGetTotalDAIGradesSearchPages(search, pageSize, setTotalPages)
   }
 
 
@@ -72,18 +77,20 @@ const DaiGradesManagementView = () => {
     setCurrentPage(page)
     setCurrentSearchPage(0)
     setSearchValue('')
-    handleGetAllDaiGrades(page, pageSize, (grades) => {
-      setAllGrades(grades)
-      if (onlyReviewed) {
-        const filtered = grades.filter(g => g.daiExams.some(exam => exam.reviewed === true))
-        setGrades(filtered)
-      } else {
-        setGrades(grades)
-      }
-    }, setLoading, setErrorMessage)
+
+    handleGetAllDaiGrades(
+      page,
+      pageSize,
+      (results) => {
+        setAllGrades(results)
+        setGrades(applyReviewedFilter(results, onlyReviewed))
+      },
+      setLoading,
+      setErrorMessage
+    )
+
     handleGetTotalGradesDAIPages(setTotalPages, pageSize)
   }
-
 
   const onClickPage = (number) => {
     if (searching) {
@@ -95,12 +102,7 @@ const DaiGradesManagementView = () => {
 
   const handleCheckboxChange = (checked) => {
     setOnlyReviewed(checked)
-    if (checked) {
-      const filtered = allGrades.filter(g => g.daiExams.some(exam => exam.reviewed === true))
-      setGrades(filtered)
-    } else {
-      setGrades(allGrades)
-    }
+    setGrades(applyReviewedFilter(allGrades, checked))
   }
 
   return (
@@ -111,19 +113,7 @@ const DaiGradesManagementView = () => {
           Aquí puedes visualizar los resultados de los exámenes DAI.
         </p>
         <DaiSearchBar
-          onSearch={(value) => {
-            if (value.trim() === '') {
-              loadGrades(0) // recarga todos si el campo se vacía
-            } else {
-              handleSearchDAIGrades(
-                value,
-                setGrades,
-                setLoading,
-                setErrorMessage,
-                setSuccessMessage
-              )
-            }
-          }}
+          onSearch={onSearch}
           onCheckedEvaluados={handleCheckboxChange}
         />
         <DaiGradesTable
