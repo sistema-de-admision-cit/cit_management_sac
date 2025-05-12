@@ -1,27 +1,6 @@
 import axiosInstance from '../../../../../config/axiosConfig'
-import { formatDateToObj } from '../../../enrollments/management/helpers/helpers.js'
 
 // Manejo de errores
-const getErrorMessage = (error) => {
-  if (error.code === 'ECONNABORTED') {
-    return 'La conexión al servidor tardó demasiado. Por favor, intenta de nuevo.'
-  }
-
-  if (error.response) {
-    if (error.response.status === 404) {
-      return 'El estudiante no se encontró. Puede que ya haya sido eliminado.'
-    } else if (error.response.status === 500) {
-      return 'Hubo un error en el servidor. Por favor, intenta de nuevo más tarde.'
-    } else {
-      return (error.response.data.message || 'Por favor, intenta de nuevo.')
-    }
-  } else if (error.request) {
-    return 'Error de red: No se pudo conectar al servidor. Por favor, verifica tu conexión.'
-  } else {
-    return 'Error inesperado: ' + error.message
-  }
-}
-
 // Handlers that Get Data from API
 
 const getAllResultsUrl = import.meta.env.VITE_GET_ALL_RESULTS_ENDPOINT
@@ -131,30 +110,67 @@ export const handleGetStudentDetails = async (
 
 // Handlers that Search Data from API
 const searchResultUrl = import.meta.env.VITE_GET_RESULTS_BY_SEARCH_ENDPOINT
-export const handleSearchResults = (
+export const handleSearchResults = async (
   search,
   setResults,
   setLoading,
   setErrorMessage,
   setSuccessMessage) => {
-  axiosInstance.get(`${searchResultUrl}?value=${search}`, { timeout: 10000 })
-    .then(response => {
-      const results = response.data.map(setResults => formatDateToObj(setResults))
-      const uniqueStudents = results.reduce((acc, setResults) => {
-        if (!acc.some(e => e.student.id === setResults.student.id)) {
-          acc.push(setResults)
-        }
-        return acc
-      }, [])
-      setResults(uniqueStudents)
-    })
-    .catch(error => {
-      console.error(error)
-      setErrorMessage(getErrorMessage())
-    })
-}
-// Handlers that Save Data from API
+  if (!search || search.trim() === '') {
+    setErrorMessage?.('Debe ingresar un valor para buscar')
+    return
+  }
 
+  const url = `${searchResultUrl}/${search}`
+
+  try {
+    setLoading?.(true)
+
+    const response = await axiosInstance.get(url)
+    const data = response.data
+
+    const grades = Array.isArray(data)
+      ? data
+      : Array.isArray(data.content)
+        ? data.content
+        : []
+
+    setResults(grades)
+
+    if (grades.length === 0) {
+      setSuccessMessage?.('No se encontraron resultados para tu búsqueda')
+    }
+  } catch (error) {
+    console.error('Error al buscar calificaciones:', error)
+
+    let errorMsg = 'No se pudieron buscar las calificaciones académicas'
+
+    if (error.response) {
+      if (error.response.status === 400) {
+        errorMsg = 'Parámetros de búsqueda inválidos'
+      } else if (error.response.status === 401) {
+        errorMsg = 'Sesión expirada. Por favor inicie sesión nuevamente'
+      } else if (error.response.status === 403) {
+        errorMsg = 'No tiene permisos para realizar esta búsqueda'
+      } else if (error.response.status === 404) {
+        setResults([]) // explícitamente vacío si no se encuentra
+        errorMsg = 'No se encontraron resultados para tu búsqueda'
+        setErrorMessage?.(errorMsg)
+        return
+      } else if (error.response.data?.message) {
+        errorMsg = error.response.data.message
+      }
+    } else if (error.request) {
+      errorMsg = 'No se recibió respuesta del servidor'
+    }
+
+    setErrorMessage?.(errorMsg)
+  } finally {
+    setLoading?.(false)
+  }
+}
+
+// Handlers that Save Data from API
 const saveStudentStatusUrl = import.meta.env.VITE_UPDATE_STUDENT_RESULT_ENDPOINT
 export const handleSaveStatus = async (
   idNumber,

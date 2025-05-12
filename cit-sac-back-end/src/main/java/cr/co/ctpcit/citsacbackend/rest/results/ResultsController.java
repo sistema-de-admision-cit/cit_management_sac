@@ -70,9 +70,9 @@ public class ResultsController {
      * @return A ResponseEntity containing the list of ResultDTOs matching the search query.
      */
 
-    @GetMapping("/search")
+    @GetMapping("/search/{value}")
     public ResponseEntity<List<ResultDTO>> searchExamResults(
-            @RequestParam(required = false) String value,
+            @PathVariable String value,
             @PageableDefault(page = 0, size = 25) Pageable pageable) {
 
         if (value == null || value.trim().isEmpty()) {

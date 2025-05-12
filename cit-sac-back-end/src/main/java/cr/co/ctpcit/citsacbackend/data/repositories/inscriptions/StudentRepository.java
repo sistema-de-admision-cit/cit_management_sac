@@ -80,6 +80,14 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
                   "GROUP BY s.id")
   List<StudentEntity> findAllByValueWithEnrollmentInProcess(String value, Pageable pageable);
 
+  /**
+   * Finds all students with enrollments in specific statuses (ELIGIBLE, ACCEPTED, REJECTED)
+   * that match the search value in their personal information (name, surname, or ID number).
+   *
+   * @param value The search string to match against student personal information
+   * @param pageable Pagination information
+   * @return List of matching StudentEntity objects grouped by student ID
+   */
 
   @Query(
           "SELECT s FROM StudentEntity s " +
@@ -89,10 +97,17 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
                   "OR LOWER(p.idNumber) LIKE %:value% " +
                   "OR LOWER(p.firstSurname) LIKE %:value% " +
                   "OR LOWER(p.secondSurname) LIKE %:value%) " +
-                  "AND e.status IN ('ELIGIBLE','ACCEPTED','REJECTED') " +
+                  "AND e.status IN ('ELIGIBLE') " +
                   "GROUP BY s.id")
   List<StudentEntity> findAllByValueWithExamsInProcess(String value, Pageable pageable);
 
+  /**
+   * Counts distinct students with enrollments in process (PENDING, ELIGIBLE, INELIGIBLE)
+   * that match the search value in their personal information.
+   *
+   * @param value The search string to match against student personal information
+   * @return The count of matching students
+   */
 
   @Query(
           "SELECT COUNT(DISTINCT s.id) FROM StudentEntity s " +
@@ -105,13 +120,24 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
                   "AND e.status IN ('PENDING','ELIGIBLE','INELIGIBLE')")
   Long countStudentsWithEnrollmentsInProcessByValue(String value);
 
+  /**
+   * Finds distinct students who have taken a specific exam type and have enrollments
+   * with status in PENDING, ELIGIBLE or INELIGIBLE.
+   *
+   * @param examType The type of exam to filter by
+   * @param pageable Pagination information
+   * @return Page of StudentEntity objects who have taken the specified exam type
+   *         with matching enrollment statuses
+   */
   @Query("""
     SELECT DISTINCT s
     FROM StudentEntity s
     JOIN s.enrollments e
     JOIN e.exams ex
     WHERE ex.examType = :examType
+    AND e.status IN ('ELIGIBLE')
 """)
-  Page<StudentEntity> findStudentsWithExamType(@Param("examType") ExamType examType, Pageable pageable);
-
+  Page<StudentEntity> findStudentsWithExamType(
+          @Param("examType") ExamType examType,
+          Pageable pageable);
 }

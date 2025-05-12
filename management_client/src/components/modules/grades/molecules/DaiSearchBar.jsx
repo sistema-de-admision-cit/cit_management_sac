@@ -37,7 +37,7 @@ const DaiSearchBar = ({ onSearch, onCheckedEvaluados }) => {
         <InputField
           field={{
             name: 'evaluados',
-            label: 'Revisados',
+            label: 'No Revisados',
             type: 'checkbox'
           }}
           checked={onlyReviewed}

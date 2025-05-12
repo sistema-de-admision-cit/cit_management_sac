@@ -285,13 +285,13 @@ public class TestProvider {
 
   public static ExamAcaDto provideAcaExamDto() {
     return ExamAcaDto.builder().id(1L)
-        .enrollment(EnrollmentMapper.convertToDto(provideEnrollment()).id()).examDate(Instant.EPOCH)
+        .enrollment(String.valueOf(EnrollmentMapper.convertToDto(provideEnrollment()).id())).examDate(Instant.EPOCH)
         .examType(ExamType.ACA).responses(List.of(provideQuestionAcaDto())).build();
   }
 
   public static ExamDaiDto provideDaiExamDto() {
     return ExamDaiDto.builder().id(2L)
-        .enrollment(EnrollmentMapper.convertToDto(provideEnrollment()).id()).examDate(Instant.EPOCH)
+        .enrollment(String.valueOf(EnrollmentMapper.convertToDto(provideEnrollment()).id())).examDate(Instant.EPOCH)
         .examType(ExamType.DAI).responses(List.of(provideQuestionDaiDto())).build();
   }
 
@@ -476,7 +476,7 @@ public class TestProvider {
         mapper.getTypeFactory().constructCollectionLikeType(List.class, QuestionAcaDto.class));
 
     ExamAcaDto examAcaDto =
-        ExamAcaDto.builder().id(1L).enrollment(10L).examType(ExamType.ACA).examDate(Instant.parse("2025-03-25T17:54:12Z"))
+        ExamAcaDto.builder().id(1L).enrollment(String.valueOf(10L)).examType(ExamType.ACA).examDate(Instant.parse("2025-03-25T17:54:12Z"))
             .responses(questions).build();
 
     return AcademicExamDetailsDto.builder().id(1L).exam(examAcaDto).grade(new BigDecimal("100.00"))

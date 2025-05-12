@@ -3,7 +3,7 @@ import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import useMessages from '../../../../core/global/hooks/useMessages'
 import ResultGradesTable from '../organisms/ResultsTable'
 import ResultSearchBar from '../molecules/ResultSearchBar'
-import { handleGetAllResults, handleSearchResults, handleGetTotalResultsPages } from '../helpers/handlers'
+import { handleGetAllResults, handleSearchResults, handleGetTotalResultsPages, handleGetTotalResultsSearchPages } from '../helpers/handlers'
 import '../../../../../assets/styles/results/analyze_results/analyze-results-view.css'
 
 const AnalyzeResultsView = () => {
@@ -19,12 +19,8 @@ const AnalyzeResultsView = () => {
   const [searchValue, setSearchValue] = useState('')
 
   useEffect(() => {
-    if (!searching) {
-      // Si no estamos buscando, obtenemos todos los resultados
-      handleGetAllResults(currentPage, pageSize, setResults, setLoading, setErrorMessage)
-      handleGetTotalResultsPages(setTotalPages, pageSize)
-    }
-  }, [currentPage, searching])
+    loadResults(currentPage)
+  }, [currentPage])
 
   useEffect(() => {
     if (searching) {
@@ -35,6 +31,7 @@ const AnalyzeResultsView = () => {
   const onSearch = (search) => {
     if (search.trim() === '') {
       setSearching(false)
+      setCurrentSearchPage(0)
       setSearchValue('')
       handleGetAllResults(currentPage, pageSize, setResults, setLoading, setErrorMessage)
       handleGetTotalResultsPages(setTotalPages, pageSize)
@@ -43,22 +40,29 @@ const AnalyzeResultsView = () => {
     setSearching(true)
     setSearchValue(search)
     handleSearchResults(
+      currentSearchPage,
+      pageSize,
       search,
       setResults,
       setLoading,
       setErrorMessage,
-      setSuccessMessage,
-      setTotalPages,
-      setCurrentPage
+      setSuccessMessage
     )
+    handleGetTotalResultsSearchPages(search, pageSize, setTotalPages)
   }
 
-  const loadResults = (pageNumber = 0) => {
-    setCurrentPage(pageNumber)
+  const loadResults = (page) => {
     setSearching(false)
-    setSearchValue('')
+    setCurrentPage(page)
     setCurrentSearchPage(0)
-    handleGetAllResults(pageNumber, pageSize, setResults, setLoading, setErrorMessage)
+    setSearchValue('')
+    handleGetAllResults(
+      page,
+      pageSize,
+      setResults,
+      setLoading,
+      setErrorMessage
+    )
     handleGetTotalResultsPages(setTotalPages, pageSize)
   }
 
@@ -80,9 +84,15 @@ const AnalyzeResultsView = () => {
         <ResultSearchBar
           onSearch={(value) => {
             if (value.trim() === '') {
-              loadResults(0) // Llamar a loadResults para cargar todos los resultados
+              loadResults(0) // recarga todos si el campo se vacía
             } else {
-              onSearch(value) // Realizar la búsqueda
+              handleSearchResults(
+                value,
+                setResults,
+                setLoading,
+                setErrorMessage,
+                setSuccessMessage
+              )
             }
           }}
         />

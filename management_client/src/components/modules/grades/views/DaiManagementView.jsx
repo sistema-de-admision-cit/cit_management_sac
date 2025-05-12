@@ -38,7 +38,7 @@ const DaiGradesManagementView = () => {
 
   const applyReviewedFilter = (gradesList, reviewed) => {
     return reviewed
-      ? gradesList.filter(g => g.daiExams.some(exam => exam.reviewed === true))
+      ? gradesList.filter(g => g.daiExams.some(exam => exam.reviewed === false))
       : gradesList
   }
 

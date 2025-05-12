@@ -26,7 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -56,11 +59,26 @@ public class ResultsServiceImpl implements ResultsService {
 
         Page<EnrollmentEntity> enrollmentsPage = enrollmentRepository.findAllWithCompleteExams(pageable);
 
-        List<ResultDTO> content = enrollmentsPage.getContent().stream()
+        Map<StudentEntity, EnrollmentEntity> lastEnrollments = enrollmentsPage.getContent().stream()
+                .collect(Collectors.toMap(
+                        EnrollmentEntity::getStudent,
+                        Function.identity(),
+                        (existing, replacement) ->
+                                existing.getEnrollmentDate().isAfter(replacement.getEnrollmentDate()) ?
+                                        existing : replacement
+                ));
+
+        // Ordenar por grado académico (de primero a décimo)
+        List<ResultDTO> content = lastEnrollments.values().stream()
+                .sorted(Comparator.comparing(e -> e.getGradeToEnroll()))
                 .map(e -> ResultsMapper.mapToExamResultDTO(e, academicWeight, prevGradesWeight))
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(content, pageable, enrollmentsPage.getTotalElements());
+        return new PageImpl<>(
+                content,
+                pageable,
+                enrollmentsPage.getTotalElements()
+        );
     }
 
 
@@ -96,12 +114,26 @@ public class ResultsServiceImpl implements ResultsService {
         BigDecimal academicWeight = resultUtils.getConfigValue("ACADEMIC_WEIGHT");
         BigDecimal prevGradesWeight = resultUtils.getConfigValue("PREV_GRADES_WEIGHT");
 
-        List<ResultDTO> content = enrollments.getContent().stream()
+        // Filtrar inscripciones completas y obtener la última por estudiante
+        Map<StudentEntity, EnrollmentEntity> lastEnrollments = enrollments.getContent().stream()
                 .filter(this::hasCompleteExams)
+                .collect(Collectors.toMap(
+                        EnrollmentEntity::getStudent,
+                        Function.identity(),
+                        (existing, replacement) ->
+                                existing.getEnrollmentDate().isAfter(replacement.getEnrollmentDate()) ?
+                                        existing : replacement
+                ));
+
+        List<ResultDTO> content = lastEnrollments.values().stream()
                 .map(e -> ResultsMapper.mapToExamResultDTO(e, academicWeight, prevGradesWeight))
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(content, pageable, enrollments.getTotalElements());
+        return new PageImpl<>(
+                content,
+                pageable,
+                enrollments.getTotalElements()
+        );
     }
 
     /**
@@ -113,10 +145,13 @@ public class ResultsServiceImpl implements ResultsService {
      */
     @Override
     public StudentResultsDetailsDTO getStudentExamDetails(String idNumber) {
-        EnrollmentEntity enrollment = enrollmentRepository.findByStudentStudentPersonIdNumberAndStatusIn(
-                idNumber,
-                Arrays.asList(ProcessStatus.ACCEPTED, ProcessStatus.REJECTED, ProcessStatus.ELIGIBLE)
-        ).orElseThrow(() -> new RuntimeException("No se encontró estudiante con cédula: " + idNumber));
+        // Find the most recent enrollment for the student
+        EnrollmentEntity enrollment = enrollmentRepository
+                .findTopByStudentStudentPersonIdNumberAndStatusInOrderByEnrollmentDateDesc(
+                        idNumber,
+                        Arrays.asList(ProcessStatus.ACCEPTED, ProcessStatus.REJECTED, ProcessStatus.ELIGIBLE)
+                )
+                .orElseThrow(() -> new RuntimeException("No se encontró estudiante con cédula: " + idNumber));
 
         EnglishExamEntity englishExam = ResultUtils.getEnglishExam(enrollment);
         AcademicExamEntity academicExam = ResultUtils.getAcademicExam(enrollment);
@@ -125,8 +160,8 @@ public class ResultsServiceImpl implements ResultsService {
         BigDecimal academicWeight = resultUtils.getConfigValue("ACADEMIC_WEIGHT");
         BigDecimal prevGradesWeight = resultUtils.getConfigValue("PREV_GRADES_WEIGHT");
 
-
-        BigDecimal finalGrade = academicExam.getGrade().multiply(academicWeight)
+        BigDecimal finalGrade = academicExam.getGrade()
+                .multiply(academicWeight)
                 .add(enrollment.getStudent().getPreviousGrades().multiply(prevGradesWeight))
                 .setScale(2, RoundingMode.HALF_UP);
 

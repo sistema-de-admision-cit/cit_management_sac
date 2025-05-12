@@ -156,8 +156,6 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
           Pageable pageable
   );
 
-  Page<EnrollmentEntity> findAllByStatusIn(List<ProcessStatus> statuses, Pageable pageable);
-
 
   /**
    * Repository query method to find enrollments for a list of students with a specified status, with pagination support.
@@ -239,6 +237,14 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
   Long countStudentsWithCompleteExamsBySearch(@Param("searchTerm") String searchTerm);
 
 
+  /**
+   * Retrieves a paginated list of enrollments that have a status of ELIGIBLE, ACCEPTED, or REJECTED,
+   * and are associated with exams of all three required types: ACA, DAI, and ENG.
+   *
+   * @param pageable pagination information
+   * @return a page of EnrollmentEntity instances matching the criteria
+   */
+
   @Query("SELECT DISTINCT e " +
           "FROM EnrollmentEntity e " +
           "WHERE e.status IN ('ELIGIBLE', 'ACCEPTED', 'REJECTED') " +
@@ -246,6 +252,20 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
           "AND EXISTS (SELECT 1 FROM e.exams ex2 WHERE ex2.examType = 'DAI') " +
           "AND EXISTS (SELECT 1 FROM e.exams ex3 WHERE ex3.examType = 'ENG')")
   Page<EnrollmentEntity> findAllWithCompleteExams(Pageable pageable);
+
+
+  /**
+   * Retrieves the most recent enrollment for a student with the specified ID number and a matching status,
+   * ordered by enrollment date in descending order.
+   *
+   * @param idNumber the ID number of the student's person
+   * @param statuses the list of enrollment statuses to filter by
+   * @return an Optional containing the most recent matching EnrollmentEntity, or empty if none found
+   */
+
+  Optional<EnrollmentEntity> findTopByStudentStudentPersonIdNumberAndStatusInOrderByEnrollmentDateDesc(
+          String idNumber,
+          List<ProcessStatus> statuses);
 
 
 }
