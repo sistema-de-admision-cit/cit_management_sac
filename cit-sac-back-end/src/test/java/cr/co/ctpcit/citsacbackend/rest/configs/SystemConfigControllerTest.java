@@ -66,12 +66,12 @@ class SystemConfigControllerTest {
     DocumentContext documentContext = JsonPath.parse(response.getBody());
 
     int enrollmentCount = documentContext.read("$.length()");
-    assertThat(enrollmentCount).isEqualTo(3);
+    assertThat(enrollmentCount).isEqualTo(2);
   }
 
   @Test
   void updateProcessWeights() {
-    UpdateWeightsConfigsDto updateWeightsConfigsDto = new UpdateWeightsConfigsDto(0.3, 0.3, 0.4);
+    UpdateWeightsConfigsDto updateWeightsConfigsDto = new UpdateWeightsConfigsDto(0.3, 0.7);
 
     HttpEntity<UpdateWeightsConfigsDto> request = new HttpEntity<>(updateWeightsConfigsDto);
     ResponseEntity<String> response =

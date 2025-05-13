@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { convertToJson, formatLogMessage, parseCsvToArray, parseXlsxToArray } from './helpers'
+import { convertToJson, formatLogMessage, parseCsvToArray, parseXlsxToArray, validateScore } from './helpers'
 
 /* handle file upload */
 
@@ -70,16 +70,18 @@ export const handleEnglishScoresFileUpload = (file, e, setEnglishScores, setLoad
  * @returns
  */
 const validateEnglishScores = (scores) => {
-  console.log('scores', scores)
-  const containsAllFields = scores.every((score) => {
-    return score.id && score.names && score.lastNames && score.lastTest && score.core && score.level
+  console.log('Validando todos los scores:', scores)
+
+  const allValid = scores.every(score => {
+    const isValid = validateScore(score)
+    if (!isValid) {
+      console.error('Score inválido encontrado:', score)
+    }
+    return isValid
   })
 
-  const areDatesValid = scores.every((score) => {
-    return !isNaN(Date.parse(score.lastTest))
-  })
-
-  return containsAllFields && areDatesValid
+  console.log('Resultado validación completa:', allValid)
+  return allValid
 }
 
 // this function is called when the user clicks the process button

@@ -9,6 +9,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.StudentExamsDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.logs.EnglishExamLogDto;
 import cr.co.ctpcit.citsacbackend.logic.services.exams.ExamsService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -80,6 +81,28 @@ public class ManagementExamController {
   }
 
   /**
+   * Retrieves the number of students who have taken academic (ACA) exams.
+   *
+   * @return {@code 200 OK} with the count if available, or {@code 404 Not Found} if no data is returned
+   */
+  @GetMapping("/students-count-Academic")
+  public ResponseEntity<Long> getEnrollmentsCountAcademicExams() {
+    Long count = examsService.getStudentsCountWithAcademicExams();
+    return count == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(count);
+  }
+
+  /**
+   * Retrieves the number of students who have taken DAI exams.
+   *
+   * @return {@code 200 OK} with the count if available, or {@code 404 Not Found} if no data is returned
+   */
+  @GetMapping("/students-count-DAI")
+  public ResponseEntity<Long> getEnrollmentsCountDAIExams() {
+    Long count = examsService.getStudentsCountWithDAIExams();
+    return count == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(count);
+  }
+
+  /**
    * Update comment and recommendation on DAI exam.
    */
   @PutMapping("/dai-exam")
@@ -125,4 +148,38 @@ public class ManagementExamController {
 
     return ResponseEntity.ok(students);
   }
+
+  /**
+   * Searches and counts the number of students who have taken academic (ACA) exams
+   * matching the given search value. The search is performed against student ID,
+   * first name, and surnames.
+   *
+   * @param value the search term to filter students
+   * @return {@code 200 OK} with the count if found, or {@code 404 Not Found} if no matches
+   */
+  @GetMapping("/search-count-academic")
+  public ResponseEntity<Long> searchStudentExamsAcademicByValue(
+          @NotNull @RequestParam String value) {
+    Long count = examsService.getSearchCountByAcademicExam(value);
+
+    return count == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(count);
+  }
+
+  /**
+   * Searches and counts the number of students who have taken DAI exams
+   * matching the given search value. The search is performed against student ID,
+   * first name, and surnames.
+   *
+   * @param value the search term to filter students
+   * @return {@code 200 OK} with the count if found, or {@code 404 Not Found} if no matches
+   */
+
+  @GetMapping("/search-count-DAI")
+  public ResponseEntity<Long> searchStudentExamsDAIByValue(
+          @NotNull @RequestParam String value) {
+    Long count = examsService.getSearchCountByDAIExam(value);
+
+    return count == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(count);
+  }
+
 }

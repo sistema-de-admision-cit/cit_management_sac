@@ -28,25 +28,6 @@ public class ResultUtils {
 
 
     /**
-     * Converts an English level to a corresponding score based on predefined criteria.
-     * The score is returned as a BigDecimal value.
-     *
-     * @param level The English level to be converted (e.g., C2, C1, B2, etc.).
-     * @return The BigDecimal score corresponding to the given English level.
-     */
-
-    public static BigDecimal convertEnglishLevelToScore(EnglishLevel level) {
-        return switch (level) {
-            case C2 -> new BigDecimal("100");
-            case C1 -> new BigDecimal("90");
-            case B2 -> new BigDecimal("80");
-            case B1 -> new BigDecimal("70");
-            case A2 -> new BigDecimal("60");
-            case A1 -> new BigDecimal("50");
-        };
-    }
-
-    /**
      * Retrieves the DAI exam associated with a given enrollment, if available.
      *
      * @param enrollment The enrollment entity containing exam details.

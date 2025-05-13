@@ -70,7 +70,7 @@ public class PdfReportGenerator {
             document.open();
 
             try {
-                ClassPathResource logoResource = new ClassPathResource("static/images/logo.jpg");
+                ClassPathResource logoResource = new ClassPathResource("static/images/logo.png");
                 Image logo = Image.getInstance(logoResource.getURL());
                 logo.scaleToFit(150, 120);
                 logo.setAbsolutePosition(36, document.top() - 60);
@@ -149,11 +149,13 @@ public class PdfReportGenerator {
 
             table.setHeaderRows(1);
 
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
             for (ReportDataDto item : sortedData) {
                 addTableCell(table, item.getStudentId());
                 addTableCell(table, item.getFirstName());
                 addTableCell(table, item.getFullSurname());
-                addTableCell(table, formatDate(item.getEnrollmentDate()));
+                addTableCell(table, item.getEnrollmentDate().format(formatter));
 
                 if (isFullGradesReport) {
                     addTableCell(table, item.getEnglishGrade() != null ? item.getEnglishGrade() : "N/A");

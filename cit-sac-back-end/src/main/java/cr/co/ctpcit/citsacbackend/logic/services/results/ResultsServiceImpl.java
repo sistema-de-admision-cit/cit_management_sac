@@ -26,7 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -49,22 +52,33 @@ public class ResultsServiceImpl implements ResultsService {
      * @param pageable the pagination information
      * @return a page of {@link ResultDTO} containing the exam results
      */
+    @Override
     public Page<ResultDTO> getExamResults(Pageable pageable) {
-        BigDecimal englishWeight = resultUtils.getConfigValue("ENGLISH_WEIGHT");
         BigDecimal academicWeight = resultUtils.getConfigValue("ACADEMIC_WEIGHT");
         BigDecimal prevGradesWeight = resultUtils.getConfigValue("PREV_GRADES_WEIGHT");
 
-        Page<EnrollmentEntity> enrollmentsPage = enrollmentRepository.findAllByStatusIn(
-                Arrays.asList(ProcessStatus.ACCEPTED, ProcessStatus.REJECTED, ProcessStatus.ELIGIBLE),
-                pageable
-        );
+        Page<EnrollmentEntity> enrollmentsPage = enrollmentRepository.findAllWithCompleteExams(pageable);
 
-        List<ResultDTO> content = enrollmentsPage.getContent().stream()
-                .filter(e -> hasCompleteExams(e))
-                .map(e -> ResultsMapper.mapToExamResultDTO(e, englishWeight, academicWeight, prevGradesWeight))
+        Map<StudentEntity, EnrollmentEntity> lastEnrollments = enrollmentsPage.getContent().stream()
+                .collect(Collectors.toMap(
+                        EnrollmentEntity::getStudent,
+                        Function.identity(),
+                        (existing, replacement) ->
+                                existing.getEnrollmentDate().isAfter(replacement.getEnrollmentDate()) ?
+                                        existing : replacement
+                ));
+
+        // Ordenar por grado académico (de primero a décimo)
+        List<ResultDTO> content = lastEnrollments.values().stream()
+                .sorted(Comparator.comparing(e -> e.getGradeToEnroll()))
+                .map(e -> ResultsMapper.mapToExamResultDTO(e, academicWeight, prevGradesWeight))
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(content, pageable, enrollmentsPage.getTotalElements());
+        return new PageImpl<>(
+                content,
+                pageable,
+                enrollmentsPage.getTotalElements()
+        );
     }
 
 
@@ -75,7 +89,7 @@ public class ResultsServiceImpl implements ResultsService {
      * @param pageable the pagination information
      * @return a page of {@link ResultDTO} matching the search criteria
      */
-
+    @Override
     public Page<ResultDTO> searchResults(String query, Pageable pageable) {
         Page<EnrollmentEntity> enrollments = Page.empty(pageable);
 
@@ -90,7 +104,6 @@ public class ResultsServiceImpl implements ResultsService {
         if (enrollments.getContent().isEmpty()) {
             Page<PersonEntity> persons = personRepository.findByNamesContaining(query, pageable);
             List<StudentEntity> students = studentRepository.findAllByStudentPersonIn(persons.getContent());
-            // Actualizado para buscar múltiples estados
             enrollments = enrollmentRepository.findAllByStudentsWithStatusIn(
                     students,
                     Arrays.asList(ProcessStatus.ACCEPTED, ProcessStatus.REJECTED, ProcessStatus.ELIGIBLE),
@@ -98,16 +111,29 @@ public class ResultsServiceImpl implements ResultsService {
             );
         }
 
-        BigDecimal englishWeight = resultUtils.getConfigValue("ENGLISH_WEIGHT");
         BigDecimal academicWeight = resultUtils.getConfigValue("ACADEMIC_WEIGHT");
         BigDecimal prevGradesWeight = resultUtils.getConfigValue("PREV_GRADES_WEIGHT");
 
-        List<ResultDTO> content = enrollments.getContent().stream()
+        // Filtrar inscripciones completas y obtener la última por estudiante
+        Map<StudentEntity, EnrollmentEntity> lastEnrollments = enrollments.getContent().stream()
                 .filter(this::hasCompleteExams)
-                .map(e -> ResultsMapper.mapToExamResultDTO(e, englishWeight, academicWeight, prevGradesWeight))
+                .collect(Collectors.toMap(
+                        EnrollmentEntity::getStudent,
+                        Function.identity(),
+                        (existing, replacement) ->
+                                existing.getEnrollmentDate().isAfter(replacement.getEnrollmentDate()) ?
+                                        existing : replacement
+                ));
+
+        List<ResultDTO> content = lastEnrollments.values().stream()
+                .map(e -> ResultsMapper.mapToExamResultDTO(e, academicWeight, prevGradesWeight))
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(content, pageable, enrollments.getTotalElements());
+        return new PageImpl<>(
+                content,
+                pageable,
+                enrollments.getTotalElements()
+        );
     }
 
     /**
@@ -117,24 +143,25 @@ public class ResultsServiceImpl implements ResultsService {
      * @return a {@link StudentResultsDetailsDTO} containing the detailed results
      * @throws RuntimeException if the student is not found
      */
-
+    @Override
     public StudentResultsDetailsDTO getStudentExamDetails(String idNumber) {
-        EnrollmentEntity enrollment = enrollmentRepository.findByStudentStudentPersonIdNumberAndStatusIn(
-                idNumber,
-                Arrays.asList(ProcessStatus.ACCEPTED, ProcessStatus.REJECTED, ProcessStatus.ELIGIBLE)
-        ).orElseThrow(() -> new RuntimeException("No se encontró estudiante con cédula: " + idNumber));
+        // Find the most recent enrollment for the student
+        EnrollmentEntity enrollment = enrollmentRepository
+                .findTopByStudentStudentPersonIdNumberAndStatusInOrderByEnrollmentDateDesc(
+                        idNumber,
+                        Arrays.asList(ProcessStatus.ACCEPTED, ProcessStatus.REJECTED, ProcessStatus.ELIGIBLE)
+                )
+                .orElseThrow(() -> new RuntimeException("No se encontró estudiante con cédula: " + idNumber));
 
         EnglishExamEntity englishExam = ResultUtils.getEnglishExam(enrollment);
         AcademicExamEntity academicExam = ResultUtils.getAcademicExam(enrollment);
         DaiExamEntity daiExam = ResultUtils.getDaiExam(enrollment);
 
-        BigDecimal englishWeight = resultUtils.getConfigValue("ENGLISH_WEIGHT");
         BigDecimal academicWeight = resultUtils.getConfigValue("ACADEMIC_WEIGHT");
         BigDecimal prevGradesWeight = resultUtils.getConfigValue("PREV_GRADES_WEIGHT");
 
-        BigDecimal englishScore = ResultUtils.convertEnglishLevelToScore(englishExam.getLevel());
-        BigDecimal finalGrade = englishScore.multiply(englishWeight)
-                .add(academicExam.getGrade().multiply(academicWeight))
+        BigDecimal finalGrade = academicExam.getGrade()
+                .multiply(academicWeight)
                 .add(enrollment.getStudent().getPreviousGrades().multiply(prevGradesWeight))
                 .setScale(2, RoundingMode.HALF_UP);
 
@@ -158,6 +185,34 @@ public class ResultsServiceImpl implements ResultsService {
     }
 
     /**
+     *
+     * Delegates to {@code enrollmentRepository.countStudentsWithCompleteExamsBySearch(value)}
+     * to retrieve the count of students who have completed all required exams
+     * and match the given search term.
+     *
+     * @param value the search term to filter students (ID number or name)
+     * @return the count of matched students with complete exams
+     */
+
+    @Override
+    public Long getSearchCountByCompleteExams(String value) {
+        return enrollmentRepository.countStudentsWithCompleteExamsBySearch(value);
+    }
+
+    /**
+     *
+     * Delegates to {@code enrollmentRepository.countStudentsWithCompleteExams()}
+     * to retrieve the count of students who have completed all required exams.
+     *
+     * @return the count of students with complete exams
+     */
+
+    @Override
+    public Long getExamsCount() {
+        return enrollmentRepository.countStudentsWithCompleteExams();
+    }
+
+    /**
      * Updates the enrollment status of a student by their ID number.
      *
      * @param idNumber the student's ID number
@@ -165,6 +220,7 @@ public class ResultsServiceImpl implements ResultsService {
      * @throws RuntimeException if the student is not found or the status is not allowed
      */
 
+    @Override
     @Transactional
     public void updateEnrollmentStatus(String idNumber, UpdateStatusDTO updateStatusDTO) {
         EnrollmentEntity enrollment = enrollmentRepository.findByStudentStudentPersonIdNumber(idNumber)

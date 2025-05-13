@@ -53,31 +53,56 @@ const QuestionsConfiguratorView = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setFormValues(prev => ({
-      ...prev,
-      [name]: value === '' ? '' : parseInt(value) || 0
-    }))
+
+    if (value === '') {
+      setFormValues(prev => ({
+        ...prev,
+        [name]: ''
+      }))
+      return
+    }
+
+    const numericValue = parseInt(value)
+
+    if (!isNaN(numericValue) && numericValue >= 0 && numericValue <= 100) {
+      setFormValues(prev => ({
+        ...prev,
+        [name]: numericValue
+      }))
+    }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // Validar que los valores sean números entre 0 y 100
+    const daiValid = formValues.daiQuestionsQuantity !== '' &&
+      !isNaN(formValues.daiQuestionsQuantity) &&
+      formValues.daiQuestionsQuantity >= 0 &&
+      formValues.daiQuestionsQuantity <= 100
+
+    const academicValid = formValues.academicQuestionsQuantity !== '' &&
+      !isNaN(formValues.academicQuestionsQuantity) &&
+      formValues.academicQuestionsQuantity >= 0 &&
+      formValues.academicQuestionsQuantity <= 100
+
+    if (!daiValid || !academicValid) {
+      setErrorMessage('Las cantidades deben ser números entre 1 y 100')
+      return
+    }
+
     setLoading(true)
 
     try {
       await questionsQuantityHandler.update({
-        daiQuestionsQuantity: formValues.daiQuestionsQuantity || placeholders.daiQuestionsQuantity,
-        academicQuestionsQuantity: formValues.academicQuestionsQuantity || placeholders.academicQuestionsQuantity
+        daiQuestionsQuantity: formValues.daiQuestionsQuantity,
+        academicQuestionsQuantity: formValues.academicQuestionsQuantity
       })
 
       setSuccessMessage('Configuración guardada correctamente')
-
-      // Actualizar placeholders con los nuevos valores
-      const newDaiValue = formValues.daiQuestionsQuantity || placeholders.daiQuestionsQuantity
-      const newAcademicValue = formValues.academicQuestionsQuantity || placeholders.academicQuestionsQuantity
-
       setPlaceholders({
-        daiQuestionsQuantity: newDaiValue,
-        academicQuestionsQuantity: newAcademicValue
+        daiQuestionsQuantity: formValues.daiQuestionsQuantity,
+        academicQuestionsQuantity: formValues.academicQuestionsQuantity
       })
     } catch (error) {
       setErrorMessage(error.message)
@@ -91,7 +116,7 @@ const QuestionsConfiguratorView = () => {
       <div className='container percentages-configurator'>
         {renderMessages()}
         <h1>Configuración de cantidad de preguntas</h1>
-        <p className='description'>Configura la cantidad de preguntas para cada tipo de examen.</p>
+        <p className='description'>Configura la cantidad de preguntas para cada tipo de examen</p>
         <div className='percentages-configurator'>
           <form onSubmit={handleSubmit}>
             <div className='form-group'>
@@ -102,12 +127,14 @@ const QuestionsConfiguratorView = () => {
                   type: 'number',
                   placeholder: placeholders.daiQuestionsQuantity,
                   required: true,
-                  min: 1
+                  max: 100,
+                  min: 0
                 }}
-                value={formValues.daiQuestionsQuantity}
+                value={formValues.daiQuestionsQuantity === 0 ? 0 : formValues.daiQuestionsQuantity || ''}
                 handleChange={handleChange}
                 className='form-group'
               />
+              <small className='form-text text-muted'>Debe ser un número entre 1 y 100</small>
             </div>
 
             <div className='form-group'>
@@ -118,20 +145,22 @@ const QuestionsConfiguratorView = () => {
                   type: 'number',
                   placeholder: placeholders.academicQuestionsQuantity,
                   required: true,
-                  min: 1
+                  max: 100,
+                  min: 0
                 }}
-                value={formValues.academicQuestionsQuantity}
+                value={formValues.academicQuestionsQuantity === 0 ? 0 : formValues.academicQuestionsQuantity || ''}
                 handleChange={handleChange}
                 className='form-group'
               />
+              <small className='form-text text-muted'>Debe ser un número entre 1 y 100</small>
             </div>
 
             <Button
-              onClick={handleSubmit}
+              type='submit'
               className='btn btn-primary w-full'
               disabled={loading || initialLoading}
             >
-              {loading ? 'Guardando...' : 'Guardar Configuración'}
+              {loading ? 'Guardando...' : 'Guardar'}
             </Button>
           </form>
         </div>

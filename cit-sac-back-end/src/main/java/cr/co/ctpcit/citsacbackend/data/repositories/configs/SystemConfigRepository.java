@@ -40,7 +40,7 @@ public interface SystemConfigRepository extends JpaRepository<SystemConfigEntity
    * @return a list of {@link SystemConfigEntity} entries for process weight configurations
    */
   @Query(
-      "SELECT s FROM SystemConfigEntity s WHERE s.configName = 'ACADEMIC_WEIGHT' OR s.configName = 'PREV_GRADES_WEIGHT' OR s.configName = 'ENGLISH_WEIGHT'")
+      "SELECT s FROM SystemConfigEntity s WHERE s.configName = 'ACADEMIC_WEIGHT' OR s.configName = 'PREV_GRADES_WEIGHT'")
   List<SystemConfigEntity> getProcessWeights();
 
   /**

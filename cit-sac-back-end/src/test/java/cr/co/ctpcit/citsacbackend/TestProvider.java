@@ -26,6 +26,7 @@ import org.springframework.data.domain.PageImpl;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,7 +105,7 @@ public class TestProvider {
     EnrollmentEntity enrollment = new EnrollmentEntity();
     enrollment.setId(1L);
     enrollment.setStatus(ProcessStatus.PENDING);
-    enrollment.setEnrollmentDate(Instant.parse("2024-12-15T10:15:30Z"));
+    enrollment.setEnrollmentDate(LocalDateTime.parse("2024-12-15T10:15:30Z"));
     enrollment.setGradeToEnroll(Grades.FIRST);
     enrollment.setKnownThrough(KnownThrough.OT);
     enrollment.setExamDate(LocalDate.parse("2024-12-15"));
@@ -204,7 +205,7 @@ public class TestProvider {
   }
 
   public static UpdateWeightsConfigsDto provideUpdateWeightsConfigsDto() {
-    return new UpdateWeightsConfigsDto(0.4, 0.4, 0.2);
+    return new UpdateWeightsConfigsDto(0.4, 0.4);
   }
 
   public static UpdateContactInfoConfigsDto provideUpdateContactInfoConfigsDto() {
@@ -284,13 +285,13 @@ public class TestProvider {
 
   public static ExamAcaDto provideAcaExamDto() {
     return ExamAcaDto.builder().id(1L)
-        .enrollment(EnrollmentMapper.convertToDto(provideEnrollment()).id()).examDate(Instant.EPOCH)
+        .enrollment(String.valueOf(EnrollmentMapper.convertToDto(provideEnrollment()).id())).examDate(Instant.EPOCH)
         .examType(ExamType.ACA).responses(List.of(provideQuestionAcaDto())).build();
   }
 
   public static ExamDaiDto provideDaiExamDto() {
     return ExamDaiDto.builder().id(2L)
-        .enrollment(EnrollmentMapper.convertToDto(provideEnrollment()).id()).examDate(Instant.EPOCH)
+        .enrollment(String.valueOf(EnrollmentMapper.convertToDto(provideEnrollment()).id())).examDate(Instant.EPOCH)
         .examType(ExamType.DAI).responses(List.of(provideQuestionDaiDto())).build();
   }
 
@@ -475,7 +476,7 @@ public class TestProvider {
         mapper.getTypeFactory().constructCollectionLikeType(List.class, QuestionAcaDto.class));
 
     ExamAcaDto examAcaDto =
-        ExamAcaDto.builder().id(1L).enrollment(10L).examType(ExamType.ACA).examDate(Instant.parse("2025-03-25T17:54:12Z"))
+        ExamAcaDto.builder().id(1L).enrollment(String.valueOf(10L)).examType(ExamType.ACA).examDate(Instant.parse("2025-03-25T17:54:12Z"))
             .responses(questions).build();
 
     return AcademicExamDetailsDto.builder().id(1L).exam(examAcaDto).grade(new BigDecimal("100.00"))
@@ -487,7 +488,7 @@ public class TestProvider {
     dto.setStudentId(id);
     dto.setFirstName(name);
     dto.setFullSurname(surname);
-    dto.setEnrollmentDate(Instant.now());
+    dto.setEnrollmentDate(LocalDateTime.now());
     dto.setReportCategory(category);
     return dto;
   }

@@ -42,6 +42,5 @@ class UpdateWeightsConfigsDtoTest {
 
     assertEquals(0.4, updateWeightsConfigsDto.prevGradesWeight());
     assertEquals(0.4, updateWeightsConfigsDto.academicWeight());
-    assertEquals(0.2, updateWeightsConfigsDto.englishWeight());
   }
 }

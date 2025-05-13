@@ -113,7 +113,7 @@ public class ExamsServiceImpl implements ExamsService {
     EnrollmentEntity enrollmentInUse = getEnrollmentInUse(id, ExamType.DAI);
 
     //Get the questions
-    List<QuestionEntity> questions = questionRepository.findQuestionsByType(QuestionType.DAI,
+    List<QuestionEntity> questions = questionRepository.findRandomQuestionsByGradeAndType(enrollmentInUse.getGradeToEnroll(),QuestionType.DAI,
         getQuestionQuantity(Configurations.DAI_EXAM_QUESTIONS_QUANTITY));
 
     //Asociate the exam to the enrollment
@@ -202,8 +202,9 @@ public class ExamsServiceImpl implements ExamsService {
    */
   @Override
   public List<StudentExamsDto> getStudentsByExamType(ExamType examType, Pageable pageable) {
-    //Get all students
-    List<StudentEntity> students = studentRepository.findAll(pageable).toList();
+    List<StudentEntity> students = studentRepository
+            .findStudentsWithExamType(examType, pageable)
+            .toList();
 
     if (students.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron estudiantes.");
@@ -211,6 +212,7 @@ public class ExamsServiceImpl implements ExamsService {
 
     return getStudentExamsDto(students, examType);
   }
+
   /**
    * {@inheritDoc}
    */
@@ -286,10 +288,10 @@ public class ExamsServiceImpl implements ExamsService {
     //Validate if the value is a number
     List<StudentEntity> students;
     if (value.matches("\\d+")) {
-      students = studentRepository.findStudentByLikeIdNumberWithEnrollmentInProcess(value, pageable);
+      students = studentRepository.findAllByValueWithExamsInProcess(value, pageable);
     } else {
       //Search for persons by value
-      students = studentRepository.findAllByValueWithEnrollmentInProcess(value, pageable);
+      students = studentRepository.findAllByValueWithExamsInProcess(value, pageable);
     }
 
     if (students.isEmpty()) {
@@ -502,4 +504,51 @@ public class ExamsServiceImpl implements ExamsService {
 
     return exam;
   }
+
+  /**
+   * Retrieves the number of students who have taken academic (ACA) exams.
+   *
+   * @return the count of students with academic exams
+   */
+  @Override
+  public Long getStudentsCountWithAcademicExams() {
+    return examRepository.countStudentsWithAcademicExams();
+  }
+
+
+  /**
+   * Retrieves the number of students who have taken DAI exams.
+   *
+   * @return the count of students with DAI exams
+   */
+
+  @Override
+  public Long getStudentsCountWithDAIExams() {
+    return examRepository.countStudentsWithDAIExams();
+  }
+
+  /**
+   * Retrieves the number of students matching a search value who have taken academic (ACA) exams.
+   *
+   * @param value the search term used to filter students by ID, name, or surname
+   * @return the count of matched students with academic exams
+   */
+
+  @Override
+  public Long getSearchCountByAcademicExam(String value) {
+    return examRepository.countStudentsWithAcademicExamsBySearch(value);
+  }
+
+  /**
+   * Retrieves the number of students matching a search value who have taken DAI exams.
+   *
+   * @param value the search term used to filter students by ID, name, or surname
+   * @return the count of matched students with DAI exams
+   */
+
+  @Override
+  public Long getSearchCountByDAIExam(String value) {
+    return examRepository.countStudentsWithDAIExamsBySearch(value);
+  }
+
 }

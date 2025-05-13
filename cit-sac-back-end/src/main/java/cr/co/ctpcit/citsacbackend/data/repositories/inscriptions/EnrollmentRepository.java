@@ -156,8 +156,6 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
           Pageable pageable
   );
 
-  Page<EnrollmentEntity> findAllByStatusIn(List<ProcessStatus> statuses, Pageable pageable);
-
 
   /**
    * Repository query method to find enrollments for a list of students with a specified status, with pagination support.
@@ -198,4 +196,76 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, Lo
   Optional<EnrollmentEntity> findByStudentStudentPersonIdNumberAndStatusIn(
           @Param("idNumber") String idNumber,
           @Param("statuses") List<ProcessStatus> statuses);
+
+  /**
+   * Counts the number of unique students whose enrollment status is either 'ELIGIBLE', 'ACCEPTED', or 'REJECTED',
+   * and who have completed all three required exams: academic (ACA), DAI, and English (ENG).
+   *
+   * @return the number of students with complete exam records
+   */
+
+  @Query("SELECT COUNT(DISTINCT e.student) " +
+          "FROM EnrollmentEntity e " +
+          "WHERE e.status IN ('ELIGIBLE', 'ACCEPTED', 'REJECTED') " +
+          "AND EXISTS (SELECT 1 FROM e.exams ex1 WHERE ex1.examType = 'ACA') " +
+          "AND EXISTS (SELECT 1 FROM e.exams ex2 WHERE ex2.examType = 'DAI') " +
+          "AND EXISTS (SELECT 1 FROM e.exams ex3 WHERE ex3.examType = 'ENG')")
+  Long countStudentsWithCompleteExams();
+
+
+  /**
+   * Counts the number of unique students matching the given search term, whose enrollment status is either
+   * 'ELIGIBLE', 'ACCEPTED', or 'REJECTED', and who have completed all three required exams: academic (ACA),
+   * DAI, and English (ENG).
+   *
+   * @param searchTerm a string to match against the student's ID number, first name, first surname, or second surname
+   * @return the number of students with complete exam records matching the search criteria
+   */
+
+  @Query("SELECT COUNT(DISTINCT e.student) " +
+          "FROM EnrollmentEntity e " +
+          "JOIN e.student s " +
+          "JOIN s.studentPerson p " +
+          "WHERE e.status IN ('ELIGIBLE', 'ACCEPTED', 'REJECTED') " +
+          "AND EXISTS (SELECT 1 FROM e.exams ex1 WHERE ex1.examType = 'ACA') " +
+          "AND EXISTS (SELECT 1 FROM e.exams ex2 WHERE ex2.examType = 'DAI') " +
+          "AND EXISTS (SELECT 1 FROM e.exams ex3 WHERE ex3.examType = 'ENG') " +
+          "AND (p.idNumber LIKE %:searchTerm% " +
+          "OR LOWER(p.firstName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+          "OR LOWER(p.firstSurname) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+          "OR LOWER(p.secondSurname) LIKE LOWER(CONCAT('%', :searchTerm, '%')))")
+  Long countStudentsWithCompleteExamsBySearch(@Param("searchTerm") String searchTerm);
+
+
+  /**
+   * Retrieves a paginated list of enrollments that have a status of ELIGIBLE, ACCEPTED, or REJECTED,
+   * and are associated with exams of all three required types: ACA, DAI, and ENG.
+   *
+   * @param pageable pagination information
+   * @return a page of EnrollmentEntity instances matching the criteria
+   */
+
+  @Query("SELECT DISTINCT e " +
+          "FROM EnrollmentEntity e " +
+          "WHERE e.status IN ('ELIGIBLE', 'ACCEPTED', 'REJECTED') " +
+          "AND EXISTS (SELECT 1 FROM e.exams ex1 WHERE ex1.examType = 'ACA') " +
+          "AND EXISTS (SELECT 1 FROM e.exams ex2 WHERE ex2.examType = 'DAI') " +
+          "AND EXISTS (SELECT 1 FROM e.exams ex3 WHERE ex3.examType = 'ENG')")
+  Page<EnrollmentEntity> findAllWithCompleteExams(Pageable pageable);
+
+
+  /**
+   * Retrieves the most recent enrollment for a student with the specified ID number and a matching status,
+   * ordered by enrollment date in descending order.
+   *
+   * @param idNumber the ID number of the student's person
+   * @param statuses the list of enrollment statuses to filter by
+   * @return an Optional containing the most recent matching EnrollmentEntity, or empty if none found
+   */
+
+  Optional<EnrollmentEntity> findTopByStudentStudentPersonIdNumberAndStatusInOrderByEnrollmentDateDesc(
+          String idNumber,
+          List<ProcessStatus> statuses);
+
+
 }

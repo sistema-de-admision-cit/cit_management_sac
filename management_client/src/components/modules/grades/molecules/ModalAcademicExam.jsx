@@ -1,12 +1,10 @@
 import { useState } from 'react'
 import Button from '../../../core/global/atoms/Button'
-import InputField from '../../../core/global/atoms/InputField'
-import useMessages from '../../../core/global/hooks/useMessages'
 import { generateAcademicExamPDF } from '../helpers/handlers'
 import '../../../../assets/styles/grades/modal-grade.css'
 
 const ModalAcademicExam = ({ grade, onClose }) => {
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
 
   const handleDownload = async (e) => {
     generateAcademicExamPDF(grade)
@@ -16,7 +14,7 @@ const ModalAcademicExam = ({ grade, onClose }) => {
     <div className='modal-overlay'>
       <div className='modal-content'>
         <div className='modal-header'>
-          <h2>Resultado Examen Academico</h2>
+          <h2>Resultado Examen Académico</h2>
         </div>
         <div className='student-info'>
           <p><strong>Cédula:</strong> {grade.person.idNumber}</p>

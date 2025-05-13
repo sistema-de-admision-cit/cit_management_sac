@@ -21,7 +21,6 @@ public class ResultsMapper {
      * based on English exam results, academic exam results, and previous grades, applying the corresponding weights.
      *
      * @param enrollment the enrollment entity containing student and exam data
-     * @param englishWeight the weight to apply to the English exam score
      * @param academicWeight the weight to apply to the academic exam score
      * @param prevGradesWeight the weight to apply to the student's previous grades
      * @return a {@link ResultDTO} containing the mapped result information
@@ -29,20 +28,16 @@ public class ResultsMapper {
 
     public static ResultDTO mapToExamResultDTO(
             EnrollmentEntity enrollment,
-            BigDecimal englishWeight,
             BigDecimal academicWeight,
             BigDecimal prevGradesWeight) {
 
         PersonEntity person = enrollment.getStudent().getStudentPerson();
-        EnglishExamEntity englishExam = ResultUtils.getEnglishExam(enrollment);
         AcademicExamEntity academicExam = ResultUtils.getAcademicExam(enrollment);
 
-        BigDecimal englishScore = ResultUtils.convertEnglishLevelToScore(englishExam.getLevel());
         BigDecimal academicScore = academicExam.getGrade();
         BigDecimal prevGradesScore = enrollment.getStudent().getPreviousGrades();
 
-        BigDecimal finalGrade = englishScore.multiply(englishWeight)
-                .add(academicScore.multiply(academicWeight))
+        BigDecimal finalGrade = academicScore.multiply(academicWeight)
                 .add(prevGradesScore.multiply(prevGradesWeight))
                 .setScale(2, RoundingMode.HALF_UP);
 

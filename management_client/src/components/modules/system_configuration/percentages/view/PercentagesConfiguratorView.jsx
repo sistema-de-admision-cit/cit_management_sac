@@ -9,8 +9,7 @@ const PercentagesConfiguratorView = () => {
   const [loading, setLoading] = useState(false)
   const [formValues, setFormValues] = useState({
     prevGradesExam: 0,
-    academicExam: 0,
-    englishExam: 0
+    academicExam: 0
   })
 
   useEffect(() => {
@@ -41,7 +40,7 @@ const PercentagesConfiguratorView = () => {
       <div className='container percentages-configurator'>
         {renderMessages()}
         <h1>Configuración de porcentajes</h1>
-        <p className='description'>Configura los porcentajes de cada examen para el cálculo de la nota final.</p>
+        <p className='description'>Configura los porcentajes para el cálculo de la nota final.</p>
         <div className='percentages-configurator'>
           <PercentagesForm
             formValues={formValues}

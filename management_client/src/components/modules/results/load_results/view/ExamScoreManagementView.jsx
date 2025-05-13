@@ -45,7 +45,7 @@ const ExamScoreManagementView = () => {
     <SectionLayout title='Cargar Notas de Ingles'>
       <div className='container'>
         <h1>Cargar Notas de Ingles</h1>
-        <p className='description'>Cargar notas de forma manual o por medio de un archivo exportado desde TrackTest</p>
+        <p className='description'>Carga por medio de un archivo exportado desde TrackTest o de forma manual las Notas de Inglés</p>
         {loading && <Spinner />}
         {renderMessages()}
 

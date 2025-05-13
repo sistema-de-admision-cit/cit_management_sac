@@ -4,8 +4,9 @@ import cr.co.ctpcit.citsacbackend.logic.dto.results.ResultDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.results.StudentResultsDetailsDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.results.UpdateStatusDTO;
 import cr.co.ctpcit.citsacbackend.logic.services.notifs.NotificationsService;
-import cr.co.ctpcit.citsacbackend.logic.services.results.ResultsServiceImpl;
+import cr.co.ctpcit.citsacbackend.logic.services.results.ResultsService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ResultsController {
 
-    private final ResultsServiceImpl resultsServiceImpl;
+    private final ResultsService resultsService;
 
     private final NotificationsService notificationsService;
 
@@ -41,9 +42,24 @@ public class ResultsController {
     @GetMapping
     public ResponseEntity<List<ResultDTO>> getExamResults(
             @PageableDefault(page = 0, size = 25) Pageable pageable) {
-        Page<ResultDTO> page = resultsServiceImpl.getExamResults(pageable);
+        Page<ResultDTO> page = resultsService.getExamResults(pageable);
         return ResponseEntity.ok(page.getContent());
     }
+
+    /**
+     * Retrieves the total number of students who have completed all required exams:
+     * Academic (ACA), DAI, and English (ENG). Only students with enrollment statuses
+     * 'ELIGIBLE', 'ACCEPTED', or 'REJECTED' are considered.
+     *
+     * @return {@code 200 OK} with the count if successful, or {@code 404 Not Found} if no data is found
+     */
+
+    @GetMapping("/results-count")
+    public ResponseEntity<Long> getExamsCount() {
+        Long count = resultsService.getExamsCount();
+        return count == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(count);
+    }
+
 
     /**
      * Searches for exam results based on a provided query string. If the query is null or empty,
@@ -54,17 +70,34 @@ public class ResultsController {
      * @return A ResponseEntity containing the list of ResultDTOs matching the search query.
      */
 
-    @GetMapping("/search")
+    @GetMapping("/search/{value}")
     public ResponseEntity<List<ResultDTO>> searchExamResults(
-            @RequestParam(required = false) String value,
+            @PathVariable String value,
             @PageableDefault(page = 0, size = 25) Pageable pageable) {
 
         if (value == null || value.trim().isEmpty()) {
             return getExamResults(pageable);
         }
 
-        Page<ResultDTO> results = resultsServiceImpl.searchResults(value, pageable);
+        Page<ResultDTO> results = resultsService.searchResults(value, pageable);
         return ResponseEntity.ok(results.getContent());
+    }
+
+    /**
+     * Searches and counts the number of students who have completed all required exams
+     * (ACA, DAI, and ENG) and match the given search value. The search is performed against
+     * student ID, first name, and surnames.
+     *
+     * @param value the search term to filter students
+     * @return {@code 200 OK} with the count if found, or {@code 404 Not Found} if no matches
+     */
+
+    @GetMapping("/search-count-results")
+    public ResponseEntity<Long> searchStudentExamsDAIByValue(
+            @NotNull @RequestParam String value) {
+        Long count = resultsService.getSearchCountByCompleteExams(value);
+
+        return count == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(count);
     }
 
     /**
@@ -76,7 +109,7 @@ public class ResultsController {
 
     @GetMapping("/details/{idNumber}")
     public ResponseEntity<StudentResultsDetailsDTO> getStudentDetails(@PathVariable String idNumber) {
-        StudentResultsDetailsDTO details = resultsServiceImpl.getStudentExamDetails(idNumber);
+        StudentResultsDetailsDTO details = resultsService.getStudentExamDetails(idNumber);
         return ResponseEntity.ok(details);
     }
 
@@ -94,7 +127,7 @@ public class ResultsController {
             @PathVariable String idNumber,
             @Valid @RequestBody UpdateStatusDTO updateStatusDTO) {
 
-        resultsServiceImpl.updateEnrollmentStatus(idNumber, updateStatusDTO);
+        resultsService.updateEnrollmentStatus(idNumber, updateStatusDTO);
         notificationsService.createEmailForAdmissionDecision(idNumber);
         return ResponseEntity.ok().build();
     }

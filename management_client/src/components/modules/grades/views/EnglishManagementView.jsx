@@ -8,7 +8,7 @@ import '../../../../assets/styles/grades/grades-management-view.css'
 const EnglishGradesManagementView = () => {
   const [loading, setLoading] = useState(false)
   const [grades, setGrades] = useState([])
-  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
+  const { setErrorMessage, renderMessages } = useMessages()
 
   // Cargar datos iniciales
   useEffect(() => {

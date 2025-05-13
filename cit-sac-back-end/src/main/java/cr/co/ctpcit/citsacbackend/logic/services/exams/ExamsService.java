@@ -99,4 +99,35 @@ public interface ExamsService {
    * @return list of matching student exam data
    */
   List<StudentExamsDto> searchStudentExams(String value, ExamType examType, Pageable pageable);
+
+  /**
+   * Returns the number of students who have taken academic (ACA) exams.
+   *
+   * @return the count of students with academic exams
+   */
+  Long getStudentsCountWithAcademicExams();
+
+  /**
+   * Returns the number of students who have taken DAI exams.
+   *
+   * @return the count of students with DAI exams
+   */
+  Long getStudentsCountWithDAIExams();
+
+  /**
+   * Returns the number of students who match the given search value and have taken academic (ACA) exams.
+   *
+   * @param value the search term used to filter students by ID number or name fields
+   * @return the count of matched students with academic exams
+   */
+  Long getSearchCountByAcademicExam(String value);
+
+  /**
+   * Returns the number of students who match the given search value and have taken DAI exams.
+   *
+   * @param value the search term used to filter students by ID number or name fields
+   * @return the count of matched students with DAI exams
+   */
+  Long getSearchCountByDAIExam(String value);
+
 }

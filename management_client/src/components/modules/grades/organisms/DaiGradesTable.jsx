@@ -5,13 +5,11 @@ import useMessages from '../../../core/global/hooks/useMessages'
 import DaiGradesRow from '../molecules/DaiGradesRow'
 import ModalDaiExam from '../molecules/ModalDaiExam'
 import '../../../../assets/styles/grades/grades-table.css'
-import { handleSaveDAIComment } from '../helpers/handlers'
 
 const GradesTable = ({ grades, loading, onPageChange, currentPage, totalPages }) => {
   const [activeModal, setActiveModal] = useState(null)
   const [selectedExam, setSelectedExam] = useState(null)
   const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
-  const itemsPerPage = 25
 
   const handleOpenModal = (modalType, examData) => {
     setSelectedExam(examData)

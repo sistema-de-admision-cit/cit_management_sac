@@ -15,7 +15,6 @@ import {
 } from '../../helpers/formHandlers'
 import { getButtonState } from '../../helpers/helpers'
 import { EXAM_GRADE_OPTIONS, ACADEMIC_EXAM_TYPE_OPTIONS, DAI_EXAM_TYPE_OPTIONS } from '../helpers/questionFormOptions'
-
 const getExamTypeOptionsByUserRole = (userRole) => {
   const optionsByRole = {
     SYS: [ACADEMIC_EXAM_TYPE_OPTIONS, DAI_EXAM_TYPE_OPTIONS],

@@ -1,95 +1,126 @@
 import { useEffect, useState } from 'react'
 import SectionLayout from '../../../core/global/molecules/SectionLayout'
-import useMessages from '../../../core/global/hooks/useMessages'
 import DaiGradesTable from '../organisms/DaiGradesTable'
 import DaiSearchBar from '../molecules/DaiSearchBar'
-import { handleGetAllDaiGrades, handleSearchDAIGrades } from '../helpers/handlers'
 import '../../../../assets/styles/grades/grades-management-view.css'
+import useMessages from '../../../core/global/hooks/useMessages'
+import {
+  handleGetAllDaiGrades,
+  handleSearchDAIGrades,
+  handleGetTotalGradesDAIPages,
+  handleGetTotalDAIGradesSearchPages
+
+} from '../helpers/handlers.js'
 
 const DaiGradesManagementView = () => {
-  const [loading, setLoading] = useState(false)
-  const [allGrades, setAllGrades] = useState([])
-  const [grades, setGrades] = useState([])
+  const { setErrorMessage, setSuccessMessage } = useMessages()
   const [currentPage, setCurrentPage] = useState(0)
-  const [totalPages, setTotalPages] = useState(1)
+  const [allGrades, setAllGrades] = useState([])
+  const [pageSize] = useState(10)
+  const [totalPages, setTotalPages] = useState(0)
+  const [grades, setGrades] = useState([])
+  const [loading, setLoading] = useState(false)
   const [onlyReviewed, setOnlyReviewed] = useState(false)
-  const { setErrorMessage, setSuccessMessage, renderMessages } = useMessages()
 
-  const itemsPerPage = 25 // Número de elementos por página
+  const [currentSearchPage, setCurrentSearchPage] = useState(0)
+  const [searching, setSearching] = useState(false)
+  const [searchValue, setSearchValue] = useState('')
 
-  const loadGrades = async (page = 0) => {
-    const result = await handleGetAllDaiGrades(
+  useEffect(() => {
+    loadGrades(currentPage)
+  }, [currentPage])
+
+  useEffect(() => {
+    if (searching) {
+      onSearch(searchValue)
+    }
+  }, [currentSearchPage])
+
+  const applyReviewedFilter = (gradesList, reviewed) => {
+    return reviewed
+      ? gradesList.filter(g => g.daiExams.some(exam => exam.reviewed === false))
+      : gradesList
+  }
+
+  const onSearch = (search) => {
+    const trimmed = search.trim()
+
+    if (trimmed === '') {
+      setSearching(false)
+      setCurrentSearchPage(0)
+      setSearchValue('')
+      loadGrades(currentPage)
+      return
+    }
+
+    setSearching(true)
+    setSearchValue(trimmed)
+
+    handleSearchDAIGrades(
+      search,
+      (grades) => {
+        setAllGrades(grades)
+        setGrades(onlyReviewed
+          ? grades.filter(g => g.daiExams.some(exam => exam.reviewed))
+          : grades
+        )
+      },
+      setLoading,
+      setErrorMessage,
+      setSuccessMessage
+    )
+  }
+
+
+  const loadGrades = (page) => {
+    setSearching(false)
+    setCurrentPage(page)
+    setCurrentSearchPage(0)
+    setSearchValue('')
+
+    handleGetAllDaiGrades(
       page,
-      (data) => {
-        setAllGrades(data) // guardamos todo
-        filterGrades(data, onlyReviewed)
+      pageSize,
+      (results) => {
+        setAllGrades(results)
+        setGrades(applyReviewedFilter(results, onlyReviewed))
       },
       setLoading,
       setErrorMessage
     )
-    if (result) {
-      setTotalPages(result.totalPages)
-      setCurrentPage(result.currentPage)
-    }
+
+    handleGetTotalGradesDAIPages(setTotalPages, pageSize)
   }
 
-  const filterGrades = (gradesList, reviewedOnly) => {
-    if (reviewedOnly) {
-      const filtered = gradesList.filter(
-        g => g.daiExams[0]?.reviewed === true
-      )
-      setGrades(filtered)
+  const onClickPage = (number) => {
+    if (searching) {
+      setCurrentSearchPage(number)
     } else {
-      setGrades(gradesList)
-    }
-  }
-
-  useEffect(() => {
-    loadGrades(0)
-  }, [])
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 0 && newPage < totalPages) {
-      loadGrades(newPage)
+      setCurrentPage(number)
     }
   }
 
   const handleCheckboxChange = (checked) => {
     setOnlyReviewed(checked)
-    filterGrades(allGrades, checked)
+    setGrades(applyReviewedFilter(allGrades, checked))
   }
 
   return (
-    <SectionLayout title='Resultados de examenes DAI'>
+    <SectionLayout title='Resultados de exámenes DAI'>
       <div className='grade-management-view'>
-        <h1>Resultados de examenes DAI</h1>
+        <h1>Resultados de Exámenes DAI</h1>
         <p className='description'>
           Aquí puedes visualizar los resultados de los exámenes DAI.
         </p>
         <DaiSearchBar
-          onSearch={(value) => {
-            if (value.trim() === '') {
-              loadGrades(0)
-            } else {
-              handleSearchDAIGrades(
-                value,
-                (results) => {
-                  setAllGrades(results)
-                  filterGrades(results, onlyReviewed)
-                },
-                setLoading,
-                setErrorMessage,
-                setSuccessMessage
-              )
-            }
-          }}
+          onSearch={onSearch}
           onCheckedEvaluados={handleCheckboxChange}
         />
         <DaiGradesTable
           grades={grades}
           loading={loading}
-          onPageChange={handlePageChange}
-          currentPage={currentPage}
+          onPageChange={onClickPage}
+          currentPage={searching ? currentSearchPage : currentPage}
           totalPages={totalPages}
         />
       </div>

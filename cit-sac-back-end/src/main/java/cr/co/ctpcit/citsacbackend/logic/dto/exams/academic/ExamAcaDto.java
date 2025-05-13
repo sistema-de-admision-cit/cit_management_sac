@@ -13,7 +13,7 @@ import java.util.List;
  * Contains information about the enrollment, exam date, type, and responses.
  */
 @Builder
-public record ExamAcaDto(Long id, @NotNull Long enrollment,
+public record ExamAcaDto(Long id, @NotNull String enrollment,
                          @NotNull Instant examDate,
                          @NotNull ExamType examType, List<QuestionAcaDto> responses)
     implements Serializable {

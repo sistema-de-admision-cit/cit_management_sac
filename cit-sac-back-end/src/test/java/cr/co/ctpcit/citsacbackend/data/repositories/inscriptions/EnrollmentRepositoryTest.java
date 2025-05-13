@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -72,7 +73,7 @@ class EnrollmentRepositoryTest {
     enrollmentEntity = new EnrollmentEntity();
     enrollmentEntity.setStudent(studentEntity);
     enrollmentEntity.setStatus(ProcessStatus.PENDING);
-    enrollmentEntity.setEnrollmentDate(Instant.now());
+    enrollmentEntity.setEnrollmentDate(LocalDateTime.now());
     enrollmentEntity.setGradeToEnroll(Grades.FIRST);
     enrollmentEntity.setKnownThrough(KnownThrough.OT);
     enrollmentEntity.setExamDate(LocalDate.parse("2021-01-01"));

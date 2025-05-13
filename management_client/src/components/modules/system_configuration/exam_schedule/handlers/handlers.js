@@ -1,5 +1,6 @@
 import axios from '../../../../../config/axiosConfig'
-import { format, parseISO } from 'date-fns'
+
+import { format } from 'date-fns'
 
 const mapDays = (days) => {
   const daysMap = {
@@ -40,7 +41,6 @@ export const handleSubmit = async (formValues, setLoading, setErrorMessage, setS
 
     const { firstDay, lastDay } = getFirstAndLastDayOfYear()
 
-    // Validar fechas si no es "todo el año"
     if (!formValues.allYear) {
       if (!(formValues.startDate instanceof Date) || isNaN(formValues.startDate.getTime())) {
         throw new Error(possibleErrors.invalidDate)
@@ -50,8 +50,10 @@ export const handleSubmit = async (formValues, setLoading, setErrorMessage, setS
       }
     }
 
-    const startDate = formValues.allYear ? firstDay : format(formValues.startDate, 'yyyy-MM-dd')
-    const endDate = formValues.allYear ? lastDay : format(formValues.endDate, 'yyyy-MM-dd')
+    const formatDate = (date) => format(date, 'yyyy-MM-dd')
+
+    const startDate = formValues.allYear ? firstDay : formatDate(formValues.startDate)
+    const endDate = formValues.allYear ? lastDay : formatDate(formValues.endDate)
 
     if (!isFormValid(formValues)) {
       throw new Error(possibleErrors.default)
@@ -69,13 +71,17 @@ export const handleSubmit = async (formValues, setLoading, setErrorMessage, setS
 
     const response = await axios.post(saveExamScheduleUrl, sendingData)
     setSuccessMessage('Configuración guardada correctamente')
+    setTimeout(() => {
+      window.location.reload()
+    }, 2000)
+
     return response.data
   } catch (error) {
     console.error('Error en handleSubmit:', error)
     const errorMessage = error.response?.data?.message ||
-                        possibleErrors[error.message] ||
-                        error.message ||
-                        possibleErrors.default
+      possibleErrors[error.message] ||
+      error.message ||
+      possibleErrors.default
     setErrorMessage(errorMessage)
     throw error
   } finally {
@@ -89,8 +95,7 @@ export const onStartDateChange = (date, formValues, setErrorMessage, handleChang
       throw new Error('invalidDate')
     }
 
-    const newDate = date instanceof Date ? date : parseISO(date)
-
+    const newDate = new Date(date)
     if (isNaN(newDate.getTime())) {
       throw new Error('invalidDate')
     }
@@ -112,8 +117,7 @@ export const onEndDateChange = (date, formValues, setErrorMessage, handleChange)
       throw new Error('invalidDate')
     }
 
-    const newDate = date instanceof Date ? date : parseISO(date)
-
+    const newDate = new Date(date)
     if (isNaN(newDate.getTime())) {
       throw new Error('invalidDate')
     }
@@ -181,8 +185,8 @@ export const handleGetAllExamPeriods = (setExamPeriods, setLoading, setErrorMess
       }
       const periods = response.data?.map(period => ({
         id: period.id,
-        startDate: new Date(period.startDate),
-        endDate: new Date(period.endDate),
+        startDate: adjustDateFromBackend(period.startDate),
+        endDate: adjustDateFromBackend(period.endDate),
         days: period.examDays.map(day => day.examDay)
       }))
       setExamPeriods(periods)
@@ -194,6 +198,12 @@ export const handleGetAllExamPeriods = (setExamPeriods, setLoading, setErrorMess
     .finally(() => {
       setLoading(false)
     })
+}
+
+const adjustDateFromBackend = (dateString) => {
+  const date = new Date(dateString)
+  date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
+  return date
 }
 
 export const onDeleteSelectedItems = (selectedItems, setSelectedItems, setLoading, setErrorMessage) => {

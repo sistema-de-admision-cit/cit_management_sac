@@ -42,21 +42,27 @@ public class InscriptionFormController {
    */
   @PostMapping(path = "/add", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<Void> createInscription(
-      @RequestPart("inscription") EnrollmentDto inscription,
-      @RequestPart(value = "grades", required = false) MultipartFile grades,
-      @RequestPart(name = "letter", required = false) MultipartFile letter,
-      UriComponentsBuilder uriComponentsBuilder) {
+          @RequestPart("inscription") EnrollmentDto inscription,
+          @RequestPart(value = "grades", required = false) MultipartFile grades,
+          @RequestPart(name = "letter", required = false) MultipartFile letter,
+          UriComponentsBuilder uriComponentsBuilder) {
+
     verifyFile(grades);
     verifyFile(letter);
 
     EnrollmentDto enrolled = inscriptionsService.addInscription(inscription, grades, letter);
-    notificationsService.createEmailForInscription(inscription);
-    //notificationsService.createWhatsappMessage(inscription);
 
-    //Return created status and location header
+    try {
+      notificationsService.createEmailForInscription(inscription);
+      //notificationsService.createWhatsappMessage(inscription);
+    } catch (Exception e) {
+      System.err.println("Usuario o contraseña incorrectos para el correo electrónico: " + e.getMessage());
+    }
+
+    // Return created status and location header
     return ResponseEntity.created(
-            uriComponentsBuilder.path("/api/inscription/{id}").buildAndExpand(enrolled.id()).toUri())
-        .build();
+                    uriComponentsBuilder.path("/api/inscription/{id}").buildAndExpand(enrolled.id()).toUri())
+            .build();
   }
 
   /**

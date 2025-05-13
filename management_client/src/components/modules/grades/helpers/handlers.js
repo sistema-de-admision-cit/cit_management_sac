@@ -1,152 +1,112 @@
 import axiosInstance from '../../../../config/axiosConfig'
 import { jsPDF } from 'jspdf'
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL
-
-// Manejo de errores
-const getErrorMessage = (error) => {
-  if (error.code === 'ECONNABORTED') {
-    return 'La conexión al servidor tardó demasiado. Por favor, intenta de nuevo.'
-  }
-
-  if (error.response) {
-    if (error.response.status === 404) {
-      return 'El estudiante no se encontró. Puede que ya haya sido eliminado.'
-    } else if (error.response.status === 500) {
-      return 'Hubo un error en el servidor. Por favor, intenta de nuevo más tarde.'
-    } else {
-      return (error.response.data.message || 'Por favor, intenta de nuevo.')
-    }
-  } else if (error.request) {
-    return 'Error de red: No se pudo conectar al servidor. Por favor, verifica tu conexión.'
-  } else {
-    return 'Error inesperado: ' + error.message
-  }
-}
-
 // Handlers that Get Data from API
-
 const getAllAcademicGradesUrl = import.meta.env.VITE_GET_ALL_ACADEMIC_GRADES_ENDPOINT
-export const handleGetAllAcademicGrades = (
+export const handleGetAllAcademicGrades = async (
   page = 0,
+  pageSize = 10,
   setGrades,
   setLoading,
-  setErrorMessage,
-  setSuccessMessage
+  setErrorMessage
 ) => {
-  const pageSize = 25
   const examType = 'ACA'
   const url = `${getAllAcademicGradesUrl}/${examType}`
 
-  setLoading(true)
+  try {
+    setLoading(true)
+    const response = await axiosInstance.get(url, {
+      params: {
+        page,
+        size: pageSize
+      }
+    })
 
-  axiosInstance.get(url, {
-    params: {
-      page,
-      size: pageSize
+    const data = response.data
+    const gradesData = Array.isArray(data) ? data : (data.content || [])
+    setGrades(gradesData)
+
+    return {
+      totalPages: data.totalPages || 1,
+      currentPage: data.number || page,
+      totalElements: data.totalElements || gradesData.length
     }
-  })
-    .then(response => {
-      const data = response.data
+  } catch (error) {
+    console.error('Error al obtener calificaciones:', error)
+    let errorMsg = 'No se pudieron cargar las calificaciones académicas'
 
-      setGrades(data.content || data)
-
-      if (setSuccessMessage) {
-        setSuccessMessage('Calificaciones académicas cargadas correctamente')
+    if (error.response) {
+      if (error.response.status === 401) {
+        errorMsg = 'Sesión expirada. Por favor inicie sesión nuevamente'
+      } else if (error.response.status === 403) {
+        errorMsg = 'No tiene permisos para ver estas calificaciones'
+      } else if (error.response.data?.message) {
+        errorMsg = error.response.data.message
       }
+    } else if (error.request) {
+      errorMsg = 'No se recibió respuesta del servidor'
+    }
 
-      return {
-        totalPages: data.totalPages || 1,
-        currentPage: data.number || page,
-        totalElements: data.totalElements || (Array.isArray(data) ? data.length : 0)
-      }
-    })
-    .catch(error => {
-      console.error('Error al obtener calificaciones:', error)
-
-      let errorMsg = 'No se pudieron cargar las calificaciones académicas'
-
-      if (error.response) {
-        if (error.response.status === 401) {
-          errorMsg = 'Sesión expirada. Por favor inicie sesión nuevamente'
-        } else if (error.response.status === 403) {
-          errorMsg = 'No tiene permisos para ver estas calificaciones'
-        } else if (error.response.data?.message) {
-          errorMsg = error.response.data.message
-        }
-      } else if (error.request) {
-        errorMsg = 'No se recibió respuesta del servidor'
-      }
-
-      setErrorMessage(errorMsg)
-      return null
-    })
-    .finally(() => {
-      setLoading(false)
-    })
+    setErrorMessage(errorMsg)
+    return null
+  } finally {
+    setLoading(false)
+  }
 }
 
 const getAllDaiGradesUrl = import.meta.env.VITE_GET_ALL_DAI_GRADES_ENDPOINT
-export const handleGetAllDaiGrades = (
+export const handleGetAllDaiGrades = async (
   page = 0,
+  pageSize = 10,
   setGrades,
   setLoading,
-  setErrorMessage,
-  setSuccessMessage
+  setErrorMessage
 ) => {
-  const pageSize = 25
   const examType = 'DAI'
   const url = `${getAllDaiGradesUrl}/${examType}`
 
-  setLoading(true)
+  try {
+    setLoading(true)
+    const response = await axiosInstance.get(url, {
+      params: {
+        page,
+        size: pageSize
+      }
+    })
 
-  axiosInstance.get(url, {
-    params: {
-      page,
-      size: pageSize
+    const data = response.data
+
+    const gradesData = Array.isArray(data) ? data : (data.content || [])
+    setGrades(gradesData)
+
+    return {
+      totalPages: data.totalPages || 1,
+      currentPage: data.number || page,
+      totalElements: data.totalElements || gradesData.length
     }
-  })
-    .then(response => {
-      const data = response.data
+  } catch (error) {
+    console.error('Error al obtener calificaciones:', error)
+    let errorMsg = 'No se pudieron cargar las calificaciones académicas'
 
-      setGrades(data.content || data)
-      if (setSuccessMessage) {
-        setSuccessMessage('Calificaciones DAI cargadas correctamente')
+    if (error.response) {
+      if (error.response.status === 401) {
+        errorMsg = 'Sesión expirada. Por favor inicie sesión nuevamente'
+      } else if (error.response.status === 403) {
+        errorMsg = 'No tiene permisos para ver estas calificaciones'
+      } else if (error.response.data?.message) {
+        errorMsg = error.response.data.message
       }
+    } else if (error.request) {
+      errorMsg = 'No se recibió respuesta del servidor'
+    }
 
-      return {
-        totalPages: data.totalPages || 1,
-        currentPage: data.number || page,
-        totalElements: data.totalElements || (Array.isArray(data) ? data.length : 0)
-      }
-    })
-    .catch(error => {
-      console.error('Error al obtener calificaciones:', error)
-
-      let errorMsg = 'No se pudieron cargar las calificaciones DAI'
-
-      if (error.response) {
-        if (error.response.status === 401) {
-          errorMsg = 'Sesión expirada. Por favor inicie sesión nuevamente'
-        } else if (error.response.status === 403) {
-          errorMsg = 'No tiene permisos para ver estas calificaciones'
-        } else if (error.response.data?.message) {
-          errorMsg = error.response.data.message
-        }
-      } else if (error.request) {
-        errorMsg = 'No se recibió respuesta del servidor'
-      }
-
-      setErrorMessage(errorMsg)
-      return null
-    })
-    .finally(() => {
-      setLoading(false)
-    })
+    setErrorMessage(errorMsg)
+    return null
+  } finally {
+    setLoading(false)
+  }
 }
 
-// Handlers that Search Data from API
-// TODO: Implementar la busqueda de datos desde el servidor
 const searchAcademicUrl = import.meta.env.VITE_GET_ACADEMIC_GRADES_SEARCH_ENDPOINT
 export const handleSearchAcademicGrades = async (
   search,
@@ -155,7 +115,7 @@ export const handleSearchAcademicGrades = async (
   setErrorMessage,
   setSuccessMessage
 ) => {
-  const examType = 'ACA' // suponiendo que siempre es este tipo
+  const examType = 'ACA'
 
   if (!search || search.trim() === '') {
     setErrorMessage?.('Debe ingresar un valor para buscar')
@@ -169,8 +129,18 @@ export const handleSearchAcademicGrades = async (
 
     const response = await axiosInstance.get(url)
     const data = response.data
-    setGrades(data || [])
-    // setSuccessMessage?.('Resultados de búsqueda cargados correctamente')
+
+    const grades = Array.isArray(data)
+      ? data
+      : Array.isArray(data.content)
+        ? data.content
+        : []
+
+    setGrades(grades)
+
+    if (grades.length === 0) {
+      setSuccessMessage?.('No se encontraron resultados para tu búsqueda')
+    }
   } catch (error) {
     console.error('Error al buscar calificaciones:', error)
 
@@ -183,6 +153,11 @@ export const handleSearchAcademicGrades = async (
         errorMsg = 'Sesión expirada. Por favor inicie sesión nuevamente'
       } else if (error.response.status === 403) {
         errorMsg = 'No tiene permisos para realizar esta búsqueda'
+      } else if (error.response.status === 404) {
+        setGrades([]) // explícitamente vacío si no se encuentra
+        errorMsg = 'No se encontraron resultados para tu búsqueda'
+        setErrorMessage?.(errorMsg)
+        return
       } else if (error.response.data?.message) {
         errorMsg = error.response.data.message
       }
@@ -204,7 +179,7 @@ export const handleSearchDAIGrades = async (
   setErrorMessage,
   setSuccessMessage
 ) => {
-  const examType = 'DAI' // suponiendo que siempre es este tipo
+  const examType = 'DAI'
 
   if (!search || search.trim() === '') {
     setErrorMessage?.('Debe ingresar un valor para buscar')
@@ -218,8 +193,18 @@ export const handleSearchDAIGrades = async (
 
     const response = await axiosInstance.get(url)
     const data = response.data
-    setGrades(data || [])
-    // setSuccessMessage?.('Resultados de búsqueda cargados correctamente')
+
+    const grades = Array.isArray(data)
+      ? data
+      : Array.isArray(data.content)
+        ? data.content
+        : []
+
+    setGrades(grades)
+
+    if (grades.length === 0) {
+      setSuccessMessage?.('No se encontraron resultados para tu búsqueda')
+    }
   } catch (error) {
     console.error('Error al buscar calificaciones:', error)
 
@@ -232,6 +217,11 @@ export const handleSearchDAIGrades = async (
         errorMsg = 'Sesión expirada. Por favor inicie sesión nuevamente'
       } else if (error.response.status === 403) {
         errorMsg = 'No tiene permisos para realizar esta búsqueda'
+      } else if (error.response.status === 404) {
+        setGrades([])
+        errorMsg = 'No se encontraron resultados para tu búsqueda'
+        setErrorMessage?.(errorMsg)
+        return
       } else if (error.response.data?.message) {
         errorMsg = error.response.data.message
       }
@@ -259,7 +249,7 @@ export const handleSaveDAIComment = (
 
   setLoading(true)
 
-  const daiExam = grade.daiExams[0] // O ajusta si seleccionas otro índice
+  const daiExam = grade.daiExams[0]
   const payload = {
     id: daiExam.id,
     comment,
@@ -319,20 +309,24 @@ export const handleSaveDAIComment = (
 
 // Handlers that transfort to PDF
 
-export const generateAcademicExamPDF = (gradeData) => {
+export const generateAcademicExamPDF = async (gradeData) => {
   // Extraer los datos relevantes del JSON
   const examData = gradeData.academicExams[0]
   const exam = examData.exam
   const grade = examData.grade
 
   // Crear un nuevo documento PDF
+  // eslint-disable-next-line new-cap
   const doc = new jsPDF()
 
   // Configuración inicial
   let yPosition = 10
   const margin = 20
   const pageWidth = doc.internal.pageSize.getWidth()
+  const pageHeight = doc.internal.pageSize.getHeight()
   const maxWidth = pageWidth - margin * 2
+  const maxImageWidth = pageWidth - margin * 2 // Ancho máximo para imágenes
+  const maxImageHeight = 100 // Altura máxima para imágenes (en puntos)
 
   // Título del documento
   doc.setFontSize(18)
@@ -361,8 +355,8 @@ export const generateAcademicExamPDF = (gradeData) => {
   yPosition += 15
 
   // Preguntas y respuestas
-  exam.responses.forEach((question, index) => {
-    if (yPosition > 250) {
+  for (const [index, question] of exam.responses.entries()) {
+    if (yPosition > pageHeight - 50) {
       doc.addPage()
       yPosition = 20
     }
@@ -372,6 +366,71 @@ export const generateAcademicExamPDF = (gradeData) => {
     doc.setFont('helvetica', 'bold')
     doc.text(`Pregunta ${index + 1}:`, margin, yPosition)
     yPosition += 8
+
+    if (question.imageUrl) {
+      try {
+        // Corregir la URL eliminando duplicados de /api
+        let imageUrl = question.imageUrl
+        if (imageUrl.startsWith('/api/')) {
+          imageUrl = imageUrl.substring(4) // Elimina el primer /api
+        }
+
+        // Usar axiosInstance para obtener la imagen
+        const response = await axiosInstance.get(imageUrl, {
+          responseType: 'blob',
+          // Agregar headers si es necesario
+          headers: {
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache'
+          }
+        })
+
+        // Verificar que la respuesta sea válida
+        if (!response.data || response.data.size === 0) {
+          throw new Error('Respuesta vacía del servidor')
+        }
+
+        const imageBlob = response.data
+        const imageBase64 = await new Promise((resolve, reject) => {
+          // eslint-disable-next-line no-undef
+          const reader = new FileReader()
+          reader.onloadend = () => resolve(reader.result)
+          reader.onerror = reject
+          reader.readAsDataURL(imageBlob)
+        })
+
+        // Crear elemento de imagen para obtener dimensiones
+        // eslint-disable-next-line no-undef
+        const img = new Image()
+        await new Promise((resolve) => {
+          img.onload = resolve
+          img.src = imageBase64
+        })
+
+        // Calcular dimensiones proporcionales
+        let imgWidth = img.width
+        let imgHeight = img.height
+        const ratio = imgWidth / imgHeight
+
+        if (imgWidth > maxImageWidth) {
+          imgWidth = maxImageWidth
+          imgHeight = imgWidth / ratio
+        }
+
+        if (imgHeight > maxImageHeight) {
+          imgHeight = maxImageHeight
+          imgWidth = imgHeight * ratio
+        }
+
+        // Agregar la imagen con dimensiones calculadas
+        doc.addImage(imageBase64, 'JPEG', margin, yPosition, imgWidth, imgHeight)
+        yPosition += imgHeight + 10
+      } catch (error) {
+        console.error('Error al cargar la imagen:', error)
+        doc.text('(No se pudo cargar la imagen)', margin, yPosition)
+        yPosition += 10
+      }
+    }
 
     // Texto de la pregunta
     doc.setFontSize(12)
@@ -410,41 +469,38 @@ export const generateAcademicExamPDF = (gradeData) => {
     })
 
     yPosition += 10
-  })
+  }
 
   // Guardar el PDF
   doc.save(`Examen_${gradeData.person.firstName}_${gradeData.person.firstSurname}_${exam.id}.pdf`)
 }
 
-export const generateDAIExamPDF = (gradeData) => {
-  // Extraer los datos relevantes del JSON (tomamos el primer examen DAI)
+export const generateDAIExamPDF = async (gradeData) => {
   const examData = gradeData.daiExams[0]
   const exam = examData.exam
 
-  // Crear un nuevo documento PDF
+  // eslint-disable-next-line new-cap
   const doc = new jsPDF()
 
-  // Configuración inicial
   let yPosition = 10
   const margin = 20
   const pageWidth = doc.internal.pageSize.getWidth()
+  const pageHeight = doc.internal.pageSize.getHeight()
   const maxWidth = pageWidth - margin * 2
+  const maxImageWidth = pageWidth - margin * 2
+  const maxImageHeight = 100
 
-  // Título del documento
   doc.setFontSize(18)
   doc.setFont('helvetica', 'bold')
   doc.text('Examen DAI (Desarrollo Académico Integral)', margin, yPosition)
   yPosition += 15
 
-  // Información del estudiante
   doc.setFontSize(12)
   doc.setFont('helvetica', 'normal')
   doc.text(`Estudiante: ${gradeData.person.firstName} ${gradeData.person.firstSurname} ${gradeData.person.secondSurname || ''}`, margin, yPosition)
   yPosition += 8
   doc.text(`Documento: ${gradeData.person.idNumber}`, margin, yPosition)
   yPosition += 8
-
-  // Información del examen
   doc.text(`ID del Examen: ${exam.id}`, margin, yPosition)
   yPosition += 8
   doc.text(`Fecha: ${new Date(exam.examDate).toLocaleDateString('es-ES', {
@@ -454,16 +510,78 @@ export const generateDAIExamPDF = (gradeData) => {
   })}`, margin, yPosition)
   yPosition += 15
 
-  // Preguntas y respuestas
   doc.setFontSize(14)
   doc.setFont('helvetica', 'bold')
   doc.text('Respuestas del Estudiante:', margin, yPosition)
   yPosition += 10
 
-  exam.responses.forEach((question, index) => {
-    if (yPosition > 250) {
+  for (const [index, question] of exam.responses.entries()) {
+    if (yPosition > pageHeight - 60) {
       doc.addPage()
       yPosition = 20
+    }
+
+    // Imagen si existe
+    if (question.imageUrl) {
+      try {
+        let imageUrl = question.imageUrl
+        if (imageUrl.startsWith('/api/')) {
+          imageUrl = imageUrl.substring(4)
+        }
+
+        const response = await axiosInstance.get(imageUrl, {
+          responseType: 'blob',
+          headers: {
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache'
+          }
+        })
+
+        if (!response.data || response.data.size === 0) {
+          throw new Error('Imagen vacía')
+        }
+
+        const imageBlob = response.data
+        const imageBase64 = await new Promise((resolve, reject) => {
+          // eslint-disable-next-line no-undef
+          const reader = new FileReader()
+          reader.onloadend = () => resolve(reader.result)
+          reader.onerror = reject
+          reader.readAsDataURL(imageBlob)
+        })
+
+        const img = new Image()
+        await new Promise((resolve) => {
+          img.onload = resolve
+          img.src = imageBase64
+        })
+
+        let imgWidth = img.width
+        let imgHeight = img.height
+        const ratio = imgWidth / imgHeight
+
+        if (imgWidth > maxImageWidth) {
+          imgWidth = maxImageWidth
+          imgHeight = imgWidth / ratio
+        }
+
+        if (imgHeight > maxImageHeight) {
+          imgHeight = maxImageHeight
+          imgWidth = imgHeight * ratio
+        }
+
+        if (yPosition + imgHeight > pageHeight - 20) {
+          doc.addPage()
+          yPosition = 20
+        }
+
+        doc.addImage(imageBase64, 'JPEG', margin, yPosition, imgWidth, imgHeight)
+        yPosition += imgHeight + 10
+      } catch (error) {
+        console.error('Error al cargar la imagen:', error)
+        doc.text('(No se pudo cargar la imagen)', margin, yPosition)
+        yPosition += 10
+      }
     }
 
     // Texto de la pregunta
@@ -473,23 +591,18 @@ export const generateDAIExamPDF = (gradeData) => {
     doc.text(questionLines, margin, yPosition)
     yPosition += questionLines.length * 7 + 5
 
-    // Respuesta del estudiante
+    // Respuesta
     doc.setFont('helvetica', 'normal')
-    doc.setTextColor(0, 0, 128) // Azul oscuro para las respuestas
-
+    doc.setTextColor(0, 0, 128)
     const responseLines = doc.splitTextToSize(`Respuesta: ${question.response}`, maxWidth - 10)
     doc.text(responseLines, margin + 10, yPosition)
     yPosition += responseLines.length * 7 + 10
-
-    // Restaurar color
     doc.setTextColor(0, 0, 0)
-
     yPosition += 5
-  })
+  }
 
-  // Comentarios y recomendaciones si existen
   if (examData.comment || examData.recommendation) {
-    if (yPosition > 250) {
+    if (yPosition > pageHeight - 40) {
       doc.addPage()
       yPosition = 20
     }
@@ -515,6 +628,51 @@ export const generateDAIExamPDF = (gradeData) => {
     }
   }
 
-  // Guardar el PDF
   doc.save(`Examen_DAI_${gradeData.person.firstName}_${gradeData.person.firstSurname}.pdf`)
+}
+
+export const handleGetTotalGradesAcademicPages = (setTotalPages, pageSize) => {
+  const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_ENDPOINT_EXAMS_ACADEMIC
+
+  axiosInstance.get(getTotalPagesUrl, { timeout: 10000 })
+    .then(response => {
+      setTotalPages(response.data % pageSize === 0 ? response.data / pageSize : Math.floor(response.data / pageSize) + 1)
+    })
+    .catch(error => {
+      console.error('Error al obtener el total de páginas:', error)
+    })
+}
+
+export const handleGetTotalGradesDAIPages = (setTotalPages, pageSize) => {
+  const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_ENDPOINT_EXAMS_DAI
+
+  axiosInstance.get(getTotalPagesUrl, { timeout: 10000 })
+    .then(response => {
+      setTotalPages(response.data % pageSize === 0 ? response.data / pageSize : Math.floor(response.data / pageSize) + 1)
+    })
+    .catch(error => {
+      console.error('Error al obtener el total de páginas:', error)
+    })
+}
+
+export const handleGetTotalAcademicGradesSearchPages = (search, pageSize, setTotalPages) => {
+  const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_FOR_SEARCH_ENDPOINT_EXAMS_ACADEMIC
+  axiosInstance.get(`${getTotalPagesUrl}?value=${search}`, { timeout: 10000 })
+    .then(response => {
+      setTotalPages(response.data % pageSize === 0 ? response.data / pageSize : Math.floor(response.data / pageSize) + 1)
+    })
+    .catch(error => {
+      console.error('Error al obtener el total de páginas:', error)
+    })
+}
+
+export const handleGetTotalDAIGradesSearchPages = (search, pageSize, setTotalPages) => {
+  const getTotalPagesUrl = import.meta.env.VITE_GET_TOTAL_PAGES_FOR_SEARCH_ENDPOINT_EXAMS_DAI
+  axiosInstance.get(`${getTotalPagesUrl}?value=${search}`, { timeout: 10000 })
+    .then(response => {
+      setTotalPages(response.data % pageSize === 0 ? response.data / pageSize : Math.floor(response.data / pageSize) + 1)
+    })
+    .catch(error => {
+      console.error('Error al obtener el total de páginas:', error)
+    })
 }

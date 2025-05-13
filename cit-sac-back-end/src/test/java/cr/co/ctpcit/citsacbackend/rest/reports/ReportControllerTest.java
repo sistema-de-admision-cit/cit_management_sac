@@ -5,8 +5,7 @@ import cr.co.ctpcit.citsacbackend.data.enums.ProcessStatus;
 import cr.co.ctpcit.citsacbackend.data.enums.ReportType;
 import cr.co.ctpcit.citsacbackend.data.utils.CsvReportGenerator;
 import cr.co.ctpcit.citsacbackend.data.utils.PdfReportGenerator;
-import cr.co.ctpcit.citsacbackend.logic.dto.reports.ReportDataDto;
-import cr.co.ctpcit.citsacbackend.logic.dto.reports.ReportRequestDto;
+import cr.co.ctpcit.citsacbackend.logic.dto.reports.*;
 import cr.co.ctpcit.citsacbackend.logic.services.reports.ReportsServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,11 +19,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,6 +48,10 @@ class ReportControllerTest {
     private ReportRequestDto request;
     private List<ReportDataDto> mockReportData;
 
+    private final String TEST_START_DATE = "2025-01-01";
+    private final String TEST_END_DATE = "2025-01-31";
+    private final String TEST_GRADE = "FIRST,SECOND";
+    private final String TEST_SECTOR = "Primaria";
 
     @BeforeEach
     void setUp() {
@@ -59,6 +65,137 @@ class ReportControllerTest {
                 TestProvider.provideReportDataDto("456", "Ana", "Gómez", "PROCESS_STATUS")
         );
     }
+
+    @Test
+    void getExamAttendance_shouldReturnAttendanceReport() {
+        // Arrange
+        List<EnrollmentAttendanceDTO> expected = List.of(
+                new EnrollmentAttendanceDTO(LocalDate.of(2025, 1, 15),"FIRST", "Primaria", 50, 10),
+                new EnrollmentAttendanceDTO(LocalDate.of(2025, 1, 15),"SECOND", "Primaria", 60, 5)
+        );
+
+        when(reportsService.getEnrollmentAttendanceStats(
+                LocalDate.parse(TEST_START_DATE),
+                LocalDate.parse(TEST_END_DATE),
+                Arrays.asList("FIRST", "SECOND"),
+                TEST_SECTOR))
+                .thenReturn(expected);
+
+        // Act
+        ResponseEntity<List<EnrollmentAttendanceDTO>> response = reportController.getExamAttendance(
+                TEST_START_DATE, TEST_END_DATE, TEST_GRADE, TEST_SECTOR);
+
+        // Assert
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(expected, response.getBody());
+        verify(reportsService).getEnrollmentAttendanceStats(
+                LocalDate.parse(TEST_START_DATE),
+                LocalDate.parse(TEST_END_DATE),
+                Arrays.asList("FIRST", "SECOND"),
+                TEST_SECTOR);
+    }
+
+    @Test
+    void getExamAttendance_withDefaultValues_shouldUseDefaults() {
+        // Arrange
+        List<EnrollmentAttendanceDTO> expected = List.of(
+                new EnrollmentAttendanceDTO(LocalDate.of(2025, 1, 15), "ALL", "ALL", 100, 20)
+        );
+
+        // Use any() matcher or match the actual behavior of parseGrades
+        when(reportsService.getEnrollmentAttendanceStats(
+                isNull(),
+                isNull(),
+                anyList(),
+                eq("All")))
+                .thenReturn(expected);
+
+        // Act
+        ResponseEntity<List<EnrollmentAttendanceDTO>> response = reportController.getExamAttendance(
+                null, null, "All", "All");
+
+        // Assert
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(expected, response.getBody());
+    }
+
+    @Test
+    void getExamSourceStatistics_shouldReturnSourceStatistics() {
+        // Arrange
+        List<ExamSourceDTO> expected = List.of(
+                new ExamSourceDTO("Online", 150),
+                new ExamSourceDTO("In-Person", 50)
+        );
+
+        when(reportsService.getExamSourceStatistics(
+                LocalDate.parse(TEST_START_DATE),
+                LocalDate.parse(TEST_END_DATE),
+                Arrays.asList("FIRST", "SECOND"),
+                TEST_SECTOR.trim()))
+                .thenReturn(expected);
+
+        // Act
+        ResponseEntity<List<ExamSourceDTO>> response = reportController.getExamSourceStatistics(
+                TEST_START_DATE, TEST_END_DATE, TEST_GRADE, TEST_SECTOR);
+
+        // Assert
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(expected, response.getBody());
+    }
+
+    @Test
+    void getAdmissionFinal_shouldReturnAdmissionStats() {
+        // Arrange
+        List<AdmissionFinalDTO> expected = List.of(
+                new AdmissionFinalDTO(LocalDate.parse("2025-01-15"), "FIRST", "Primaria", 100, 20),
+                new AdmissionFinalDTO(LocalDate.parse("2025-01-16"), "SECOND", "Primaria", 80, 15)
+        );
+
+        when(reportsService.getAdmissionFinalStats(
+                LocalDate.parse(TEST_START_DATE),
+                LocalDate.parse(TEST_END_DATE),
+                Arrays.asList("FIRST", "SECOND"),
+                TEST_SECTOR.trim()))
+                .thenReturn(expected);
+
+        // Act
+        ResponseEntity<List<AdmissionFinalDTO>> response = reportController.getAdmissionFinal(
+                TEST_START_DATE, TEST_END_DATE, TEST_GRADE, TEST_SECTOR);
+
+        // Assert
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(expected, response.getBody());
+    }
+
+    @Test
+    void getAcademicReport_shouldReturnAcademicReport() {
+        // Arrange
+        List<AcademicDistributionDTO> distribution = List.of(
+                new AcademicDistributionDTO("A", BigDecimal.valueOf(10)),
+                new AcademicDistributionDTO("B", BigDecimal.valueOf(20))
+        );
+        List<AcademicGradeAverageDTO> gradeAverages = List.of(
+                new AcademicGradeAverageDTO("FIRST", BigDecimal.valueOf(85.5)),
+                new AcademicGradeAverageDTO("SECOND", BigDecimal.valueOf(78.5))
+        );
+        AcademicExamReportDTO expected = new AcademicExamReportDTO(distribution, gradeAverages);
+
+        when(reportsService.getAcademicExamReport(
+                LocalDate.parse(TEST_START_DATE),
+                LocalDate.parse(TEST_END_DATE),
+                Arrays.asList("FIRST", "SECOND"),
+                TEST_SECTOR.trim()))
+                .thenReturn(expected);
+
+        // Act
+        ResponseEntity<AcademicExamReportDTO> response = reportController.getAcademicReport(
+                TEST_START_DATE, TEST_END_DATE, TEST_GRADE, TEST_SECTOR);
+
+        // Assert
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(expected, response.getBody());
+    }
+
 
     @Test
     void generatePdfReport_withStatusFilter_shouldReturnFilteredPdf() throws Exception {

@@ -2,6 +2,7 @@ package cr.co.ctpcit.citsacbackend.logic.services.results;
 
 import cr.co.ctpcit.citsacbackend.logic.dto.results.ResultDTO;
 import cr.co.ctpcit.citsacbackend.logic.dto.results.StudentResultsDetailsDTO;
+import cr.co.ctpcit.citsacbackend.logic.dto.results.UpdateStatusDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,4 +42,33 @@ public interface ResultsService {
      */
 
     StudentResultsDetailsDTO getStudentExamDetails(String idNumber);
+
+    /**
+     * Updates the enrollment status of a student identified by their ID number.
+     *
+     * @param idNumber the identification number of the student whose enrollment status will be updated
+     * @param updateStatusDTO the data transfer object containing the new status to be set
+     */
+
+    void updateEnrollmentStatus(String idNumber, UpdateStatusDTO updateStatusDTO);
+
+    /**
+     * Returns the number of students who have completed all required exams:
+     * academic (ACA), DAI, and English (ENG), and whose enrollment status is
+     * ELIGIBLE, ACCEPTED, or REJECTED.
+     *
+     * @return the count of students with complete exams
+     */
+    Long getExamsCount();
+
+    /**
+     * Returns the number of students who match the given search term and have
+     * completed all required exams: academic (ACA), DAI, and English (ENG),
+     * and whose enrollment status is ELIGIBLE, ACCEPTED, or REJECTED.
+     *
+     * @param value the search term used to filter students by ID number or name fields
+     * @return the count of matched students with complete exams
+     */
+    Long getSearchCountByCompleteExams(String value);
+
 }

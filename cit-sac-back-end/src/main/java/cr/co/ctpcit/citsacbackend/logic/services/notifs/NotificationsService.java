@@ -10,6 +10,4 @@ public interface NotificationsService {
     void createEmailForInscription(EnrollmentDto inscriptionDto);
     void createEmailForEnrollmentUpdate(Long enrollmentId, EnrollmentUpdateDto updateDto);
     void createEmailForAdmissionDecision(String studentIdNumber);
-    void sendWhatsAppMessage(WhatsappConfigDto whatsappConfigDto);
-    void createWhatsappMessage(EnrollmentDto inscription);
 }

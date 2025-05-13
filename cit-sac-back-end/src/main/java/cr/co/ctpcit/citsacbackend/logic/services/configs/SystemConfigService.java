@@ -44,10 +44,10 @@ public interface SystemConfigService {
    *
    * @param prevGradesWeight the weight for previous grades component
    * @param academicWeight the weight for academic component
-   * @param englishWeight the weight for English component
+
    * @throws org.springframework.web.server.ResponseStatusException if the sum of weights is not equal to 1
    */
-  void updateWeights(Double prevGradesWeight, Double academicWeight, Double englishWeight);
+  void updateWeights(Double prevGradesWeight, Double academicWeight);
   /**
    * Retrieves the configured contact information.
    *

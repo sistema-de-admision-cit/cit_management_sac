@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 
 /**
@@ -34,7 +35,7 @@ public class ReportDataDto {
     /**
      * Date and time when the student was enrolled.
      */
-    private Instant enrollmentDate;
+    private LocalDateTime enrollmentDate;
 
     /**
      * Report-specific category field. Its value depends on the selected report type:

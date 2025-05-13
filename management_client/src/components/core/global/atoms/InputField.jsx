@@ -6,6 +6,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
   const textRelatedInput = (type) => {
     return (
       <input
+        id={field.name}
         type={type}
         name={field.name}
         placeholder={field.placeholder}
@@ -20,6 +21,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
   const selectInput = () => {
     return (
       <select
+        id={field.name}
         name={field.name}
         value={value}
         onChange={handleChange}
@@ -33,6 +35,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
   const checkboxInput = () => {
     return (
       <input
+        id={field.name}
         type='checkbox'
         name={field.name}
         checked={value}
@@ -65,6 +68,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
   const fileInput = () => {
     return (
       <input
+        id={field.name}
         type='file'
         name={field.name}
         onInput={handleChange}
@@ -78,6 +82,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
   const datePicker = () => {
     return (
       <DatePicker
+        id={field.name}
         selected={value}
         onChange={(date) => handleChange(date)}
         filterDate={availableDates}
@@ -93,6 +98,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
   const timePicker = () => {
     return (
       <input
+        id={field.name}
         type='time'
         className={className}
         value={value}
@@ -106,6 +112,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
   const dropdownInput = () => {
     return (
       <select
+        id={field.name}
         name={field.name}
         value={value}
         onChange={handleChange}
@@ -127,6 +134,7 @@ const InputField = ({ field, value, handleChange, children, className, autoCompl
     return (
       <div className='textarea-container'>
         <textarea
+          id={field.name}
           name={field.name}
           placeholder={field.placeholder}
           value={value}

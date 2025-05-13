@@ -31,7 +31,7 @@ public class ExamMapper {
    */
   public static ExamAcaDto examToExamAcaDto(ExamEntity examEntity, List<QuestionEntity> questions) {
     return ExamAcaDto.builder().id(examEntity.getId())
-        .enrollment(examEntity.getEnrollment().getId()).examDate(examEntity.getExamDate())
+        .enrollment(String.valueOf(examEntity.getEnrollment().getId())).examDate(examEntity.getExamDate())
         .examType(examEntity.getExamType())
         .responses(ExamQuestionMapper.questionsToQuestionsAcaDto(questions)).build();
   }
@@ -45,7 +45,7 @@ public class ExamMapper {
    */
   public static ExamDaiDto examToExamDaiDto(ExamEntity examEntity, List<QuestionEntity> questions) {
     return ExamDaiDto.builder().id(examEntity.getId())
-        .enrollment(examEntity.getEnrollment().getId()).examDate(examEntity.getExamDate())
+        .enrollment(String.valueOf(examEntity.getEnrollment().getId())).examDate(examEntity.getExamDate())
         .examType(examEntity.getExamType())
         .responses(ExamQuestionMapper.questionsToQuestionsDaiDto(questions)).build();
   }
@@ -70,7 +70,7 @@ public class ExamMapper {
         mapper.getTypeFactory().constructCollectionLikeType(List.class, QuestionAcaDto.class));
 
     ExamAcaDto exam = ExamAcaDto.builder().id(examEntity.getAcademicExam().getId())
-        .enrollment(examEntity.getEnrollment().getId()).examType(examEntity.getExamType())
+        .enrollment(String.valueOf(examEntity.getEnrollment().getId())).examType(examEntity.getExamType())
         .examDate(examEntity.getExamDate()).responses(questions).build();
 
     return AcademicExamDetailsDto.builder().id(examEntity.getId())
@@ -131,7 +131,7 @@ public class ExamMapper {
         mapper.getTypeFactory().constructCollectionLikeType(List.class, QuestionDaiDto.class));
 
     ExamDaiDto exam = ExamDaiDto.builder().id(examEntity.getId())
-        .enrollment(examEntity.getEnrollment().getId()).examType(examEntity.getExamType())
+        .enrollment(String.valueOf(examEntity.getEnrollment().getId())).examType(examEntity.getExamType())
         .examDate(examEntity.getExamDate()).responses(questions).build();
 
     return DaiExamDetailsDto.builder().id(examEntity.getId())

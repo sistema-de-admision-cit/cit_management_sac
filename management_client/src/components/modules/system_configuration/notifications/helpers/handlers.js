@@ -38,8 +38,24 @@ export const getSaveButtonState = (formValues) => {
 }
 
 const validateForm = (formValues) => {
-  // eslint-disable-next-line camelcase
-  const { email_contact, email_notifications_contact, whatsapp_contact, office_contact } = formValues
+  const {
+    // eslint-disable-next-line camelcase
+    email_contact,
+    // eslint-disable-next-line camelcase
+    email_notifications_contact,
+    // eslint-disable-next-line camelcase
+    whatsapp_contact,
+    // eslint-disable-next-line camelcase
+    office_contact,
+    // eslint-disable-next-line camelcase
+    instagram_contact,
+    // eslint-disable-next-line camelcase
+    facebook_contact,
+    // eslint-disable-next-line camelcase
+    email_password,
+    // eslint-disable-next-line camelcase
+    whatsapp_api_key
+  } = formValues
 
   // Validación Dominio específico
   const emailRegex = /^[a-zA-Z0-9._%+-]+@ctpcit\.co\.cr$/
@@ -50,7 +66,23 @@ const validateForm = (formValues) => {
   const isWhatsappValid = contactRegex.test(whatsapp_contact)
   const isOfficeValid = contactRegex.test(office_contact)
 
-  return !(isEmailValid && isWhatsappValid && isOfficeValid)
+  // Validación de campos requeridos
+  // eslint-disable-next-line camelcase
+  const isInstagramValid = instagram_contact.trim() !== ''
+  // eslint-disable-next-line camelcase
+  const isFacebookValid = facebook_contact.trim() !== ''
+  // eslint-disable-next-line camelcase
+  const isEmailPasswordValid = email_password.trim() !== ''
+  // eslint-disable-next-line camelcase
+  const isWhatsappApiValid = whatsapp_api_key.trim() !== ''
+
+  return !(isEmailValid &&
+    isWhatsappValid &&
+    isOfficeValid &&
+    isInstagramValid &&
+    isFacebookValid &&
+    isEmailPasswordValid &&
+    isWhatsappApiValid)
 }
 
 const getNotificationSettingsUrl = `${import.meta.env.VITE_GET_CONFIGURATION_SETTINGS_ENDPOINT}`

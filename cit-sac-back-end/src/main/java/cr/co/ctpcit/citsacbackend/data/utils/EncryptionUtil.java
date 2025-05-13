@@ -1,4 +1,4 @@
-package cr.co.ctpcit.citsacbackend.logic.services;
+package cr.co.ctpcit.citsacbackend.data.utils;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;

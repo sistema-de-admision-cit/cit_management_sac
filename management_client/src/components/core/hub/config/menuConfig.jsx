@@ -181,7 +181,7 @@ const menuConfig = [
             path: '/resultados/academicos',
             component: AcademicManagementView,
             description: 'Ver notas de los examenes academicos.',
-            imagePath: '/images/examenes_2.PNG'
+            imagePath: '/images/analisis_2.PNG'
           },
           {
             key: 'dai-exam',
@@ -189,7 +189,7 @@ const menuConfig = [
             path: '/resultados/dai',
             component: DaiGradesManagementView,
             description: 'Ver notas de los examenes DAI.',
-            imagePath: '/images/examenes_2.PNG'
+            imagePath: '/images/analisis_2.PNG'
           },
           {
             key: 'notify-results',

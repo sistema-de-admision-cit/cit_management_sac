@@ -3,68 +3,103 @@ import SectionLayout from '../../../../core/global/molecules/SectionLayout'
 import useMessages from '../../../../core/global/hooks/useMessages'
 import ResultGradesTable from '../organisms/ResultsTable'
 import ResultSearchBar from '../molecules/ResultSearchBar'
-import { handleGetAllResults, handleSearchResults } from '../helpers/handlers'
+import { handleGetAllResults, handleSearchResults, handleGetTotalResultsPages, handleGetTotalResultsSearchPages } from '../helpers/handlers'
 import '../../../../../assets/styles/results/analyze_results/analyze-results-view.css'
 
 const AnalyzeResultsView = () => {
+  const { setErrorMessage, setSuccessMessage } = useMessages()
+  const [currentPage, setCurrentPage] = useState(0)
+  const [pageSize] = useState(10)
   const [loading, setLoading] = useState(false)
   const [results, setResults] = useState([])
-  const [currentPage, setCurrentPage] = useState(0)
   const [totalPages, setTotalPages] = useState(1)
-  const { setErrorMessage } = useMessages()
 
-  const loadResults = async (page = 0) => {
-    const result = await handleGetAllResults(
+  const [currentSearchPage, setCurrentSearchPage] = useState(0)
+  const [searching, setSearching] = useState(false)
+  const [searchValue, setSearchValue] = useState('')
+
+  useEffect(() => {
+    loadResults(currentPage)
+  }, [currentPage])
+
+  useEffect(() => {
+    if (searching) {
+      onSearch(searchValue)
+    }
+  }, [currentSearchPage])
+
+  const onSearch = (search) => {
+    if (search.trim() === '') {
+      setSearching(false)
+      setCurrentSearchPage(0)
+      setSearchValue('')
+      handleGetAllResults(currentPage, pageSize, setResults, setLoading, setErrorMessage)
+      handleGetTotalResultsPages(setTotalPages, pageSize)
+      return
+    }
+    setSearching(true)
+    setSearchValue(search)
+    handleSearchResults(
+      currentSearchPage,
+      pageSize,
+      search,
+      setResults,
+      setLoading,
+      setErrorMessage,
+      setSuccessMessage
+    )
+    handleGetTotalResultsSearchPages(search, pageSize, setTotalPages)
+  }
+
+  const loadResults = (page) => {
+    setSearching(false)
+    setCurrentPage(page)
+    setCurrentSearchPage(0)
+    setSearchValue('')
+    handleGetAllResults(
       page,
+      pageSize,
       setResults,
       setLoading,
       setErrorMessage
     )
-    if (result) {
-      setTotalPages(result.totalPages)
-      setCurrentPage(result.currentPage)
-    }
+    handleGetTotalResultsPages(setTotalPages, pageSize)
   }
 
-  const handleSearch = async (searchValue) => {
-    if (searchValue.trim() === '') {
-      loadResults(0)
-      return
-    }
-
-    await handleSearchResults(
-      searchValue,
-      setResults,
-      setLoading,
-      setErrorMessage,
-      setTotalPages,
-      setCurrentPage
-    )
-  }
-
-  // Cargar datos iniciales
-  useEffect(() => {
-    loadResults(0)
-  }, [])
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 0 && newPage < totalPages) {
-      loadResults(newPage)
+  const onClickPage = (number) => {
+    if (searching) {
+      setCurrentSearchPage(number)
+    } else {
+      setCurrentPage(number)
     }
   }
 
   return (
     <SectionLayout title='Gestión de Resultados de estudiantes'>
       <div className='result-management-view'>
-        <h1>Resultados de examenes Academico</h1>
+        <h1>Resultados del Proceso de Admisión</h1>
         <p className='description'>
-          Aquí puedes visualizar los resultados de los exámenes academicos.
+          Aquí puedes visualizar los resultados del Proceso de Admisón, ademas de aceptar o rechazar a la persona Inscrita.
         </p>
-        <ResultSearchBar onSearch={handleSearch} />
+        <ResultSearchBar
+          onSearch={(value) => {
+            if (value.trim() === '') {
+              loadResults(0) // recarga todos si el campo se vacía
+            } else {
+              handleSearchResults(
+                value,
+                setResults,
+                setLoading,
+                setErrorMessage,
+                setSuccessMessage
+              )
+            }
+          }}
+        />
         <ResultGradesTable
           results={results}
           loading={loading}
-          onPageChange={handlePageChange}
+          onPageChange={onClickPage}
           currentPage={currentPage}
           totalPages={totalPages}
         />
