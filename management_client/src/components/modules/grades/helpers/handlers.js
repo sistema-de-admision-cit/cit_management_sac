@@ -475,36 +475,32 @@ export const generateAcademicExamPDF = async (gradeData) => {
   doc.save(`Examen_${gradeData.person.firstName}_${gradeData.person.firstSurname}_${exam.id}.pdf`)
 }
 
-export const generateDAIExamPDF = (gradeData) => {
-  // Extraer los datos relevantes del JSON (tomamos el primer examen DAI)
+export const generateDAIExamPDF = async (gradeData) => {
   const examData = gradeData.daiExams[0]
   const exam = examData.exam
 
-  // Crear un nuevo documento PDF
   // eslint-disable-next-line new-cap
   const doc = new jsPDF()
 
-  // Configuración inicial
   let yPosition = 10
   const margin = 20
   const pageWidth = doc.internal.pageSize.getWidth()
+  const pageHeight = doc.internal.pageSize.getHeight()
   const maxWidth = pageWidth - margin * 2
+  const maxImageWidth = pageWidth - margin * 2
+  const maxImageHeight = 100
 
-  // Título del documento
   doc.setFontSize(18)
   doc.setFont('helvetica', 'bold')
   doc.text('Examen DAI (Desarrollo Académico Integral)', margin, yPosition)
   yPosition += 15
 
-  // Información del estudiante
   doc.setFontSize(12)
   doc.setFont('helvetica', 'normal')
   doc.text(`Estudiante: ${gradeData.person.firstName} ${gradeData.person.firstSurname} ${gradeData.person.secondSurname || ''}`, margin, yPosition)
   yPosition += 8
   doc.text(`Documento: ${gradeData.person.idNumber}`, margin, yPosition)
   yPosition += 8
-
-  // Información del examen
   doc.text(`ID del Examen: ${exam.id}`, margin, yPosition)
   yPosition += 8
   doc.text(`Fecha: ${new Date(exam.examDate).toLocaleDateString('es-ES', {
@@ -514,16 +510,78 @@ export const generateDAIExamPDF = (gradeData) => {
   })}`, margin, yPosition)
   yPosition += 15
 
-  // Preguntas y respuestas
   doc.setFontSize(14)
   doc.setFont('helvetica', 'bold')
   doc.text('Respuestas del Estudiante:', margin, yPosition)
   yPosition += 10
 
-  exam.responses.forEach((question, index) => {
-    if (yPosition > 250) {
+  for (const [index, question] of exam.responses.entries()) {
+    if (yPosition > pageHeight - 60) {
       doc.addPage()
       yPosition = 20
+    }
+
+    // Imagen si existe
+    if (question.imageUrl) {
+      try {
+        let imageUrl = question.imageUrl
+        if (imageUrl.startsWith('/api/')) {
+          imageUrl = imageUrl.substring(4)
+        }
+
+        const response = await axiosInstance.get(imageUrl, {
+          responseType: 'blob',
+          headers: {
+            'Cache-Control': 'no-cache',
+            Pragma: 'no-cache'
+          }
+        })
+
+        if (!response.data || response.data.size === 0) {
+          throw new Error('Imagen vacía')
+        }
+
+        const imageBlob = response.data
+        const imageBase64 = await new Promise((resolve, reject) => {
+          // eslint-disable-next-line no-undef
+          const reader = new FileReader()
+          reader.onloadend = () => resolve(reader.result)
+          reader.onerror = reject
+          reader.readAsDataURL(imageBlob)
+        })
+
+        const img = new Image()
+        await new Promise((resolve) => {
+          img.onload = resolve
+          img.src = imageBase64
+        })
+
+        let imgWidth = img.width
+        let imgHeight = img.height
+        const ratio = imgWidth / imgHeight
+
+        if (imgWidth > maxImageWidth) {
+          imgWidth = maxImageWidth
+          imgHeight = imgWidth / ratio
+        }
+
+        if (imgHeight > maxImageHeight) {
+          imgHeight = maxImageHeight
+          imgWidth = imgHeight * ratio
+        }
+
+        if (yPosition + imgHeight > pageHeight - 20) {
+          doc.addPage()
+          yPosition = 20
+        }
+
+        doc.addImage(imageBase64, 'JPEG', margin, yPosition, imgWidth, imgHeight)
+        yPosition += imgHeight + 10
+      } catch (error) {
+        console.error('Error al cargar la imagen:', error)
+        doc.text('(No se pudo cargar la imagen)', margin, yPosition)
+        yPosition += 10
+      }
     }
 
     // Texto de la pregunta
@@ -533,23 +591,18 @@ export const generateDAIExamPDF = (gradeData) => {
     doc.text(questionLines, margin, yPosition)
     yPosition += questionLines.length * 7 + 5
 
-    // Respuesta del estudiante
+    // Respuesta
     doc.setFont('helvetica', 'normal')
-    doc.setTextColor(0, 0, 128) // Azul oscuro para las respuestas
-
+    doc.setTextColor(0, 0, 128)
     const responseLines = doc.splitTextToSize(`Respuesta: ${question.response}`, maxWidth - 10)
     doc.text(responseLines, margin + 10, yPosition)
     yPosition += responseLines.length * 7 + 10
-
-    // Restaurar color
     doc.setTextColor(0, 0, 0)
-
     yPosition += 5
-  })
+  }
 
-  // Comentarios y recomendaciones si existen
   if (examData.comment || examData.recommendation) {
-    if (yPosition > 250) {
+    if (yPosition > pageHeight - 40) {
       doc.addPage()
       yPosition = 20
     }
@@ -575,7 +628,6 @@ export const generateDAIExamPDF = (gradeData) => {
     }
   }
 
-  // Guardar el PDF
   doc.save(`Examen_DAI_${gradeData.person.firstName}_${gradeData.person.firstSurname}.pdf`)
 }
 

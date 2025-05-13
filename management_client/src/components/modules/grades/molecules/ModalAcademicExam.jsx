@@ -14,7 +14,7 @@ const ModalAcademicExam = ({ grade, onClose }) => {
     <div className='modal-overlay'>
       <div className='modal-content'>
         <div className='modal-header'>
-          <h2>Resultado Examen Academico</h2>
+          <h2>Resultado Examen Académico</h2>
         </div>
         <div className='student-info'>
           <p><strong>Cédula:</strong> {grade.person.idNumber}</p>
