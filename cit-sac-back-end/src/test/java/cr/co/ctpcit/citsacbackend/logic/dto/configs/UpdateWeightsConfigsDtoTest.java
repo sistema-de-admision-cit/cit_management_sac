@@ -25,7 +25,7 @@ class UpdateWeightsConfigsDtoTest {
         "@.prevGradesWeight").isEqualTo(0.4);
     assertThat(json.write(updateWeightsConfigsDto)).hasJsonPathNumberValue("@.academicWeight");
     assertThat(json.write(updateWeightsConfigsDto)).extractingJsonPathNumberValue(
-        "@.academicWeight").isEqualTo(0.4);
+        "@.academicWeight").isEqualTo(0.6);
   }
 
   @Test
@@ -33,14 +33,13 @@ class UpdateWeightsConfigsDtoTest {
     String content = """
         {
           "prevGradesWeight": 0.4,
-          "academicWeight": 0.4,
-          "englishWeight": 0.2
+          "academicWeight": 0.6
         }
         """;
 
     UpdateWeightsConfigsDto updateWeightsConfigsDto = json.parse(content).getObject();
 
     assertEquals(0.4, updateWeightsConfigsDto.prevGradesWeight());
-    assertEquals(0.4, updateWeightsConfigsDto.academicWeight());
+    assertEquals(0.6, updateWeightsConfigsDto.academicWeight());
   }
 }

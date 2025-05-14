@@ -105,7 +105,7 @@ public class TestProvider {
     EnrollmentEntity enrollment = new EnrollmentEntity();
     enrollment.setId(1L);
     enrollment.setStatus(ProcessStatus.PENDING);
-    enrollment.setEnrollmentDate(LocalDateTime.parse("2024-12-15T10:15:30Z"));
+    enrollment.setEnrollmentDate(LocalDateTime.parse("2024-12-15T10:15:30"));
     enrollment.setGradeToEnroll(Grades.FIRST);
     enrollment.setKnownThrough(KnownThrough.OT);
     enrollment.setExamDate(LocalDate.parse("2024-12-15"));
@@ -205,7 +205,7 @@ public class TestProvider {
   }
 
   public static UpdateWeightsConfigsDto provideUpdateWeightsConfigsDto() {
-    return new UpdateWeightsConfigsDto(0.4, 0.4);
+    return new UpdateWeightsConfigsDto(0.4, 0.6);
   }
 
   public static UpdateContactInfoConfigsDto provideUpdateContactInfoConfigsDto() {

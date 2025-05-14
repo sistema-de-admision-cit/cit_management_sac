@@ -69,7 +69,7 @@ class SystemConfigRepositoryTest {
 
     assertNotNull(processWeights);
     assertFalse(processWeights.isEmpty());
-    assertEquals(3, processWeights.size());
+    assertEquals(2, processWeights.size());
   }
 
   @Test

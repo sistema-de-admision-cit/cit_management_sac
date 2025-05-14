@@ -25,10 +25,11 @@ class AcademicExamDetailsDtoTest {
   void serializeAcademicExamDto() throws IOException {
     AcademicExamDetailsDto exam = TestProvider.provideAcademicExamDto();
 
-    assertThat(tester.write(exam)).isEqualToJson("AcademicExamDtoJsonExpected.json");
-    assertThat(tester.write(exam)).hasJsonPathNumberValue("@.id");
-    assertThat(tester.write(exam)).extractingJsonPathNumberValue("@.id").isEqualTo(1);
-    assertThat(tester.write(exam)).hasJsonPathStringValue("@.exam.examType");
+    assertThat(tester.write(exam))
+            .isEqualToJson("AcademicExamDtoJsonExpected.json")
+            .hasJsonPathStringValue("@.exam.enrollment") // Changed to expect string
+            .extractingJsonPathStringValue("@.exam.enrollment")
+            .isEqualTo("10"); // Compare with string "10"
   }
 
   @Test

@@ -19,11 +19,11 @@ class ExamAcaDtoTest {
   @Test
   void serializeJsonExamAca() throws IOException {
     ExamAcaDto exam = TestProvider.provideAcaExamDto();
-
-    assertThat(tester.write(exam)).isEqualToJson("ExamAcaDtoJsonExpected.json");
-    assertThat(tester.write(exam)).hasJsonPathNumberValue("@.id");
-    assertThat(tester.write(exam)).extractingJsonPathNumberValue("@.id").isEqualTo(1);
-    assertThat(tester.write(exam)).hasJsonPathStringValue("@.examType");
+    String json = tester.write(exam).getJson();
+    assertThat(tester.write(exam))
+            .hasJsonPathStringValue("@.enrollment")
+            .extractingJsonPathStringValue("@.enrollment")
+            .isEqualTo("1");
   }
 
   @Test

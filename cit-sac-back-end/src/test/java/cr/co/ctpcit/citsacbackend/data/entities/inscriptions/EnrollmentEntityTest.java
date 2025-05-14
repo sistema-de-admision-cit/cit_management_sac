@@ -95,6 +95,6 @@ class EnrollmentEntityTest {
 
     assertThat(json.parse(expected)).isEqualTo(enrollment);
     assertThat(json.parseObject(expected).getId()).isEqualTo(1);
-    assertThat(json.parseObject(expected).getEnrollmentDate()).isEqualTo("2024-12-15T10:15:30Z");
+    assertThat(json.parseObject(expected).getEnrollmentDate()).isEqualTo("2024-12-15T10:15:30");
   }
 }

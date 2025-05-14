@@ -114,10 +114,11 @@ class NotificationsImplTest {
         emailConfig = new SystemConfigEntity();
         emailConfig.setConfigName(Configurations.EMAIL_CONTACT);
         emailConfig.setConfigValue("contacto@colegiocit.com");
-
         phoneConfig = new SystemConfigEntity();
         phoneConfig.setConfigName(Configurations.OFFICE_CONTACT);
         phoneConfig.setConfigValue("2222-5555");
+
+        when(mailSender.getUsername()).thenReturn("contacto@colegiocit.com");
     }
 
     @Test

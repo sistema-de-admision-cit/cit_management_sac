@@ -3,7 +3,7 @@
   "grade": 100.00,
   "exam": {
     "id": 1,
-    "enrollment": 10,
+    "enrollment": "10",
     "examDate": "2025-03-25T17:54:12Z",
     "examType": "ACA",
     "responses": [
