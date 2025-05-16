@@ -58,9 +58,8 @@ class FileStorageServiceImplTest {
     MultipartFile file = mock(MultipartFile.class);
     when(file.isEmpty()).thenReturn(true);
 
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-      fileStorageService.storeFile(file, "unsafe", "documents");
-    });
+    Exception exception = assertThrows(IllegalArgumentException.class,
+        () -> fileStorageService.storeFile(file, "unsafe", "documents"));
 
     assertEquals("File is empty", exception.getMessage());
   }

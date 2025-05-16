@@ -44,8 +44,8 @@ public class RestSecurityConfig {
     // @formatter:off
     http
         .authorizeHttpRequests((authorize) -> authorize
-            .requestMatchers("/**").permitAll()
-            .requestMatchers("/api/**").permitAll()
+            .requestMatchers("/api/inscription/**").permitAll()
+            .requestMatchers("/api/**").authenticated()
             //.requestMatchers("/").permitAll()
             //.requestMatchers("/assets/**").permitAll()
             //.requestMatchers("/api/inscription/add").permitAll()

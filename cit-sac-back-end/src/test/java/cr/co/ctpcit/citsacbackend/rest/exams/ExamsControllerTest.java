@@ -3,6 +3,7 @@ package cr.co.ctpcit.citsacbackend.rest.exams;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import cr.co.ctpcit.citsacbackend.TestConfig;
 import cr.co.ctpcit.citsacbackend.data.enums.ExamType;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.academic.ExamAcaDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.dai.ExamDaiDto;
@@ -12,10 +13,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.*;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.io.File;
@@ -28,6 +27,7 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TES
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = {"ExamsTestRollback.sql"}, executionPhase = AFTER_TEST_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Import(TestConfig.class)
 class ExamsControllerTest {
   @Autowired
   private TestRestTemplate restTemplate;
@@ -35,11 +35,17 @@ class ExamsControllerTest {
   @Autowired
   ObjectMapper objectMapper;
 
+  @Autowired
+  private HttpEntity<String> getHttpEntity;
+
+  @Autowired
+  private HttpHeaders getBearerHeader;
+
   @Test
   @Sql(scripts = {"ExamsTestRollback.sql"}, executionPhase = AFTER_TEST_METHOD)
   void getAcademicExam() {
     ResponseEntity<ExamAcaDto> response =
-        restTemplate.getForEntity("/api/exams/academic-exam/{id}", ExamAcaDto.class, 200123654);
+        restTemplate.exchange("/api/exams/academic-exam/{id}", HttpMethod.GET, getHttpEntity, ExamAcaDto.class, 200123654);
 
     ExamAcaDto examDto = response.getBody();
 
@@ -55,7 +61,7 @@ class ExamsControllerTest {
   @Test
   void getAcademicExamNotFound() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/exams/academic-exam/{id}", String.class, 225566);
+        restTemplate.exchange("/api/exams/academic-exam/{id}", HttpMethod.GET, getHttpEntity, String.class, 225566);
 
     DocumentContext documentContext = JsonPath.parse(response.getBody());
 
@@ -70,11 +76,13 @@ class ExamsControllerTest {
   void getAcademicExamBadRequest() {
     //Generates two exam for both enrollments for the student
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/exams/academic-exam/{id}", String.class, 200123654);
-    response = restTemplate.getForEntity("/api/exams/academic-exam/{id}", String.class, 200123654);
+        restTemplate.exchange("/api/exams/academic-exam/{id}", HttpMethod.GET, getHttpEntity, String.class, 200123654);
+
+    response = restTemplate.exchange("/api/exams/academic-exam/{id}", HttpMethod.GET, getHttpEntity, String.class, 200123654);
 
     //Generates a new exam for the student but there will not be available exams enrollments
-    response = restTemplate.getForEntity("/api/exams/academic-exam/{id}", String.class, 200123654);
+    response = restTemplate.exchange("/api/exams/academic-exam/{id}", HttpMethod.GET, getHttpEntity, String.class, 200123654);
+
 
     DocumentContext documentContext = JsonPath.parse(response.getBody());
 
@@ -89,7 +97,7 @@ class ExamsControllerTest {
   void shouldSaveAcademicExamWithPerfectScore() throws IOException {
     //Get an exam
     ResponseEntity<ExamAcaDto> response =
-        restTemplate.getForEntity("/api/exams/academic-exam/{id}", ExamAcaDto.class, 200123654);
+        restTemplate.exchange("/api/exams/academic-exam/{id}", HttpMethod.GET, getHttpEntity, ExamAcaDto.class, 200123654);
 
     ExamAcaDto examDto = response.getBody();
     assert examDto != null;
@@ -104,7 +112,7 @@ class ExamsControllerTest {
         .responses(requestExamDto.responses()).build();
 
     //Request
-    HttpEntity<ExamAcaDto> request = new HttpEntity<>(saveExamDto);
+    HttpEntity<ExamAcaDto> request = new HttpEntity<>(saveExamDto, getBearerHeader);
     ResponseEntity<Void> putResponse =
         restTemplate.exchange("/api/exams/save-academic-exam", HttpMethod.PUT, request, Void.class);
 
@@ -116,7 +124,7 @@ class ExamsControllerTest {
   void shouldSaveAcademicExamWithHalfScore() throws IOException {
     //Get an exam
     ResponseEntity<ExamAcaDto> response =
-        restTemplate.getForEntity("/api/exams/academic-exam/{id}", ExamAcaDto.class, 200123654);
+        restTemplate.exchange("/api/exams/academic-exam/{id}", HttpMethod.GET, getHttpEntity, ExamAcaDto.class, 200123654);
 
     ExamAcaDto examDto = response.getBody();
     assert examDto != null;
@@ -131,7 +139,7 @@ class ExamsControllerTest {
         .responses(requestExamDto.responses()).build();
 
     //Request
-    HttpEntity<ExamAcaDto> request = new HttpEntity<>(saveExamDto);
+    HttpEntity<ExamAcaDto> request = new HttpEntity<>(saveExamDto, getBearerHeader);
     ResponseEntity<Void> putResponse =
         restTemplate.exchange("/api/exams/save-academic-exam", HttpMethod.PUT, request, Void.class);
 
@@ -142,7 +150,7 @@ class ExamsControllerTest {
   @Sql(scripts = {"ExamsTestRollback.sql"}, executionPhase = AFTER_TEST_METHOD)
   void getDaiExam() {
     ResponseEntity<ExamDaiDto> response =
-        restTemplate.getForEntity("/api/exams/dai-exam/{id}", ExamDaiDto.class, 200123654);
+        restTemplate.exchange("/api/exams/dai-exam/{id}", HttpMethod.GET, getHttpEntity, ExamDaiDto.class, 200123654);
 
     ExamDaiDto examDto = response.getBody();
 
@@ -158,7 +166,7 @@ class ExamsControllerTest {
   @Test
   void getDaiExamNotFound() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/exams/dai-exam/{id}", String.class, 225566);
+        restTemplate.exchange("/api/exams/dai-exam/{id}", HttpMethod.GET, getHttpEntity, String.class, 225566);
 
     DocumentContext documentContext = JsonPath.parse(response.getBody());
 
@@ -173,11 +181,14 @@ class ExamsControllerTest {
   void getDaiExamBadRequest() {
     //Generates two exam for both enrollments for the student
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/exams/dai-exam/{id}", String.class, 200123654);
-    response = restTemplate.getForEntity("/api/exams/dai-exam/{id}", String.class, 200123654);
+        restTemplate.exchange("/api/exams/dai-exam/{id}", HttpMethod.GET, getHttpEntity, String.class, 200123654);
+    response = restTemplate.exchange("/api/exams/dai-exam/{id}", HttpMethod.GET, getHttpEntity, String.class, 200123654);
 
     //Generates a new exam for the student but there will not be available exams enrollments
-    response = restTemplate.getForEntity("/api/exams/dai-exam/{id}", String.class, 200123654);
+    response = restTemplate.exchange("/api/exams/dai-exam/{id}", HttpMethod.GET, getHttpEntity, String.class, 200123654);
+
+    //As the student has 2 enrollments the system will generate 2 exams
+    response = restTemplate.exchange("/api/exams/dai-exam/{id}", HttpMethod.GET, getHttpEntity, String.class, 200123654);
 
     DocumentContext documentContext = JsonPath.parse(response.getBody());
 
@@ -192,7 +203,7 @@ class ExamsControllerTest {
   void shouldSaveDaiExam() throws IOException {
     //Get an exam
     ResponseEntity<ExamDaiDto> response =
-        restTemplate.getForEntity("/api/exams/dai-exam/{id}", ExamDaiDto.class, 200123654);
+        restTemplate.exchange("/api/exams/dai-exam/{id}", HttpMethod.GET, getHttpEntity, ExamDaiDto.class, 200123654);
 
     ExamDaiDto examDto = response.getBody();
     assert examDto != null;
@@ -207,7 +218,7 @@ class ExamsControllerTest {
         .responses(requestExamDto.responses()).build();
 
     //Request
-    HttpEntity<ExamDaiDto> request = new HttpEntity<>(saveExamDto);
+    HttpEntity<ExamDaiDto> request = new HttpEntity<>(saveExamDto, getBearerHeader);
     ResponseEntity<Void> putResponse =
         restTemplate.exchange("/api/exams/save-dai-exam", HttpMethod.PUT, request, Void.class);
 

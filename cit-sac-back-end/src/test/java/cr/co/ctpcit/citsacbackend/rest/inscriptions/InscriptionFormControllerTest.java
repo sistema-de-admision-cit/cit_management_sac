@@ -1,11 +1,13 @@
 package cr.co.ctpcit.citsacbackend.rest.inscriptions;
 
+import cr.co.ctpcit.citsacbackend.TestConfig;
 import cr.co.ctpcit.citsacbackend.logic.services.notifs.NotificationsService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.test.context.jdbc.Sql;
@@ -24,13 +26,14 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Import(TestConfig.class)
 class InscriptionFormControllerTest {
 
   @Autowired
   private TestRestTemplate restTemplate;
 
-  @MockBean
-  private NotificationsService notificationsService;
+  @Autowired
+  private String generateTestToken;
 
   @Test
   @Order(1)
@@ -92,6 +95,7 @@ class InscriptionFormControllerTest {
 
     HttpHeaders fileAttachmentHeaders = new HttpHeaders();
     fileAttachmentHeaders.setContentType(MediaType.APPLICATION_PDF);
+    fileAttachmentHeaders.setBearerAuth(generateTestToken);
 
     ByteArrayResource grades = new ByteArrayResource("Some file content".getBytes()) {
       @Override

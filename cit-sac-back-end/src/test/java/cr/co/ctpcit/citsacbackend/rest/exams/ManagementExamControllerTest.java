@@ -2,6 +2,7 @@ package cr.co.ctpcit.citsacbackend.rest.exams;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import cr.co.ctpcit.citsacbackend.TestConfig;
 import cr.co.ctpcit.citsacbackend.data.enums.EnglishLevel;
 import cr.co.ctpcit.citsacbackend.data.enums.Recommendation;
 import cr.co.ctpcit.citsacbackend.logic.dto.exams.english.EnglishScoreEntryDTO;
@@ -13,9 +14,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.*;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Arrays;
@@ -28,16 +28,23 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TES
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = {"ExamManagementTestsRollback.sql"}, executionPhase = AFTER_TEST_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Import(TestConfig.class)
 class ManagementExamControllerTest {
 
   @Autowired
   private TestRestTemplate restTemplate;
 
+  @Autowired
+  private HttpEntity<String> getHttpEntity;
+
+  @Autowired
+  private HttpHeaders getBearerHeader;
+
   @Test
   @Order(1)
   void getAcademicExamsOfAStudent() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams/academic-exams/270456789", String.class);
+        restTemplate.exchange("/api/management-exams/academic-exams/270456789", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -51,7 +58,7 @@ class ManagementExamControllerTest {
   @Order(2)
   void getAcademicExamsOfANonExistentStudent() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams/academic-exams/999999999", String.class);
+        restTemplate.exchange("/api/management-exams/academic-exams/999999999", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
   }
@@ -60,7 +67,7 @@ class ManagementExamControllerTest {
   @Order(3)
   void getAcademicExamsOfAStudentWithNoExams() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams/academic-exams/230987654", String.class);
+        restTemplate.exchange("/api/management-exams/academic-exams/230987654", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -74,7 +81,7 @@ class ManagementExamControllerTest {
   @Order(4)
   void getDaiExamsOfAStudent() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams/dai-exams/270456789", String.class);
+        restTemplate.exchange("/api/management-exams/dai-exams/270456789", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -87,7 +94,7 @@ class ManagementExamControllerTest {
   @Order(5)
   void getDaiExamsOfANonExistentStudent() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams/dai-exams/999999999", String.class);
+        restTemplate.exchange("/api/management-exams/dai-exams/999999999", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
 
@@ -97,7 +104,7 @@ class ManagementExamControllerTest {
   @Order(6)
   void getDaiExamsOfAStudentWithNoExams() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams/dai-exams/230987654", String.class);
+        restTemplate.exchange("/api/management-exams/dai-exams/230987654", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -110,7 +117,7 @@ class ManagementExamControllerTest {
   @Order(7)
   void getAllStudentsThatHasDoneAcademicExams() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams/students/ACA", String.class);
+        restTemplate.exchange("/api/management-exams/students/ACA", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -123,7 +130,7 @@ class ManagementExamControllerTest {
   @Order(8)
   void getAllStudentsThatHasDoneDaiExams() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams/students/DAI", String.class);
+        restTemplate.exchange("/api/management-exams/students/DAI", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -136,7 +143,7 @@ class ManagementExamControllerTest {
   @Order(9)
   void getAllStudentsThatHasDoneDaiExams_Pageable() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams/students/DAI?page=0&size=10",
+        restTemplate.exchange("/api/management-exams/students/DAI?page=0&size=10", HttpMethod.GET, getHttpEntity,
             String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -151,7 +158,7 @@ class ManagementExamControllerTest {
   void updateDaiExam() {
     UpdateDaiExamDto updateDaiExamDto = UpdateDaiExamDto.builder().id(2L).comment("Updated comment")
         .recommendation(Recommendation.ADMIT).build();
-    HttpEntity<UpdateDaiExamDto> request = new HttpEntity<>(updateDaiExamDto);
+    HttpEntity<UpdateDaiExamDto> request = new HttpEntity<>(updateDaiExamDto, getBearerHeader);
 
     ResponseEntity<Void> response =
         restTemplate.exchange("/api/management-exams/dai-exam", PUT, request, Void.class);
@@ -164,7 +171,7 @@ class ManagementExamControllerTest {
   void updateNotExistentDaiExam() {
     UpdateDaiExamDto updateDaiExamDto = UpdateDaiExamDto.builder().id(1L).comment("Updated comment")
         .recommendation(Recommendation.ADMIT).build();
-    HttpEntity<UpdateDaiExamDto> request = new HttpEntity<>(updateDaiExamDto);
+    HttpEntity<UpdateDaiExamDto> request = new HttpEntity<>(updateDaiExamDto, getBearerHeader);
 
     ResponseEntity<Void> response =
         restTemplate.exchange("/api/management-exams/dai-exam", PUT, request, Void.class);
@@ -180,7 +187,7 @@ class ManagementExamControllerTest {
             "85%"),
         new EnglishScoreEntryDTO(2L, "María Gómez", "López", "2024-09-11", EnglishLevel.C1, "90%"));
 
-    HttpEntity<List<EnglishScoreEntryDTO>> request = new HttpEntity<>(scores);
+    HttpEntity<List<EnglishScoreEntryDTO>> request = new HttpEntity<>(scores, getBearerHeader);
     ResponseEntity<String> response =
         restTemplate.postForEntity("/api/management-exams/update-scores", request, String.class);
 
@@ -196,7 +203,7 @@ class ManagementExamControllerTest {
   @Order(13)
   void testGetEnglishExamsByIdNumber() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams/english-exams/270456789", String.class);
+        restTemplate.exchange("/api/management-exams/english-exams/270456789", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -209,7 +216,7 @@ class ManagementExamControllerTest {
   @Order(14)
   void testGetEnglishExamsByIdNumberNotFound() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams/english-exams/999999999", String.class);
+        restTemplate.exchange("/api/management-exams/english-exams/999999999", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
   }
@@ -218,7 +225,7 @@ class ManagementExamControllerTest {
   @Order(15)
   void testSearchAcademicExamsByValueAsIdNumber() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams//search/{value}/{examType}", String.class,
+        restTemplate.exchange("/api/management-exams//search/{value}/{examType}", HttpMethod.GET, getHttpEntity, String.class,
             "270456789", "ACA");
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -233,7 +240,7 @@ class ManagementExamControllerTest {
   @Order(16)
   void searchAcademicExamsByValueAsIdNumberNotFound() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams//search/{value}/{examType}", String.class,
+        restTemplate.exchange("/api/management-exams//search/{value}/{examType}", HttpMethod.GET, getHttpEntity, String.class,
             "999999999", "ACA");
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -243,7 +250,7 @@ class ManagementExamControllerTest {
   @Order(17)
   void searchAcademicExamsByValueAsPartOfFirstName() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/management-exams//search/{value}/{examType}", String.class,
+        restTemplate.exchange("/api/management-exams//search/{value}/{examType}", HttpMethod.GET, getHttpEntity, String.class,
             "Valer", "ACA");
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

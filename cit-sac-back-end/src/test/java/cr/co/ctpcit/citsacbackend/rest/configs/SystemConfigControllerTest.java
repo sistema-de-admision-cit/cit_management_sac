@@ -2,6 +2,7 @@ package cr.co.ctpcit.citsacbackend.rest.configs;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import cr.co.ctpcit.citsacbackend.TestConfig;
 import cr.co.ctpcit.citsacbackend.TestProvider;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.ExamPeriodDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.configs.UpdateContactInfoConfigsDto;
@@ -13,10 +14,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.*;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,15 +25,22 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TES
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = {"systemConfigsRollback.sql"}, executionPhase = AFTER_TEST_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Import(TestConfig.class)
 class SystemConfigControllerTest {
 
   @Autowired
   private TestRestTemplate restTemplate;
 
+  @Autowired
+  private HttpEntity<String> getHttpEntity;
+
+  @Autowired
+  private HttpHeaders getBearerHeader;
+
   @Test
   void getQuestionsQuantity() {
     ResponseEntity<String> response =
-            restTemplate.getForEntity("/api/system-config/get-questions-quantity", String.class);
+            restTemplate.exchange("/api/system-config/get-questions-quantity", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -48,7 +54,8 @@ class SystemConfigControllerTest {
   void updateQuestionsQuantity() {
     UpdateQuantityConfigsDto quantityConfigsDto = new UpdateQuantityConfigsDto(20,21);
 
-    HttpEntity<UpdateQuantityConfigsDto> request = new HttpEntity<>(quantityConfigsDto);
+
+    HttpEntity<UpdateQuantityConfigsDto> request = new HttpEntity<>(quantityConfigsDto, getBearerHeader);
     ResponseEntity<String> response =
             restTemplate.exchange("/api/system-config/update-questions-quantity",
                    PUT, request, String.class);
@@ -59,7 +66,7 @@ class SystemConfigControllerTest {
   @Test
   void getProcessWeights() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/system-config/get-process-weights", String.class);
+        restTemplate.exchange("/api/system-config/get-process-weights", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -73,7 +80,7 @@ class SystemConfigControllerTest {
   void updateProcessWeights() {
     UpdateWeightsConfigsDto updateWeightsConfigsDto = new UpdateWeightsConfigsDto(0.3, 0.7);
 
-    HttpEntity<UpdateWeightsConfigsDto> request = new HttpEntity<>(updateWeightsConfigsDto);
+    HttpEntity<UpdateWeightsConfigsDto> request = new HttpEntity<>(updateWeightsConfigsDto, getBearerHeader);
     ResponseEntity<String> response =
         restTemplate.exchange("/api/system-config/update-process-weights",
             PUT, request, String.class);
@@ -84,7 +91,7 @@ class SystemConfigControllerTest {
   @Test
   void getContactInfo() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/system-config/get-contact-info", String.class);
+        restTemplate.exchange("/api/system-config/get-contact-info", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -101,7 +108,7 @@ class SystemConfigControllerTest {
             "emailNotificationsContact@cit.co.cr", "88556396", "22276565", "CitEsGrande",
             "CitNoEsGrande","campus15","ApiKeyWhatsapp");
 
-    HttpEntity<UpdateContactInfoConfigsDto> request = new HttpEntity<>(updateContactInfoConfigsDto);
+    HttpEntity<UpdateContactInfoConfigsDto> request = new HttpEntity<>(updateContactInfoConfigsDto, getBearerHeader);
     ResponseEntity<String> response =
         restTemplate.exchange("/api/system-config/update-contact-info",
             PUT, request, String.class);
@@ -112,7 +119,7 @@ class SystemConfigControllerTest {
   @Test
   void getExamPeriodById() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/system-config/get-exam-period/1", String.class);
+        restTemplate.exchange("/api/system-config/get-exam-period/1", HttpMethod.GET, getHttpEntity, String.class);
 
     DocumentContext documentContext = JsonPath.parse(response.getBody());
     Integer enrollmentId = documentContext.read("$.id");
@@ -124,7 +131,7 @@ class SystemConfigControllerTest {
   @Test
   void getCurrentExamPeriods() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/system-config/get-current-exam-periods", String.class);
+        restTemplate.exchange("/api/system-config/get-current-exam-periods", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -137,7 +144,7 @@ class SystemConfigControllerTest {
   @Test
   void getExamPeriodsByYear() {
     ResponseEntity<String> response =
-        restTemplate.getForEntity("/api/system-config/get-exam-periods/2025", String.class);
+        restTemplate.exchange("/api/system-config/get-exam-periods/2025", HttpMethod.GET, getHttpEntity, String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     DocumentContext documentContext = JsonPath.parse(response.getBody());
@@ -150,7 +157,7 @@ class SystemConfigControllerTest {
   void createExamPeriod() {
     ExamPeriodDto examPeriodDto = TestProvider.provideNonExistentExamPeriodDto();
 
-    HttpEntity<ExamPeriodDto> request = new HttpEntity<>(examPeriodDto);
+    HttpEntity<ExamPeriodDto> request = new HttpEntity<>(examPeriodDto, getBearerHeader);
     ResponseEntity<String> response = restTemplate.exchange("/api/system-config/create-exam-period",
         HttpMethod.POST, request, String.class);
 
@@ -161,7 +168,7 @@ class SystemConfigControllerTest {
   void createDuplicateExamPeriod_ShouldFail() {
     ExamPeriodDto examPeriodDto = TestProvider.provideExistentExamPeriodDto();
 
-    HttpEntity<ExamPeriodDto> request = new HttpEntity<>(examPeriodDto);
+    HttpEntity<ExamPeriodDto> request = new HttpEntity<>(examPeriodDto, getBearerHeader);
     ResponseEntity<String> response = restTemplate.exchange("/api/system-config/create-exam-period",
         HttpMethod.POST, request, String.class);
 
