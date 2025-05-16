@@ -4,6 +4,7 @@ import cr.co.ctpcit.citsacbackend.data.utils.FileNameSanitizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -21,6 +22,7 @@ class FileStorageServiceImplTest {
   @BeforeEach
   void setUp() {
     fileStorageService = new FileStorageServiceImpl();
+    ReflectionTestUtils.setField(fileStorageService, "baseUploadDir", "C:/temp/spring/uploads/");
   }
 
   @Test
@@ -39,7 +41,7 @@ class FileStorageServiceImplTest {
       mockedSanitizer.when(() -> FileNameSanitizer.sanitizeFileName(eq(unsanitized), anyString()))
           .thenReturn(sanitizedFileName);
 
-      Path mockPath = Paths.get("uploads", category, sanitizedFileName + ".txt");
+      Path mockPath = Paths.get("C:/temp/spring/uploads/", category, sanitizedFileName + ".txt");
       mockedFiles.when(() -> Files.exists(any(Path.class))).thenReturn(false);
       mockedFiles.when(() -> Files.createDirectories(any(Path.class))).thenReturn(mockPath);
       mockedFiles.when(() -> Files.copy(any(InputStream.class), any(Path.class))).thenReturn(0L);
