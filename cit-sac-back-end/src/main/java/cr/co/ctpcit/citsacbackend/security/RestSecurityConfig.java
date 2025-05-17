@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,6 +30,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Configuration
@@ -43,6 +45,7 @@ public class RestSecurityConfig {
   RSAPrivateKey priv;
 
   @Bean
+  @Order(0)
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     // @formatter:off
     http
@@ -69,8 +72,10 @@ public class RestSecurityConfig {
 
   private UrlBasedCorsConfigurationSource apiConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("*"));
+    configuration.setAllowedOrigins(List.of("*"));
     configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedHeaders(List.of("authorization", "Content-Type"));
+    configuration.setExposedHeaders(List.of("location"));
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
