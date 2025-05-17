@@ -2,19 +2,95 @@ PASOS PARA INSTALAR LA APLICACIÓN EN UN CONTENEDOR DE DOCKER (Ubuntu)
 
 1. INSTALAR DOCKER
 
+    1.1 Abre una terminal y ejecuta:
+   
+    sudo apt update && sudo apt upgrade -y
+   
+    1.2  Instalar dependencias necesarias
+   
+    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+   
+    1.3 Actualizar e instalar Docker
+   
+    sudo apt update
+    sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+   
+    1.4 Verificar la instalación
+   
+    sudo docker --version
+   
+    1.5 Probar con un contenedor
+   
+    sudo docker run hello-world
+
 2. CREAR UNA RED PERSONALIZADA PARA LOS CONTENEDORES
+
+    2.1 Crear una red personalizada para los contenedores
+   
+    sudo docker network create app-cit-network
+   
+    2.2 Para verificar que la red se creó, se ingresa:
+   
+    sudo docker network ls
 
 3. INSTALAR UNA IMAGEN DE MySQL Y CREAR LA BASE DE DATOS Y EL USUARIO
 
+   3.1 Instalar una imagen de MySQL
+   
+   docker run -d \
+  --name mysql-citsac \
+  --network app-cit-network \
+  -p 3306:3306 \
+  -e MYSQL_ROOT_PASSWORD=campus12 \
+  -e MYSQL_DATABASE=db_cit \
+  -e MYSQL_USER=cituser \
+  -e MYSQL_PASSWORD=21506Mnr \
+  mysql:latest
+  
+    3.2 Iniciamos la imagen:
+  
+    sudo docker start mysql-citsac
+  
+  
+    3.3 Verificar que el contenedor está en ejecución
+  
+    sudo docker ps -a
+  
+    3.4 Conectarnos a MySQL 
+  
+    mysql -h 0.0.0.0 -P 3306 -u root -p 
+  
+    Enter password: campus12
+  
+
+    3.5 Crear el usuario en MySQL manualmente
+  
+    CREATE USER 'cituser'@'%' IDENTIFIED BY '21506Mnr';
+  
+    3.6 Dar Privilegios para la base de datos db_cit
+  
+    GRANT ALL PRIVILEGES ON `db_cit`.* TO 'cituser'@'%';
+    FLUSH PRIVILEGES;
+  
+    3.7 Ver los permisos del usuario creado
+  
+    SHOW GRANTS FOR 'cituser'@'%';
+  
+    3.8 Ejecutar el Script SQL de db_cit
+  
+    SOURCE /cit_management_sac/db/SQL Script.sql
+  
+  
+
 4. INSTALAR NODEJS 22
 
-sudo apt-get install && apt-get upgrade -y
-sudo apt-get install -y curl gnupg
-sudo curl -fsSL https://deb.nodesource.com/setup_$NODE_VERSION -o nodesource_setup.sh
-sudo -E bash nodesource_setup.sh
-sudo apt-get install -y nodejs
-node -v
-npm -v
+   sudo apt-get install && apt-get upgrade -y
+   sudo apt-get install -y curl gnupg
+   sudo curl -fsSL https://deb.nodesource.com/setup_$NODE_VERSION -o nodesource_setup.sh
+   sudo -E bash nodesource_setup.sh
+   sudo apt-get install -y nodejs
+   node -v
+   npm -v
 
 5. HACER BUILD DEL FRONTEND
     
