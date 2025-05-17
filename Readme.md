@@ -33,4 +33,12 @@ npm -v
 
     npm run build
 
-6. 
+6. CREAR LA IMAGEN DE DOCKER CON EL Dockerfile
+
+    6.1. TIENE QUE ESTAR EN EL DIRECTORIO RAIZ DEL BACKEND
+    
+    pwd -> cit-sac-back-end
+
+    6.2. CREAR LA IMAGEN
+
+    sudo docker build -t "SAC-APP"
