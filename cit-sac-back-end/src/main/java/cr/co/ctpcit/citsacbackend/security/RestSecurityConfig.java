@@ -23,9 +23,12 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Configuration
@@ -46,15 +49,12 @@ public class RestSecurityConfig {
         .authorizeHttpRequests((authorize) -> authorize
             .requestMatchers("/api/inscription/**").permitAll()
             .requestMatchers("/api/**").authenticated()
-            //.requestMatchers("/").permitAll()
-            //.requestMatchers("/assets/**").permitAll()
-            //.requestMatchers("/api/inscription/add").permitAll()
             .anyRequest().authenticated()
         )
+        .cors((cors) -> cors
+            .configurationSource(apiConfigurationSource()))
         .csrf((csrf) -> {
           csrf.ignoringRequestMatchers("/api/**");
-          //csrf.ignoringRequestMatchers("/api/auth/login");
-          //csrf.ignoringRequestMatchers("/api/inscription/add");
         })
         .httpBasic(Customizer.withDefaults())
         .oauth2ResourceServer(auth -> auth.jwt(Customizer.withDefaults()))
@@ -65,6 +65,15 @@ public class RestSecurityConfig {
         );
     // @formatter:on
     return http.build();
+  }
+
+  private UrlBasedCorsConfigurationSource apiConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(Arrays.asList("*"));
+    configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS"));
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
   }
 
   @Bean
