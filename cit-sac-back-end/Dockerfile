@@ -20,16 +20,16 @@ ENV ENCRYPTION_SECRET=''
 WORKDIR /app
 
 # COPIAR ARCHIVOS DEL PROYECTO AL CONTENEDOR
-COPY ./cit-sac-back-end/pom.xml /app
-COPY ./cit-sac-back-end/.mvn /app/.mvn
-COPY ./cit-sac-back-end/mvnw /app
+COPY ./pom.xml /app
+COPY ./.mvn /app/.mvn
+COPY ./mvnw /app
 
 # DESCARGAR DEPENDENCIAS DEL PROYECTO
 RUN chmod +x mvnw
 RUN ./mvnw dependency:go-offline
 
 # COPIAR EL CODIGO FUENTE DEL PROYECTO AL CONTENEDOR
-COPY ./cit-sac-back-end/src /app/src
+COPY ./src /app/src
 
 # COMPILAR EL PROYECTO
 RUN ./mvnw clean install
