@@ -30,8 +30,8 @@ class StorageServiceImplTest {
   @Mock
   private MultipartFile file;
 
-  @Value("${storage.location}")
-  private String location = "C:\\temp\\spring\\uploads";
+  @Value("${storage.inscriptions.documents.location}")
+  private String location = "C:\\temp\\spring\\inscriptions";
 
   private final String filename = "test-file.txt";
   private final DocType docType = DocType.AC;

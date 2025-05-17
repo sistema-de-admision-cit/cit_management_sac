@@ -33,7 +33,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 @RequiredArgsConstructor
 @Service
 public class StorageServiceImpl implements StorageService {
-  @Value("${storage.location}")
+  @Value("${storage.inscriptions.documents.location}")
   private String location;
 
   private DocumentRepository documentRepository;

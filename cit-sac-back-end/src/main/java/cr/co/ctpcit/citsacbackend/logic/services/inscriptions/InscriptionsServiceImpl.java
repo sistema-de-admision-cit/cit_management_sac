@@ -44,7 +44,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
   private final StudentRepository studentRepository;
   private final ExamPeriodRepository examPeriodRepository;
 
-  @Value("${storage.location}")
+  @Value("${storage.inscriptions.documents.location}")
   private String rootLocation;
   /**
    * Constructs a new InscriptionsServiceImpl with required repositories and services.

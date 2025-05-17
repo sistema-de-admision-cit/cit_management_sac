@@ -17,7 +17,7 @@ import java.util.Date;
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
   /** Base directory where uploaded files will be stored */
-  @Value("${app.upload.base-dir}")
+  @Value("${storage.questions.images.location}")
   private String baseUploadDir;
   /**
    * Stores a file in the specified category directory after performing validation,
