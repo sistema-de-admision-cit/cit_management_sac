@@ -11,19 +11,19 @@ import net.minidev.json.JSONArray;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,7 +42,7 @@ class InscriptionsControllerTest {
   @Autowired
   private TestRestTemplate restTemplate;
 
-  @MockBean
+  @MockitoBean
   private NotificationsService notificationsService;  // This will mock the actual service
 
   @Autowired
@@ -222,7 +222,7 @@ class InscriptionsControllerTest {
 
   @Test
   @Order(9)
-  public void testUploadDocument_Success() throws Exception {
+  public void testUploadDocument_Success() {
     //Request
     HttpEntity<MultiValueMap<String, Object>> request = createFileUploadEndpointRequest();
 
@@ -230,7 +230,7 @@ class InscriptionsControllerTest {
         restTemplate.postForEntity("/api/inscriptions/documents/upload", request, Void.class);
 
     //Get the document location
-    testDocumentLocation = response.getHeaders().getLocation().toString();
+    testDocumentLocation = Objects.requireNonNull(response.getHeaders().getLocation()).toString();
 
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
