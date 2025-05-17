@@ -11,12 +11,17 @@ import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionOptionDto;
 import cr.co.ctpcit.citsacbackend.logic.mappers.questions.QuestionMapper;
 import cr.co.ctpcit.citsacbackend.logic.services.files.FileStorageServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -24,6 +29,10 @@ import java.util.List;
  */
 @Service
 public class QuestionsServiceImpl implements QuestionService {
+
+  @Value("${storage.questions.images.location}")
+  private String baseUploadDir;
+
   private final QuestionRepository questionRepository;
   private final FileStorageServiceImpl fileStorageService;
 
@@ -125,10 +134,19 @@ public class QuestionsServiceImpl implements QuestionService {
    *
    * @implNote causes a side effect on the question entity.
    */
-  private void updateFileIfProvided(QuestionEntity question, MultipartFile file,
-      String questionText) {
+  private void updateFileIfProvided(QuestionEntity question, MultipartFile file, String questionText) {
     if (file != null && !file.isEmpty()) {
       try {
+        // Eliminar el archivo anterior si existe
+        if (question.getImageUrl() != null) {
+          String oldFileName = question.getImageUrl().substring(question.getImageUrl().lastIndexOf('/') + 1);
+          Path oldFilePath = Paths.get(baseUploadDir, "questions", oldFileName);
+          try {
+            Files.deleteIfExists(oldFilePath);
+          } catch (IOException e) {
+          }
+        }
+
         String fileUrl = fileStorageService.storeFile(file, questionText, "questions");
         question.setImageUrl(fileUrl);
       } catch (Exception e) {

@@ -20,8 +20,8 @@ public interface FileStorageService {
   /**
    * Retrieves the extension of a file from its name.
    *
-   * @param fileName The name of the file including its extension
+   * @param file The name of the file including its extension
    * @return The file extension (without the dot), or empty string if no extension found
    */
-  String getFileExtension(String fileName);
+  String getFileExtension(MultipartFile file);
 }

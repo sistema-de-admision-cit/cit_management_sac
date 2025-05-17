@@ -3,7 +3,9 @@ package cr.co.ctpcit.citsacbackend.logic.services.files;
 import cr.co.ctpcit.citsacbackend.data.utils.FileNameSanitizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +18,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class FileStorageServiceImplTest {
+
+  @Mock
+  private MultipartFile multipartFile;
+
 
   private FileStorageServiceImpl fileStorageService;
 
@@ -65,18 +71,47 @@ class FileStorageServiceImplTest {
   }
 
   @Test
-  void testGetFileExtension_ValidFileName() {
-    assertEquals("txt", fileStorageService.getFileExtension("document.txt"));
-    assertEquals("jpg", fileStorageService.getFileExtension("image.jpg"));
+  void testGetFileExtension_ValidFileName() throws Exception {
+    MockMultipartFile file = new MockMultipartFile(
+            "file",
+            "document.txt",
+            "text/plain",
+            "content".getBytes()
+    );
+    assertEquals("txt", fileStorageService.getFileExtension(file));
   }
 
   @Test
-  void testGetFileExtension_NoExtension() {
-    assertEquals("dat", fileStorageService.getFileExtension("fileWithoutExtension"));
+  void testGetFileExtension_ImageJpg() throws Exception {
+    MockMultipartFile file = new MockMultipartFile(
+            "file",
+            "image.jpg",
+            "image/jpeg",
+            "content".getBytes()
+    );
+    assertEquals("jpg", fileStorageService.getFileExtension(file));
   }
 
   @Test
-  void testGetFileExtension_NullFileName() {
-    assertEquals("dat", fileStorageService.getFileExtension(null));
+  void testGetFileExtension_NoExtensionButContentType() throws Exception {
+    MockMultipartFile file = new MockMultipartFile(
+            "file",
+            "fileWithoutExtension",
+            "image/png",
+            "content".getBytes()
+    );
+    assertEquals("png", fileStorageService.getFileExtension(file));
   }
+
+  @Test
+  void testGetFileExtension_NoExtensionNoContentType() throws Exception {
+    MockMultipartFile file = new MockMultipartFile(
+            "file",
+            "fileWithoutExtension",
+            null,
+            "content".getBytes()
+    );
+    assertEquals("dat", fileStorageService.getFileExtension(file));
+  }
+
 }
