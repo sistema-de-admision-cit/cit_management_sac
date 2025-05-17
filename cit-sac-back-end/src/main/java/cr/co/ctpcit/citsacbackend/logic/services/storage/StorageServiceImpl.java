@@ -6,6 +6,7 @@ import cr.co.ctpcit.citsacbackend.data.repositories.inscriptions.DocumentReposit
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.DocumentDto;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageException;
 import cr.co.ctpcit.citsacbackend.logic.exceptions.StorageFileNotFoundException;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,8 +28,8 @@ import java.util.stream.Stream;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
- * Implementation of {@link StorageService} for file storage operations.
- * Handles file storage, retrieval, and deletion in the configured storage location.
+ * Implementation of {@link StorageService} for file storage operations. Handles file storage,
+ * retrieval, and deletion in the configured storage location.
  */
 @RequiredArgsConstructor
 @Service
@@ -37,6 +38,7 @@ public class StorageServiceImpl implements StorageService {
   private String location;
 
   private DocumentRepository documentRepository;
+
   /**
    * Constructs a new StorageServiceImpl with the required dependencies.
    *
@@ -46,27 +48,34 @@ public class StorageServiceImpl implements StorageService {
   public StorageServiceImpl(DocumentRepository documentRepository) {
     this.documentRepository = documentRepository;
   }
+
   /**
    * Initializes the storage directory. Creates the directory if it doesn't exist.
    *
    * @throws StorageException if the directory cannot be created
    */
+  @PostConstruct
   @Override
   public void init() {
     try {
-      Files.createDirectories(Paths.get(location));
+      // Create the storage directory if it doesn't exist
+      File storageDir = new File(location);
+      if (!storageDir.exists()) {
+        Files.createDirectories(Paths.get(location));
+      }
     } catch (FileAlreadyExistsException e) {
       // Do nothing
     } catch (IOException e) {
       throw new StorageException("Could not initialize storage", e);
     }
   }
+
   /**
    * Asynchronously stores a file in the storage location.
    *
-   * @param file the file to store
+   * @param file     the file to store
    * @param filename the name to give the stored file
-   * @param docType the type/category of the document
+   * @param docType  the type/category of the document
    * @return CompletableFuture containing DocumentDto with storage information
    * @throws StorageException if the file cannot be stored
    */
@@ -85,6 +94,7 @@ public class StorageServiceImpl implements StorageService {
 
     return CompletableFuture.completedFuture(new DocumentDto(null, filename, docType, null));
   }
+
   /**
    * Loads all stored files as Path objects. Currently returns empty stream.
    *
@@ -94,12 +104,13 @@ public class StorageServiceImpl implements StorageService {
   public Stream<Path> loadAll() {
     return Stream.empty();
   }
+
   /**
    * Loads a stored document as a downloadable Resource.
    *
    * @param id the ID of the document to load
    * @return the file as a Resource
-   * @throws ResponseStatusException if document is not found in repository
+   * @throws ResponseStatusException      if document is not found in repository
    * @throws StorageFileNotFoundException if document file is not readable or doesn't exist
    */
   @Override
@@ -124,6 +135,7 @@ public class StorageServiceImpl implements StorageService {
           "Documento no encontrado con el id: " + documentEntity.getId(), e);
     }
   }
+
   /**
    * Deletes all files in the storage location.
    *
@@ -131,13 +143,19 @@ public class StorageServiceImpl implements StorageService {
    */
   @Override
   public void deleteAll() {
-    try {
-      Files.walk(Paths.get(location)).filter(Files::isRegularFile).map(Path::toFile)
-          .forEach(File::delete);
+    try (Stream<Path> paths = Files.walk(Paths.get(location))) {
+      paths.filter(Files::isRegularFile).forEach(filePath -> {
+        try {
+          Files.delete(filePath);
+        } catch (IOException e) {
+          throw new StorageException("Failed to delete file " + filePath, e);
+        }
+      });
     } catch (IOException e) {
       throw new StorageException("Failed to delete all files", e);
     }
   }
+
   /**
    * Deletes a document by its URL postfix (relative path).
    *
@@ -152,6 +170,7 @@ public class StorageServiceImpl implements StorageService {
       throw new StorageException("Failed to delete file " + urlPostfix, e);
     }
   }
+
   /**
    * Deletes a document by its full URL.
    *

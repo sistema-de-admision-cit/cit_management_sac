@@ -89,7 +89,7 @@ public class InscriptionsServiceImpl implements InscriptionsService {
    * Get an inscription by value
    *
    * @param value    of the idNumber, the name of the student or first surname or previous school
-   * @param pageable
+   * @param pageable  the pageable object
    * @return a list of inscriptions that match the value
    */
   @Override

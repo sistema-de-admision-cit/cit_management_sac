@@ -1,10 +1,12 @@
 package cr.co.ctpcit.citsacbackend.logic.services.files;
 
 import cr.co.ctpcit.citsacbackend.data.utils.FileNameSanitizer;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,6 +21,19 @@ public class FileStorageServiceImpl implements FileStorageService {
   /** Base directory where uploaded files will be stored */
   @Value("${storage.questions.images.location}")
   private String baseUploadDir;
+
+  @PostConstruct
+  public void init() {
+    //Create directory if it doesn't exist
+    if(!Files.exists(Paths.get(baseUploadDir))) {
+      try {
+        Files.createDirectories(Paths.get(baseUploadDir));
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
   /**
    * Stores a file in the specified category directory after performing validation,
    * sanitization, and generating a unique filename.
