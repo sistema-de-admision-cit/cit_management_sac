@@ -99,6 +99,7 @@ const QuestionForm = ({ title, initialData, onSubmit, submitButtonText, searchAg
             multiple: true,
             required: false
           }}
+          accept='.jpg, .jpeg, .png'
           handleChange={(e, isFile = true) => handleInputChange(e, isFile)}
           className='form-group'
         />
