@@ -70,6 +70,8 @@ public class RestSecurityConfig implements WebMvcConfigurer {
         .securityMatcher("/api/**") // Aplica a lo que no esté en la cadena de Order(1)
         .authorizeHttpRequests((authorize) -> authorize
             .requestMatchers("/api/inscription/**").permitAll()
+                .requestMatchers("/api/exams/**").permitAll()
+                .requestMatchers("/api/files/**").permitAll()
             .anyRequest().authenticated()
         )
         .cors((cors) -> cors

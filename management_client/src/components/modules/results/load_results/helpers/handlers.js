@@ -1,4 +1,5 @@
-import axios from 'axios'
+import axios from '../../../../../config/axiosConfig'
+
 import { convertToJson, formatLogMessage, parseCsvToArray, parseXlsxToArray, validateScore } from './helpers'
 
 /* handle file upload */

@@ -1,6 +1,5 @@
-import axios from 'axios'
+import axios from '../../../../../config/axiosConfig'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 const POST_PDF_REPORT = import.meta.env.VITE_POST_PDF_REPORT
 const POST_CSV_REPORT = import.meta.env.VITE_POST_CSV_REPORT
 
@@ -17,7 +16,7 @@ export const generateReport = async (request, format) => {
     }
 
     const endpoint = format === 'PDF' ? POST_PDF_REPORT : POST_CSV_REPORT
-    const response = await axios.post(`${API_BASE_URL}${endpoint}`, processedRequest, {
+    const response = await axios.post(`${endpoint}`, processedRequest, {
       responseType: 'blob'
     })
     return response.data
