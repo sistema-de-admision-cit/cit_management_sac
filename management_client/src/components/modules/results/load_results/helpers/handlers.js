@@ -86,7 +86,7 @@ const validateEnglishScores = (scores) => {
 }
 
 // this function is called when the user clicks the process button
-const sendEnglishExamsResultsUrl = `${import.meta.env.VITE_API_BASE_URL}${import.meta.env.VITE_SEND_ENGLISH_EXAM_RESULTS_ENDPOINT}`
+const sendEnglishExamsResultsUrl = `${import.meta.env.VITE_SEND_ENGLISH_EXAM_RESULTS_ENDPOINT}`
 export const handleEnglishScoresFileProcess = (englishScores, setSuccessMessage, setErrorMessage, setLogs, isManualProcessing) => {
   console.log('englishScores', englishScores)
   if (isManualProcessing) {
