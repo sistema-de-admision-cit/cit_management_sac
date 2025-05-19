@@ -15,6 +15,7 @@ import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.EnrollmentUpdateDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.inscriptions.ParentDto;
 import jakarta.mail.AuthenticationFailedException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;

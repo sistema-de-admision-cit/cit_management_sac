@@ -1,27 +1,6 @@
 PASOS PARA INSTALAR LA APLICACIÓN EN UN CONTENEDOR DE DOCKER (Ubuntu)
 
-1. INSTALAR DOCKER
-
-    1.1 Abre una terminal y ejecuta:
-   
-    sudo apt update && sudo apt upgrade -y
-   
-    1.2  Instalar dependencias necesarias
-   
-    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
-   
-    1.3 Actualizar e instalar Docker
-   
-    sudo apt update
-    sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-   
-    1.4 Verificar la instalación
-   
-    sudo docker --version
-   
-    1.5 Probar con un contenedor
-   
-    sudo docker run hello-world
+1. INSTALAR DOCKER (Seguir documentación de docker)
 
 2. CREAR UNA RED PERSONALIZADA PARA LOS CONTENEDORES
 
@@ -79,8 +58,6 @@ PASOS PARA INSTALAR LA APLICACIÓN EN UN CONTENEDOR DE DOCKER (Ubuntu)
     3.8 Ejecutar el Script SQL de db_cit
   
     SOURCE /cit_management_sac/db/SQL Script.sql
-  
-  
 
 4. INSTALAR NODEJS 22
 

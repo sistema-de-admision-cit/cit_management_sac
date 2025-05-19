@@ -14,6 +14,7 @@ import cr.co.ctpcit.citsacbackend.logic.mappers.configs.SystemConfigMapper;
 import cr.co.ctpcit.citsacbackend.data.utils.EncryptionUtil;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -62,6 +63,10 @@ public class SystemConfigServiceImpl implements SystemConfigService {
    */
   @PostConstruct
   public void loadConfigFromDB() {
+    ConfigDataInitializer configDataInitializer = new ConfigDataInitializer(systemConfigRepository,
+            encryptionUtil);
+    configDataInitializer.initConfigs();
+
     systemConfigRepository.findAll()
             .forEach(config -> cache.put(config.getConfigName().name(), config));
 

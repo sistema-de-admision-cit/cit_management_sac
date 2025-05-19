@@ -58,4 +58,6 @@ public interface SystemConfigRepository extends JpaRepository<SystemConfigEntity
   @Query(
       "UPDATE SystemConfigEntity s SET s.configValue = :configValue WHERE s.configName = :configName")
   void updateByConfigName(Configurations configName, String configValue);
+
+  boolean existsByConfigName(Configurations name);
 }
