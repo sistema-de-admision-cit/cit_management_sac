@@ -1,6 +1,9 @@
 services:
   sac-app:
     image: sac-app
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: sac-app-container
     build: .
     ports:
@@ -13,14 +16,14 @@ services:
       - app-storage:/storage
 
   mysql:
-    image: mysql
+    image: mysql:latest
     container_name: sac-mysql-container
     ports:
       - "3306:3306"
     networks:
       - sac-network
     volumes:
-      - mysql-sac-volume
+      - mysql-sac-volume:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: <root_password>
       MYSQL_DATABASE: db_cit
