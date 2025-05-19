@@ -7,9 +7,9 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema db_cit_test
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `db_cit` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+CREATE SCHEMA IF NOT EXISTS db_cit DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 
-USE `db_cit`;
+USE db_cit;
 
 -- -----------------------------------------------------
 -- Table `tbl_person`
@@ -192,11 +192,11 @@ COLLATE = utf8mb4_0900_ai_ci;
   -- SINGLE: unique answer
   -- MULTIPLE: multiple answer
   -- PARAGRAPH: table has no choises
---------------------------------------------------------
+-- ------------------------------------------------------
 -- `question_type`:
   -- ACA: academic
   -- DAI: psiometric
---------------------------------------------------------
+-- ------------------------------------------------------
 -- `question_grade`:
   -- The enrollment's grade in which the question is supposed to be asked
 -- -----------------------------------------------------
@@ -635,7 +635,6 @@ END//
 
 DROP PROCEDURE IF EXISTS usp_Process_English_Exam_And_Log;
 
-//
 CREATE PROCEDURE usp_Process_English_Exam_And_Log(
     IN p_first_name VARCHAR(32),
     IN p_last_names VARCHAR(64),
@@ -747,7 +746,6 @@ END//
 -- This procedure groups the enrollments by the known_through field
 -- and returns the count of students for each group
 
-/* 1) SQL: create filtered stored procedure */
 DELIMITER //
 DROP PROCEDURE IF EXISTS usp_Get_Students_By_Exam_Source_Filters //
 CREATE PROCEDURE usp_Get_Students_By_Exam_Source_Filters(
@@ -903,6 +901,10 @@ BEGIN
       OR (p_sector = 'Secundaria' AND en.grade_to_enroll IN ('SEVENTH','EIGHTH','NINTH','TENTH'))
     );
 END //
+
+DELIMITER ;
+
+DELIMITER //
   
 -- 5b) Media de puntajes por grado (Academic Exam)
 DROP PROCEDURE IF EXISTS usp_Get_Academic_Exam_Grade_Average_Filters //
@@ -934,6 +936,7 @@ BEGIN
   ORDER BY en.grade_to_enroll;
 END //
 
+DELIMITER ;
 
 DELIMITER //
 DROP PROCEDURE IF EXISTS usp_Get_Admission_Funnel_Trend_Filters //
@@ -993,9 +996,10 @@ BEGIN
 END //
 DELIMITER ;
 
-
-DROP PROCEDURE IF EXISTS `usp_Get_LeadSource_Effectiveness_Filters`;
 DELIMITER //
+
+DROP PROCEDURE IF EXISTS `usp_Get_LeadSource_Effectiveness_Filters`//
+
 CREATE PROCEDURE `usp_Get_LeadSource_Effectiveness_Filters`(
   IN p_start_date DATE,
   IN p_end_date   DATE,
@@ -1037,9 +1041,10 @@ BEGIN
 END //
 DELIMITER ;
 
-
-DROP PROCEDURE IF EXISTS `usp_Get_PreviousGrades_By_Status_Filters`;
 DELIMITER //
+
+DROP PROCEDURE IF EXISTS `usp_Get_PreviousGrades_By_Status_Filters`//
+
 CREATE PROCEDURE `usp_Get_PreviousGrades_By_Status_Filters`(
   IN p_start_date DATE,
   IN p_end_date   DATE,
@@ -1067,10 +1072,10 @@ BEGIN
 END //
 DELIMITER ;
 
-
-
-DROP PROCEDURE IF EXISTS usp_Get_CEFR_Distribution_Filters;
 DELIMITER //
+
+DROP PROCEDURE IF EXISTS usp_Get_CEFR_Distribution_Filters//
+
 CREATE PROCEDURE usp_Get_CEFR_Distribution_Filters(
   IN p_start_date DATE,
   IN p_end_date   DATE,
@@ -1105,12 +1110,6 @@ BEGIN
   ORDER BY FIELD(ee.`level`,'A1','A2','B1','B2','C1','C2');
 END//
 DELIMITER ;
-
-
--- End of the stored procedures
--- ----------------------------------------------------- 
-DELIMITER ;
--- -----------------------------------------------------
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
