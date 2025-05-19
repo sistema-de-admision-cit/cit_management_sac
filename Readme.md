@@ -89,6 +89,13 @@ PASOS PARA INSTALAR LA APLICACIÓN EN UN CONTENEDOR DE DOCKER (Ubuntu)
 6. CREAR LA IMAGEN DE DOCKER CON EL Dockerfile
 
     6.1. TIENE QUE ESTAR EN EL DIRECTORIO RAIZ DEL BACKEND
+
+    6.2. AGREGAR LAS VARIABLES DE ENTORNO
+    
+        6.2.1. Enfasis en ENCRYPTION_SECRET. Se debe usar la primera linea de la llave privada: privyKey.pem que se creó en el punto 
+
+            Para ver el contenido de la llave privada debe ejecutar el comando:
+                cat src/main/resources/privyKey.pem estando en la carpeta cit-sac-back-end
     
     pwd -> cit-sac-back-end
 
