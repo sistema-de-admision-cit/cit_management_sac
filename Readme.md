@@ -14,26 +14,26 @@ PASOS PARA INSTALAR LA APLICACIÓN EN UN CONTENEDOR DE DOCKER (Ubuntu)
 
 3. CREAR UN VOLUMEN PARA LA BASE DE DATOS
 
-    sudo docker volume create mysql-sac-volume
+    sudo docker volume create sac-mysql-volume
 
 4. INSTALAR UNA IMAGEN DE MySQL Y CREAR LA BASE DE DATOS Y EL USUARIO
 
    4.1 Instalar una imagen de MySQL
    
    sudo docker run -d \
-  --name mysql-sac-container \
+  --name sac-mysql-container \
   --network sac-network \
   -p 3306:3306 \
   -e MYSQL_ROOT_PASSWORD=<CONTRASENHA DESEADA OJALA SUPERSEGURA> \
   -e MYSQL_DATABASE=db_cit \
   -e MYSQL_USER=cituser \
   -e MYSQL_PASSWORD=<CONTRASENHA PARA LA BASE DE DATOS SAC>
-  -v mysql-sac-volume:/var/lib/mysql
+  -v sac-mysql-volume:/var/lib/mysql
   mysql:latest
   
     4.2 Iniciamos la imagen:
   
-    sudo docker start mysql-sac-container
+    sudo docker start sac-mysql-container
   
     4.3 Verificar que el contenedor está en ejecución
   
@@ -113,6 +113,6 @@ PASOS PARA INSTALAR LA APLICACIÓN EN UN CONTENEDOR DE DOCKER (Ubuntu)
 
 9. CREAR UN VOLUME PARA LA APPLICACION
 
-    sudo docker volume create app-storage
+    sudo docker volume create sac-app-volume
 
 10. CREAR EL CONTENEDOR DE LA APLICACION
