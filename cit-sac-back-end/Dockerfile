@@ -10,7 +10,7 @@ VOLUME /storage
 ENV NODE_VERSION=22.x
 ENV INSCRIPTIONS_STORAGE_DIR=/storage/inscriptions/
 ENV QUESTIONS_STORAGE_DIR=/storage/questions/
-ENV DATASOURSE_URL=jdbc:mysql://mysql-citsac:3306/db_cit
+ENV DATASOURSE_URL=jdbc:mysql://mysql-sac-container:3306/db_cit
 ENV DATASOURSE_USERNAME=''
 ENV DATASOURSE_PASSWORD=''
 ENV JWT_PUBLIC_KEY=classpath:pubKey.pem
