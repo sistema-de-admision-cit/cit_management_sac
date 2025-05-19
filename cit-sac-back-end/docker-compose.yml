@@ -32,4 +32,5 @@ networks:
   sac-network:
 volumes:
   mysql-sac-volume:
+  app-storage:
   
