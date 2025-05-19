@@ -58,8 +58,24 @@ PASOS PARA INSTALAR LA APLICACIÓN EN UN CONTENEDOR DE DOCKER (Ubuntu)
     3.8 Ejecutar el Script SQL de db_cit
   
     SOURCE /cit_management_sac/db/SQL Script.sql
+	
+4. CREAR LAS LLAVES PÚBLICAS Y PRIVADAS
+   
+   4.1 Generar la clave privada (.pem)
 
-4. INSTALAR NODEJS 22
+   openssl genpkey -algorithm RSA -out privyKey.pem -pkeyopt rsa_keygen_bits:2048
+   
+   4.2 Generar la clave pública (.pem) a partir de la privada
+   
+   openssl rsa -pubout -in privyKey.pem -out public.pem
+
+   4.3 Ver el contenido de las llaves
+   
+   cat privyKey.pem
+   
+   cat public.pem
+
+5. INSTALAR NODEJS 22
 
    sudo apt-get install && apt-get upgrade -y
    sudo apt-get install -y curl gnupg
@@ -69,28 +85,28 @@ PASOS PARA INSTALAR LA APLICACIÓN EN UN CONTENEDOR DE DOCKER (Ubuntu)
    node -v
    npm -v
 
-5. HACER BUILD DEL FRONTEND
+6. HACER BUILD DEL FRONTEND
     
-    5.1. ELIMINAR package-lock.json y node_modules/
+    6.1. ELIMINAR package-lock.json y node_modules/
     
     pwd -> Esto debe arrojar la carpeta management_client
 
     rm package-lock.json
     rm -rf node_modules/
 
-    5.2. INSTALAR DEPENDENCIAS DEL FRONTEND
+    6.2. INSTALAR DEPENDENCIAS DEL FRONTEND
 
     npm i
 
-    5.3. CONSTRUIR LA APLICACION
+    6.3. CONSTRUIR LA APLICACION
 
     npm run build
 
-6. CREAR LA IMAGEN DE DOCKER CON EL Dockerfile
+7. CREAR LA IMAGEN DE DOCKER CON EL Dockerfile
 
-    6.1. TIENE QUE ESTAR EN EL DIRECTORIO RAIZ DEL BACKEND
+    7.1. TIENE QUE ESTAR EN EL DIRECTORIO RAIZ DEL BACKEND
 
-    6.2. AGREGAR LAS VARIABLES DE ENTORNO
+    7.2. AGREGAR LAS VARIABLES DE ENTORNO
     
         6.2.1. Enfasis en ENCRYPTION_SECRET. Se debe usar la primera linea de la llave privada: privyKey.pem que se creó en el punto 
 
@@ -99,6 +115,6 @@ PASOS PARA INSTALAR LA APLICACIÓN EN UN CONTENEDOR DE DOCKER (Ubuntu)
     
     pwd -> cit-sac-back-end
 
-    6.2. CREAR LA IMAGEN
+    7.3 CREAR LA IMAGEN
 
     sudo docker build -t "SAC-APP"
