@@ -4,6 +4,8 @@ FROM eclipse-temurin:21.0.7_6-jdk
 # PUERTO DE LA APLICACION
 EXPOSE 8080
 
+VOLUME /storage
+
 # Variables necesarias para instalación
 ENV NODE_VERSION=22.x
 ENV INSCRIPTIONS_STORAGE_DIR=/storage/inscriptions/

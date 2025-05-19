@@ -1,0 +1,33 @@
+services:
+  sac-app:
+    image: sac-app
+    container_name: sac-app-container
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - sac-network
+    volumes:
+      - app-storage:/storage
+
+  mysql:
+    image: mysql
+    container_name: sac-mysql-container
+    ports:
+      - "3306:3306"
+    networks:
+      - sac-network
+    volumes:
+      - mysql-sac-volume
+    environment:
+      MYSQL_ROOT_PASSWORD: <root_password>
+      MYSQL_DATABASE: db_cit
+      MYSQL_USER: cituser
+      MYSQL_PASSWORD: <cituser_password>
+networks:
+  sac-network:
+volumes:
+  mysql-sac-volume:
+  
