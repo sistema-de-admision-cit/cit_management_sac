@@ -51,7 +51,23 @@ PASOS PARA INSTALAR LA APLICACIÓN EN UN CONTENEDOR DE DOCKER (Ubuntu)
 
         4.5.2. Ejecutar: 'mysql> SOURCE SQL Script.sql
 
-5. INSTALAR NODEJS 22
+5. CREAR LAS LLAVES PÚBLICAS Y PRIVADAS
+   
+   5.1 Generar la clave privada (.pem)
+
+   openssl genpkey -algorithm RSA -out privyKey.pem -pkeyopt rsa_keygen_bits:2048
+   
+   5.2 Generar la clave pública (.pem) a partir de la privada
+   
+   openssl rsa -pubout -in privyKey.pem -out public.pem
+
+   5.3 Ver el contenido de las llaves
+   
+   cat privyKey.pem
+   
+   cat public.pem
+
+6. INSTALAR NODEJS 22
 
    sudo apt-get install && apt-get upgrade -y
    sudo apt-get install -y curl gnupg
@@ -61,40 +77,42 @@ PASOS PARA INSTALAR LA APLICACIÓN EN UN CONTENEDOR DE DOCKER (Ubuntu)
    node -v
    npm -v
 
-6. HACER BUILD DEL FRONTEND
+7. HACER BUILD DEL FRONTEND
     
-    6.1. ELIMINAR package-lock.json y node_modules/
+    7.1. ELIMINAR package-lock.json y node_modules/
     
     pwd -> Esto debe arrojar la carpeta management_client
 
     rm package-lock.json
     rm -rf node_modules/
 
-    6.2. INSTALAR DEPENDENCIAS DEL FRONTEND
+    7.2. INSTALAR DEPENDENCIAS DEL FRONTEND
 
     npm i
 
-    6.3. CONSTRUIR LA APLICACION
+    7.3. CONSTRUIR LA APLICACION
 
     npm run build
 
-7. CREAR LA IMAGEN DE DOCKER CON EL Dockerfile
+8. CREAR LA IMAGEN DE DOCKER CON EL Dockerfile
 
-    7.1. TIENE QUE ESTAR EN EL DIRECTORIO RAIZ DEL BACKEND
+    8.1. TIENE QUE ESTAR EN EL DIRECTORIO RAIZ DEL BACKEND
 
-    7.2. AGREGAR LAS VARIABLES DE ENTORNO
+    8.2. AGREGAR LAS VARIABLES DE ENTORNO
     
-        7.2.1. Enfasis en ENCRYPTION_SECRET. Se debe usar la primera linea de la llave privada: privyKey.pem que se creó en el punto 
+        8.2.1. Enfasis en ENCRYPTION_SECRET. Se debe usar la primera linea de la llave privada: privyKey.pem que se creó en el punto 
 
             Para ver el contenido de la llave privada debe ejecutar el comando:
                 cat src/main/resources/privyKey.pem estando en la carpeta cit-sac-back-end
     
     pwd -> cit-sac-back-end
 
-    7.3. CREAR LA IMAGEN
+    8.3. CREAR LA IMAGEN
 
     sudo docker build -t "SAC-APP"
 
-8. CREAR UN VOLUME PARA LA APPLICACION
+9. CREAR UN VOLUME PARA LA APPLICACION
 
     sudo docker volume create app-storage
+
+10. CREAR EL CONTENEDOR DE LA APLICACION
