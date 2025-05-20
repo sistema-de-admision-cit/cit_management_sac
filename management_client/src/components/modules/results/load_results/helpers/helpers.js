@@ -60,7 +60,6 @@ const headerMapping = {
 
 // parse data from array to json and filter out unnecessary fields
 export const convertToJson = (headers, data) => {
-  // drop rows with less than 2 columns (empty rows)
   data = data.filter((row) => row.length > 1)
 
   return data.map((row) => {
@@ -71,8 +70,9 @@ export const convertToJson = (headers, data) => {
 
       if (camelCaseKey) {
         if (camelCaseKey === 'lastTest') {
-          // Formatear la fecha solo para 'lastTest'
           obj[camelCaseKey] = formatDateForJava(row[index])
+        } else if (camelCaseKey === 'core') {
+          obj[camelCaseKey] = 0
         } else {
           obj[camelCaseKey] = row[index]
         }
