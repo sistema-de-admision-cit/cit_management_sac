@@ -1,118 +1,106 @@
-PASOS PARA INSTALAR LA APLICACIÓN EN UN CONTENEDOR DE DOCKER (Ubuntu)
+<h1>Instalación del Sistema de Admisión CIT en Contenedor Docker (Ubuntu)</h1>
 
-1. INSTALAR DOCKER (Seguir documentación de docker)
+<h2>1. Instalar Docker</h2>
+<p>Seguir la documentación oficial de Docker para su instalación en Ubuntu.</p>
 
-2. CREAR UNA RED PERSONALIZADA PARA LOS CONTENEDORES
+<h2>2. Crear Red Personalizada</h2>
+<ol>
+  <li>Crear red:
+    <pre><code>sudo docker network create sac-network</code></pre>
+  </li>
+  <li>Verificar la red:
+    <pre><code>sudo docker network ls</code></pre>
+  </li>
+</ol>
 
-    2.1 Crear una red personalizada para los contenedores
-   
-    sudo docker network create sac-network
-   
-    2.2 Para verificar que la red se creó, se ingresa:
-   
-    sudo docker network ls
+<h2>3. Crear Volumen para MySQL</h2>
+<pre><code>sudo docker volume create sac-mysql-volume</code></pre>
 
-3. CREAR UN VOLUMEN PARA LA BASE DE DATOS
-
-    sudo docker volume create sac-mysql-volume
-
-4. INSTALAR UNA IMAGEN DE MySQL Y CREAR LA BASE DE DATOS Y EL USUARIO
-
-   4.1 Instalar una imagen de MySQL
-   
-   sudo docker run -d \
+<h2>4. Instalar MySQL y Crear Base de Datos</h2>
+<ol>
+  <li>Ejecutar contenedor MySQL:
+    <pre><code>
+sudo docker run -d \
   --name sac-mysql-container \
   --network sac-network \
   -p 3306:3306 \
-  -e MYSQL_ROOT_PASSWORD=<CONTRASENHA DESEADA OJALA SUPERSEGURA> \
+  -e MYSQL_ROOT_PASSWORD=&lt;CONTRASENHA&gt; \
   -e MYSQL_DATABASE=db_cit \
   -e MYSQL_USER=cituser \
-  -e MYSQL_PASSWORD=<CONTRASENHA PARA LA BASE DE DATOS SAC>
-  -v sac-mysql-volume:/var/lib/mysql
+  -e MYSQL_PASSWORD=&lt;PASSWORD_BD&gt; \
+  -v sac-mysql-volume:/var/lib/mysql \
   mysql:latest
-  
-    4.2 Iniciamos la imagen:
-  
-    sudo docker start sac-mysql-container
-  
-    4.3 Verificar que el contenedor está en ejecución
-  
-    sudo docker ps -a
-  
-    4.4 Conectarnos a MySQL 
-  
-    mysql -h 0.0.0.0 -P 3306 -u root -p 
-  
-    Enter password: 
+    </code></pre>
+  </li>
+  <li>Iniciar contenedor:
+    <pre><code>sudo docker start sac-mysql-container</code></pre>
+  </li>
+  <li>Verificar ejecución:
+    <pre><code>sudo docker ps -a</code></pre>
+  </li>
+  <li>Conectarse a MySQL:
+    <pre><code>mysql -h 0.0.0.0 -P 3306 -u root -p</code></pre>
+    <pre><code>Password: campus12</code></pre>
+  </li>
+  <li>Ejecutar script SQL:
+    <pre><code>
+cd /cit_management_sac/db/
+mysql&gt; SOURCE SQL\ Script.sql
+    </code></pre>
+  </li>
+</ol>
 
-    4.5 Ejecutar el Script SQL de db_cit
+<h2>5. Crear Claves Pública y Privada</h2>
+<pre><code>
+openssl genpkey -algorithm RSA -out privyKey.pem -pkeyopt rsa_keygen_bits:2048
+openssl rsa -pubout -in privyKey.pem -out public.pem
+cat privyKey.pem
+cat public.pem
+</code></pre>
 
-        4.5.1. Ubicarse en la carpeta db: /cit_management_sac/db/
+<h2>6. Instalar Node.js 22</h2>
+<pre><code>
+sudo apt-get update && sudo apt-get upgrade -y
+sudo apt-get install -y curl gnupg
+curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh
+sudo -E bash nodesource_setup.sh
+sudo apt-get install -y nodejs
+node -v
+npm -v
+</code></pre>
 
-        4.5.2. Ejecutar: 'mysql> SOURCE SQL Script.sql
+<h2>7. Build del Frontend</h2>
+<ol>
+  <li>Eliminar archivos previos:
+    <pre><code>
+cd management_client
+rm package-lock.json
+rm -rf node_modules/
+    </code></pre>
+  </li>
+  <li>Instalar dependencias:
+    <pre><code>npm i</code></pre>
+  </li>
+  <li>Construir aplicación:
+    <pre><code>npm run build</code></pre>
+  </li>
+</ol>
 
-5. CREAR LAS LLAVES PÚBLICAS Y PRIVADAS
-   
-   5.1 Generar la clave privada (.pem)
+<h2>8. Crear Imagen Docker del Backend</h2>
+<ol>
+  <li>Ubicarse en el directorio raíz del backend:
+    <pre><code>cd cit-sac-back-end</code></pre>
+  </li>
+  <li>Agregar variables de entorno (incluyendo ENCRYPTION_SECRET).</li>
+     <li>Para ver el contenido de la llave privada debe ejecutar el comando:</li>
+    <pre><code> cat src/main/resources/privyKey.pem estando en la carpeta cit-sac-back-end</code></pre>
+  <li>Crear imagen:
+    <pre><code>sudo docker build -t "SAC-APP" .</code></pre>
+  </li>
+</ol>
 
-   openssl genpkey -algorithm RSA -out privyKey.pem -pkeyopt rsa_keygen_bits:2048
-   
-   5.2 Generar la clave pública (.pem) a partir de la privada
-   
-   openssl rsa -pubout -in privyKey.pem -out public.pem
+<h2>9. Crear Volumen para la Aplicación</h2>
+<pre><code>sudo docker volume create sac-app-volume</code></pre>
 
-   5.3 Ver el contenido de las llaves
-   
-   cat privyKey.pem
-   
-   cat public.pem
+<h2>10. Crear Contenedor de la Aplicación</h2>
 
-6. INSTALAR NODEJS 22
-
-   sudo apt-get install && apt-get upgrade -y
-   sudo apt-get install -y curl gnupg
-   sudo curl -fsSL https://deb.nodesource.com/setup_$NODE_VERSION -o nodesource_setup.sh
-   sudo -E bash nodesource_setup.sh
-   sudo apt-get install -y nodejs
-   node -v
-   npm -v
-
-7. HACER BUILD DEL FRONTEND
-    
-    7.1. ELIMINAR package-lock.json y node_modules/
-    
-    pwd -> Esto debe arrojar la carpeta management_client
-
-    rm package-lock.json
-    rm -rf node_modules/
-
-    7.2. INSTALAR DEPENDENCIAS DEL FRONTEND
-
-    npm i
-
-    7.3. CONSTRUIR LA APLICACION
-
-    npm run build
-
-8. CREAR LA IMAGEN DE DOCKER CON EL Dockerfile
-
-    8.1. TIENE QUE ESTAR EN EL DIRECTORIO RAIZ DEL BACKEND
-
-    8.2. AGREGAR LAS VARIABLES DE ENTORNO
-    
-        8.2.1. Enfasis en ENCRYPTION_SECRET. Se debe usar la primera linea de la llave privada: privyKey.pem que se creó en el punto 
-
-            Para ver el contenido de la llave privada debe ejecutar el comando:
-                cat src/main/resources/privyKey.pem estando en la carpeta cit-sac-back-end
-    
-    pwd -> cit-sac-back-end
-
-    8.3. CREAR LA IMAGEN
-
-    sudo docker build -t "SAC-APP"
-
-9. CREAR UN VOLUME PARA LA APPLICACION
-
-    sudo docker volume create sac-app-volume
-
-10. CREAR EL CONTENEDOR DE LA APLICACION
