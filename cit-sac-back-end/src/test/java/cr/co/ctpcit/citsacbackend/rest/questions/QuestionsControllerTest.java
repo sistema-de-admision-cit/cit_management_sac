@@ -1,9 +1,11 @@
 package cr.co.ctpcit.citsacbackend.rest.questions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cr.co.ctpcit.citsacbackend.TestConfig;
 import cr.co.ctpcit.citsacbackend.TestProvider;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionDto;
 import cr.co.ctpcit.citsacbackend.logic.dto.questions.QuestionFilterSpec;
+import cr.co.ctpcit.citsacbackend.logic.services.auth.UserDetailsServiceImpl;
 import cr.co.ctpcit.citsacbackend.logic.services.questions.QuestionsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -34,13 +37,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(QuestionsController.class)
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
+@Import(TestConfig.class)
 class QuestionsControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
+    private UserDetailsServiceImpl userDetailsService;
+
+    @MockBean
     private QuestionsServiceImpl questionService;
+
+    @Autowired
+    private TestConfig testConfig;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -53,6 +63,7 @@ class QuestionsControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/questions/create")
                         .file(jsonFile)
+                        .headers(testConfig.getBearerHeader())
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(2L))
@@ -66,7 +77,8 @@ class QuestionsControllerTest {
 
         when(questionService.getQuestionById(2L)).thenReturn(questionDto);
 
-        mockMvc.perform(get("/api/questions/get-by-id/2"))
+        mockMvc.perform(get("/api/questions/get-by-id/2")
+                        .headers(testConfig.getBearerHeader()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(2L))
                 .andExpect(jsonPath("$.questionText").value(questionDto.questionText()));
@@ -81,6 +93,7 @@ class QuestionsControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/questions/update")
                         .file(jsonFile)
+                        .headers(testConfig.getBearerHeader())
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .with(request -> {
                             request.setMethod("POST");
@@ -94,11 +107,11 @@ class QuestionsControllerTest {
     void testDeleteQuestion() throws Exception {
         doNothing().when(questionService).deleteQuestion(2L);
 
-        mockMvc.perform(delete("/api/questions/delete/2"))
+        mockMvc.perform(delete("/api/questions/delete/2")
+                        .headers(testConfig.getBearerHeader()))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Question deleted successfully."));
     }
-
     @Test
     void testGetAllQuestions() throws Exception {
         QuestionDto questionDto = TestProvider.provideDaiQuestionDto();
@@ -107,6 +120,7 @@ class QuestionsControllerTest {
         when(questionService.getQuestions(any(QuestionFilterSpec.class), any(Pageable.class))).thenReturn(questionPage);
 
         mockMvc.perform(get("/api/questions/get-all")
+                        .headers(testConfig.getBearerHeader())
                         .param("page", "0")
                         .param("size", "10")
                         .param("questionText", "")
@@ -132,6 +146,7 @@ class QuestionsControllerTest {
         when(questionService.searchQuestion(any(String.class), any(Pageable.class))).thenReturn(questionPage);
 
         mockMvc.perform(get("/api/questions/search")
+                        .headers(testConfig.getBearerHeader())
                         .param("questionText", "¿Cómo te sientes el día de hoy?")
                         .param("page", "0")
                         .param("size", "10"))
@@ -150,7 +165,8 @@ class QuestionsControllerTest {
 
     @Test
     void testHealthCheck() throws Exception {
-        mockMvc.perform(get("/api/questions/health"))
+        mockMvc.perform(get("/api/questions/health")
+                        .headers(testConfig.getBearerHeader()))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Questions service is up and running."));
     }
