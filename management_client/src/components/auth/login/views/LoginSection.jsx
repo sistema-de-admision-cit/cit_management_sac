@@ -24,7 +24,7 @@ const LoginSection = () => {
   }, [isLoginSuccessful, isDefaultPassword, navigate])
 
   const fields = [
-    { name: 'username', label: 'Correo Electrónico', type: 'email', placeholder: 'Ej. name@example.com' },
+    { name: 'username', label: 'Correo Electrónico', type: 'email', placeholder: 'Ej. nombre@ctpcit.co.cr' },
     { name: 'password', label: 'Contraseña', type: 'password', placeholder: 'Ej. ********' }
   ]
 
