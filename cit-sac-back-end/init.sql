@@ -426,9 +426,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- Table `tbl_System_Config`
 
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_System_Config`;
+DROP TABLE IF EXISTS `tbl_system_config`;
 
-CREATE TABLE IF NOT EXISTS `tbl_System_Config` (
+CREATE TABLE IF NOT EXISTS `tbl_system_config` (
   `config_id` INT NOT NULL AUTO_INCREMENT,
   `config_name` ENUM(
 						'EMAIL_CONTACT',                   	-- Email for the people to ask any question 
@@ -447,30 +447,30 @@ CREATE TABLE IF NOT EXISTS `tbl_System_Config` (
 					) NOT NULL,
   `config_value` VARCHAR(128) NOT NULL,
   PRIMARY KEY (`config_id`),
-  UNIQUE INDEX `UQ_Config_Name` (`config_name` ASC) VISIBLE)
+  UNIQUE INDEX `uq_config_name` (`config_name` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `tbl_Users`
+-- Table `tbl_users`
 -- `role`:
   -- SYS: system administrator
   -- ADMIN: administrator
   -- TEACHER: teacher
   -- PSI: psicologist
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Users` ;
+DROP TABLE IF EXISTS `tbl_users` ;
 
-CREATE TABLE IF NOT EXISTS `tbl_Users` (
+CREATE TABLE IF NOT EXISTS `tbl_users` (
   `user_id` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(128) NOT NULL,
   `username` VARCHAR(64) NOT NULL,
   `user_password` VARCHAR(128) NOT NULL,
   `role` ENUM('SYS', 'ADMIN', 'TEACHER', 'PSYCHOLOGIST') NOT NULL,
   PRIMARY KEY (`user_id`),
-  UNIQUE INDEX `UQ_Users_Email` (`email` ASC))
+  UNIQUE INDEX `uq_users_email` (`email` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -483,9 +483,9 @@ DELIMITER //
 -- Procedure: usp_Update_Enrollment_And_Log
 -- Description: Updates the status, exam date, and whatsapp permission of an enrollment and logs the changes
 
-DROP PROCEDURE IF EXISTS usp_Update_Enrollment_And_Log//
+DROP PROCEDURE IF EXISTS usp_update_enrollment_and_log//
 
-CREATE PROCEDURE usp_Update_Enrollment_And_Log ( 
+CREATE PROCEDURE usp_update_enrollment_and_log ( 
     IN p_enrollment_id INT,
     IN p_new_status ENUM('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED'),
     IN p_new_exam_date DATE,
@@ -505,13 +505,13 @@ BEGIN
     -- Obtener datos actuales de la inscripción
     SELECT `status`, `exam_date`, `whatsapp_notification`, `student_id`
     INTO v_old_status, v_old_exam_date, v_old_whatsapp_permission, v_student_id
-    FROM `tbl_Enrollments`
+    FROM `tbl_enrollments`
     WHERE `enrollment_id` = p_enrollment_id;
 
     -- Obtener la nota previa del estudiante
     SELECT `previous_grades`
     INTO v_old_previous_grades
-    FROM `tbl_Students`
+    FROM `tbl_students`
     WHERE `student_id` = v_student_id;
     
     -- Obtener el id del usuario que actualiza
@@ -521,7 +521,7 @@ BEGIN
     WHERE `email` = p_changed_by;
 
     -- Actualizar inscripción
-    UPDATE `tbl_Enrollments`
+    UPDATE `tbl_enrollments`
     SET `status` = p_new_status,
         `exam_date` = p_new_exam_date,
         `whatsapp_notification` = p_new_whatsapp_permission
@@ -529,43 +529,43 @@ BEGIN
 
     -- Actualizar calificaciones previas si es diferente
     IF v_old_previous_grades != p_new_previous_grades THEN
-        UPDATE `tbl_Students`
+        UPDATE `tbl_students`
         SET `previous_grades` = p_new_previous_grades
         WHERE `student_id` = v_student_id;
 
-        INSERT INTO `tbl_Logs` 
+        INSERT INTO `tbl_logs` 
             (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
         VALUES 
-            ('tbl_Students', 'previous_grades', v_old_previous_grades, p_new_previous_grades, v_changed_by_id, 
-             CONCAT('UPDATE tbl_Students SET previous_grades = ', p_new_previous_grades, ' WHERE student_id = ', v_student_id), 
+            ('tbl_students', 'previous_grades', v_old_previous_grades, p_new_previous_grades, v_changed_by_id, 
+             CONCAT('UPDATE tbl_students SET previous_grades = ', p_new_previous_grades, ' WHERE student_id = ', v_student_id), 
              p_comment);
     END IF;
 
     -- Registrar cambios si los valores fueron modificados
     IF v_old_status != p_new_status THEN
-        INSERT INTO `tbl_Logs` 
+        INSERT INTO `tbl_logs` 
             (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
         VALUES 
-            ('tbl_Enrollments', 'status', v_old_status, p_new_status, v_changed_by_id, 
-             CONCAT('UPDATE tbl_Enrollments SET status = ', p_new_status, ' WHERE enrollment_id = ', p_enrollment_id), 
+            ('tbl_enrollments', 'status', v_old_status, p_new_status, v_changed_by_id, 
+             CONCAT('UPDATE tbl_enrollments SET status = ', p_new_status, ' WHERE enrollment_id = ', p_enrollment_id), 
              p_comment);
     END IF;
 
     IF v_old_exam_date != p_new_exam_date THEN
-        INSERT INTO `tbl_Logs` 
+        INSERT INTO `tbl_logs` 
             (`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
         VALUES 
-            ('tbl_Enrollments', 'exam_date', v_old_exam_date, p_new_exam_date, v_changed_by_id, 
-             CONCAT('UPDATE tbl_Enrollments SET exam_date = ', p_new_exam_date, ' WHERE enrollment_id = ', p_enrollment_id), 
+            ('tbl_enrollments', 'exam_date', v_old_exam_date, p_new_exam_date, v_changed_by_id, 
+             CONCAT('UPDATE tbl_enrollments SET exam_date = ', p_new_exam_date, ' WHERE enrollment_id = ', p_enrollment_id), 
              p_comment);
     END IF;
     
     IF v_old_whatsapp_permission != p_new_whatsapp_permission THEN
-		INSERT INTO `tbl_Logs` 
+		INSERT INTO `tbl_logs` 
 			(`table_name`, `column_name`, `old_value`, `new_value`, `changed_by`, `query`, `comment`)
 		VALUES
-			('tbl_Enrollments', 'whatsapp_notification', v_old_whatsapp_permission, p_new_whatsapp_permission, v_changed_by_id, 
-             CONCAT('UPDATE tbl_Enrollments SET whatsapp_notification = ', p_new_whatsapp_permission, ' WHERE enrollment_id = ', p_enrollment_id), 
+			('tbl_enrollments', 'whatsapp_notification', v_old_whatsapp_permission, p_new_whatsapp_permission, v_changed_by_id, 
+             CONCAT('UPDATE tbl_enrollments SET whatsapp_notification = ', p_new_whatsapp_permission, ' WHERE enrollment_id = ', p_enrollment_id), 
              p_comment);
 	END IF;
 
@@ -573,12 +573,12 @@ BEGIN
 END//
 
 -- -----------------------------------------------------
--- Procedure: usp_SystemConfig_Notifications_Update
+-- Procedure: usp_systemconfig_notifications_update
 -- Description: Updates the system configuration for notifications
 
-DROP PROCEDURE IF EXISTS usp_SystemConfig_Notifications_Update//
+DROP PROCEDURE IF EXISTS usp_systemconfig_notifications_update//
 
-CREATE PROCEDURE usp_SystemConfig_Notifications_Update(
+CREATE PROCEDURE usp_systemconfig_notifications_update(
     IN p_email_contact VARCHAR(128),
     IN p_email_notifications_contact VARCHAR(128),
     IN p_whatsapp_contact VARCHAR(128),
@@ -610,22 +610,22 @@ BEGIN
 END//
 
 -- -----------------------------------------------------
--- Procedure: usp_Update_Or_Insert_Config
+-- Procedure: usp_update_or_insert_config
 -- Description: Updates or inserts a system configuration
 
-DROP PROCEDURE IF EXISTS usp_Update_Or_Insert_Config//
+DROP PROCEDURE IF EXISTS usp_update_or_insert_config//
 
 -- procedure to update or insert a system config
-CREATE PROCEDURE usp_Update_Or_Insert_Config(
+CREATE PROCEDURE usp_update_or_insert_config(
     IN p_config_name VARCHAR(32),
     IN p_config_value VARCHAR(128)
 )
 
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM tbl_System_Config WHERE config_name = p_config_name) THEN
-        INSERT INTO tbl_System_Config (config_name, config_value) VALUES (p_config_name, p_config_value);
+    IF NOT EXISTS (SELECT 1 FROM tbl_system_config WHERE config_name = p_config_name) THEN
+        INSERT INTO tbl_system_config (config_name, config_value) VALUES (p_config_name, p_config_value);
     ELSE
-        UPDATE tbl_System_Config SET config_value = p_config_value WHERE config_name = p_config_name;
+        UPDATE tbl_system_config SET config_value = p_config_value WHERE config_name = p_config_name;
     END IF;
 END//
 
@@ -633,9 +633,9 @@ END//
 -- Procedure: usp_Process_English_Exam_And_Log
 -- Description: Processes an English exam and logs the results
 
-DROP PROCEDURE IF EXISTS usp_Process_English_Exam_And_Log;
+DROP PROCEDURE IF EXISTS usp_process_english_exam_and_log;
 
-CREATE PROCEDURE usp_Process_English_Exam_And_Log(
+CREATE PROCEDURE usp_process_english_exam_and_log(
     IN p_first_name VARCHAR(32),
     IN p_last_names VARCHAR(64),
     IN p_exam_date DATE,
@@ -658,8 +658,8 @@ proc_label: BEGIN
     -- Buscar la inscripción (enrollment) a partir del estudiante
     SELECT e.enrollment_id
     INTO v_enrollment_id
-    FROM `tbl_Enrollments` e
-    INNER JOIN `tbl_Persons` s 
+    FROM `tbl_enrollments` e
+    INNER JOIN `tbl_persons` s 
         ON e.`student_id` = s.`person_id`
     WHERE s.`first_name` = p_first_name
     AND CONCAT(s.`first_surname`, ' ', IFNULL(s.`second_surname`, '')) = p_last_names
@@ -673,17 +673,17 @@ proc_label: BEGIN
             '. No se encontró la inscripción para el estudiante ', p_first_name, ' ', p_last_names,
             ' en la fecha ', p_exam_date, '.'
         );
-        INSERT INTO `tbl_Logs_Score` 
+        INSERT INTO `tbl_logs_score` 
             (`process_id`, `tracktest_id`, `enrollment_id`, `previous_score`, `new_score`, `exam_date`, `status`, `error_message`)
         VALUES 
             (p_process_id, p_tracktest_id, NULL, NULL, p_new_score, p_exam_date, v_status, v_error_message);
         LEAVE proc_label;
     END IF;
-    
-    -- Verificar si ya existe un registro en tbl_English_Exams para el tracktest_id
+
+    -- Verificar si ya existe un registro en tbl_english_exams para el tracktest_id
     SELECT exam_id
       INTO v_existing_exam_id
-      FROM tbl_English_Exams
+      FROM tbl_english_exams
      WHERE tracktest_id = p_tracktest_id
      LIMIT 1;
     
@@ -692,49 +692,49 @@ proc_label: BEGIN
         SET v_exam_id = v_existing_exam_id;
         SELECT core
           INTO v_previous_score
-          FROM tbl_English_Exams
+          FROM tbl_english_exams
          WHERE exam_id = v_exam_id
            AND tracktest_id = p_tracktest_id
          LIMIT 1;
-        
-        UPDATE tbl_English_Exams
+
+        UPDATE tbl_english_exams
            SET core = p_new_score,
                level = p_level
          WHERE exam_id = v_exam_id
            AND tracktest_id = p_tracktest_id;
-        
-        UPDATE tbl_Exams
+
+        UPDATE tbl_exams
            SET exam_date = p_exam_date
          WHERE exam_id = v_exam_id;
          
         SET v_status = 'SUCCESS';
     ELSE
-        -- No existe registro en tbl_English_Exams para este tracktest_id
+        -- No existe registro en tbl_english_exams para este tracktest_id
         -- Primero, buscar si ya existe un examen de tipo ENG para la inscripción
         SELECT exam_id
           INTO v_exam_id
-          FROM tbl_Exams
+          FROM tbl_exams
          WHERE enrollment_id = v_enrollment_id
            AND exam_type = 'ENG'
          LIMIT 1;
         
         IF v_exam_id IS NOT NULL THEN
-            -- Existe el examen; se inserta el registro en tbl_English_Exams
-            INSERT INTO tbl_English_Exams (exam_id, tracktest_id, core, level)
+            -- Existe el examen; se inserta el registro en tbl_english_exams
+            INSERT INTO tbl_english_exams (exam_id, tracktest_id, core, level)
             VALUES (v_exam_id, p_tracktest_id, p_new_score, p_level);
         ELSE
             -- No existe un examen ENG: se crea uno nuevo en ambas tablas
-            INSERT INTO tbl_Exams (enrollment_id, exam_date, exam_type)
+            INSERT INTO tbl_exams (enrollment_id, exam_date, exam_type)
             VALUES (v_enrollment_id, p_exam_date, 'ENG');
             SET v_exam_id = LAST_INSERT_ID();
-            INSERT INTO tbl_English_Exams (exam_id, tracktest_id, core, level)
+            INSERT INTO tbl_english_exams (exam_id, tracktest_id, core, level)
             VALUES (v_exam_id, p_tracktest_id, p_new_score, p_level);
         END IF;
         SET v_status = 'SUCCESS';
     END IF;
     
     -- Registrar el proceso en la tabla de logs
-    INSERT INTO tbl_Logs_Score 
+    INSERT INTO tbl_logs_score 
         (process_id, tracktest_id, enrollment_id, previous_score, new_score, exam_date, status, error_message)
     VALUES
         (p_process_id, p_tracktest_id, v_enrollment_id, v_previous_score, p_new_score, p_exam_date, v_status, v_error_message);
@@ -747,8 +747,8 @@ END//
 -- and returns the count of students for each group
 
 DELIMITER //
-DROP PROCEDURE IF EXISTS usp_Get_Students_By_Exam_Source_Filters //
-CREATE PROCEDURE usp_Get_Students_By_Exam_Source_Filters(
+DROP PROCEDURE IF EXISTS usp_get_students_by_exam_source_filters //
+CREATE PROCEDURE usp_get_students_by_exam_source_filters(
   IN p_start_date DATE,
   IN p_end_date   DATE,
   IN p_grades     TEXT,
@@ -764,7 +764,7 @@ BEGIN
       ELSE 'Otros'
     END AS examSource,
     COUNT(*) AS studentCount
-  FROM tbl_Enrollments e
+  FROM tbl_enrollments e
   WHERE
     (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
     AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
@@ -782,8 +782,8 @@ DELIMITER ;
 
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS usp_Get_Enrollment_Attendance_Stats_Filters //
-CREATE PROCEDURE usp_Get_Enrollment_Attendance_Stats_Filters(
+DROP PROCEDURE IF EXISTS usp_get_enrollment_attendance_stats_filters //
+CREATE PROCEDURE usp_get_enrollment_attendance_stats_filters(
   IN p_start_date DATE,
   IN p_end_date   DATE,
   IN p_grades     TEXT, 
@@ -800,8 +800,8 @@ BEGIN
     END                               AS sector,
     COUNT(*)                         AS totalEnrolled,
     COUNT(DISTINCT ex.enrollment_id) AS totalAttended
-  FROM tbl_Enrollments e
-  LEFT JOIN tbl_Exams ex
+  FROM tbl_enrollments e
+  LEFT JOIN tbl_exams ex
     ON ex.enrollment_id = e.enrollment_id
     /* opcionalmente: AND ex.exam_type IN ('ACA','DAI') */
   WHERE 
@@ -823,8 +823,8 @@ DELIMITER ;
 
 
 DELIMITER //
-DROP PROCEDURE IF EXISTS usp_Get_Admission_Final_Stats_Filters //
-CREATE PROCEDURE usp_Get_Admission_Final_Stats_Filters(
+DROP PROCEDURE IF EXISTS usp_get_admission_final_stats_filters //
+CREATE PROCEDURE usp_get_admission_final_stats_filters(
   IN p_start_date DATE,
   IN p_end_date   DATE,
   IN p_grades     TEXT,    -- CSV of grades or 'All'
@@ -861,8 +861,8 @@ DELIMITER ;
 DELIMITER //
 
 -- 5a) Distribución de notas por dificultad (Academic Exam)
-DROP PROCEDURE IF EXISTS usp_Get_Academic_Exam_Distribution_Filters //
-CREATE PROCEDURE usp_Get_Academic_Exam_Distribution_Filters(
+DROP PROCEDURE IF EXISTS usp_get_academic_exam_distribution_filters //
+CREATE PROCEDURE usp_get_academic_exam_distribution_filters(
   IN p_start_date DATE,
   IN p_end_date   DATE,
   IN p_grades     TEXT,
@@ -876,8 +876,8 @@ BEGIN
       WHEN 'HARD'   THEN 'Difícil'
     END                           AS difficulty,
     CAST(r.score AS DECIMAL(5,2)) AS examScore
-  FROM tbl_Exams e
-  JOIN tbl_Enrollments en
+  FROM tbl_exams e
+  JOIN tbl_enrollments en
     ON en.enrollment_id = e.enrollment_id
   JOIN JSON_TABLE(
     e.responses,
@@ -888,7 +888,7 @@ BEGIN
     )
   ) AS r
     ON TRUE
-  JOIN tbl_Questions q
+  JOIN tbl_questions q
     ON q.question_id   = r.questionId
    AND q.question_type = 'ACA'
   WHERE e.exam_type = 'ACA'
@@ -907,8 +907,8 @@ DELIMITER ;
 DELIMITER //
   
 -- 5b) Media de puntajes por grado (Academic Exam)
-DROP PROCEDURE IF EXISTS usp_Get_Academic_Exam_Grade_Average_Filters //
-CREATE PROCEDURE usp_Get_Academic_Exam_Grade_Average_Filters(
+DROP PROCEDURE IF EXISTS usp_get_academic_exam_grade_average_filters //
+CREATE PROCEDURE usp_get_academic_exam_grade_average_filters(
   IN p_start_date DATE,
   IN p_end_date   DATE,
   IN p_grades     TEXT,
@@ -918,10 +918,10 @@ BEGIN
   SELECT
     en.grade_to_enroll AS grade,
     AVG(ae.grade)      AS averageScore
-  FROM tbl_Exams e
-  JOIN tbl_Academic_Exams ae
+  FROM tbl_exams e
+  JOIN tbl_academic_exams ae
     ON ae.exam_id = e.exam_id
-  JOIN tbl_Enrollments en
+  JOIN tbl_enrollments en
     ON en.enrollment_id = e.enrollment_id
   WHERE e.exam_type = 'ACA'
     AND (p_start_date IS NULL OR DATE(e.exam_date) >= p_start_date)
@@ -939,8 +939,8 @@ END //
 DELIMITER ;
 
 DELIMITER //
-DROP PROCEDURE IF EXISTS usp_Get_Admission_Funnel_Trend_Filters //
-CREATE PROCEDURE usp_Get_Admission_Funnel_Trend_Filters(
+DROP PROCEDURE IF EXISTS usp_get_admission_funnel_trend_filters //
+CREATE PROCEDURE usp_get_admission_funnel_trend_filters(
   IN p_start_date DATE,
   IN p_end_date   DATE,
   IN p_grades     TEXT,                   -- CSV list of grades or 'All'
@@ -971,14 +971,14 @@ BEGIN
       IF(COUNT(*) = 0, NULL, 
          SUM(e.status = 'ELIGIBLE') / COUNT(*) * 100
       ), 2
-    ) AS pct_Interested_to_Eligible,
+    ) AS pct_interested_to_eligible,
     ROUND(
       IF(SUM(e.status = 'ELIGIBLE') = 0, NULL, 
          SUM(e.status = 'ACCEPTED') / SUM(e.status = 'ELIGIBLE') * 100
       ), 2
-    ) AS pct_Eligible_to_Accepted
+    ) AS pct_eligible_to_accepted
 
-  FROM tbl_Enrollments e
+  FROM tbl_enrollments e
   WHERE
     (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
     AND (p_end_date   IS NULL OR DATE(e.enrollment_date) <= p_end_date)
@@ -998,9 +998,9 @@ DELIMITER ;
 
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS `usp_Get_LeadSource_Effectiveness_Filters`//
+DROP PROCEDURE IF EXISTS `usp_get_lead_source_effectiveness_filters`//
 
-CREATE PROCEDURE `usp_Get_LeadSource_Effectiveness_Filters`(
+CREATE PROCEDURE `usp_get_lead_source_effectiveness_filters`(
   IN p_start_date DATE,
   IN p_end_date   DATE,
   IN p_grades     TEXT,                   -- CSV of grades or 'All'
@@ -1018,11 +1018,11 @@ BEGIN
     COUNT(*)                     AS studentCount,
     ROUND(SUM(e.status = 'ACCEPTED')/COUNT(*) * 100, 2)    AS acceptanceRate,
     ROUND(AVG(ae.grade),2)       AS avgExamScore
-  FROM tbl_Enrollments e
-  LEFT JOIN tbl_Exams ex
+  FROM tbl_enrollments e
+  LEFT JOIN tbl_exams ex
     ON ex.enrollment_id = e.enrollment_id
     AND ex.exam_type = 'ACA'
-  LEFT JOIN tbl_Academic_Exams ae
+  LEFT JOIN tbl_academic_exams ae
     ON ae.exam_id = ex.exam_id
   WHERE
     (p_start_date IS NULL OR DATE(e.enrollment_date) >= p_start_date)
@@ -1043,9 +1043,9 @@ DELIMITER ;
 
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS `usp_Get_PreviousGrades_By_Status_Filters`//
+DROP PROCEDURE IF EXISTS `usp_get_previous_grades_by_status_filters`//
 
-CREATE PROCEDURE `usp_Get_PreviousGrades_By_Status_Filters`(
+CREATE PROCEDURE `usp_get_previous_grades_by_status_filters`(
   IN p_start_date DATE,
   IN p_end_date   DATE,
   IN p_grades     TEXT,                   -- CSV of grades or 'All'
@@ -1074,9 +1074,9 @@ DELIMITER ;
 
 DELIMITER //
 
-DROP PROCEDURE IF EXISTS usp_Get_CEFR_Distribution_Filters//
+DROP PROCEDURE IF EXISTS usp_get_cefr_distribution_filters//
 
-CREATE PROCEDURE usp_Get_CEFR_Distribution_Filters(
+CREATE PROCEDURE usp_get_cefr_distribution_filters(
   IN p_start_date DATE,
   IN p_end_date   DATE,
   IN p_grades     TEXT,                     -- CSV or 'All'
