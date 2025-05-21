@@ -14,9 +14,9 @@ USE db_cit;
 -- -----------------------------------------------------
 -- Table `tbl_person`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Persons`;
+DROP TABLE IF EXISTS `tbl_persons`;
 
-CREATE TABLE IF NOT EXISTS `tbl_Persons` (
+CREATE TABLE IF NOT EXISTS `tbl_persons` (
   `person_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `first_name` VARCHAR(32) NOT NULL,
   `first_surname` VARCHAR(32) NOT NULL,
@@ -26,9 +26,9 @@ CREATE TABLE IF NOT EXISTS `tbl_Persons` (
   `full_surname` VARCHAR(64) AS (CONCAT(`first_surname`, ' ', `second_surname`)) STORED,
   PRIMARY KEY (`person_id`),
 
-  UNIQUE INDEX `UQ_Persons_IdNumber` (`id_number` ASC),
+  UNIQUE INDEX `uq_persons_idnumber` (`id_number` ASC),
   
-  INDEX `IDX_Persons_Fullname` (`full_surname` ASC))
+  INDEX `idx_persons_fullname` (`full_surname` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -36,18 +36,18 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `tbl_Parents`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Parents`;
+DROP TABLE IF EXISTS `tbl_parents`;
 
-CREATE TABLE IF NOT EXISTS `tbl_Parents` (
+CREATE TABLE IF NOT EXISTS `tbl_parents` (
   `parent_id` INT UNSIGNED NOT NULL,
   `phone_number` VARCHAR(32) NOT NULL,
   `email` VARCHAR(64) NOT NULL,
   `relationship` ENUM('M', 'F', 'G') NOT NULL,
   `dai_exam` JSON DEFAULT NULL,
   PRIMARY KEY (`parent_id`),
-  CONSTRAINT `FK_Parents_Persons`
+  CONSTRAINT `fk_parents_persons`
     FOREIGN KEY (`parent_id`) 
-    REFERENCES `tbl_Persons`(`person_id`)
+    REFERENCES `tbl_persons`(`person_id`)
     ON DELETE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -56,9 +56,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `tbl_Address`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Address` ;
+DROP TABLE IF EXISTS `tbl_address` ;
 
-CREATE TABLE IF NOT EXISTS `tbl_Address` (
+CREATE TABLE IF NOT EXISTS `tbl_address` (
   `address_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `parent_id` INT UNSIGNED NOT NULL,
   `country` VARCHAR(32) NOT NULL,
@@ -67,10 +67,10 @@ CREATE TABLE IF NOT EXISTS `tbl_Address` (
   `district` VARCHAR(32) NOT NULL,
   `address_info` VARCHAR(128) NOT NULL DEFAULT 'N/A',
   PRIMARY KEY (`address_id`),
-  INDEX `IDX_Addresses_ParentID` (`parent_id` ASC),
-  CONSTRAINT `FK_Addresses_Parents`
+  INDEX `idx_addresses_parentID` (`parent_id` ASC),
+  CONSTRAINT `fk_addresses_parents`
     FOREIGN KEY (`parent_id`)
-    REFERENCES `tbl_Parents` (`parent_id`)
+    REFERENCES `tbl_parents` (`parent_id`)
     ON DELETE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -79,18 +79,18 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `tbl_Students`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Students`;
+DROP TABLE IF EXISTS `tbl_students`;
 
-CREATE TABLE IF NOT EXISTS `tbl_Students` (
+CREATE TABLE IF NOT EXISTS `tbl_students` (
   `student_id` INT UNSIGNED NOT NULL,
   `birth_date` DATE NOT NULL,
   `previous_school` VARCHAR(128) NULL DEFAULT NULL,
   `previous_grades` DECIMAL(5,2) DEFAULT 0.00,
   `has_accommodations` BOOLEAN NOT NULL,
   PRIMARY KEY (`student_id`),
-  CONSTRAINT `FK_Students_Persons`
+  CONSTRAINT `fk_students_persons`
     FOREIGN KEY (`student_id`) 
-    REFERENCES `tbl_Persons`(`person_id`)
+    REFERENCES `tbl_persons`(`person_id`)
     ON DELETE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -99,22 +99,22 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `tbl_Parents_Students`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Parents_Students` ;
+DROP TABLE IF EXISTS `tbl_parents_students` ;
 
-CREATE TABLE IF NOT EXISTS `tbl_Parents_Students` (
+CREATE TABLE IF NOT EXISTS `tbl_parents_students` (
   `student_id` INT UNSIGNED NOT NULL,
   `parent_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`student_id`, `parent_id`),
-  INDEX `IDX_Parents_Students_ParentID` (`parent_id` ASC) INVISIBLE,
-  INDEX `IDX_Parents_Students_StudentID` (`student_id` ASC) INVISIBLE,
+  INDEX `idx_parents_students_parentid` (`parent_id` ASC) INVISIBLE,
+  INDEX `idx_parents_students_studentid` (`student_id` ASC) INVISIBLE,
 
-  CONSTRAINT `FK_Parents_Students_Parents`
+  CONSTRAINT `fk_parents_students_parents`
     FOREIGN KEY (`parent_id`)
-    REFERENCES `tbl_Parents` (`parent_id`),
+    REFERENCES `tbl_parents` (`parent_id`),
 
-  CONSTRAINT `FK_Parents_Students_Students`
+  CONSTRAINT `fk_parents_students_students`
     FOREIGN KEY (`student_id`)
-    REFERENCES `tbl_Students` (`student_id`))
+    REFERENCES `tbl_students` (`student_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -139,9 +139,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 	-- FM: family
 	-- OT: other
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Enrollments`;
+DROP TABLE IF EXISTS `tbl_enrollments`;
 
-CREATE TABLE IF NOT EXISTS `tbl_Enrollments` (
+CREATE TABLE IF NOT EXISTS `tbl_enrollments` (
   `enrollment_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `student_id` INT UNSIGNED NOT NULL,
   `status` ENUM('PENDING', 'ELIGIBLE', 'INELIGIBLE', 'ACCEPTED', 'REJECTED') NOT NULL,
@@ -152,9 +152,9 @@ CREATE TABLE IF NOT EXISTS `tbl_Enrollments` (
   `consent_given` BOOLEAN NOT NULL DEFAULT 0,
   `whatsapp_notification` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`enrollment_id`),
-  INDEX `IDX_Enrollments_StudentID` (`student_id` ASC),
+  INDEX `idx_enrollments_studentid` (`student_id` ASC),
 
-  CONSTRAINT `FK_Enrollments_Students`
+  CONSTRAINT `fk_enrollments_students`
     FOREIGN KEY (`student_id`)
     REFERENCES `tbl_Students` (`student_id`)
     ON DELETE NO ACTION)
@@ -168,18 +168,18 @@ COLLATE = utf8mb4_0900_ai_ci;
   -- AC: adequacies certificate
   -- OT: other
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Documents`;
+DROP TABLE IF EXISTS `tbl_documents`;
 
-CREATE TABLE IF NOT EXISTS `tbl_Documents` (
+CREATE TABLE IF NOT EXISTS `tbl_documents` (
   `document_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `enrollment_id` INT UNSIGNED NOT NULL,
   `document_name` VARCHAR(64) NOT NULL,
   `document_type` ENUM('AC', 'OT') NOT NULL,
   `document_url` VARCHAR(128) NOT NULL,
   PRIMARY KEY (`document_id`),
-  INDEX `IDX_Documents_EnrollmentID` (`enrollment_id` ASC),
+  INDEX `idx_documents_enrollmentid` (`enrollment_id` ASC),
   
-  CONSTRAINT `FK_Documents_Enrollments`
+  CONSTRAINT `fk_documents_enrollments`
     FOREIGN KEY (`enrollment_id`)
     REFERENCES `tbl_Enrollments` (`enrollment_id`))
 ENGINE = InnoDB
@@ -205,9 +205,9 @@ COLLATE = utf8mb4_0900_ai_ci;
   -- MEDIUM: medium question
   -- HARD: hard question
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Questions`;
+DROP TABLE IF EXISTS `tbl_questions`;
 
-CREATE TABLE IF NOT EXISTS `tbl_Questions` (
+CREATE TABLE IF NOT EXISTS `tbl_questions` (
   `question_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `question_type` ENUM('ACA', 'DAI') NOT NULL,
   `question_text` VARCHAR(512) NOT NULL,
@@ -217,8 +217,8 @@ CREATE TABLE IF NOT EXISTS `tbl_Questions` (
   `selection_type` ENUM('SINGLE', 'MULTIPLE', 'PARAGRAPH') NOT NULL DEFAULT 'PARAGRAPH',
   `deleted` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`question_id`),
-  INDEX `IDX_Questions_QuestionType_ACA` ((`question_type` = 'ACA')),
-  INDEX `IDX_Questions_QuestionType_DAI` ((`question_type` = 'DAI')))
+  INDEX `idx_questions_questiontype_aca` ((`question_type` = 'ACA')),
+  INDEX `idx_questions_questiontype_dai` ((`question_type` = 'DAI')))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -226,19 +226,19 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `tbl_Question_Options`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Question_Options` ;
+DROP TABLE IF EXISTS `tbl_question_options` ;
 
-CREATE TABLE IF NOT EXISTS `tbl_Question_Options` (
+CREATE TABLE IF NOT EXISTS `tbl_question_options` (
   `option_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `question_id` INT UNSIGNED NOT NULL,
   `is_correct` BOOLEAN NOT NULL DEFAULT 0,
   `option` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`option_id`),
-  INDEX `IDX_QuestionOptions_QuestionID` (`question_id` ASC),
+  INDEX `idx_questionOptions_questionid` (`question_id` ASC),
 
-  CONSTRAINT `FK_AcademicQuestions_QuestionOption`
+  CONSTRAINT `fk_academicquestions_questionoption`
     FOREIGN KEY (`question_id`)
-    REFERENCES `tbl_Questions` (`question_id`)
+    REFERENCES `tbl_questions` (`question_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -252,23 +252,23 @@ COLLATE = utf8mb4_0900_ai_ci;
   -- DAI: psiometric
   -- ENG: english
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Exams`;
+DROP TABLE IF EXISTS `tbl_exams`;
 
-CREATE TABLE IF NOT EXISTS `tbl_Exams` (
+CREATE TABLE IF NOT EXISTS `tbl_exams` (
   `exam_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `enrollment_id` INT UNSIGNED NOT NULL,
   `exam_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `exam_type` ENUM('ACA', 'DAI', 'ENG') NOT NULL,
   `responses` JSON DEFAULT NULL,
   PRIMARY KEY (`exam_id`),
-  INDEX `IDX_Exams_EnrollmentID` (`enrollment_id` ASC),
+  INDEX `idx_exams_enrollmentid` (`enrollment_id` ASC),
 
-  CONSTRAINT `FK_Exams_Enrollments`
+  CONSTRAINT `fk_exams_enrollments`
     FOREIGN KEY (`enrollment_id`)
-    REFERENCES `tbl_Enrollments` (`enrollment_id`)
+    REFERENCES `tbl_enrollments` (`enrollment_id`)
     ON DELETE NO ACTION,
     
-  CONSTRAINT `UQ_ExamType_Enrollment` UNIQUE (`enrollment_id`, `exam_type`)
+  CONSTRAINT `uq_examtype_enrollment` UNIQUE (`enrollment_id`, `exam_type`)
 )
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -277,16 +277,16 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `tbl_Academic_Exams`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Academic_Exams`;
+DROP TABLE IF EXISTS `tbl_academic_exams`;
 
-CREATE TABLE IF NOT EXISTS `tbl_Academic_Exams` (
+CREATE TABLE IF NOT EXISTS `tbl_academic_exams` (
   `exam_id` INT UNSIGNED NOT NULL,
   `grade` DECIMAL(5,2) NOT NULL,
   PRIMARY KEY (`exam_id`),
 
-  CONSTRAINT `FK_AcademicExams_Exams`
+  CONSTRAINT `fk_academicexams_exams`
     FOREIGN KEY (`exam_id`)
-    REFERENCES `tbl_Exams` (`exam_id`)
+    REFERENCES `tbl_exams` (`exam_id`)
     ON DELETE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -295,18 +295,18 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `tbl_Dai_Exams`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Dai_Exams` ;
+DROP TABLE IF EXISTS `tbl_dai_exams` ;
 
-CREATE TABLE IF NOT EXISTS `tbl_Dai_Exams` (
+CREATE TABLE IF NOT EXISTS `tbl_dai_exams` (
   `exam_id` INT UNSIGNED NOT NULL,
   `comment` VARCHAR(255) DEFAULT '',
   `recommendation` ENUM('ADMIT', 'REJECT') DEFAULT NULL,
   `reviewed` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`exam_id`),
 
-  CONSTRAINT `FK_DaiExams_Exams`
+  CONSTRAINT `fk_daiexams_exams`
     FOREIGN KEY (`exam_id`)
-    REFERENCES `tbl_Exams` (`exam_id`)
+    REFERENCES `tbl_exams` (`exam_id`)
     ON DELETE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -316,19 +316,19 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `tbl_English_Exams`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_English_Exams` ;
+DROP TABLE IF EXISTS `tbl_english_exams` ;
 
-CREATE TABLE IF NOT EXISTS `tbl_English_Exams` (
+CREATE TABLE IF NOT EXISTS `tbl_english_exams` (
   `exam_id` INT UNSIGNED NOT NULL,
   `tracktest_id` INT UNSIGNED NOT NULL,
   `level` ENUM('A1', 'A2', 'B1', 'B2', 'C1', 'C2') NOT NULL,
   `core` TINYINT NOT NULL,
   PRIMARY KEY (`exam_id`),
-  UNIQUE INDEX `UQ_EnglishExams_TrackTestID` (`tracktest_id` ASC),
+  UNIQUE INDEX `uq_englishexams_tracktestid` (`tracktest_id` ASC),
 
-  CONSTRAINT `FK_EnglishExams_Exams`
+  CONSTRAINT `fk_englishexams_exams`
     FOREIGN KEY (`exam_id`)
-    REFERENCES `tbl_Exams` (`exam_id`))
+    REFERENCES `tbl_exams` (`exam_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -337,9 +337,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `tbl_Exam_Periods`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Exam_Periods` ;
+DROP TABLE IF EXISTS `tbl_exam_periods` ;
 
-CREATE TABLE IF NOT EXISTS `tbl_Exam_Periods` (
+CREATE TABLE IF NOT EXISTS `tbl_exam_periods` (
   `exam_period_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `start_date` DATE NOT NULL,
   `end_date` DATE NOT NULL,
@@ -361,19 +361,19 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 -- `start_time` format: HH:MM:SS
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Exam_Days` ;
+DROP TABLE IF EXISTS `tbl_exam_days` ;
 
-CREATE TABLE IF NOT EXISTS `tbl_Exam_Days` (
+CREATE TABLE IF NOT EXISTS `tbl_exam_days` (
   `exam_day_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `exam_period_id` INT UNSIGNED NOT NULL,
   `exam_day` ENUM('M', 'K', 'W', 'T', 'F', 'S', 'SS') NOT NULL,
   `start_time` TIME NOT NULL,
   PRIMARY KEY (`exam_day_id`),
-  INDEX `IDX_Exam_Days_ExamPeriodsID` (`exam_period_id` ASC),
+  INDEX `idx_exam_days_examperiodsid` (`exam_period_id` ASC),
 
-  CONSTRAINT `FK_ExamDays_ExamPeriods`
+  CONSTRAINT `fk_examdays_examperiods`
     FOREIGN KEY (`exam_period_id`)
-    REFERENCES `tbl_Exam_Periods` (`exam_period_id`)
+    REFERENCES `tbl_exam_periods` (`exam_period_id`)
     ON DELETE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -383,9 +383,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `tbl_Logs`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Logs` ;
+DROP TABLE IF EXISTS `tbl_logs` ;
 
-CREATE TABLE IF NOT EXISTS `tbl_Logs` (
+CREATE TABLE IF NOT EXISTS `tbl_logs` (
   `log_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `table_name` VARCHAR(50) NOT NULL,
   `column_name` VARCHAR(50) NOT NULL,
@@ -404,9 +404,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `tbl_Logs_Score`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tbl_Logs_Score` ;
+DROP TABLE IF EXISTS `tbl_logs_score` ;
 
-CREATE TABLE IF NOT EXISTS `tbl_Logs_Score` (
+CREATE TABLE IF NOT EXISTS `tbl_logs_score` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `process_id` INT NULL DEFAULT NULL,
   `tracktest_id` INT NULL DEFAULT NULL,
