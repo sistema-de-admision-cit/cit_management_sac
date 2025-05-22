@@ -31,7 +31,7 @@ public interface ExamRepository extends JpaRepository<ExamEntity, Long> {
 
   @Modifying
   @Transactional
-  @Procedure(name = "usp_Process_English_Exam_And_Log")
+  @Procedure(name = "usp_process_english_exam_and_log")
   void usp_process_english_exam_and_log(@Param("p_first_name") String firstName,
       @Param("p_last_names") String lastNames, @Param("p_exam_date") String examDate,
       @Param("p_tracktest_id") Long trackTestId, @Param("p_new_score") BigDecimal newScore,
