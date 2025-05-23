@@ -34,7 +34,7 @@ sudo apt-get update
 openssl genpkey -algorithm RSA -out privyKey.pem -pkeyopt rsa_keygen_bits:2048
 openssl rsa -pubout -in privyKey.pem -out public.pem
 cat privyKey.pem
-cat public.pem
+cat pubKey.pem
 </code></pre>
 
 <h2>Instalar Node.js 22</h2>
